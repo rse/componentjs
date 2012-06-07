@@ -1,0 +1,253 @@
+/*
+**  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+**  Copyright (c) 2009-2012 Ralf S. Engelschall <http://engelschall.com>
+**
+**  This Source Code Form is subject to the terms of the Mozilla Public
+**  License, v. 2.0. If a copy of the MPL was not distributed with this
+**  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+*/
+
+/*  utility function: annotate an object  */
+_cs.annotation = function (obj, name, value) {
+    var result = null;
+    var __name__ = "__ComponentJS_" + name + "__";
+    if (typeof obj !== "undefined" && obj !== null) {
+        /*  get annotation value  */
+        if (typeof obj[__name__] !== "undefined")
+            result = obj[__name__];
+        if (typeof value !== "undefined") {
+            /*  set annotation value  */
+            if (value !== null)
+                obj[__name__] = value;
+            else
+                delete obj[__name__];
+        }
+    }
+    return result;
+};
+
+/*  utility function: conveniently check for defined variable  */
+_cs.isdefined = function (obj) {
+    return (typeof obj !== "undefined");
+};
+
+/*  utility function: check whether a field is directly owned by object
+    (instead of implicitly resolved through the constructor's prototype object)  */
+_cs.isown = function (obj, field) {
+    return Object.hasOwnProperty.call(obj, field);
+};
+
+/*  utility function: determine type of anything,
+    an improved version of the built-in "typeof" operator  */
+_cs.istypeof = function (obj) {
+    var type = typeof obj;
+    if (type === "object") {
+        if (obj === null)
+            /*  JavaScript nasty special case: null object  */
+            type = "null";
+        else if (Object.prototype.toString.call(obj) === "[object String]")
+            /*  JavaScript nasty special case: String object  */
+            type = "string";
+        else if (Object.prototype.toString.call(obj) === "[object Number]")
+            /*  JavaScript nasty special case: Number object  */
+            type = "number";
+        else if (Object.prototype.toString.call(obj) === "[object Boolean]")
+            /*  JavaScript nasty special case: Boolean object  */
+            type = "boolean";
+        else if (Object.prototype.toString.call(obj) === "[object Function]")
+            /*  JavaScript nasty special case: Function object  */
+            type = "function";
+        else if (Object.prototype.toString.call(obj) === "[object Array]")
+            /*  JavaScript nasty special case: Array object  */
+            type = "array";
+        else if (_cs.annotation(obj, "type") !== null)
+            /*  ComponentJS special case: "component"  */
+            type = _cs.annotation(obj, "type");
+    }
+    else if (type === "function") {
+        /*  ComponentJS special case: "{clazz,trait}"  */
+        if (_cs.annotation(obj, "type") !== null)
+            type = _cs.annotation(obj, "type");
+    }
+    return type;
+};
+
+/*  utility function: JSON encoding of object  */
+_cs.json = (function () {
+    var escapable = /[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g;
+    var meta = { '\b': '\\b', '\t': '\\t', '\n': '\\n', '\f': '\\f', '\r': '\\r', '"' : '\\"', '\\': '\\\\' };
+    var quote = function (string) {
+        escapable.lastIndex = 0;
+        return (
+            escapable.test(string)
+            ? '"' + string.replace(escapable, function (a) {
+                  var c = meta[a];
+                  return typeof c === "string"
+                      ? c
+                      : "\\u" + ('0000' + a.charCodeAt(0).toString(16)).slice(-4);
+              }) + '"'
+            : '"' + string + '"'
+        );
+    };
+    var encode = function (value, seen) {
+        if (typeof seen[value] !== "undefined")
+            return "null /* [...] */";
+        else
+            seen[value] = true;
+        switch (typeof value) {
+            case "null":     value = "null"; break;
+            case "boolean":  value = String(value); break;
+            case "number":   value = (isFinite(value) ? String(value) : "null"); break;
+            case "string":   value = quote(value); break;
+            case "function":
+                if (_cs.annotation(value, "type") !== null)
+                    value = "<" + _cs.annotation(value, "type") + ">";
+                else
+                    value = "<function>";
+                break;
+            case "object":
+                var a = [];
+                var m;
+                if (!value)
+                    value = "null";
+                else if (_cs.annotation(value, "type") !== null)
+                    value = "<" + _cs.annotation(value, "type") + ">";
+                else if (Object.prototype.toString.call(value) === "[object Function]")
+                    value = "<function>";
+                else if (   Object.prototype.toString.call(value) === "[object Array]"
+                         || value instanceof Array) {
+                    for (var i = 0; i < value.length; i++)
+                        a[i] = arguments.callee(value[i], seen); /* RECURSION */
+                    value = (a.length === 0 ? "[]" : "[" + a.join(",") + "]");
+                }
+                else {
+                    for (var k in value) {
+                        if (Object.hasOwnProperty.call(value, k)) {
+                            var v = arguments.callee(value[k], seen); /* RECURSION */
+                            a.push(quote(k) + ":" + v);
+                        }
+                    }
+                    value = (a.length === 0 ? "{}" : "{" + a.join(",") + "}");
+                }
+                break;
+            default:
+                value = "<unknown>";
+        }
+        return value;
+    };
+    return function (value) {
+        return encode(value, {});
+    };
+})();
+
+/*  utility function: deep cloning of arbitrary data-structure  */
+_cs.clone = function (source) {
+    /*  helper functions  */
+    var myself = arguments.callee;
+    var clone_func = function (f) {
+        var g = function () {
+            return f.apply(this, arguments);
+        };
+        g.prototype = f.prototype;
+        for (prop in f)
+            if (prop !== "prototype" && _cs.isown(f, prop))
+                g[prop] = myself(f[prop]); /* RECURSION */
+        return g;
+    };
+
+    var target = undefined;
+    if (typeof source === "function")
+        /*  special case: primitive function  */
+        target = clone_func(source);
+    else if (typeof source === "object") {
+        if (source === null)
+            /*  special case: null object  */
+            target = null;
+        else if (Object.prototype.toString.call(source) === "[object String]")
+            /*  special case: String object  */
+            target = new String(source.valueOf());
+        else if (Object.prototype.toString.call(source) === "[object Number]")
+            /*  special case: Number object  */
+            target = new Number(source.valueOf());
+        else if (Object.prototype.toString.call(source) === "[object Boolean]")
+            /*  special case: Boolean object  */
+            target = new Boolean(source.valueOf());
+        else if (Object.prototype.toString.call(source) === "[object Function]")
+            /*  special case: Function object  */
+            target = clone_func(source);
+        else if (Object.prototype.toString.call(source) === "[object Date]")
+            /*  special case: Date object  */
+            target = new Date(source.getTime());
+        else if (Object.prototype.toString.call(source) === "[object RegExp]")
+            /*  special case: RegExp object  */
+            target = new RegExp(source.source);
+        else if (Object.prototype.toString.call(source) === "[object Array]") {
+            /*  special case: array object  */
+            var len = source.length;
+            target = new Array(len);
+            for (var i = 0; i < len; i++)
+                target.push(myself(source[i])); /* RECURSION */
+        }
+        else {
+            /*  special case: hash object  */
+            target = new Object();
+            for (var key in source)
+                if (Object.hasOwnProperty.call(source, key) && key !== "constructor")
+                    target[key] = myself(source[key]); /* RECURSION */
+            if (typeof source.constructor === "function")
+                target.constructor = source.constructor;
+            if (typeof source.prototype === "object")
+                target.prototype = source.prototype;
+        }
+    }
+    else
+        /*  regular case: anything else
+            (just primitive data types and undefined value)  */
+        target = source;
+    return target;
+};
+
+/*  utility function: extend an object with other object(s)  */
+_cs.extend = function (target, source, filter) {
+    if (typeof filter === "undefined")
+        filter = function (name, value) { return true; };
+    else if (typeof filter === "string") {
+        var pattern = filter;
+        filter = function (name, value) { return name.match(pattern); };
+    }
+    for (var key in source)
+        if (_cs.isown(source, key))
+            if (filter(key, source[key]))
+                target[key] = source[key];
+    return target;
+};
+
+/*  utility function: mixin objects into another object by chaining methods  */
+_cs.mixin = function (target, source, filter) {
+    if (typeof filter === "undefined")
+        filter = function (name, value) { return true; };
+    else if (typeof filter === "string") {
+        var pattern = filter;
+        filter = function (name, value) { return name.match(pattern); };
+    }
+    for (var key in source) {
+        if (_cs.isown(source, key)) {
+            if (filter(key, source[key])) {
+                if (_cs.istypeof(source[key]) === "function") {
+                    /*  method/function  */
+                    var src = _cs.clone(source[key]);
+                    src.__name__ = key;
+                    if (_cs.istypeof(target[key]) === "function")
+                        src.__base__ = target[key];
+                    target[key] = src;
+                }
+                else {
+                    /*  property/field  */
+                    target[key] = source[key];
+                }
+            }
+        }
+    }
+    return target;
+};
+
