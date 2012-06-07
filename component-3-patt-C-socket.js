@@ -19,6 +19,7 @@ $cs.pattern.socket = $cs.trait({
             /*  determine parameters  */
             var params = $cs.params("socket", arguments, {
                 name:   {         def: null            },
+                scope:  {         def: null            },
                 ctx:    { pos: 0, def: null, req: true },
                 plug:   { pos: 1, def: null, req: true },
                 unplug: { pos: 2, def: null, req: true }
@@ -42,6 +43,8 @@ $cs.pattern.socket = $cs.trait({
             var name = "socket";
             if (params.name !== null)
                 name += ":" + params.name;
+            if (params.scope !== null)
+                name += "@" + params.scope;
             $cs(this).property(name, params);
         },
 
