@@ -36,18 +36,18 @@ $cs.create = function () {
     else
         throw _cs.exception("create", "invalid (number of) arguments");
 
-    /*  split path into existing tree and the not existing component leave node  */
+    /*  split path into existing tree and the not existing component leaf node  */
     var m = path.match(/^(.*?)\/?([^\/]+)$/);
     if (!m[0])
         throw _cs.exception("create", "invalid path \"" + path + "\"");
-    var path_tree  = m[1];
-    var path_leave = m[2];
+    var path_tree = m[1];
+    var path_leaf = m[2];
 
     /*  create new component id  */
     var id = $cs.cid();
 
-    /*  substitute special "{id}" constructs in leave path  */
-    path_leave = path_leave.replace(/\{id\}/g, id);
+    /*  substitute special "{id}" constructs in leaf path  */
+    path_leaf = path_leaf.replace(/\{id\}/g, id);
 
     /*  lookup parent component (has to be existing)  */
     var comp_parent = _cs.lookup(base, path_tree);
@@ -55,11 +55,11 @@ $cs.create = function () {
         throw _cs.exception("create", "parent component path \"" +
             path_tree + "\" not already existing (please create first)");
 
-    /*  attempt to lookup leave component (has to be not existing)  */
-    var comp = _cs.lookup(comp_parent, path_leave);
+    /*  attempt to lookup leaf component (has to be not existing)  */
+    var comp = _cs.lookup(comp_parent, path_leaf);
     if (comp !== _cs.none)
-        throw _cs.exception("create", "leave component path \"" +
-            path_leave + "\" already existing (please destroy first)");
+        throw _cs.exception("create", "leaf component path \"" +
+            path_leaf + "\" already existing (please destroy first)");
 
     /*  instanciate class  */
     var obj = null;
@@ -83,7 +83,7 @@ $cs.create = function () {
     }
 
     /*  create new corresponding component object in tree  */
-    comp = new _cs.comp(path_leave);
+    comp = new _cs.comp(path_leaf);
 
     /*  mark with component id  */
     comp.id(id);
