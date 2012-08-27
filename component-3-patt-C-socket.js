@@ -68,16 +68,23 @@ $cs.pattern.socket = $cs.trait({
 
 /*  internal "plug/unplug to socket" helper functionality  */
 _cs.plugger = function (op, origin, named, args) {
-    /*  determine socket (intentionally starting from parent component)  */
+    /*  determine socket property name  */
     var property = "socket";
     if (named) {
         property += ":" + args[0];
         args = _cs.filter(function (_, i) { return i >= 1; }, args);
     }
-    var parent = $cs(origin).parent();
-    if (parent === null)
-        throw _cs.exception(op, "no parent component found");
-    var socket = parent.property(property);
+
+    /*  resolve the socket property on the parents components
+        NOTICE 1: we explicitly skip the origin component here as
+                  resolving the socket property also on the origin
+                  component might otherwise return the potentially
+                  existing socket for the child components of the orgin
+                  component.
+        NOTICE 2: we intentionally skip the origin and do not directly
+                  resolve on the parent component as we want to take
+                  scoped sockets (on the parent component) into account!  */
+    var socket = origin.property({ name: property, skiporigin: true });
     if (!_cs.isdefined(socket))
         throw _cs.exception(op, "no socket found on parent component(s)");
 

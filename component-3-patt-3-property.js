@@ -16,6 +16,14 @@ $cs.pattern.property = $cs.trait({
     protos: {
         /*  get/set a property  */
         property: function (name, value) {
+            /*  determine parameters  */
+            var params = $cs.params("property", arguments, {
+                name:       { pos: 0, def: null,     req: true },
+                value:      { pos: 1, def: undefined           },
+                skiporigin: {         def: false               }
+            });
+
+            /*  start resolving with an undefined value  */
             var value_old = undefined;
 
             /*  get old configuration value
@@ -25,9 +33,17 @@ $cs.pattern.property = $cs.trait({
                  node !== null;
                  scope = node.name(), node = node.parent()) {
 
+                /*  optionally skip the origin component
+                    (usually if a property on the parent components
+                    should be resolved only, but the scoping for the
+                    origin component should be still taken into account
+                    on the parent) */
+                if (scope === null && params.skiporigin)
+                    continue;
+
                 /*  first try: child-scoped property  */
                 if (scope !== null) {
-                    v = node.cfg(name + "@" + scope);
+                    v = node.cfg(params.name + "@" + scope);
                     if (typeof v !== "undefined") {
                         value_old = v;
                         break;
@@ -35,7 +51,7 @@ $cs.pattern.property = $cs.trait({
                 }
 
                 /*  second try: unscoped property  */
-                v = node.cfg(name);
+                v = node.cfg(params.name);
                 if (typeof v !== "undefined") {
                     value_old = v;
                     break;
@@ -44,6 +60,7 @@ $cs.pattern.property = $cs.trait({
 
             /*  optionally set new configuration value
                 (on current node only)  */
+            var value = params.value;
             if (typeof value !== "undefined") {
                 var set_value = true;
 
@@ -51,8 +68,8 @@ $cs.pattern.property = $cs.trait({
                 var comp = _cs.lookup(this);
                 if (comp !== _cs.none) {
                     var ev = comp.publish({
-                        name: "set_" + name,
-                        args: [ name, value_old, value ],
+                        name: "set_" + params.name,
+                        args: [ params.name, value_old, value ],
                         capturing: false,
                         bubbling: false
                     });
@@ -67,7 +84,7 @@ $cs.pattern.property = $cs.trait({
 
                 /*  set new value  */
                 if (set_value)
-                    this.cfg(name, value);
+                    this.cfg(params.name, value);
             }
 
             /*  return old configuration value  */
