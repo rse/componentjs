@@ -34,7 +34,10 @@ _cs.isdefined = function (obj) {
 /*  utility function: check whether a field is directly owned by object
     (instead of implicitly resolved through the constructor's prototype object)  */
 _cs.isown = function (obj, field) {
-    return Object.hasOwnProperty.call(obj, field);
+    var isown = Object.hasOwnProperty.call(obj, field);
+    if (field === "constructor" || field === "prototype")
+        isown = isown && Object.propertyIsEnumerable.call(obj, field);
+    return isown;
 };
 
 /*  utility function: determine type of anything,
@@ -150,7 +153,7 @@ _cs.clone = function (source) {
         };
         g.prototype = f.prototype;
         for (prop in f)
-            if (prop !== "prototype" && _cs.isown(f, prop))
+            if (_cs.isown(f, prop))
                 g[prop] = myself(f[prop]); /* RECURSION */
         return g;
     };
@@ -192,7 +195,7 @@ _cs.clone = function (source) {
             /*  special case: hash object  */
             target = new Object();
             for (var key in source)
-                if (Object.hasOwnProperty.call(source, key) && key !== "constructor")
+                if (_cs.isown(source, key))
                     target[key] = myself(source[key]); /* RECURSION */
             if (typeof source.constructor === "function")
                 target.constructor = source.constructor;
