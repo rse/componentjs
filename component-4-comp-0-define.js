@@ -45,6 +45,11 @@ _cs.comp = $cs.clazz({
             $cs.destroy(comp.path("/"));
         },
 
+        /*  check for existance of a component  */
+        exists: function () {
+            return (this.name() !== "<none>");
+        },
+
         /*  dump the component tree starting at component  */
         dump: function () {
             var dump = this.tree_dump(function (comp) {
