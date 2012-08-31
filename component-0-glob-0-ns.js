@@ -30,10 +30,8 @@ $cs.symbol = (function () {
     /*  top-level API method  */
     return function (symbol) {
         /*  release old occupation  */
-        if (symbol_current !== null) {
-            delete GLOBAL[symbol_current];
+        if (symbol_current !== null)
             GLOBAL[symbol_current] = value_original;
-        }
 
         /*  perform new occupation  */
         if (typeof symbol === "undefined" || symbol === "")
