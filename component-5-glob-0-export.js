@@ -17,11 +17,12 @@ else {
     var s = DOCUMENT.getElementsByTagName("script");
     var regex = new RegExp("^(?:.*/)?component(?:-[0-9]+(?:\.[0-9]+)*)?(?:-min)?\.js$");
     for (var i = 0; i < s.length; i++) {
-        if (s[i].hasAttribute("src")) {
-            var src = s[i].getAttribute("src");
+        var src = s[i].getAttribute("src");
+        if (src !== null) {
             if (regex.exec(src)) {
-                if (s[i].hasAttribute("data-symbol")) {
-                    name = s[i].getAttribute("data-symbol");
+                var data = s[i].getAttribute("data-symbol");
+                if (data !== null) {
+                    name = data
                     break;
                 }
             }
