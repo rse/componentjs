@@ -41,8 +41,9 @@ $cs.pattern.autoattr = $cs.trait({
         }
 
         /*  perform deferred removal of original fields  */
+        var self = this;
         _cs.foreach(remove, function (field) {
-            delete this[field];
+            delete self[field];
         });
     }
 });
