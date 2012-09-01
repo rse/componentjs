@@ -123,7 +123,8 @@ $cs.pattern.state = $cs.trait({
                             children = this.children();
                             for (i = 0; i < children.length; i++)
                                 if (children[i].state_compare(state) < 0)
-                                    if (children[i].state_auto_increase())
+                                    if (   children[i].state_auto_increase()
+                                        || children[i].property("ComponentJS:state-auto-increase") === true)
                                         children[i].state(state, "downward");
                         }
                     }
@@ -172,7 +173,8 @@ $cs.pattern.state = $cs.trait({
                         if (_direction === "upward-and-downward" || _direction === "upward")
                             if (this.parent() !== null)
                                 if (this.parent().state_compare(state_lower) > 0)
-                                    if (this.parent().state_auto_decrease())
+                                    if (   this.parent().state_auto_decrease()
+                                        || this.parent().property("ComponentJS:state-auto-decrease") === true)
                                         this.parent().state(state_lower, "upward");
                     }
                 }
