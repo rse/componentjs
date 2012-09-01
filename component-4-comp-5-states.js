@@ -11,7 +11,7 @@
 $cs.transition = function () {
     /*  special case  */
     if (arguments.length === 1 && arguments[0] === null) {
-        /*  remove all user-defined transistions  */
+        /*  remove all user-defined transitions  */
         _cs.states_clear();
         return;
     }
