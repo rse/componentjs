@@ -59,7 +59,8 @@ $cs.pattern.hook = $cs.trait({
                 args: params.args,
                 capturing: false,
                 bubbling: false,
-                async: false
+                async: false,
+                directresult: true
             });
         }
     }
