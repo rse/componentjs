@@ -97,8 +97,10 @@ $cs.create = function () {
     /*  optionally pimpup the object  */
     _cs.pimpup(obj);
 
-    /*  switch state from "dead" to "created"  */
-    comp.state("created");
+    /*  switch state from "dead" to "created"
+        (here synchronously as one expects that after a creation of a
+        component, the state is really already "created", of course)  */
+    comp.state({ state: "created", sync: true });
 
     /*  debug hint  */
     $cs.debug(1, "create: created component [" + comp.id() + "] \"" + comp.path("/") + "\"");
@@ -126,8 +128,10 @@ $cs.destroy = function (path) {
     /*  debug hint  */
     $cs.debug(1, "destroy: destroy component [" + comp.id() + "] \"" + comp.path("/") + "\"");
 
-    /*  switch component state to "dead"  */
-    comp.state("dead");
+    /*  switch component state to "dead"
+        (here synchronously as one expects that after a destruction of a
+        component, the state is really already "dead", of course)  */
+    comp.state({ state: "dead", sync: true });
 
     /*  detach component from component tree  */
     comp.detach();

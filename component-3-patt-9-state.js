@@ -43,6 +43,169 @@ _cs.states_add = function (target, enter, leave, source) {
     /*  store state  */
     _cs.states.splice(pos, 0, state);
 };
+        
+/*  determine state index via state name  */
+_cs.state_name2idx = function (name) {
+    var idx = -1;
+    for (i = 0; i < _cs.states.length; i++) {
+        if (_cs.states[i].state === name) {
+            idx = i;
+            break;
+        }
+    }
+    return idx;
+};
+
+/*  set of current state transition requests
+    (modeled via a map to the components)  */
+_cs.state_requests = {};
+
+/*  spawn all progression runs (asynchronously)  */
+_cs.state_progression = function () {
+    setTimeout(function () {
+        /*  try to process the transition requests  */
+        var remove = [];
+        for (var path in _cs.state_requests) {
+            if (!_cs.isown(_cs.state_requests, path))
+                continue;
+            var req = _cs.state_requests[path];
+            if (_cs.state_progression_single(req))
+                remove.push(path);
+        }
+
+        /*  perform deferred removal of original fields  */
+        _cs.foreach(remove, function (path) {
+            delete _cs.state_requests[path];
+        });
+    }, 0);
+};
+
+/*  execute single progression run  */
+_cs.state_progression_single = function (req) {
+    var done = false;
+    _cs.state_progression_run(req.comp, req.state);
+    if (req.comp.state() === req.state) {
+        if (typeof req.callback === "function")
+            req.callback.call(req.comp, req.state);
+        done = true;
+    }
+    return done;
+};
+
+/*  perform a single synchronous progression run for a particular component  */
+_cs.state_progression_run = function (comp, arg, _direction) {
+    var i, children, obj;
+    var state, enter, leave;
+
+    /*  handle optional argument (USED INTERNALLY ONLY)  */
+    if (typeof _direction === "undefined")
+        _direction = "upward-and-downward";
+
+    /*  determine index of state by name  */
+    var state_new = _cs.state_name2idx(arg);
+    if (state_new === -1)
+        throw _cs.exception("state", "invalid argument \"" + arg + "\"");
+
+    /*  perform upward/downward state transition(s)  */
+    if (comp.__state < state_new) {
+        /*  transition to higher state  */
+        while (comp.__state < state_new) {
+            /*  determine names of state and enter method  */
+            state = _cs.states[comp.__state + 1].state;
+            enter = _cs.states[comp.__state + 1].enter;
+
+            /*  mandatory transition parent component to higher state first  */
+            if (comp.parent() !== null) {
+                if (comp.parent().state_compare(state) < 0) {
+                    _cs.state_progression_run(comp.parent(), state, "upward");
+                    if (comp.parent().state_compare(state) < 0) {
+                        _cs.log("WARNING: state: failed to enter state \"" + state + "\"" +
+                            " (parent component failed to enter at least this state first)");
+                        return comp.state();
+                    }
+                }
+            }
+
+            /*  transition current component to higher state second  */
+            comp.__state++;
+            obj = comp.obj();
+            if (obj !== null) {
+                if (typeof obj[enter] === "function") {
+                    $cs.debug(1, "state: entering:" +
+                        " component=\"" + comp.path("/") + "\"" +
+                        " state=\"" + state + "\"" +
+                        " method=\"" + enter + "\""
+                    );
+                    if (obj[enter]() === false) {
+                        _cs.log("WARNING: state: failed to enter state \"" + state + "\"");
+                        comp.__state--;
+                        return comp.state();
+                    }
+                }
+            }
+
+            /*  optionally automatically transition
+                child component(s) to higher state third  */
+            if (_direction === "upward-and-downward" || _direction === "downward") {
+                children = comp.children();
+                for (i = 0; i < children.length; i++)
+                    if (children[i].state_compare(state) < 0)
+                        if (   children[i].state_auto_increase()
+                            || children[i].property("ComponentJS:state-auto-increase") === true)
+                            _cs.state_progression_run(children[i], state, "downward");
+            }
+        }
+    }
+    else if (comp.__state > state_new) {
+        /*  transition to lower state  */
+        while (comp.__state > state_new) {
+            /*  determine names of state and leave method  */
+            state = _cs.states[comp.__state].state;
+            leave = _cs.states[comp.__state].leave;
+            var state_lower = _cs.states[comp.__state - 1].state;
+
+            /*  mandatory transition children component(s) to lower state first  */
+            children = comp.children();
+            for (i = 0; i < children.length; i++) {
+                if (children[i].state_compare(state_lower) > 0) {
+                    _cs.state_progression_run(children[i], state_lower, "downward");
+                    if (children[i].state_compare(state_lower) > 0) {
+                        _cs.log("WARNING: state: failed to leave state \"" + state + "\"" +
+                            " (child component failed to leave at least this state first)");
+                        return comp.state();
+                    }
+                }
+            }
+
+            /*  transition current component to lower state second  */
+            comp.__state--;
+            obj = comp.obj();
+            if (obj !== null) {
+                if (typeof obj[leave] === "function") {
+                    $cs.debug(1, "state: leaving:" +
+                        " component=\"" + comp.path("/") + "\"" +
+                        " state=\"" + state + "\"" +
+                        " method=\"" + leave + "\""
+                    );
+                    if (obj[leave]() === false) {
+                        _cs.log("WARNING: state: failed to leave state \"" + state + "\"");
+                        comp.__state++;
+                        return comp.state();
+                    }
+                }
+            }
+
+            /*  optionally automatically transition
+                parent component to lower state third  */
+            if (_direction === "upward-and-downward" || _direction === "upward")
+                if (comp.parent() !== null)
+                    if (comp.parent().state_compare(state_lower) > 0)
+                        if (   comp.parent().state_auto_decrease()
+                            || comp.parent().property("ComponentJS:state-auto-decrease") === true)
+                            _cs.state_progression_run(comp.parent(), state_lower, "upward");
+        }
+    }
+};
 
 /*  generic pattern for state management  */
 $cs.pattern.state = $cs.trait({
@@ -56,132 +219,48 @@ $cs.pattern.state = $cs.trait({
         state_auto_decrease: $cs.attribute("state_auto_decrease", false)
     },
     protos: {
-        /*  get/set state of component  */
-        state: function (arg, _direction) {
-            var i, children, obj;
+        /*  get state or set state (or at least trigger transition)  */
+        state: function () {
+            /*  special case: just retrieve current state  */
+            var state_old = _cs.states[this.__state].state;
+            if (arguments.length === 0)
+                return state_old;
 
-            /*  handle optional argument (USED INTERNALLY ONLY)  */
-            if (typeof _direction === "undefined")
-                _direction = "upward-and-downward";
+            /*  determine parameters  */
+            var params = $cs.params("state", arguments, {
+                state:    { pos: 0,                 req: true },
+                callback: { pos: 1, def: undefined            },
+                sync:     {         def: false                }
+            });
 
-            if (typeof arg === "string") {
-                /*  determine index of state by name  */
-                var state_new = -1;
-                for (i = 0; i < _cs.states.length; i++) {
-                    if (_cs.states[i].state === arg) {
-                        state_new = i;
-                        break;
+            /*  if requested state is still not reached...  */
+            if (_cs.states[this.__state].state !== params.state) {
+                var enqueue = true;
+                var request = {
+                    comp:     this,
+                    state:    params.state,
+                    callback: params.callback
+                };
+                if (params.sync) {
+                    /*  perform new state transition request (synchronously)  */
+                    if (_cs.state_progression_single(request))
+                        enqueue = false;
+                    else {
+                        /*  give other pending state transitions 
+                            (which now might proceed) a chance  */
+                        _cs.state_progression();
                     }
                 }
-                if (state_new === -1)
-                    throw _cs.exception("state", "invalid argument \"" + arg + "\"");
-
-                /*  perform upward/downward state transition(s)  */
-                var state;
-                var enter;
-                var leave;
-                if (this.__state < state_new) {
-                    /*  transition to higher state  */
-                    while (this.__state < state_new) {
-                        /*  determine names of state and enter method  */
-                        state = _cs.states[this.__state + 1].state;
-                        enter = _cs.states[this.__state + 1].enter;
-
-                        /*  mandatory transition parent component to higher state first  */
-                        if (this.parent() !== null) {
-                            if (this.parent().state_compare(state) < 0) {
-                                this.parent().state(state, "upward");
-                                if (this.parent().state_compare(state) < 0) {
-                                    _cs.log("WARNING: state: failed to enter state \"" + state + "\"" +
-                                        " (parent component failed to enter at least this state first)");
-                                    return this.state();
-                                }
-                            }
-                        }
-
-                        /*  transition current component to higher state second  */
-                        this.__state++;
-                        obj = this.obj();
-                        if (obj !== null) {
-                            if (typeof obj[enter] === "function") {
-                                $cs.debug(1, "state: entering:" +
-                                    " component=\"" + this.path("/") + "\"" +
-                                    " state=\"" + state + "\"" +
-                                    " method=\"" + enter + "\""
-                                );
-                                if (obj[enter]() === false) {
-                                    _cs.log("WARNING: state: failed to enter state \"" + state + "\"");
-                                    this.__state--;
-                                    return this.state();
-                                }
-                            }
-                        }
-
-                        /*  optionally automatically transition
-                            child component(s) to higher state third  */
-                        if (_direction === "upward-and-downward" || _direction === "downward") {
-                            children = this.children();
-                            for (i = 0; i < children.length; i++)
-                                if (children[i].state_compare(state) < 0)
-                                    if (   children[i].state_auto_increase()
-                                        || children[i].property("ComponentJS:state-auto-increase") === true)
-                                        children[i].state(state, "downward");
-                        }
-                    }
-                }
-                else if (this.__state > state_new) {
-                    /*  transition to lower state  */
-                    while (this.__state > state_new) {
-                        /*  determine names of state and leave method  */
-                        state = _cs.states[this.__state].state;
-                        leave = _cs.states[this.__state].leave;
-                        var state_lower = _cs.states[this.__state - 1].state;
-
-                        /*  mandatory transition children component(s) to lower state first  */
-                        children = this.children();
-                        for (i = 0; i < children.length; i++) {
-                            if (children[i].state_compare(state_lower) > 0) {
-                                children[i].state(state_lower, "downward");
-                                if (children[i].state_compare(state_lower) > 0) {
-                                    _cs.log("WARNING: state: failed to leave state \"" + state + "\"" +
-                                        " (child component failed to leave at least this state first)");
-                                    return this.state();
-                                }
-                            }
-                        }
-
-                        /*  transition current component to lower state second  */
-                        this.__state--;
-                        obj = this.obj();
-                        if (obj !== null) {
-                            if (typeof obj[leave] === "function") {
-                                $cs.debug(1, "state: leaving:" +
-                                    " component=\"" + this.path("/") + "\"" +
-                                    " state=\"" + state + "\"" +
-                                    " method=\"" + leave + "\""
-                                );
-                                if (obj[leave]() === false) {
-                                    _cs.log("WARNING: state: failed to leave state \"" + state + "\"");
-                                    this.__state++;
-                                    return this.state();
-                                }
-                            }
-                        }
-
-                        /*  optionally automatically transition
-                            parent component to lower state third  */
-                        if (_direction === "upward-and-downward" || _direction === "upward")
-                            if (this.parent() !== null)
-                                if (this.parent().state_compare(state_lower) > 0)
-                                    if (   this.parent().state_auto_decrease()
-                                        || this.parent().property("ComponentJS:state-auto-decrease") === true)
-                                        this.parent().state(state_lower, "upward");
-                    }
+                if (enqueue) {
+                    /*  enqueue new state transition request and trigger
+                        state transition progression (asynchronously)  */
+                    _cs.state_requests[this.path("/")] = request;
+                    _cs.state_progression();
                 }
             }
 
-            /*  return current (or new) state  */
-            return _cs.states[this.__state].state;
+            /*  return old (and perhaps still current) state  */
+            return state_old;
         },
 
         /*  compare state of component  */
