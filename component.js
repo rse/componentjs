@@ -66,6 +66,7 @@
     $include("component-4-comp-3-pimpup.js");
     $include("component-4-comp-4-manage.js");
     $include("component-4-comp-5-states.js");
+    $include("component-4-comp-6-debugger.js");
 
     /*
     **  GLOBAL LIBRARY EXPORTING

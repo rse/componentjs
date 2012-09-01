@@ -33,9 +33,13 @@ _cs.prng = function (len, radix) {
 
 /*  utility function: logging via environment console  */
 _cs.log = function (msg) {
+    /*  try ComponentJS debugger  */
+    if (_cs.dbg !== null)
+        _cs.dbg_log(msg);
+
     /*  try Firebug-style console (in regular browser or Node)  */
-    if (   typeof GLOBAL.console     !== "undefined"
-        && typeof GLOBAL.console.log !== "undefined")
+    else if (   typeof GLOBAL.console     !== "undefined"
+             && typeof GLOBAL.console.log !== "undefined")
         GLOBAL.console.log("[CS]: " + msg);
 
     /*  try API of Appcelerator Titanium  */

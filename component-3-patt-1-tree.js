@@ -71,10 +71,12 @@ $cs.pattern.tree = $cs.trait({
         walk_down: function (callback, ctx) {
             var _walk = function (level, node, ctx) {
                 if (typeof callback === "function")
-                    ctx = callback(level, node, ctx);
+                    ctx = callback(level, node, ctx, true);
                 var children = node.children();
                 for (var i = 0; i < children.length; i++)
                     ctx = _walk(level + 1, children[i], ctx);
+                if (typeof callback === "function")
+                    ctx = callback(level, node, ctx, false);
                 return ctx;
             };
             ctx = _walk(0, this, ctx);
