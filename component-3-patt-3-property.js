@@ -15,7 +15,7 @@ $cs.pattern.property = $cs.trait({
     ],
     protos: {
         /*  get/set a property  */
-        property: function (name, value) {
+        property: function () {
             /*  determine parameters  */
             var params = $cs.params("property", arguments, {
                 name:       { pos: 0, def: null,     req: true },
