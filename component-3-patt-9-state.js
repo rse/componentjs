@@ -130,11 +130,6 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             }
 
             /*  transition current component to higher state second  */
-            $cs.debug(1,
-                "state: " + comp.path("/") + ": transition (increase): " +
-                "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
-                "@" + _cs.states[comp.__state + 1].state
-            );
             if (_cs.isdefined(comp.__state_guards[enter])) {
                 $cs.debug(1,
                     "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER GUARD: " +
@@ -144,6 +139,11 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 return;
             }
             comp.__state++;
+            $cs.debug(1,
+                "state: " + comp.path("/") + ": transition (increase): " +
+                "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
+                "@" + _cs.states[comp.__state].state
+            );
             obj = comp.obj();
             if (obj !== null) {
                 if (typeof obj[enter] === "function") {
@@ -205,11 +205,6 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             }
 
             /*  transition current component to lower state second  */
-            $cs.debug(1,
-                "state: " + comp.path("/") + ": transition (decrease): " +
-                "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
-                "@" + _cs.states[comp.__state].state
-            );
             if (_cs.isdefined(comp.__state_guards[leave])) {
                 $cs.debug(1,
                     "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE GUARD: " +
@@ -219,6 +214,11 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 return;
             }
             comp.__state--;
+            $cs.debug(1,
+                "state: " + comp.path("/") + ": transition (decrease): " +
+                "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
+                "@" + _cs.states[comp.__state + 1].state
+            );
             obj = comp.obj();
             if (obj !== null) {
                 if (typeof obj[leave] === "function") {
