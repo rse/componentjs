@@ -119,9 +119,12 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 if (comp.parent().state_compare(state) < 0) {
                     _cs.state_progression_run(comp.parent(), state, "upward");
                     if (comp.parent().state_compare(state) < 0) {
-                        _cs.log("WARNING: state: failed to enter state \"" + state + "\"" +
-                            " (parent component failed to enter at least this state first)");
-                        return comp.state();
+                        $cs.debug(1,
+                            "state: " + comp.path("/") + ": transition (increase) REJECTED BY PARENT COMPONENT (" + comp.parent().path("/") + "): " +
+                            "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
+                            "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                        );
+                        return;
                     }
                 }
             }
@@ -138,7 +141,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                     "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
                     "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
                 );
-                return comp.state();
+                return;
             }
             comp.__state++;
             obj = comp.obj();
@@ -152,7 +155,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                             "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
                         comp.__state--;
-                        return comp.state();
+                        return;
                     }
                 }
             }
@@ -183,9 +186,12 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 if (children[i].state_compare(state_lower) > 0) {
                     _cs.state_progression_run(children[i], state_lower, "downward");
                     if (children[i].state_compare(state_lower) > 0) {
-                        _cs.log("WARNING: state: failed to leave state \"" + state + "\"" +
-                            " (child component failed to leave at least this state first)");
-                        return comp.state();
+                        $cs.debug(1,
+                            "state: " + comp.path("/") + ": transition (decrease) REJECTED BY CHILD COMPONENT (" + children[i].path("/") + "): " +
+                            "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
+                            "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                        );
+                        return;
                     }
                 }
             }
@@ -202,7 +208,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                     "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
                     "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
                 );
-                return comp.state();
+                return;
             }
             comp.__state--;
             obj = comp.obj();
@@ -216,7 +222,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                             "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
                         comp.__state++;
-                        return comp.state();
+                        return;
                     }
                 }
             }
