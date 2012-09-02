@@ -325,10 +325,13 @@ $cs.pattern.state = $cs.trait({
             }
             if (!valid)
                 throw _cs.exception("guard", "not declared method: \"" + params.method + "\"");
-            if (typeof this[params.method] === "undefined")
-                throw _cs.exception("guard", "no such method: \"" + params.method + "\" on component " + this.path("/"));
-            if (typeof this[params.method] !== "function")
-                throw _cs.exception("guard", "not a function: \"" + params.method + "\" on component " + this.path("/"));
+            var obj = this.obj();
+            if (typeof obj[params.method] === "undefined")
+                throw _cs.exception("guard", "no such method: \"" + params.method +
+                    "\" on shadow object of component " + this.path("/"));
+            if (typeof obj[params.method] !== "function")
+                throw _cs.exception("guard", "not a function: \"" + params.method +
+                    "\" on shadow object of component " + this.path("/"));
 
             /*  activate/deactivate guard  */
             if (params.activate)
