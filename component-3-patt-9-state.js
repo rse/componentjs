@@ -65,17 +65,17 @@ _cs.state_progression = function () {
     setTimeout(function () {
         /*  try to process the transition requests  */
         var remove = [];
-        for (var path in _cs.state_requests) {
-            if (!_cs.isown(_cs.state_requests, path))
+        for (var cid in _cs.state_requests) {
+            if (!_cs.isown(_cs.state_requests, cid))
                 continue;
-            var req = _cs.state_requests[path];
+            var req = _cs.state_requests[cid];
             if (_cs.state_progression_single(req))
-                remove.push(path);
+                remove.push(cid);
         }
 
         /*  perform deferred removal of original fields  */
-        _cs.foreach(remove, function (path) {
-            delete _cs.state_requests[path];
+        _cs.foreach(remove, function (cid) {
+            delete _cs.state_requests[cid];
         });
     }, 0);
 };
@@ -264,7 +264,7 @@ $cs.pattern.state = $cs.trait({
                 if (enqueue) {
                     /*  enqueue new state transition request and trigger
                         state transition progression (asynchronously)  */
-                    _cs.state_requests[this.path("/")] = request;
+                    _cs.state_requests[this.id()] = request;
                     _cs.state_progression();
                 }
             }
