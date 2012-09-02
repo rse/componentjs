@@ -103,7 +103,7 @@ $cs.create = function () {
     comp.state({ state: "created", sync: true });
 
     /*  debug hint  */
-    $cs.debug(1, "create: created component [" + comp.id() + "] \"" + comp.path("/") + "\"");
+    $cs.debug(1, "create: " + comp.path("/") + ": created component [" + comp.id() + "]");
 
     /*  return new component  */
     return comp;
@@ -126,7 +126,7 @@ $cs.destroy = function (path) {
         throw _cs.exception("destroy", "invalid path argument");
 
     /*  debug hint  */
-    $cs.debug(1, "destroy: destroy component [" + comp.id() + "] \"" + comp.path("/") + "\"");
+    $cs.debug(1, "destroy: " + comp.path("/") + ": destroying component [" + comp.id() + "]");
 
     /*  switch component state to "dead"
         (here synchronously as one expects that after a destruction of a
