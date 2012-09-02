@@ -77,6 +77,9 @@ _cs.state_progression = function () {
         _cs.foreach(remove, function (cid) {
             delete _cs.state_requests[cid];
         });
+
+        /*  give the debugger a chance to update itself  */
+        _cs.dbg_update();
     }, 0);
 };
 
