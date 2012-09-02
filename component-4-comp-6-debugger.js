@@ -18,6 +18,10 @@ _cs.dbg_logbook = "";
 _cs.dbg_log = function (msg) {
     if (_cs.dbg === null)
         return;
+    msg = msg
+        .replace("&", "&amp;")
+        .replace("<", "&lt;")
+        .replace(">", "&gt;");
     _cs.dbg_logline++;
     _cs.dbg_logbook +=
         "<table class=\"line\">" +
