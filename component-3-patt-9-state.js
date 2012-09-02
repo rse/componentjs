@@ -164,11 +164,19 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 child component(s) to higher state third  */
             if (_direction === "upward-and-downward" || _direction === "downward") {
                 children = comp.children();
-                for (i = 0; i < children.length; i++)
-                    if (children[i].state_compare(state) < 0)
+                for (i = 0; i < children.length; i++) {
+                    if (children[i].state_compare(state) < 0) {
                         if (   children[i].state_auto_increase()
-                            || children[i].property("ComponentJS:state-auto-increase") === true)
+                            || children[i].property("ComponentJS:state-auto-increase") === true) {
                             _cs.state_progression_run(children[i], state, "downward");
+                            if (children[i].state_compare(state) < 0) {
+                                /*  enqueue state transition for child  */
+                                _cs.state_requests[children[i].id()] =
+                                    { comp: children[i], state: state };
+                            }
+                        }
+                    }
+                }
             }
         }
     }
@@ -229,12 +237,21 @@ _cs.state_progression_run = function (comp, arg, _direction) {
 
             /*  optionally automatically transition
                 parent component to lower state third  */
-            if (_direction === "upward-and-downward" || _direction === "upward")
-                if (comp.parent() !== null)
-                    if (comp.parent().state_compare(state_lower) > 0)
+            if (_direction === "upward-and-downward" || _direction === "upward") {
+                if (comp.parent() !== null) {
+                    if (comp.parent().state_compare(state_lower) > 0) {
                         if (   comp.parent().state_auto_decrease()
-                            || comp.parent().property("ComponentJS:state-auto-decrease") === true)
+                            || comp.parent().property("ComponentJS:state-auto-decrease") === true) {
                             _cs.state_progression_run(comp.parent(), state_lower, "upward");
+                            if (comp.parent().state_compare(state_lower) > 0) {
+                                /*  enqueue state transition for parent  */
+                                _cs.state_requests[comp.parent().id()] =
+                                    { comp: comp.parent(), state: state_lower };
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 };
@@ -286,6 +303,11 @@ $cs.pattern.state = $cs.trait({
                     _cs.state_requests[this.id()] = request;
                     _cs.state_progression();
                 }
+            }
+            else {
+                /*  still run its optional callback function  */
+                if (typeof params.callback === "function")
+                    params.callback.call(this, params.state);
             }
 
             /*  return old (and perhaps still current) state  */
