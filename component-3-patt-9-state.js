@@ -279,11 +279,6 @@ $cs.pattern.state = $cs.trait({
                     /*  perform new state transition request (synchronously)  */
                     if (_cs.state_progression_single(request))
                         enqueue = false;
-                    else {
-                        /*  give other pending state transitions 
-                            (which now might proceed) a chance  */
-                        _cs.state_progression();
-                    }
                 }
                 if (enqueue) {
                     /*  enqueue new state transition request and trigger
