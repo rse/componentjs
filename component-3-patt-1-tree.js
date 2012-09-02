@@ -62,21 +62,22 @@ $cs.pattern.tree = $cs.trait({
 
         /*  method: walk tree up  */
         walk_up: function (callback, ctx) {
-            for (var node = this; node !== null; node = node.parent())
-                ctx = callback(node, ctx);
+            var depth, node;
+            for (depth = 0, node = this; node !== null; node = node.parent(), depth++)
+                ctx = callback(depth, node, ctx);
             return ctx;
         },
 
-        /*  method: walk tree  */
+        /*  method: walk tree downward */
         walk_down: function (callback, ctx) {
-            var _walk = function (level, node, ctx) {
+            var _walk = function (depth, node, ctx) {
                 if (typeof callback === "function")
-                    ctx = callback(level, node, ctx, true);
+                    ctx = callback(depth, node, ctx, false);
                 var children = node.children();
                 for (var i = 0; i < children.length; i++)
-                    ctx = _walk(level + 1, children[i], ctx);
+                    ctx = _walk(depth + 1, children[i], ctx);
                 if (typeof callback === "function")
-                    ctx = callback(level, node, ctx, false);
+                    ctx = callback(depth, node, ctx, true);
                 return ctx;
             };
             ctx = _walk(0, this, ctx);
@@ -85,13 +86,15 @@ $cs.pattern.tree = $cs.trait({
 
         /*  method: dump tree as indented string representation  */
         tree_dump: function (callback) {
-            return this.walk_down(function (level, node, output) {
-                for (var n = 0; n < level; n++)
-                    output += "    ";
-                output += "\"" + node.name() + "\"";
-                if (typeof callback === "function")
-                    output += ": " + callback(node);
-                output += "\n";
+            return this.walk_down(function (depth, node, output, depth_first) {
+                if (!depth_first) {
+                    for (var n = 0; n < depth; n++)
+                        output += "    ";
+                    output += "\"" + node.name() + "\"";
+                    if (typeof callback === "function")
+                        output += ": " + callback(node);
+                    output += "\n";
+                }
                 return output;
             }, "");
         }

@@ -210,8 +210,8 @@ _cs.dbg_update = function () {
     );
 
     /*  walk the component tree to determine information about components  */
-    var D = _cs.root.walk_down(function (level, comp, D, downward) {
-        if (downward) {
+    var D = _cs.root.walk_down(function (level, comp, D, depth_first) {
+        if (!depth_first) {
             /*  on downward walking, annotate component with its depth level
                 and calculcate the maximum depth level at all  */
             _cs.annotation(comp, "debugger_depth", level);
@@ -273,8 +273,8 @@ _cs.dbg_update = function () {
     ctx.clearRect(0, 0, cw, ch);
 
     /*  walk the component tree to draw each component (on upward steps only)  */
-    _cs.root.walk_down(function (level, comp, X, downward) {
-        if (!downward) {
+    _cs.root.walk_down(function (level, comp, X, depth_first) {
+        if (depth_first) {
             /*  grab previously calculated information  */
             var d = _cs.annotation(comp, "debugger_depth");
             var w = _cs.annotation(comp, "debugger_width");
