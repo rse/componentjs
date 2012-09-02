@@ -127,14 +127,19 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             }
 
             /*  transition current component to higher state second  */
+            $cs.debug(1,
+                "state: " + comp.path("/") + ": transition (increase): " +
+                "@" + _cs.states[comp.__state].state + " --> " +
+                "@" + _cs.states[comp.__state + 1].state
+            );
             comp.__state++;
             obj = comp.obj();
             if (obj !== null) {
                 if (typeof obj[enter] === "function") {
-                    $cs.debug(1, "state: entering:" +
-                        " component=\"" + comp.path("/") + "\"" +
-                        " state=\"" + state + "\"" +
-                        " method=\"" + enter + "\""
+                    $cs.debug(2,
+                        "state: " + comp.path("/") + ": entering " +
+                        "@" + _cs.states[comp.__state].state + " via " +
+                        enter + "()"
                     );
                     if (obj[enter]() === false) {
                         _cs.log("WARNING: state: failed to enter state \"" + state + "\"");
@@ -178,14 +183,19 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             }
 
             /*  transition current component to lower state second  */
+            $cs.debug(1,
+                "state: " + comp.path("/") + ": transition (decrease): " +
+                "@" + _cs.states[comp.__state - 1].state + " <-- " +
+                "@" + _cs.states[comp.__state].state
+            );
             comp.__state--;
             obj = comp.obj();
             if (obj !== null) {
                 if (typeof obj[leave] === "function") {
-                    $cs.debug(1, "state: leaving:" +
-                        " component=\"" + comp.path("/") + "\"" +
-                        " state=\"" + state + "\"" +
-                        " method=\"" + leave + "\""
+                    $cs.debug(2,
+                        "state: " + comp.path("/") + ": leaving " +
+                        "@" + _cs.states[comp.__state].state + " via " +
+                        leave + "()"
                     );
                     if (obj[leave]() === false) {
                         _cs.log("WARNING: state: failed to leave state \"" + state + "\"");
