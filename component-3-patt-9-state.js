@@ -133,13 +133,21 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 "@" + _cs.states[comp.__state + 1].state
             );
             comp.__state++;
+            if (_cs.isdefined(comp.__state_guards[enter])) {
+                $cs.debug(1,
+                    "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER GUARD: " +
+                    "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
+                    "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                );
+                return comp.state();
+            }
             obj = comp.obj();
             if (obj !== null) {
                 if (typeof obj[enter] === "function") {
                     if (obj[enter]() === false) {
                         /*  FULL STOP: state enter method rejected state transition  */
                         $cs.debug(1,
-                            "state: " + comp.path("/") + ": transition (increase) REJECTED: " +
+                            "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER METHOD: " +
                             "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
                             "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
@@ -188,6 +196,14 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
                 "@" + _cs.states[comp.__state].state
             );
+            if (_cs.isdefined(comp.__state_guards[leave])) {
+                $cs.debug(1,
+                    "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE GUARD: " +
+                    "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
+                    "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                );
+                return comp.state();
+            }
             comp.__state--;
             obj = comp.obj();
             if (obj !== null) {
@@ -195,7 +211,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                     if (obj[leave]() === false) {
                         /*  FULL STOP: state leave method rejected state transition  */
                         $cs.debug(1,
-                            "state: " + comp.path("/") + ": transition (decrease) REJECTED: " +
+                            "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE METHOD: " +
                             "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
                             "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
@@ -225,6 +241,7 @@ $cs.pattern.state = $cs.trait({
     dynamics: {
         /*  attributes  */
         __state: 0, /* = dead */
+        __state_guards: {},
         state_auto_increase: $cs.attribute("state_auto_increase", false),
         state_auto_decrease: $cs.attribute("state_auto_decrease", false)
     },
@@ -238,9 +255,10 @@ $cs.pattern.state = $cs.trait({
 
             /*  determine parameters  */
             var params = $cs.params("state", arguments, {
-                state:    { pos: 0,                 req: true },
-                callback: { pos: 1, def: undefined            },
-                sync:     {         def: false                }
+                state:    { pos: 0, req: true,
+                            valid: function (s) { return _cs.state_name2idx(s) !== -1; } },
+                callback: { pos: 1, def: undefined },
+                sync:     {         def: false     }
             });
 
             /*  if requested state is still not reached...  */
@@ -274,26 +292,49 @@ $cs.pattern.state = $cs.trait({
         },
 
         /*  compare state of component  */
-        state_compare: function (arg) {
-            /*  sanity check argument  */
-            if (typeof arg === "undefined")
-                throw _cs.exception("state_compare", "missing state argument");
-            else if (typeof arg !== "string")
-                throw _cs.exception("state_compare", "invalid state argument");
+        state_compare: function () {
+            /*  determine parameters  */
+            var params = $cs.params("state", arguments, {
+                state: { pos: 0, req: true,
+                         valid: function (s) { return _cs.state_name2idx(s) !== -1; } }
+            });
 
             /*  determine index of state by name  */
-            var state = -1;
-            for (var i = 0; i < _cs.states.length; i++) {
-                if (_cs.states[i].state === arg) {
-                    state = i;
-                    break;
-                }
-            }
-            if (state === -1)
-                throw _cs.exception("state_compare", "invalid state argument \"" + arg + "\"");
+            var state = _cs.state_name2idx(params.state);
 
             /*  compare given state against state of component  */
             return (this.__state - state);
+        },
+
+        /*  guard a state enter/leave method  */
+        guard: function () {
+            /*  determine parameters  */
+            var params = $cs.params("guard", arguments, {
+                method:   { pos: 0, valid: "string",  req: true },
+                activate: { pos: 1, valid: "boolean", req: true }
+            });
+
+            /*  sanity check method  */
+            var valid = false;
+            for (i = 0; i < _cs.states.length; i++) {
+                if (   _cs.states[i].enter === params.method
+                    || _cs.states[i].leave === params.method) {
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid)
+                throw _cs.exception("guard", "not declared method: \"" + params.method + "\"");
+            if (typeof this[params.method] === "undefined")
+                throw _cs.exception("guard", "no such method: \"" + params.method + "\" on component " + this.path("/"));
+            if (typeof this[params.method] !== "function")
+                throw _cs.exception("guard", "not a function: \"" + params.method + "\" on component " + this.path("/"));
+
+            /*  activate/deactivate guard  */
+            if (params.activate)
+                this.__state_guards[params.method] = true;
+            else
+                delete this.__state_guards[params.method];
         }
     }
 });
