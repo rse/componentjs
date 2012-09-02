@@ -132,7 +132,6 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
                 "@" + _cs.states[comp.__state + 1].state
             );
-            comp.__state++;
             if (_cs.isdefined(comp.__state_guards[enter])) {
                 $cs.debug(1,
                     "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER GUARD: " +
@@ -141,6 +140,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 );
                 return comp.state();
             }
+            comp.__state++;
             obj = comp.obj();
             if (obj !== null) {
                 if (typeof obj[enter] === "function") {
