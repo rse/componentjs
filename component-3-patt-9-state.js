@@ -332,9 +332,16 @@ $cs.pattern.state = $cs.trait({
 
             /*  activate/deactivate guard  */
             if (params.activate)
+                /*  activate guard  */
                 this.__state_guards[params.method] = true;
-            else
+            else {
+                /*  deactivate guard  */
                 delete this.__state_guards[params.method];
+
+                /*  give all pending state transitions 
+                    (which now might proceed) a chance  */
+                _cs.state_progression();
+            }
         }
     }
 });
