@@ -80,10 +80,29 @@ $cs.params = function (func_name, func_args, spec) {
         }
     }
 
+    /*  determine or at least guess whether we were called with
+        positional or name-based parameters  */
+    var name_based = false;
+    if (   func_args.length === 1
+        && _cs.istypeof(func_args[0]) === "object") {
+        /*  ok, looks like a regular call like
+            "foo({ foo: ..., bar: ...})"  */
+        name_based = true;
+
+        /*  ...but do not be mislead by a positional use like 
+            "foo(bar)" where "bar" is an arbitrary object!  */
+        for (name in func_args[0]) {
+            if (_cs.isown(func_args[0], name)) {
+                if (typeof spec[name] === "undefined")
+                    name_based = false;
+            }
+        }
+    }
+
     /*  set actual values  */
     var i;
     var args;
-    if (func_args.length === 1 && typeof func_args[0] === "object") {
+    if (name_based) {
         /*  case 1: name-based parameter specification  */
         args = func_args[0];
         for (name in args) {
