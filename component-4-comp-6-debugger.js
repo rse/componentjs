@@ -154,12 +154,12 @@ $cs.debugger = (function () {
                         });
                     }, 500);
                 }
-                _cs.dbg_log("debugger enabled");
+                $cs.debug(3, "debugger enabled");
             }
             else {
                 /*  disable debugger  */
                 if (_cs.dbg !== null) {
-                    _cs.dbg_log("debugger disabled");
+                    $cs.debug(3, "debugger disabled");
                     _cs.dbg.close();
                     _cs.dbg = null;
                 }
