@@ -237,9 +237,18 @@ _cs.dbg_update = function () {
     var W = _cs.annotation(_cs.root, "debugger_width");
     var T = _cs.annotation(_cs.root, "debugger_total");
 
+    /*  determine pending state transition requests  */
+    var reqs = 0;
+    for (var cid in _cs.state_requests) {
+        if (!_cs.isown(_cs.state_requests, cid))
+            continue;
+        reqs++;
+    }
+
     /*  update status line  */
     $(".dbg .status .text", _cs.dbg.document).html(
-        "Components: <b>" + T + "</b>"
+        "Created Components: <b>" + T + "</b>, " +
+        "Pending Transition Requests: <b>" + reqs + "</b>"
     );
 
     /*
