@@ -68,7 +68,7 @@ $cs.pattern.property = $cs.trait({
                 var comp = _cs.lookup(this);
                 if (comp !== _cs.none) {
                     var ev = comp.publish({
-                        name: "set_" + params.name,
+                        name: "ComponentJS:property:" + params.name,
                         args: [ params.name, value_old, value ],
                         capturing: false,
                         bubbling: false

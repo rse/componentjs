@@ -19,7 +19,7 @@ _cs.pimpup = function (obj) {
             validate: function (value_new, value_old, validate_only, name) {
                 var is_valid = true;
                 if (!validate_only)
-                    is_valid = _cs.lookup(obj).publish("set_" + name, value_old, value_new);
+                    is_valid = _cs.lookup(obj).publish("ComponentJS:attribute:" + name, value_old, value_new);
                 return is_valid;
             }
         });
