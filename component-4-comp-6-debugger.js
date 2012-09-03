@@ -33,6 +33,97 @@ _cs.dbg_log = function (msg) {
     _cs.dbg_update();
 };
 
+/*  minimum emulation of jQuery  */
+_cs.jq = function (sel, el) {
+    if (typeof GLOBAL.jQuery !== "undefined")
+        return GLOBAL.jQuery(sel, el);
+    var result = [];
+    if (arguments.length === 1 && typeof sel !== "string")
+        result.push(sel);
+    else {
+        if (typeof el === "undefined")
+            el = GLOBAL.document;
+        result = el.querySelectorAll(sel);
+    }
+    _cs.extend(result, _cs.jq_methods);
+    return result;
+};
+_cs.jq_methods = {
+    ready: function (callback) {
+        /*  not correct (because too complicated to
+            emulate portably), but sufficient for now!  */
+        for (var i = 0; i < this.length; i++) {
+            (function () {
+                var el = this[i];
+                setTimeout(function () {
+                    callback.call(el);
+                }, 250);
+            })();
+        }
+    },
+    bind: function (name, callback) {
+        for (var i = 0; i < this.length; i++) {
+            if (typeof this[i].addEventListener == "function")
+                this[i].addEventListener(name, callback, false);
+            else if (typeof this[i].attachEvent == "function")
+                this[i].attachEvent("on" + name, callback);
+        }
+    },
+    width: function (value) {
+        var result = undefined;
+        for (var i = 0; i < this.length; i++) {
+            if (typeof value === "undefined") {
+                result = this[i].offsetWidth;
+                if (typeof result === "undefined")
+                    result = this[i].innerWidth;
+                if (typeof result === "undefined")
+                    result = this[i].clientWidth;
+            }
+            else {
+                this[i].style.width = value;
+            }
+        }
+        return result;
+    },
+    height: function (value) {
+        var result = undefined;
+        for (var i = 0; i < this.length; i++) {
+            if (typeof value === "undefined") {
+                result = this[i].offsetHeight;
+                if (typeof result === "undefined")
+                    result = this[i].innerHeight;
+                if (typeof result === "undefined")
+                    result = this[i].clientHeight;
+            }
+            else {
+                this[i].style.height = value;
+            }
+        }
+        return result;
+    },
+    attr: function (name, value) {
+        var result = undefined;
+        for (var i = 0; i < this.length; i++) {
+            if (typeof value === "undefined")
+                result = this[i].getAttribute(name);
+            else
+                this[i].setAttribute(name, value);
+        }
+        return result;
+    },
+    html: function (html) {
+        for (var i = 0; i < this.length; i++)
+            this[i].innerHTML = html;
+    },
+    scrollTop: function (value) {
+        for (var i = 0; i < this.length; i++)
+            this[i].scrollTop = value;
+    },
+    get: function (pos) {
+        return this[pos];
+    },
+};
+
 /*  debugger API entry point  */
 $cs.debugger = (function () {
     return function (enable, name) {
@@ -54,13 +145,17 @@ $cs.debugger = (function () {
 
                     /*  initialize the window content (deferred to avoid problems)  */
                     setTimeout(function () {
-                        $(_cs.dbg.document).ready(function () {
+                        _cs.jq(_cs.dbg.document).ready(function () {
                             /*  create markup  */
-                            $("html", _cs.dbg.document).html(
+                            _cs.jq("html", _cs.dbg.document).html(
                                 "<html>" +
                                 "    <head>" +
                                 "        <title>" + title + "</title>" +
                                 "        <style type=\"text/css\">" +
+                                "            html, body {" +
+                                "                margin: 0px;" +
+                                "                padding: 0px;" +
+                                "            }" +
                                 "            .dbg {" +
                                 "                width: 100%;" +
                                 "                height: 100%;" +
@@ -148,7 +243,7 @@ $cs.debugger = (function () {
                                 "</html>"
                             )
                             _cs.dbg_refresh();
-                            $(_cs.dbg).bind("resize", function () {
+                            _cs.jq(_cs.dbg).bind("resize", function () {
                                 _cs.dbg_refresh();
                             });
                         });
@@ -171,31 +266,29 @@ $cs.debugger = (function () {
 /*  refresh the browser rendering  */
 _cs.dbg_refresh = function () {
     /*  expand to viewport width/height  */
-    var vw = $(_cs.dbg).width();
-    var vh = $(_cs.dbg).height();
-    $(".dbg", _cs.dbg.document).width(vw);
-    $(".dbg", _cs.dbg.document).height(vh);
+    var vw = _cs.jq(_cs.dbg).width();
+    var vh = _cs.jq(_cs.dbg).height();
+    _cs.jq("dbg", _cs.dbg.document).width(vw);
+    _cs.jq("dbg", _cs.dbg.document).height(vh);
 
     /*  expand viewer and console to half of the viewport height  */
     var h = vh - (
-        $(".dbg .header", _cs.dbg.document).height() +
-        $(".dbg .status", _cs.dbg.document).height()
+        _cs.jq(".dbg .header", _cs.dbg.document).height() +
+        _cs.jq(".dbg .status", _cs.dbg.document).height()
     );
     var h1 = Math.ceil(h / 2);
     var h2 = Math.floor(h / 2);
-    $(".dbg .viewer", _cs.dbg.document).height(h1);
-    $(".dbg .console", _cs.dbg.document).height(h2);
+    _cs.jq(".dbg .viewer",  _cs.dbg.document).height(h1);
+    _cs.jq(".dbg .console", _cs.dbg.document).height(h2);
 
     /*  explicitly set the canvas size of the viewer  */
-    $(".dbg .viewer canvas", _cs.dbg.document).height(h1 - 20);
-    $(".dbg .viewer canvas", _cs.dbg.document).attr("height", h1 - 20);
-    $(".dbg .viewer canvas", _cs.dbg.document).width(vw - 20);
-    $(".dbg .viewer canvas", _cs.dbg.document).attr("width", vw - 20);
+    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height(h1 - 20);
+    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).attr("height", h1 - 20);
+    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width(vw - 20);
+    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).attr("width", vw - 20);
 
-    /*  trigger an initial update once the viewer canvas is ready  */
-    $(".dbg .viewer canvas", _cs.dbg.document).ready(function () {
-        _cs.dbg_update();
-    });
+    /*  trigger an initial update  */
+    _cs.dbg_update();
 };
 
 /*  update the debugger rendering  */
@@ -204,9 +297,9 @@ _cs.dbg_update = function () {
         return;
 
     /*  update the console log  */
-    $(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
-    $(".dbg .console", _cs.dbg.document).scrollTop(
-        $(".dbg .console .text", _cs.dbg.document).height() 
+    _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
+    _cs.jq(".dbg .console", _cs.dbg.document).scrollTop(
+        _cs.jq(".dbg .console .text", _cs.dbg.document).height() 
     );
 
     /*  walk the component tree to determine information about components  */
@@ -246,7 +339,7 @@ _cs.dbg_update = function () {
     }
 
     /*  update status line  */
-    $(".dbg .status .text", _cs.dbg.document).html(
+    _cs.jq(".dbg .status .text", _cs.dbg.document).html(
         "Created Components: <b>" + T + "</b>, " +
         "Pending Transition Requests: <b>" + reqs + "</b>"
     );
@@ -256,14 +349,14 @@ _cs.dbg_update = function () {
      */
 
     /*  ensure the canvas (already) exists  */
-    var ctx = $(".dbg .viewer canvas", _cs.dbg.document).get(0)
+    var ctx = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0)
     if (typeof ctx === "undefined")
         return;
     ctx = ctx.getContext("2d");
 
     /*  determine canvas width/height and calculate grid width/height and offset width/height  */
-    var ch = $(".dbg .viewer canvas", _cs.dbg.document).height();
-    var cw = $(".dbg .viewer canvas", _cs.dbg.document).width();
+    var ch = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height();
+    var cw = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width();
     var gw = Math.floor(cw / (W+1));
     var gh = Math.floor(ch / (D+1));
     var ow = Math.floor(gw / 8);
