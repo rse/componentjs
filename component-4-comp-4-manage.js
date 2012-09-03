@@ -125,9 +125,6 @@ $cs.destroy = function (path) {
     else
         throw _cs.exception("destroy", "invalid path argument");
 
-    /*  debug hint  */
-    $cs.debug(1, "destroy: " + comp.path("/") + ": destroying component [" + comp.id() + "]");
-
     /*  switch component state to "dead"
         (here synchronously as one expects that after a destruction of a
         component, the state is really already "dead", of course)  */
@@ -138,5 +135,10 @@ $cs.destroy = function (path) {
 
     /*  remove bi-directional relationship between component and object  */
     comp.obj(null);
+
+    /*  debug hint  */
+    $cs.debug(1, "destroy: " + comp.path("/") + ": destroyed component [" + comp.id() + "]");
+
+    return;
 };
 
