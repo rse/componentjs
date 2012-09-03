@@ -334,10 +334,25 @@ _cs.dbg_update = function () {
             /*  draw component information (name and state)  */
             ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
             ctx.textBaseline = "top";
-            ctx.fillStyle = "#ffffff";
-            ctx.fillText(comp.name(), my_x + 4, my_y + 2, my_w);
-            ctx.fillStyle = "#cccccc";
-            ctx.fillText(comp.state(), my_x + 4, my_y + (my_h/2)+2, my_w);
+            var renderText = function (text, color, x, y, width) {
+                ctx.fillStyle = color;
+                if (typeof ctx.measureText !== "undefined") {
+                    var metric = ctx.measureText(text);
+                    if (metric.width > width) {
+                        while (text !== "") {
+                            metric = ctx.measureText(text + "...");
+                            if (metric.width <= width) {
+                                text += "...";
+                                break;
+                            }
+                            text = text.substr(0, text.length - 1);
+                        }
+                    }
+                }
+                ctx.fillText(text, x, y, width);
+            }
+            renderText(comp.name(),  "#ffffff", my_x + 4, my_y              + 2, my_w);
+            renderText(comp.state(), "#cccccc", my_x + 4, my_y + (my_h / 2) + 2, my_w);
 
             /*  provide our information to the parent component  */
             _cs.annotation(comp, "debugger_x", my_x);
