@@ -10,6 +10,17 @@
 /*  debugger window  */
 _cs.dbg = null;
 
+/*  debugger update state  */
+_cs.dbg_state_invalid = {
+    components: false,
+    states:     false,
+    requests:   false,
+    console:    false
+};
+_cs.dbg_state_invalidate = function (name) {
+    _cs.dbg_state_invalid[name] = true;
+};
+
 /*  debugger console log  */
 _cs.dbg_logline = 0;
 _cs.dbg_logbook = "";
@@ -31,6 +42,7 @@ _cs.dbg_log = function (msg) {
                 "<td class=\"msg\">" + msg + "</td>" +
             "</tr>" +
         "</table>";
+    _cs.dbg_state_invalidate("console");
     _cs.dbg_update();
 };
 
@@ -310,166 +322,187 @@ _cs.dbg_update = function () {
     if (_cs.dbg === null)
         return;
 
-    /*  update the console log  */
-    _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
-    _cs.jq(".dbg .console", _cs.dbg.document).scrollTop(
-        _cs.jq(".dbg .console .text", _cs.dbg.document).height() 
-    );
-
-    /*  walk the component tree to determine information about components  */
-    var D = _cs.root.walk_down(function (level, comp, D, depth_first) {
-        if (!depth_first) {
-            /*  on downward walking, annotate component with its depth level
-                and calculcate the maximum depth level at all  */
-            _cs.annotation(comp, "debugger_depth", level);
-            D = (level > D ? level : D);
-        }
-        else {
-            /*  on upward walking, aggregate the width and total counts  */
-            var width = 0;
-            var total = 0;
-            var children = comp.children();
-            for (var i = 0; i < children.length; i++) {
-                width += _cs.annotation(children[i], "debugger_width");
-                total += _cs.annotation(children[i], "debugger_total");
-            }
-            if (total == 0)
-                width++;
-            total++;
-            _cs.annotation(comp, "debugger_width", width);
-            _cs.annotation(comp, "debugger_total", total);
-        }
-        return D;
-    }, 1);
-    var W = _cs.annotation(_cs.root, "debugger_width");
-    var T = _cs.annotation(_cs.root, "debugger_total");
-
-    /*  determine pending state transition requests  */
-    var reqs = 0;
-    for (var cid in _cs.state_requests) {
-        if (!_cs.isown(_cs.state_requests, cid))
-            continue;
-        reqs++;
+    /*  update console information  */
+    if (_cs.dbg_state_invalid.console) {
+        _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
+        _cs.jq(".dbg .console", _cs.dbg.document).scrollTop(
+            _cs.jq(".dbg .console .text", _cs.dbg.document).height() 
+        );
+        _cs.dbg_state_invalid.console = true;
     }
 
-    /*  update status line  */
-    _cs.jq(".dbg .status .text", _cs.dbg.document).html(
-        "Created Components: <b>" + T + "</b>, " +
-        "Pending Transition Requests: <b>" + reqs + "</b>"
-    );
+    /*  update component information  */
+    if (   _cs.dbg_state_invalid.components
+        || _cs.dbg_state_invalid.requests
+        || _cs.dbg_state_invalid.states    ) {
 
-    /*
-     *  update viewer
-     */
-
-    /*  ensure the canvas (already) exists  */
-    var ctx = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0)
-    if (typeof ctx === "undefined")
-        return;
-    ctx = ctx.getContext("2d");
-
-    /*  determine canvas width/height and calculate grid width/height and offset width/height  */
-    var ch = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height();
-    var cw = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width();
-    var gw = Math.floor(cw / (W+1));
-    var gh = Math.floor(ch / (D+1));
-    var ow = Math.floor(gw / 8);
-    var oh = Math.floor(gh / 3);
-
-    /*  clear the canvas as we redraw everything  */
-    ctx.clearRect(0, 0, cw, ch);
-
-    /*  walk the component tree to draw each component (on upward steps only)  */
-    _cs.root.walk_down(function (level, comp, X, depth_first) {
-        if (depth_first) {
-            /*  grab previously calculated information  */
-            var d = _cs.annotation(comp, "debugger_depth");
-            var w = _cs.annotation(comp, "debugger_width");
-            var t = _cs.annotation(comp, "debugger_total");
-            var my_x, my_y, my_w, my_h;
-
-            if (t == 1) {
-                /*  CASE 1: leaf node  */
-                my_x = gw * X++;
-                my_y = gh * d;
-                my_w = gw - ow;
-                my_h = gh - oh;
-            }
-            else {
-                /*  CASE 2: intermediate node  */
-                var children = comp.children();
-
-                /*  determine boundaries for x position  */
-                var minx = _cs.annotation(children[0], "debugger_x");
-                var miny = _cs.annotation(children[0], "debugger_y");
-                var maxx = minx;
-                var maxy = miny;
-                if (children.length > 1) {
-                    maxx = _cs.annotation(children[children.length - 1], "debugger_x");
-                    maxy = _cs.annotation(children[children.length - 1], "debugger_y");
+        /*  walk the component tree to determine information about components  */
+        var D, W, T;
+        if (_cs.dbg_state_invalid.components || _cs.dbg_state_invalid.states) {
+            D = _cs.root.walk_down(function (level, comp, D, depth_first) {
+                if (!depth_first) {
+                    /*  on downward walking, annotate component with its depth level
+                        and calculcate the maximum depth level at all  */
+                    _cs.annotation(comp, "debugger_depth", level);
+                    D = (level > D ? level : D);
                 }
-
-                /*  calculate our information  */
-                my_x = minx + Math.ceil((maxx - minx) / 2);
-                my_y = gh*d;
-                my_w = gw - ow;
-                my_h = gh - oh;
-
-                /*  draw line from component to each child component  */
-                for (var i = 0; i < children.length; i++) {
-                    var child_x = _cs.annotation(children[i], "debugger_x");
-                    var child_y = _cs.annotation(children[i], "debugger_y");
-                    var child_w = _cs.annotation(children[i], "debugger_w");
-                    var child_h = _cs.annotation(children[i], "debugger_h");
-                    ctx.strokeStyle = "#999999";
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(my_x + Math.ceil(my_w / 2), my_y + my_h);
-                    ctx.lineTo(my_x + Math.ceil(my_w / 2), my_y + my_h + Math.ceil(oh / 2));
-                    ctx.lineTo(child_x + Math.ceil(child_w / 2), my_y + my_h + Math.ceil(oh / 2));
-                    ctx.lineTo(child_x + Math.ceil(child_w / 2), child_y);
-                    ctx.stroke();
-                }
-            }
-
-            /*  draw component background  */
-            ctx.fillStyle = "#333333";
-            ctx.fillRect(my_x, my_y, my_w, my_h);
-            ctx.fillStyle = "#666666";
-            ctx.fillRect(my_x, my_y + my_h / 2, my_w, my_h / 2);
-
-            /*  draw component information (name and state)  */
-            ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
-            ctx.textBaseline = "top";
-            var renderText = function (text, color, x, y, width) {
-                ctx.fillStyle = color;
-                if (typeof ctx.measureText !== "undefined") {
-                    var metric = ctx.measureText(text);
-                    if (metric.width > width) {
-                        while (text !== "") {
-                            metric = ctx.measureText(text + "...");
-                            if (metric.width <= width) {
-                                text += "...";
-                                break;
-                            }
-                            text = text.substr(0, text.length - 1);
-                        }
+                else {
+                    /*  on upward walking, aggregate the width and total counts  */
+                    var width = 0;
+                    var total = 0;
+                    var children = comp.children();
+                    for (var i = 0; i < children.length; i++) {
+                        width += _cs.annotation(children[i], "debugger_width");
+                        total += _cs.annotation(children[i], "debugger_total");
                     }
+                    if (total == 0)
+                        width++;
+                    total++;
+                    _cs.annotation(comp, "debugger_width", width);
+                    _cs.annotation(comp, "debugger_total", total);
                 }
-                ctx.fillText(text, x, y, width);
-            }
-            renderText(comp.name(),  "#ffffff", my_x + 4, my_y              + 2, my_w);
-            renderText(comp.state(), "#cccccc", my_x + 4, my_y + (my_h / 2) + 2, my_w);
-
-            /*  provide our information to the parent component  */
-            _cs.annotation(comp, "debugger_x", my_x);
-            _cs.annotation(comp, "debugger_y", my_y);
-            _cs.annotation(comp, "debugger_w", my_w);
-            _cs.annotation(comp, "debugger_h", my_h);
+                return D;
+            }, 1);
+            W = _cs.annotation(_cs.root, "debugger_width");
+            T = _cs.annotation(_cs.root, "debugger_total");
         }
 
-        /*  pass-through the global X position  */
-        return X;
-    }, 0);
+        /*  status update  */
+        if (_cs.dbg_state_invalid.components || _cs.dbg_state_invalid.requests) {
+
+            /*  determine pending state transition requests  */
+            var reqs = 0;
+            for (var cid in _cs.state_requests) {
+                if (!_cs.isown(_cs.state_requests, cid))
+                    continue;
+                reqs++;
+            }
+
+            /*  update status line  */
+            _cs.jq(".dbg .status .text", _cs.dbg.document).html(
+                "Created Components: <b>" + T + "</b>, " +
+                "Pending Transition Requests: <b>" + reqs + "</b>"
+            );
+
+            _cs.dbg_state_invalid.requests = true;
+        }
+
+        /*  viewer update  */
+        if (_cs.dbg_state_invalid.components || _cs.dbg_state_invalid.states) {
+
+            /*  ensure the canvas (already) exists  */
+            var ctx = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0)
+            if (typeof ctx === "undefined")
+                return;
+            ctx = ctx.getContext("2d");
+
+            /*  determine canvas width/height and calculate grid width/height and offset width/height  */
+            var ch = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height();
+            var cw = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width();
+            var gw = Math.floor(cw / (W+1));
+            var gh = Math.floor(ch / (D+1));
+            var ow = Math.floor(gw / 8);
+            var oh = Math.floor(gh / 3);
+
+            /*  clear the canvas as we redraw everything  */
+            ctx.clearRect(0, 0, cw, ch);
+
+            /*  walk the component tree to draw each component (on upward steps only)  */
+            _cs.root.walk_down(function (level, comp, X, depth_first) {
+                if (depth_first) {
+                    /*  grab previously calculated information  */
+                    var d = _cs.annotation(comp, "debugger_depth");
+                    var w = _cs.annotation(comp, "debugger_width");
+                    var t = _cs.annotation(comp, "debugger_total");
+                    var my_x, my_y, my_w, my_h;
+
+                    if (t == 1) {
+                        /*  CASE 1: leaf node  */
+                        my_x = gw * X++;
+                        my_y = gh * d;
+                        my_w = gw - ow;
+                        my_h = gh - oh;
+                    }
+                    else {
+                        /*  CASE 2: intermediate node  */
+                        var children = comp.children();
+
+                        /*  determine boundaries for x position  */
+                        var minx = _cs.annotation(children[0], "debugger_x");
+                        var miny = _cs.annotation(children[0], "debugger_y");
+                        var maxx = minx;
+                        var maxy = miny;
+                        if (children.length > 1) {
+                            maxx = _cs.annotation(children[children.length - 1], "debugger_x");
+                            maxy = _cs.annotation(children[children.length - 1], "debugger_y");
+                        }
+
+                        /*  calculate our information  */
+                        my_x = minx + Math.ceil((maxx - minx) / 2);
+                        my_y = gh*d;
+                        my_w = gw - ow;
+                        my_h = gh - oh;
+
+                        /*  draw line from component to each child component  */
+                        for (var i = 0; i < children.length; i++) {
+                            var child_x = _cs.annotation(children[i], "debugger_x");
+                            var child_y = _cs.annotation(children[i], "debugger_y");
+                            var child_w = _cs.annotation(children[i], "debugger_w");
+                            var child_h = _cs.annotation(children[i], "debugger_h");
+                            ctx.strokeStyle = "#999999";
+                            ctx.lineWidth = 2;
+                            ctx.beginPath();
+                            ctx.moveTo(my_x + Math.ceil(my_w / 2), my_y + my_h);
+                            ctx.lineTo(my_x + Math.ceil(my_w / 2), my_y + my_h + Math.ceil(oh / 2));
+                            ctx.lineTo(child_x + Math.ceil(child_w / 2), my_y + my_h + Math.ceil(oh / 2));
+                            ctx.lineTo(child_x + Math.ceil(child_w / 2), child_y);
+                            ctx.stroke();
+                        }
+                    }
+
+                    /*  draw component background  */
+                    ctx.fillStyle = "#333333";
+                    ctx.fillRect(my_x, my_y, my_w, my_h);
+                    ctx.fillStyle = "#666666";
+                    ctx.fillRect(my_x, my_y + my_h / 2, my_w, my_h / 2);
+
+                    /*  draw component information (name and state)  */
+                    ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
+                    ctx.textBaseline = "top";
+                    var renderText = function (text, color, x, y, width) {
+                        ctx.fillStyle = color;
+                        if (typeof ctx.measureText !== "undefined") {
+                            var metric = ctx.measureText(text);
+                            if (metric.width > width) {
+                                while (text !== "") {
+                                    metric = ctx.measureText(text + "...");
+                                    if (metric.width <= width) {
+                                        text += "...";
+                                        break;
+                                    }
+                                    text = text.substr(0, text.length - 1);
+                                }
+                            }
+                        }
+                        ctx.fillText(text, x, y, width);
+                    }
+                    renderText(comp.name(),  "#ffffff", my_x + 4, my_y              + 2, my_w);
+                    renderText(comp.state(), "#cccccc", my_x + 4, my_y + (my_h / 2) + 2, my_w);
+
+                    /*  provide our information to the parent component  */
+                    _cs.annotation(comp, "debugger_x", my_x);
+                    _cs.annotation(comp, "debugger_y", my_y);
+                    _cs.annotation(comp, "debugger_w", my_w);
+                    _cs.annotation(comp, "debugger_h", my_h);
+                }
+
+                /*  pass-through the global X position  */
+                return X;
+            }, 0);
+        }
+
+        _cs.dbg_state_invalid.components = true;
+        _cs.dbg_state_invalid.states     = true;
+    }
 };
 
