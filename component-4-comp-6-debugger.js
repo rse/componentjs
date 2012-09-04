@@ -21,7 +21,8 @@ _cs.dbg_log = function (msg) {
     msg = msg
         .replace("&", "&amp;")
         .replace("<", "&lt;")
-        .replace(">", "&gt;");
+        .replace(">", "&gt;")
+        .replace("\n", "<br/>");
     _cs.dbg_logline++;
     _cs.dbg_logbook +=
         "<table class=\"line\">" +

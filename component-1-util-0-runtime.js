@@ -9,6 +9,13 @@
 
 /*  utility function: create an exception string for throwing  */
 _cs.exception = function (method, error) {
+    if (_cs.dbg !== null) {
+        if (typeof GLOBAL.printStackTrace !== "undefined") {
+            var trace = GLOBAL.printStackTrace();
+            _cs.dbg_log(trace.join("\n"));
+        }
+        _cs.dbg_log(msg);
+    }
     if (typeof GLOBAL.console === "object") {
         if (typeof GLOBAL.console.trace === "function")
             GLOBAL.console.trace();
@@ -18,7 +25,7 @@ _cs.exception = function (method, error) {
             GLOBAL.console.log(trace.join("\n"));
         }
     }
-    return "[CS]: ERROR: " + method + ": " + error;
+    return "[ComponentJS]: ERROR: " + method + ": " + error;
 };
 
 /*  utility function: minimal Pseudo Random Number Generator (PRNG)  */
@@ -40,13 +47,13 @@ _cs.log = function (msg) {
     /*  try Firebug-style console (in regular browser or Node)  */
     else if (   typeof GLOBAL.console     !== "undefined"
              && typeof GLOBAL.console.log !== "undefined")
-        GLOBAL.console.log("[CS]: " + msg);
+        GLOBAL.console.log("[ComponentJS]: " + msg);
 
     /*  try API of Appcelerator Titanium  */
     else if (   typeof GLOBAL.Titanium         !== "undefined"
              && typeof GLOBAL.Titanium.API     !== "undefined"
              && typeof GLOBAL.Titanium.API.log === "function")
-        GLOBAL.Titanium.API.log("[CS]: " + msg);
+        GLOBAL.Titanium.API.log("[ComponentJS]: " + msg);
 };
 
 /*  utility function: debugging  */
@@ -65,7 +72,7 @@ $cs.debug = (function () {
                     indent += "    ";
 
                 /*  display debug message  */
-                _cs.log("DEBUG: [" + level + "]: " + indent + msg);
+                _cs.log("DEBUG[" + level + "]: " + indent + msg);
             }
         }
     };
