@@ -14,7 +14,6 @@ _cs.exception = function (method, error) {
             var trace = GLOBAL.printStackTrace();
             _cs.dbg_log(trace.join("\n"));
         }
-        _cs.dbg_log(msg);
     }
     if (typeof GLOBAL.console === "object") {
         if (typeof GLOBAL.console.trace === "function")
