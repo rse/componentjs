@@ -12,7 +12,8 @@ _cs.states = [
     { /* component is not existing (bootstrapping state transitions only) */
       enter: null,
       leave: null,
-      state: "dead"
+      state: "dead",
+      color: "#000000"
     }
 ];
 
@@ -23,12 +24,13 @@ _cs.states_clear = function () {
 };
 
 /*  add a state transition  */
-_cs.states_add = function (target, enter, leave, source) {
+_cs.states_add = function (target, enter, leave, color, source) {
     /*  create new state configuration  */
     var state = {
         enter: enter,
         leave: leave,
-        state: target
+        state: target,
+        color: color
     };
 
     /*  determine storage position  */

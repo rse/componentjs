@@ -466,6 +466,13 @@ _cs.dbg_update = function () {
                     ctx.fillStyle = "#666666";
                     ctx.fillRect(my_x, my_y + my_h / 2, my_w, my_h / 2);
 
+                    /*  draw component state indicator bulp  */
+                    ctx.fillStyle = _cs.states[comp.__state].color;
+                    ctx.beginPath();
+                    ctx.arc(my_x + my_w - (my_h / 4) - 1, my_y + 3*(my_h / 4), (my_h / 4) - 2, 0, 2 * Math.PI, true); 
+                    ctx.closePath();
+                    ctx.fill();
+
                     /*  draw component information (name and state)  */
                     ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
                     ctx.textBaseline = "top";

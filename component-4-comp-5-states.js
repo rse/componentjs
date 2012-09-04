@@ -18,10 +18,11 @@ $cs.transition = function () {
 
     /*  determine parameters  */
     var params = $cs.params("transition", arguments, {
-        target: { pos: 0,     def: null,  req: true },
-        enter:  { pos: 1,     def: null,  req: true },
-        leave:  { pos: 2,     def: null,  req: true },
-        source: { pos: 3,     def: null             }
+        target: { pos: 0, def: null, req: true },
+        enter:  { pos: 1, def: null, req: true },
+        leave:  { pos: 2, def: null, req: true },
+        color:  { pos: 3, def: null, req: true },
+        source: {         def: null            }
     });
 
     /*  add new state  */
@@ -29,14 +30,15 @@ $cs.transition = function () {
         params.target,
         params.enter,
         params.leave,
+        params.color,
         params.source
     );
 };
 
 /*  initialize state transition set with a reasonable default  */
-$cs.transition("created",      "create",  "destroy"); /* created and attached to component tree */
-$cs.transition("prepared",     "prepare", "cleanup"); /* prepared and ready for rendering */
-$cs.transition("materialized", "render",  "release"); /* rendered onto the DOM tree */
-$cs.transition("visible",      "show",    "hide"   ); /* visible to the user */
-$cs.transition("enabled",      "enable",  "disable"); /* enabled and the user can operate on it */
+$cs.transition("created",      "create",  "destroy", "#777777"); /* created and attached to component tree */
+$cs.transition("prepared",     "prepare", "cleanup", "#cc3333"); /* prepared and ready for rendering */
+$cs.transition("materialized", "render",  "release", "#daac33"); /* rendered onto the DOM tree */
+$cs.transition("visible",      "show",    "hide",    "#339900"); /* visible to the user */
+$cs.transition("enabled",      "enable",  "disable", "#198cff"); /* enabled and the user can operate on it */
 
