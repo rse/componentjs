@@ -107,6 +107,9 @@ $cs.create = function () {
     /*  debug hint  */
     $cs.debug(1, "create: " + comp.path("/") + ": created component [" + comp.id() + "]");
 
+    /*  optionally update debugger view  */
+    _cs.dbg_update();
+
     /*  return new component  */
     return comp;
 };
@@ -140,6 +143,9 @@ $cs.destroy = function (path) {
 
     /*  debug hint  */
     $cs.debug(1, "destroy: " + comp.path("/") + ": destroyed component [" + comp.id() + "]");
+
+    /*  optionally update debugger view  */
+    _cs.dbg_update();
 
     return;
 };

@@ -147,6 +147,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
                 "@" + _cs.states[comp.__state].state
             );
+            _cs.dbg_update();
             obj = comp.obj();
             if (obj !== null) {
                 if (typeof obj[enter] === "function") {
@@ -176,6 +177,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                                 /*  enqueue state transition for child  */
                                 _cs.state_requests[children[i].id()] =
                                     { comp: children[i], state: state };
+                                _cs.dbg_update();
                             }
                         }
                     }
@@ -250,6 +252,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                                 /*  enqueue state transition for parent  */
                                 _cs.state_requests[comp.parent().id()] =
                                     { comp: comp.parent(), state: state_lower };
+                                _cs.dbg_update();
                             }
                         }
                     }
@@ -297,8 +300,10 @@ $cs.pattern.state = $cs.trait({
                 };
                 if (params.sync) {
                     /*  perform new state transition request (synchronously)  */
-                    if (_cs.state_progression_single(request))
+                    if (_cs.state_progression_single(request)) {
                         enqueue = false;
+                        _cs.dbg_update();
+                    }
                 }
                 if (enqueue) {
                     /*  enqueue new state transition request and trigger
