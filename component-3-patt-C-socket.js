@@ -63,8 +63,8 @@ $cs.pattern.socket = $cs.trait({
             if (params.remember)
                 this.__plugs[this.__plugs_id++] = { name: params.name, object: params.object };
 
-            /*  pass-though to common helper function  */
-            return _cs.plugger("plug", this, params.name, params.object);
+            /*  pass-though operation to common helper function  */
+            _cs.plugger("plug", this, params.name, params.object);
         },
 
         /*  unplug from a defined socket  */
@@ -75,25 +75,39 @@ $cs.pattern.socket = $cs.trait({
                 object: { pos: 0, def: null       }
             });
 
-            /*  optionally retrieve object from remembered plug operation  */
+            /*  object parameter determines operation mode... */
             if (params.object === null) {
-                var id_remove = null;
+                /*  mode 1: unplug all remembered objects  */
+
+                /*  iterate over all remembered plug operations  */
+                var remove = [];
+                var object = undefined;
                 for (var id in this.__plugs) {
                     if (!_cs.isown(this.__plugs, id))
                         continue;
                     if (params.name === this.__plugs[id].name) {
-                        params.object = this.__plugs[id].object;
-                        id_remove = id;
-                        break;
+                        object = this.__plugs[id].object;
+
+                        /*  pass-though operation to common helper function  */
+                        _cs.plugger("unplug", this, params.name, object);
+
+                        remove.push(id);
                     }
                 }
-                if (params.object === null)
-                    throw _cs.exception("unplug", "object to unplug neither given not previously remembered");
-                delete this.__plugs[id_remove];
-            }
+                if (typeof object === "undefined")
+                    throw _cs.exception("unplug", "object(s) to unplug neither given nor previously remembered");
 
-            /*  pass-though to common helper function  */
-            return _cs.plugger("unplug", this, params.name, params.object);
+                /*  deferred cleanup  */
+                _cs.foreach(remove, function (id) {
+                    delete this.__plugs[id];
+                });
+            }
+            else {
+                /*  mode 2: unplug one provided object  */
+
+                /*  pass-though operation to common helper function  */
+                _cs.plugger("unplug", this, params.name, params.object);
+            }
         }
     }
 });
@@ -103,9 +117,8 @@ _cs.plugger = function (op, origin, name, object) {
     /*  resolve the socket property on the parents components
         NOTICE 1: we explicitly skip the origin component here as
                   resolving the socket property also on the origin
-                  component might otherwise return the potentially
-                  existing socket for the child components of the orgin
-                  component.
+                  component might otherwise return the potentially existing 
+                  socket for the child components of the orgin component.
         NOTICE 2: we intentionally skip the origin and do not directly
                   resolve on the parent component as we want to take
                   scoped sockets (on the parent component) into account!  */
@@ -116,10 +129,10 @@ _cs.plugger = function (op, origin, name, object) {
 
     /*  perform plug/unplug operation  */
     if (_cs.istypeof(socket[op]) === "string")
-        return socket.ctx[socket[op]].call(socket.ctx, object);
+        socket.ctx[socket[op]].call(socket.ctx, object);
     else if (_cs.istypeof(socket[op]) === "function")
-        return socket[op].call(socket.ctx, object);
+        socket[op].call(socket.ctx, object);
     else
-        throw _cs.exception(op, "unable to perform \"" + op + "\" operation");
+        throw _cs.exception(op, "failed to perform \"" + op + "\" operation");
 };
 
