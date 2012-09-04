@@ -67,16 +67,18 @@ $cs.create = function () {
         case "clazz":
         case "trait":
         case "function":
-            /*  standard case: ComponentJS clazz/trait or foreign "class"  */
+            /*  standard case: $cs.create(..., MyClass)
+                ComponentJS clazz/trait or foreign "class"  */
             obj = new clazz();
             break;
         case "object":
-            /*  special case: $cs.create(..., new MyClass(arg1, arg2))  */
+            /*  special case: $cs.create(..., new MyClass(arg1, arg2))
+                manual instanciation because of parameter passing  */
             obj = clazz;
             break;
-        case "undefined":
         case "null":
-            /*  "early component create & late object attachment" case: $cs.create(..., null);  */
+            /*  special case: $cs.create(..., null)
+                early component create & late object attachment  */
             break;
         default:
             throw _cs.exception("create", "invalid class argument");
