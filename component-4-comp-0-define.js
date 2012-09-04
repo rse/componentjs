@@ -48,16 +48,6 @@ _cs.comp = $cs.clazz({
         /*  check for existance of a component  */
         exists: function () {
             return (this.name() !== "<none>");
-        },
-
-        /*  dump the component tree starting at component  */
-        dump: function () {
-            var dump = this.tree_dump(function (comp) {
-                return "state=" + comp.state() + " " +
-                       "obj=" + (comp.obj() !== null ? "yes" : "no") + " " +
-                       "cfg=" + comp.cfg_dump();
-            });
-            _cs.log("COMPONENT TREE DUMP:\n" + dump);
         }
     }
 });
