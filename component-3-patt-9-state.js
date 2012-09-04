@@ -340,7 +340,7 @@ $cs.pattern.state = $cs.trait({
                 activate: { pos: 1, valid: "boolean", req: true }
             });
 
-            /*  sanity check method  */
+            /*  sanity check enter/leave method name  */
             var valid = false;
             for (i = 0; i < _cs.states.length; i++) {
                 if (   _cs.states[i].enter === params.method
@@ -350,14 +350,8 @@ $cs.pattern.state = $cs.trait({
                 }
             }
             if (!valid)
-                throw _cs.exception("guard", "not declared method: \"" + params.method + "\"");
-            var obj = this.obj();
-            if (typeof obj[params.method] === "undefined")
-                throw _cs.exception("guard", "no such method: \"" + params.method +
-                    "\" on shadow object of component " + this.path("/"));
-            if (typeof obj[params.method] !== "function")
-                throw _cs.exception("guard", "not a function: \"" + params.method +
-                    "\" on shadow object of component " + this.path("/"));
+                throw _cs.exception("guard", "no such declared enter/leave method: \""
+                    + params.method + "\"");
 
             /*  activate/deactivate guard  */
             if (params.activate)
