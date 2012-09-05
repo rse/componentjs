@@ -90,6 +90,20 @@ $cs.pattern.property = $cs.trait({
 
             /*  return old configuration value  */
             return value_old;
+        },
+        property_subscribe: function () {
+            /*  determine parameters  */
+            var params = $cs.params("property_subscribe", arguments, {
+                name:       { pos: 0, req: true },
+                func:       { pos: 1, req: true }
+            });
+
+            /*  subscribe to property change event  */
+            this.subscribe({
+                name: "ComponentJS:property:" + params.name,
+                func: params.func,
+                noevent: true
+            });
         }
     }
 });
