@@ -25,7 +25,7 @@ $cs.pattern.hook = $cs.trait({
 
             /*  subscribe to hook event  */
             var id = this.subscribe({
-                name: "hook." + params.name,
+                name: "ComponentJS:hook:" + params.name,
                 ctx:  params.ctx,
                 func: params.func,
                 args: params.args
@@ -55,7 +55,7 @@ $cs.pattern.hook = $cs.trait({
 
             /*  dispatch hook event onto target component  */
             this.publish({
-                name: "hook." + params.name,
+                name: "ComponentJS:hook:" + params.name,
                 args: params.args,
                 capturing: false,
                 bubbling: false,

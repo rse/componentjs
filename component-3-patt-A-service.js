@@ -40,7 +40,7 @@ $cs.pattern.service = $cs.trait({
                 args: [ this, params.name ],
                 func: function (comp, name, value_new, value_old) {
                     comp.publish({
-                        name:      "service:" + name + ":enabled",
+                        name:      "ComponentJS:service:" + name + ":enabled",
                         args:      [ value_new, value_old ],
                         capturing: false,
                         bubbling:  false,
@@ -51,7 +51,7 @@ $cs.pattern.service = $cs.trait({
 
             /*  subscribe to service event  */
             var id = this.subscribe({
-                name:      "service:" + params.name,
+                name:      "ComponentJS:service:" + params.name,
                 ctx:       params.ctx,
                 func:      cmd,
                 noevent:   true,
@@ -103,7 +103,7 @@ $cs.pattern.service = $cs.trait({
 
             /*  dispatch service event onto target component  */
             return this.publish({
-                name:         "service:" + params.name,
+                name:         "ComponentJS:service:" + params.name,
                 args:         params.args,
                 capturing:    false,
                 bubbling:     params.bubbling,
