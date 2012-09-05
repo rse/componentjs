@@ -8,17 +8,17 @@
 */
 
 /*  utility function: mark a component  */
-_cs.mark = function (comp, name) {
-    var marker = $cs.annotation("marker");
+_cs.mark = function (obj, name) {
+    var marker = _cs.annotation(obj, "marker");
     if (marker === null)
         marker = {};
     marker[name] = true;
-    $cs.annotation("marker", marker);
+    _cs.annotation(obj, "marker", marker);
 };
 
 /*  utility function: determine whether a component is marked  */
-_cs.marked = function (comp, name) {
-    var marker = $cs.annotation("marker");
+_cs.marked = function (obj, name) {
+    var marker = _cs.annotation(obj, "marker");
     if (marker === null)
         marker = {};
     return (marker[name] === true);
@@ -26,42 +26,42 @@ _cs.marked = function (comp, name) {
 
 /*  marker trait: cross component */
 $cs.marker.cross = $cs.trait({
-    setup: function () {
+    constructor: function () {
         _cs.mark(this, "cross");
     }
 });
 
 /*  marker trait: service-style component */
 $cs.marker.service = $cs.trait({
-    setup: function () {
+    constructor: function () {
         _cs.mark(this, "service");
     }
 });
 
 /*  marker trait: controller-style component */
 $cs.marker.controller = $cs.trait({
-    setup: function () {
+    constructor: function () {
         _cs.mark(this, "controller");
     }
 });
 
 /*  marker trait: model-style component */
 $cs.marker.model = $cs.trait({
-    setup: function () {
+    constructor: function () {
         _cs.mark(this, "model");
     }
 });
 
 /*  marker trait: view-style component */
 $cs.marker.view = $cs.trait({
-    setup: function () {
+    constructor: function () {
         _cs.mark(this, "view");
     }
 });
 
 /*  marker trait: generic/reusable (view/controller) component */
 $cs.marker.generic = $cs.trait({
-    setup: function () {
+    constructor: function () {
         _cs.mark(this, "generic");
     }
 });
