@@ -98,8 +98,9 @@ $cs.pattern.socket = $cs.trait({
                     throw _cs.exception("unplug", "object(s) to unplug neither given nor previously remembered");
 
                 /*  deferred cleanup  */
+                var self = this;
                 _cs.foreach(remove, function (id) {
-                    delete this.__plugs[id];
+                    delete self.__plugs[id];
                 });
             }
             else {
