@@ -370,9 +370,15 @@ _cs.dbg_update = function () {
                     }
 
                     /*  draw component background  */
-                    ctx.fillStyle = "#333333";
+                    if (_cs.marked(comp.obj(), "generic"))
+                        ctx.fillStyle = "#003366";
+                    else
+                        ctx.fillStyle = "#333333";
                     ctx.fillRect(my_x, my_y, my_w, my_h);
-                    ctx.fillStyle = "#666666";
+                    if (_cs.marked(comp.obj(), "generic"))
+                        ctx.fillStyle = "#336699";
+                    else
+                        ctx.fillStyle = "#666666";
                     ctx.fillRect(my_x, my_y + my_h / 2, my_w, my_h / 2);
 
                     /*  draw component state indicator bulp  */
@@ -387,23 +393,36 @@ _cs.dbg_update = function () {
                     ctx.textBaseline = "top";
                     var renderText = function (text, color, x, y, width) {
                         ctx.fillStyle = color;
-                        if (typeof ctx.measureText !== "undefined") {
-                            var metric = ctx.measureText(text);
-                            if (metric.width > width) {
-                                while (text !== "") {
-                                    metric = ctx.measureText(text + "...");
-                                    if (metric.width <= width) {
-                                        text += "...";
-                                        break;
-                                    }
-                                    text = text.substr(0, text.length - 1);
+                        var metric = ctx.measureText(text);
+                        if (metric.width > width) {
+                            while (text !== "") {
+                                metric = ctx.measureText(text + "...");
+                                if (metric.width <= width) {
+                                    text += "...";
+                                    break;
                                 }
+                                text = text.substr(0, text.length - 1);
                             }
                         }
                         ctx.fillText(text, x, y, width);
                     }
                     renderText(comp.name(),  "#ffffff", my_x + 4, my_y              + 2, my_w);
-                    renderText(comp.state(), "#cccccc", my_x + 4, my_y + (my_h / 2) + 2, my_w);
+                    var color = _cs.marked(comp.obj(), "generic") ? "#ccccff" : "#cccccc";
+                    renderText(comp.state(), color, my_x + 4, my_y + (my_h / 2) + 2, my_w);
+
+                    /*  draw component type indicators  */
+                    var type = "";
+                    if (_cs.marked(comp.obj(), "view"))       type += "V";
+                    if (_cs.marked(comp.obj(), "model"))      type += "M";
+                    if (_cs.marked(comp.obj(), "controller")) type += "C";
+                    if (_cs.marked(comp.obj(), "cross"))      type += "X";
+                    if (_cs.marked(comp.obj(), "service"))    type += "S";
+                    if (type !== "") {
+                        var metric = ctx.measureText(type);
+                        ctx.font = "bold " + ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
+                        var color = _cs.marked(comp.obj(), "generic") ? "#99ccff" : "#cccccc";
+                        renderText(type, color, my_x + my_w - metric.width - 4, my_y + 2, metric.width);
+                    }
 
                     /*  provide our information to the parent component  */
                     _cs.annotation(comp, "debugger_x", my_x);
