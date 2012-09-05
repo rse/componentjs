@@ -71,7 +71,8 @@ $cs.pattern.property = $cs.trait({
                         name: "ComponentJS:property:" + params.name,
                         args: [ params.name, value_old, value ],
                         capturing: false,
-                        bubbling: false
+                        bubbling: false,
+                        async: false
                     });
                     if (ev.processing()) {
                         var result = ev.result();
