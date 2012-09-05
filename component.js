@@ -55,6 +55,7 @@
     $include("component-3-patt-B-shadow.js");
     $include("component-3-patt-C-socket.js");
     $include("component-3-patt-D-hook.js");
+    $include("component-3-patt-E-marker.js");
 
     /*
     **  COMPONENT API
@@ -66,13 +67,19 @@
     $include("component-4-comp-3-pimpup.js");
     $include("component-4-comp-4-manage.js");
     $include("component-4-comp-5-states.js");
-    $include("component-4-comp-6-debugger.js");
+
+    /*
+    **  DEBUGGER
+    */
+
+    $include("component-5-dbgr-0-jquery.js");
+    $include("component-5-dbgr-1-view.js");
 
     /*
     **  GLOBAL LIBRARY EXPORTING
     */
 
-    $include("component-5-glob-0-export.js");
+    $include("component-6-glob-0-export.js");
 
 })((typeof window   !== "undefined" ? window :
    (typeof this     !== "undefined" ? this   : {})),
