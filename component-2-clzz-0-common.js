@@ -161,19 +161,19 @@ _cs.clazz_or_trait = function (params, is_clazz) {
 
     /*  only classes execute trait setups...  */
     if (is_clazz) {
-        var setup = function (trait) {
+        var setup = function (clazz, trait) {
             /*  depth-first traversal  */
             if (_cs.istypeof(_cs.annotation(trait, "mixin")) === "array") {
                 var mixin = _cs.annotation(trait, "mixin");
                 for (var i = 0; i < mixin.length; i++)
-                    arguments.callee(mixin[i]); /* RECURSION */
+                    arguments.callee(clazz, mixin[i]); /* RECURSION */
             }
 
             /*  execute optionally existing setup function  */
             if (_cs.istypeof(_cs.annotation(trait, "setup")) === "function")
-                _cs.annotation(trait, "setup").call(trait);
+                _cs.annotation(trait, "setup").call(clazz);
         };
-        setup(clazz);
+        setup(clazz, clazz);
     }
 
     /*
