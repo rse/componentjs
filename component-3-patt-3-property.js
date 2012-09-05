@@ -69,7 +69,7 @@ $cs.pattern.property = $cs.trait({
                 if (comp !== _cs.none) {
                     var ev = comp.publish({
                         name: "ComponentJS:property:" + params.name,
-                        args: [ params.name, value_old, value ],
+                        args: [ value, value_old ],
                         capturing: false,
                         bubbling: false,
                         async: false
