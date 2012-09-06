@@ -105,7 +105,7 @@ $cs.create = function () {
     comp.state({ state: "created", sync: true });
 
     /*  debug hint  */
-    $cs.debug(1, "create: " + comp.path("/") + ": created component [" + comp.id() + "]");
+    $cs.debug(1, "component: " + comp.path("/") + ": created component [" + comp.id() + "]");
 
     /*  optionally update debugger view  */
     _cs.dbg_state_invalidate("components");
@@ -143,7 +143,7 @@ $cs.destroy = function (path) {
     comp.obj(null);
 
     /*  debug hint  */
-    $cs.debug(1, "destroy: " + comp.path("/") + ": destroyed component [" + comp.id() + "]");
+    $cs.debug(1, "component: " + comp.path("/") + ": destroyed component [" + comp.id() + "]");
 
     /*  optionally update debugger view  */
     _cs.dbg_state_invalidate("components");
