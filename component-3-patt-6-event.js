@@ -212,7 +212,7 @@ $cs.pattern.eventing = $cs.trait({
                         if (!ev.decline()) {
                             ev.dispatched(true);
                             if (params.firstonly)
-                                ev.propagation(true);
+                                ev.propagation(false);
                         }
                     }
                 }
