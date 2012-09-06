@@ -227,10 +227,20 @@ _cs.dbg_refresh = function () {
 };
 
 /*  update the debugger rendering  */
+_cs.dbg_timer = null;
 _cs.dbg_update = function () {
     if (_cs.dbg === null)
         return;
+    if (_cs.dbg_timer === null) {
+        _cs.dbg_timer = setTimeout(function () {
+            _cs.dbg_update_once();
+            _cs.dbg_timer = null;
+        }, 250);
+    }
+};
 
+/*  update the debugger rendering  */
+_cs.dbg_update_once = function () {
     /*  update console information  */
     if (_cs.dbg_state_invalid.console) {
         _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
