@@ -14,13 +14,14 @@ $cs.pattern.event = $cs.clazz({
     ],
     dynamics: {
         /*  attributes  */
-        target:      $cs.attribute("target",      null),     /*  target object the event is send to  */
-        propagation: $cs.attribute("propagation", true),     /*  whether event propagation should continue  */
-        processing:  $cs.attribute("processing",  true),     /*  whether final default event processing should be performed  */
-        dispatched:  $cs.attribute("dispatched",  false),    /*  whether event was dispatched at least once to a subscriber  */
-        decline:     $cs.attribute("decline",     false),    /*  whether event was declined by subscriber  */
-        result:      $cs.attribute("result",      undefined),/*  optional result value event subscribers can provide  */
-        async:       $cs.attribute("async",       false)     /*  whether event is dispatched asynchronously  */
+        target:      $cs.attribute("target",      null),        /*  target object the event is send to  */
+        propagation: $cs.attribute("propagation", true),        /*  whether event propagation should continue  */
+        processing:  $cs.attribute("processing",  true),        /*  whether final default event processing should be performed  */
+        dispatched:  $cs.attribute("dispatched",  false),       /*  whether event was dispatched at least once to a subscriber  */
+        decline:     $cs.attribute("decline",     false),       /*  whether event was declined by subscriber  */
+        state:       $cs.attribute("state",       "targeting"), /*  state of dispatching: capturing, targeting, bubbling */
+        result:      $cs.attribute("result",      undefined),   /*  optional result value event subscribers can provide  */
+        async:       $cs.attribute("async",       false)        /*  whether event is dispatched asynchronously  */
     }
 });
 
@@ -35,8 +36,9 @@ $cs.event = function () {
         processing:  { pos: 3,     def: true             },
         dispatched:  { pos: 4,     def: false            },
         decline:     { pos: 5,     def: false            },
-        result:      { pos: 6,     def: undefined        },
-        async:       { pos: 7,     def: false            }
+        state:       { pos: 6,     def: "targeting"      },
+        result:      { pos: 7,     def: undefined        },
+        async:       { pos: 8,     def: false            }
     });
 
     /*  create new event  */
@@ -49,6 +51,7 @@ $cs.event = function () {
     ev.processing (params.processing);
     ev.dispatched (params.dispatched);
     ev.decline    (params.decline);
+    ev.state      (params.state);
     ev.result     (params.result);
     ev.spec       (params.spec);
     ev.async      (params.async);
@@ -184,28 +187,35 @@ $cs.pattern.eventing = $cs.trait({
                 return ev;
 
             /*  tracing  */
-            $cs.debug(1, "publish: event:" +
-                " component=" + ev.target().path("/") +
+            $cs.debug(1, "event: " +
+                ev.target().path("/") + ": publish: " +
                 " name=" + ev.name() +
-                " spec=" + _cs.json(ev.spec()) +
                 " async=" + ev.async() +
                 " capturing=" + params.capturing +
                 " bubbling=" + params.bubbling +
                 " directresult=" + params.directresult +
-                " firstonly=" + params.firstonly +
-                " args=" + _cs.json(params.args)
+                " firstonly=" + params.firstonly
             );
 
             /*  helper function for dispatching event to single component  */
-            var event_dispatch_single = function (ev, origin, comp, params, capture) {
+            var event_dispatch_single = function (ev, origin, comp, params, state) {
                 for (var id in comp.__subscription) {
                     if (!_cs.isown(comp.__subscription, id))
                         continue;
                     var s = comp.__subscription[id];
-                    if (s.capture === capture && ev.matches(s.name, s.spec)) {
-                        $cs.debug(2, "publish: dispatch event: component=" + comp.path("/") + " capture=" + capture);
+                    if (   (   state === "capturing" &&  s.capture
+                            || state === "targeting" && !s.capture
+                            || state === "bubbling"  && !s.capture)
+                        && ev.matches(s.name, s.spec)             ) {
+                        $cs.debug(1, "event: " + comp.path("/") + ": dispatch on " + state);
+                        ev.state(state);
                         ev.decline(false);
-                        var args = _cs.concat(s.origin ? [ origin ] : [], s.noevent ? [] : [ ev ], s.args, params.args);
+                        var args = _cs.concat(
+                            s.origin  ? [ origin ] : [],
+                            s.noevent ? [] : [ ev ],
+                            s.args,
+                            params.args
+                        );
                         var result = s.func.apply(s.ctx, args);
                         if (s.noevent && _cs.isdefined(result))
                             ev.result(result);
@@ -225,28 +235,28 @@ $cs.pattern.eventing = $cs.trait({
                 if (params.capturing || params.bubbling)
                     comp_path = comp.path();
 
-                /*  phase 1:
+                /*  phase 1: CAPTURING
                     optionally dispatch event downwards from root component
                     towards target component for capturing subscribers  */
                 if (params.capturing) {
                     for (i = comp_path.length - 1; i >= 1; i--) {
-                        event_dispatch_single(ev, comp, comp_path[i], params, true);
+                        event_dispatch_single(ev, comp, comp_path[i], params, "capturing");
                         if (!ev.propagation())
                             break;
                     }
                 }
 
-                /*  phase 2:
+                /*  phase 2: TARGETING
                     dispatch event to target component  */
                 if (ev.propagation())
-                    event_dispatch_single(ev, comp, comp, params, false);
+                    event_dispatch_single(ev, comp, comp, params, "targeting");
 
-                /*  phase 3:
+                /*  phase 3: BUBBLING
                     dispatch event upwards from target component towards
                     root component for bubbling (regular) subscribers  */
                 if (params.bubbling && ev.propagation()) {
                     for (i = 1; i < comp_path.length; i++) {
-                        event_dispatch_single(ev, comp, comp_path[i], params, false);
+                        event_dispatch_single(ev, comp, comp_path[i], params, "bubbling");
                         if (!ev.propagation())
                             break;
                     }
