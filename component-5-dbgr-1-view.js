@@ -398,9 +398,7 @@ _cs.dbg_update_once = function () {
                     ctx.closePath();
                     ctx.fill();
 
-                    /*  draw component information (name and state)  */
-                    ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
-                    ctx.textBaseline = "top";
+                    /*  common text rendering  */
                     var renderText = function (text, color, x, y, width) {
                         ctx.fillStyle = color;
                         var metric = ctx.measureText(text);
@@ -416,9 +414,6 @@ _cs.dbg_update_once = function () {
                         }
                         ctx.fillText(text, x, y, width);
                     }
-                    renderText(comp.name(),  "#ffffff", my_x + 4, my_y              + 2, my_w);
-                    var color = _cs.marked(comp.obj(), "generic") ? "#ccccff" : "#cccccc";
-                    renderText(comp.state(), color, my_x + 4, my_y + (my_h / 2) + 2, my_w);
 
                     /*  draw component type indicators  */
                     var type = "";
@@ -427,12 +422,22 @@ _cs.dbg_update_once = function () {
                     if (_cs.marked(comp.obj(), "controller")) type += "C";
                     if (_cs.marked(comp.obj(), "cross"))      type += "X";
                     if (_cs.marked(comp.obj(), "service"))    type += "S";
+                    var width = 0;
                     if (type !== "") {
-                        var metric = ctx.measureText(type);
                         ctx.font = "bold " + ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
+                        ctx.textBaseline = "top";
                         var color = _cs.marked(comp.obj(), "generic") ? "#99ccff" : "#cccccc";
+                        var metric = ctx.measureText(type);
                         renderText(type, color, my_x + my_w - metric.width - 4, my_y + 2, metric.width);
+                        width = metric.width;
                     }
+
+                    /*  draw component information (name and state)  */
+                    ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
+                    ctx.textBaseline = "top";
+                    renderText(comp.name(),  "#ffffff", my_x + 4, my_y + 2, my_w - width);
+                    var color = _cs.marked(comp.obj(), "generic") ? "#ccccff" : "#cccccc";
+                    renderText(comp.state(), color, my_x + 4, my_y + (my_h / 2) + 2, my_w - (my_h / 2));
 
                     /*  provide our information to the parent component  */
                     _cs.annotation(comp, "debugger_x", my_x);
