@@ -435,9 +435,9 @@ _cs.dbg_update_once = function () {
                     /*  draw component information (name and state)  */
                     ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
                     ctx.textBaseline = "top";
-                    renderText(comp.name(),  "#ffffff", my_x + 4, my_y + 2, my_w - width);
+                    renderText(comp.name(),  "#ffffff", my_x + 4, my_y + 2, my_w - width - 8);
                     var color = _cs.marked(comp.obj(), "generic") ? "#ccccff" : "#cccccc";
-                    renderText(comp.state(), color, my_x + 4, my_y + (my_h / 2) + 2, my_w - (my_h / 2));
+                    renderText(comp.state(), color, my_x + 4, my_y + (my_h / 2) + 2, my_w - (my_h / 2) - 8);
 
                     /*  provide our information to the parent component  */
                     _cs.annotation(comp, "debugger_x", my_x);
