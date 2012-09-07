@@ -20,8 +20,7 @@ _cs.validate = function (value, valid) {
 
     /*  map string and regex based validators  */
     if (typeof params.valid === "string") {
-        var value = params.valid;
-        var m = value.match(/^array\((.+?)\)$/);
+        var m = params.valid.match(/^array\((.+?)\)$/);
         if (m) {
             /*  "array(xxx)"  */
             (function () {
@@ -39,7 +38,7 @@ _cs.validate = function (value, valid) {
         else {
             /*  "xxx"  */
             (function () {
-                var t = value;
+                var t = params.valid;
                 params.valid = function (a) {
                     return _cs.istypeof(a) === t;
                 };
