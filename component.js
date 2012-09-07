@@ -56,6 +56,7 @@
     $include("component-3-patt-C-socket.js");
     $include("component-3-patt-D-hook.js");
     $include("component-3-patt-E-marker.js");
+    $include("component-3-patt-F-model.js");
 
     /*
     **  COMPONENT API

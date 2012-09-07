@@ -20,7 +20,8 @@ _cs.comp = $cs.clazz({
         $cs.pattern.eventing,
         $cs.pattern.property,
         $cs.pattern.shadow,
-        $cs.pattern.socket
+        $cs.pattern.socket,
+        $cs.pattern.model
     ],
     constructor: function (name, parent, children) {
         /*  component marking  */
