@@ -10,6 +10,60 @@
 /*  utility function: no operation (for passing as dummy callback)  */
 $cs.nop = function () {};
 
+/*  utility function: validate a value against a validation specification  */
+_cs.validate = function (value, valid) {
+    /*  determine parameters  */
+    var params = $cs.params("validate", arguments, {
+        value: { pos: 0, req: true },
+        valid: { pos: 1, req: true }
+    });
+
+    /*  map string and regex based validators  */
+    if (typeof params.valid === "string") {
+        var value = params.valid;
+        var m = value.match(/^array\((.+?)\)$/);
+        if (m) {
+            /*  "array(xxx)"  */
+            (function () {
+                var t = m[1];
+                params.valid = function (a) {
+                    if (_cs.istypeof(a) !== "array")
+                        return false;
+                    for (var i = 0; i < a.length; i++)
+                        if (_cs.istypeof(a[i]) !== t)
+                            return false;
+                    return true;
+                };
+            })();
+        }
+        else {
+            /*  "xxx"  */
+            (function () {
+                var t = value;
+                params.valid = function (a) {
+                    return _cs.istypeof(a) === t;
+                };
+            })();
+        }
+    }
+    else if (   typeof params.valid === "object"
+             && params.valid instanceof RegExp) {
+        /*  /xxx/  */
+        (function () {
+            var pattern = params.valid;
+            params.valid = function (a) {
+                return !!(a.match(pattern));
+            };
+        })();
+    }
+    else if (typeof params.valid !== "function")
+        throw _cs.exception("validate", "invalid validator");
+
+    /*  return result of validation  */
+    return params.valid(params.value);
+};
+
+
 /*  utility function: flexible parameter handling  */
 $cs.params = function (func_name, func_args, spec) {
     /*  start with a fresh parameter object  */
@@ -36,47 +90,6 @@ $cs.params = function (func_name, func_args, spec) {
             /*  process default value  */
             if (typeof spec[name].def !== "undefined")
                 params[name] = spec[name].def;
-
-            /*  process validation  */
-            if (typeof spec[name].valid !== "undefined") {
-                if (typeof spec[name].valid === "string") {
-                    var value = spec[name].valid;
-                    var m = value.match(/^array\((.+?)\)$/);
-                    if (m) {
-                        /*  "array(xxx)"  */
-                        (function () {
-                            var t = m[1];
-                            spec[name].valid = function (a) {
-                                if (_cs.istypeof(a) !== "array")
-                                    return false;
-                                for (var i = 0; i < a.length; i++)
-                                    if (_cs.istypeof(a[i]) !== t)
-                                        return false;
-                                return true;
-                            };
-                        })();
-                    }
-                    else {
-                        /*  "xxx"  */
-                        (function () {
-                            var t = value;
-                            spec[name].valid = function (a) {
-                                return _cs.istypeof(a) === t;
-                            };
-                        })();
-                    }
-                }
-                else if (   typeof spec[name].valid === "object"
-                         && spec[name].valid instanceof RegExp) {
-                    /*  /xxx/  */
-                    (function () {
-                        var pattern = spec[name].valid;
-                        spec[name].valid = function (a) {
-                            return !!(a.match(pattern));
-                        };
-                    })();
-                }
-            }
         }
     }
 
@@ -109,8 +122,8 @@ $cs.params = function (func_name, func_args, spec) {
             if (_cs.isown(args, name)) {
                 if (typeof spec[name] === "undefined")
                     throw _cs.exception(func_name, "unknown parameter \"" + name + "\"");
-                if (typeof spec[name].valid === "function")
-                    if (!spec[name].valid(args[name]))
+                if (typeof spec[name].valid !== "undefined")
+                    if (!_cs.validate(args[name], spec[name].valid))
                         throw _cs.exception(func_name, "value of parameter \"" + name + "\" not valid");
                 params[name] = args[name];
             }
