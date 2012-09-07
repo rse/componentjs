@@ -394,7 +394,7 @@ _cs.dbg_update_once = function () {
                     /*  draw component state indicator bulp  */
                     ctx.fillStyle = _cs.states[comp.__state].color;
                     ctx.beginPath();
-                    ctx.arc(my_x + my_w - (my_h / 4) - 1, my_y + 3*(my_h / 4), (my_h / 4) - 2, 0, 2 * Math.PI, true); 
+                    ctx.arc(my_x + my_w - (my_h / 4) - 1, my_y + 3 * (my_h / 4), (my_h / 4) - 3, 0, 2 * Math.PI, true); 
                     ctx.closePath();
                     ctx.fill();
 
