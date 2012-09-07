@@ -124,7 +124,7 @@ _cs.plugger = function (op, origin, name, object) {
                   resolve on the parent component as we want to take
                   scoped sockets (on the parent component) into account!  */
     var property = "ComponentJS:socket:" + name;
-    var socket = origin.property({ name: property, skiporigin: true });
+    var socket = origin.property({ name: property, targeting: false });
     if (!_cs.isdefined(socket))
         throw _cs.exception(op, "no socket found on parent component(s)");
 

@@ -20,7 +20,8 @@ $cs.pattern.property = $cs.trait({
             var params = $cs.params("property", arguments, {
                 name:       { pos: 0, def: null,     req: true },
                 value:      { pos: 1, def: undefined           },
-                skiporigin: {         def: false               }
+                bubbling:   {         def: true                },
+                targeting:  {         def: true                }
             });
 
             /*  start resolving with an undefined value  */
@@ -33,12 +34,12 @@ $cs.pattern.property = $cs.trait({
                  node !== null;
                  scope = node.name(), node = node.parent()) {
 
-                /*  optionally skip the origin component
+                /*  optionally skip the target component
                     (usually if a property on the parent components
                     should be resolved only, but the scoping for the
-                    origin component should be still taken into account
+                    target component should be still taken into account
                     on the parent) */
-                if (scope === null && params.skiporigin)
+                if (scope === null && !params.targeting)
                     continue;
 
                 /*  first try: child-scoped property  */
@@ -56,6 +57,10 @@ $cs.pattern.property = $cs.trait({
                     value_old = v;
                     break;
                 }
+
+                /*  if we should not bubble, stop immediately  */
+                if (!params.bubbling)
+                    break;
             }
 
             /*  optionally set new configuration value
