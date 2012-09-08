@@ -99,13 +99,13 @@ $cs.create = function () {
     /*  optionally pimpup the object  */
     _cs.pimpup(obj);
 
+    /*  debug hint  */
+    $cs.debug(1, "component: " + comp.path("/") + ": created component [" + comp.id() + "]");
+
     /*  switch state from "dead" to "created"
         (here synchronously as one expects that after a creation of a
         component, the state is really already "created", of course)  */
     comp.state({ state: "created", sync: true });
-
-    /*  debug hint  */
-    $cs.debug(1, "component: " + comp.path("/") + ": created component [" + comp.id() + "]");
 
     /*  optionally update debugger view  */
     _cs.dbg_state_invalidate("components");
