@@ -128,6 +128,11 @@ _cs.plugger = function (op, origin, name, object) {
     if (!_cs.isdefined(socket))
         throw _cs.exception(op, "no socket found on parent component(s)");
 
+    /*  determine the actual component owning the socket (for logging purposes only)  */
+    var owner = origin.property({ name: property, targeting: false, returnowner: true });
+    $cs.debug(1, "socket: " + owner.path("/") + ": " + name +
+        " <--(" + op + ")-- " + origin.path("/"));
+
     /*  perform plug/unplug operation  */
     if (_cs.istypeof(socket[op]) === "string")
         socket.ctx[socket[op]].call(socket.ctx, object);

@@ -18,10 +18,11 @@ $cs.pattern.property = $cs.trait({
         property: function () {
             /*  determine parameters  */
             var params = $cs.params("property", arguments, {
-                name:       { pos: 0, def: null,     req: true },
-                value:      { pos: 1, def: undefined           },
-                bubbling:   {         def: true                },
-                targeting:  {         def: true                }
+                name:        { pos: 0, def: null,     req: true },
+                value:       { pos: 1, def: undefined           },
+                bubbling:    {         def: true                },
+                targeting:   {         def: true                },
+                returnowner: {         def: false               }
             });
 
             /*  start resolving with an undefined value  */
@@ -68,8 +69,9 @@ $cs.pattern.property = $cs.trait({
             if (typeof params.value !== "undefined")
                 this.cfg(params.name, params.value);
 
-            /*  return old configuration value  */
-            return value_old;
+            /*  return old configuration value
+                (or optionally the owning component)  */
+            return (params.returnowner ? node : value_old);
         }
     }
 });

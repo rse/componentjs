@@ -38,7 +38,7 @@ $cs.pattern.model = $cs.trait({
             });
 
             /*  fetch model  */
-            var model = this.property("model");
+            var model = this.property({ name: "model" });
             if (typeof model === "undefined")
                 throw _cs.exception("value", "no model found");
 
@@ -61,10 +61,7 @@ $cs.pattern.model = $cs.trait({
 
                 /*  determine the actual component owning the model
                     as we want to publish the change event from there only  */
-                var comp;
-                for (comp = this; comp !== null; comp = comp.parent())
-                    if (comp.property({ name: "model", bubbling: false }) === model)
-                        break;
+                var comp = this.property({ name: "model", returnowner: true });
 
                 /*  send event to observers for value change and allow observers
                     to reject value set operation and/or change new value to set  */
