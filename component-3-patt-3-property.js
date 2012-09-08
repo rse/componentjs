@@ -65,50 +65,11 @@ $cs.pattern.property = $cs.trait({
 
             /*  optionally set new configuration value
                 (on current node only)  */
-            var value = params.value;
-            if (typeof value !== "undefined") {
-                var set_value = true;
-
-                /*  optional event support within component hierarchy  */
-                var comp = _cs.lookup(this);
-                if (comp !== _cs.none) {
-                    var ev = comp.publish({
-                        name: "ComponentJS:property:" + params.name,
-                        args: [ value, value_old ],
-                        capturing: false,
-                        bubbling: false,
-                        async: false
-                    });
-                    if (ev.processing()) {
-                        var result = ev.result();
-                        if (typeof result !== "undefined")
-                            value = result;
-                    }
-                    else
-                        set_value = false;
-                }
-
-                /*  set new value  */
-                if (set_value)
-                    this.cfg(params.name, value);
-            }
+            if (typeof params.value !== "undefined")
+                this.cfg(params.name, params.value);
 
             /*  return old configuration value  */
             return value_old;
-        },
-        property_subscribe: function () {
-            /*  determine parameters  */
-            var params = $cs.params("property_subscribe", arguments, {
-                name:       { pos: 0, req: true },
-                func:       { pos: 1, req: true }
-            });
-
-            /*  subscribe to property change event  */
-            this.subscribe({
-                name: "ComponentJS:property:" + params.name,
-                func: params.func,
-                noevent: true
-            });
         }
     }
 });
