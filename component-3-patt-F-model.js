@@ -93,15 +93,26 @@ $cs.pattern.model = $cs.trait({
         observe: function () {
             /*  determine parameters  */
             var params = $cs.params("observe", arguments, {
-                name: { pos: 0, req: true },
-                func: { pos: 1, req: true }
+                name:    { pos: 0, req: true  },
+                func:    { pos: 1, req: true  },
+                trigger: { pos: 2, req: false }
             });
 
+            /*  determine the actual component owning the model
+                as we want to subscribe the change event there only  */
+            var comp = this.property({ name: "model", returnowner: true });
+
             /*  subscribe to model value change event  */
-            return this.subscribe({
+            var id = comp.subscribe({
                 name: "ComponentJS:model:" + params.name,
                 func: params.func
             });
+
+            /*  if requested, trigger event once (for an initial observer run)  */
+            if (params.trigger)
+                this.value({ name: params.name, value: this.value(params.name) });
+            
+            return id;
         },
 
         /*  stop observing model value change  */
@@ -111,8 +122,12 @@ $cs.pattern.model = $cs.trait({
                 id: { pos: 0, req: true }
             });
 
+            /*  determine the actual component owning the model
+                as we want to unsubscribe the change event there only  */
+            var comp = this.property({ name: "model", returnowner: true });
+
             /*  subscribe to model value change event  */
-            this.unsubscribe(params.id);
+            comp.unsubscribe(params.id);
         }
     }
 });
