@@ -89,13 +89,27 @@ $cs.pattern.model = $cs.trait({
             return value_old;
         },
 
+        /*  touch a model value and trigger event  */
+        touch: function () {
+            /*  determine parameters  */
+            var params = $cs.params("touch", arguments, {
+                name: { pos: 0, req: true }
+            });
+
+            /*  simply set value to same value in order to trigger event  */
+            this.value({
+                name: params.name,
+                value: this.value(params.name)
+            });
+        },
+
         /*  start observing model value change  */
         observe: function () {
             /*  determine parameters  */
             var params = $cs.params("observe", arguments, {
-                name:    { pos: 0, req: true  },
-                func:    { pos: 1, req: true  },
-                trigger: { pos: 2, req: false }
+                name:      { pos: 0, req: true  },
+                func:      { pos: 1, req: true  },
+                touchonce: { pos: 2, req: false }
             });
 
             /*  determine the actual component owning the model
@@ -108,9 +122,9 @@ $cs.pattern.model = $cs.trait({
                 func: params.func
             });
 
-            /*  if requested, trigger event once (for an initial observer run)  */
-            if (params.trigger)
-                this.value({ name: params.name, value: this.value(params.name) });
+            /*  if requested, touch the model value once (for an initial observer run)  */
+            if (params.touchonce)
+                this.touch(params.name);
             
             return id;
         },
