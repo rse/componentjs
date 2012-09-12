@@ -51,11 +51,19 @@ _cs.clazz_or_trait = function (params, is_clazz) {
                 }
             }
 
-            /*  explicitly call optional constructor function  */
+            /*  explicitly call optional constructor function
+                NOTICE: a clazz gets supplied the original constructor
+                parameters (we assume that it knows what to do with
+                all or at least the N initial parameters as it is a
+                real parent/base/super class) and has to call its own
+                parent/base/super constructor itself via this.base(),
+                but a trait intentionally gets no constructor parameters
+                passed-through (as it cannot know where it gets mixed
+                into, so it cannot know what to do with the parameters)  */
             if (exec_constructor && _cs.annotation(clz, "constructor") !== null) {
                 var cons = _cs.annotation(clz, "constructor");
                 if (_cs.istypeof(clz) === "clazz")
-                    cons.apply(obj, arg); /* (might call parent constructor itself) */
+                    cons.apply(obj, arg);
                 else
                     cons.call(obj);
             }
