@@ -155,6 +155,7 @@ _cs.clone = function (source) {
         for (prop in f)
             if (_cs.isown(f, prop))
                 g[prop] = myself(f[prop]); /* RECURSION */
+        _cs.annotation(g, "clone", true);
         return g;
     };
 
@@ -239,9 +240,10 @@ _cs.mixin = function (target, source, filter) {
                 if (_cs.istypeof(source[key]) === "function") {
                     /*  method/function  */
                     var src = _cs.clone(source[key]);
-                    src.__name__ = key;
-                    if (_cs.istypeof(target[key]) === "function")
-                        src.__base__ = target[key];
+                    _cs.annotation(src, "name", key);
+                    if (   _cs.istypeof(target[key]) === "function"
+                        && _cs.isown(target, key)                  )
+                        _cs.annotation(src, "base", target[key]);
                     target[key] = src;
                 }
                 else {

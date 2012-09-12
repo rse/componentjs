@@ -122,6 +122,9 @@ _cs.clazz_or_trait = function (params, is_clazz) {
 
     /*  provide name for underlying implementation of "base()"  */
     _cs.annotation(_cs.annotation(clazz, "constructor"), "name", "constructor");
+    if (_cs.isdefined(params.extend))
+        _cs.annotation(_cs.annotation(clazz, "constructor"), "base",
+            _cs.annotation(params.extend, "constructor"));
 
     /*  remember user-supplied setup function  */
     if (_cs.isdefined(params.setup))
@@ -137,22 +140,49 @@ _cs.clazz_or_trait = function (params, is_clazz) {
     if (_cs.isdefined(params.dynamics))
         _cs.annotation(clazz, "dynamics", params.dynamics);
 
-    /*  explicitly add "base()" utility method for calling
-        the base function in the inheritance/mixin chain  */
-    clazz.prototype.base = function () {
-        /*  attempt 1: call super function in mixin chain  */
-        if (_cs.istypeof(_cs.annotation(arguments.callee.caller, "base")) === "function")
-            return _cs.annotation(arguments.callee.caller, "base").apply(this, arguments);
+    /*  internal utility method for resolving an annotation on a
+        possibly cloned function (just for the following "base" method)  */
+    var resolve = function (func, name) {
+        var result = _cs.annotation(func, name);
+        while (result === null && _cs.annotation(func.caller, "clone") === true) {
+            result = _cs.annotation(func.caller, name);
+            func = func.caller;
+        }
+        return result;
+    };
 
-        /*  attempt 2: call super function in inheritance chain  */
-        else if (   _cs.istypeof(_cs.annotation(arguments.callee.caller, "name")) === "string"
-                 && _cs.istypeof(_cs.annotation(this.constructor, "extend")) === "object"
-                 && _cs.istypeof(_cs.annotation(this.constructor, "extend")[arguments.callee.caller.__name__]) === "function")
-            return _cs.annotation(this.constructor, "extend")[arguments.callee.caller.__name__].apply(this, arguments);
+    /*  explicitly add "base()" utility method for calling
+        the base/super/parent function in the inheritance/mixin chain  */
+    clazz.prototype.base = function () {
+        /*  NOTICE: arguments.callee are we just ourself (this function), while
+                    arguments.callee.caller is the function calling this.base()!
+                    and because our cs.clone() creates wrapper functions we
+                    optionally have to take those into account during resolving, too!  */
+        var name = resolve(arguments.callee.caller, "name");
+        var base = resolve(arguments.callee.caller, "base");
+        var extend = _cs.annotation(this.constructor, "extend");
+
+        /*  attempt 1: call base/super/parent function in mixin chain  */
+        if (_cs.istypeof(base) === "function")
+            return base.apply(this, arguments);
+
+        /*  attempt 2: call base/super/parent function in inheritance chain (directly on object)  */
+        else if (   _cs.istypeof(name) === "string"
+                 && _cs.istypeof(extend) === "clazz"
+                 && _cs.istypeof(extend[name]) === "function")
+            return extend[name].apply(this, arguments);
+
+        /*  attempt 3: call base/super/parent function in inheritance chain (via prototype object)  */
+        else if (   _cs.istypeof(name) === "string"
+                 && _cs.istypeof(extend) === "clazz"
+                 && _cs.istypeof(extend.prototype) === "object"
+                 && _cs.istypeof(extend.prototype[name]) === "function")
+            return extend.prototype[name].apply(this, arguments);
 
         /*  else just give up and throw an exception  */
         else
-            throw _cs.exception("base", "no base method found in inheritance/mixin chain");
+            throw _cs.exception("base", "no base method found for method \"" +
+                name + "\" in inheritance/mixin chain");
     };
 
     /*
