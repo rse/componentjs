@@ -10,12 +10,25 @@
 /*  utility function: create an exception string for throwing  */
 _cs.exception = function (method, error) {
     if (_cs.dbg !== null) {
-        if (typeof GLOBAL.printStackTrace !== "undefined") {
+        if (typeof printStackTrace !== "undefined") {
+            var trace = printStackTrace();
+            _cs.dbg_log(trace.join("\n"));
+        }
+        else if (typeof GLOBAL.printStackTrace !== "undefined") {
             var trace = GLOBAL.printStackTrace();
             _cs.dbg_log(trace.join("\n"));
         }
     }
-    if (typeof GLOBAL.console === "object") {
+    if (typeof console === "object") {
+        if (typeof console.trace === "function")
+            console.trace();
+        else if (   typeof printStackTrace !== "undefined"
+                 && typeof console.log === "function") {
+            var trace = printStackTrace();
+            console.log(trace.join("\n"));
+        }
+    }
+    else if (typeof GLOBAL.console === "object") {
         if (typeof GLOBAL.console.trace === "function")
             GLOBAL.console.trace();
         else if (   typeof GLOBAL.printStackTrace !== "undefined"
