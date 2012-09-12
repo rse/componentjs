@@ -144,17 +144,30 @@ _cs.json = (function () {
 })();
 
 /*  utility function: deep cloning of arbitrary data-structure  */
-_cs.clone = function (source) {
+_cs.clone = function (source, continue_recursion) {
+    /*  allow recursive cloning to be controlled  */
+    if (typeof continue_recursion === "undefined")
+        continue_recursion = function (name, value) { return true; };
+    else if (typeof continue_recursion === "string") {
+        var pattern = continue_recursion;
+        continue_recursion = function (name, value) { return name.match(pattern); };
+    }
+
     /*  helper functions  */
     var myself = arguments.callee;
-    var clone_func = function (f) {
+    var clone_func = function (f, continue_recursion) {
         var g = function () {
             return f.apply(this, arguments);
         };
         g.prototype = f.prototype;
-        for (prop in f)
-            if (_cs.isown(f, prop))
-                g[prop] = myself(f[prop]); /* RECURSION */
+        for (prop in f) {
+            if (_cs.isown(f, prop)) {
+                if (continue_recursion(prop, f))
+                    g[prop] = myself(f[prop], continue_recursion); /* RECURSION */
+                else
+                    g[prop] = f[prop];
+            }
+        }
         _cs.annotation(g, "clone", true);
         return g;
     };
@@ -162,7 +175,7 @@ _cs.clone = function (source) {
     var target = undefined;
     if (typeof source === "function")
         /*  special case: primitive function  */
-        target = clone_func(source);
+        target = clone_func(source, continue_recursion);
     else if (typeof source === "object") {
         if (source === null)
             /*  special case: null object  */
@@ -178,7 +191,7 @@ _cs.clone = function (source) {
             target = new Boolean(source.valueOf());
         else if (Object.prototype.toString.call(source) === "[object Function]")
             /*  special case: Function object  */
-            target = clone_func(source);
+            target = clone_func(source, continue_recursion);
         else if (Object.prototype.toString.call(source) === "[object Date]")
             /*  special case: Date object  */
             target = new Date(source.getTime());
@@ -190,14 +203,19 @@ _cs.clone = function (source) {
             var len = source.length;
             target = new Array(len);
             for (var i = 0; i < len; i++)
-                target.push(myself(source[i])); /* RECURSION */
+                target.push(myself(source[i], continue_recursion)); /* RECURSION */
         }
         else {
             /*  special case: hash object  */
             target = new Object();
-            for (var key in source)
-                if (_cs.isown(source, key))
-                    target[key] = myself(source[key]); /* RECURSION */
+            for (var key in source) {
+                if (key !== "constructor" && _cs.isown(source, key)) {
+                    if (continue_recursion(key, source))
+                        target[key] = myself(source[key], continue_recursion); /* RECURSION */
+                    else
+                        target[key] = source[key];
+                }
+            }
             if (typeof source.constructor === "function")
                 target.constructor = source.constructor;
             if (typeof source.prototype === "object")
@@ -239,7 +257,7 @@ _cs.mixin = function (target, source, filter) {
             if (filter(key, source[key])) {
                 if (_cs.istypeof(source[key]) === "function") {
                     /*  method/function  */
-                    var src = _cs.clone(source[key]);
+                    var src = _cs.clone(source[key], filter);
                     _cs.annotation(src, "name", key);
                     if (   _cs.istypeof(target[key]) === "function"
                         && _cs.isown(target, key)                  )
