@@ -46,13 +46,19 @@ _cs.dbg_log = function (msg) {
     _cs.dbg_update();
 };
 
+/*  debugger canvas: natural tree direction flag  */
+_cs.dbg_natural = false;
+
 /*  debugger API entry point  */
 $cs.debugger = function () {
     /*  determine parameters  */
     var params = $cs.params("debugger", arguments, {
         enable:    { pos: 0, def: null  },
         autoclose: { pos: 1, def: false },
-        name:      { pos: 2, def: null  }
+        name:      { pos: 2, def: null  },
+        width:     {         def: 800   },
+        height:    {         def: 600   },
+        natural:   {         def: false }
     });
 
     /*  dispatch according to requested operation  */
@@ -60,6 +66,9 @@ $cs.debugger = function () {
         /*  determine debugger state  */
         return (_cs.dbg !== null);
     else if (params.enable) {
+        /*  remember natural rendering flag  */
+        _cs.dbg_natural = params.natural;
+
         /*  enable debugger  */
         if (_cs.dbg === null) {
             /*  determine (potentially application specific) title  */
@@ -69,7 +78,8 @@ $cs.debugger = function () {
 
             /*  create external debugger window  */
             _cs.dbg = window.open("", title,
-                "width=800,height=600,location=no,replace=yes,scrollbars=no,toolbars=no,menubar=no,status=no"
+                "width=" + params.width + ",height=" + params.height + "," +
+                "location=no,replace=yes,scrollbars=no,toolbars=no,menubar=no,status=no"
             );
 
             /*  initialize the window content (deferred to avoid problems)  */
@@ -338,7 +348,10 @@ _cs.dbg_update_once = function () {
                     if (t == 1) {
                         /*  CASE 1: leaf node  */
                         my_x = gw * X++;
-                        my_y = gh * d;
+                        if (_cs.dbg_natural)
+                            my_y = ch - gh * d - gh;
+                        else
+                            my_y = gh * d;
                         my_w = gw - ow;
                         my_h = gh - oh;
                     }
@@ -358,7 +371,10 @@ _cs.dbg_update_once = function () {
 
                         /*  calculate our information  */
                         my_x = minx + Math.ceil((maxx - minx) / 2);
-                        my_y = gh*d;
+                        if (_cs.dbg_natural)
+                            my_y = ch - gh * d - gh;
+                        else
+                            my_y = gh * d;
                         my_w = gw - ow;
                         my_h = gh - oh;
 
@@ -371,10 +387,18 @@ _cs.dbg_update_once = function () {
                             ctx.strokeStyle = "#999999";
                             ctx.lineWidth = 2;
                             ctx.beginPath();
-                            ctx.moveTo(my_x + Math.ceil(my_w / 2), my_y + my_h);
-                            ctx.lineTo(my_x + Math.ceil(my_w / 2), my_y + my_h + Math.ceil(oh / 2));
-                            ctx.lineTo(child_x + Math.ceil(child_w / 2), my_y + my_h + Math.ceil(oh / 2));
-                            ctx.lineTo(child_x + Math.ceil(child_w / 2), child_y);
+                            if (_cs.dbg_natural) {
+                                ctx.moveTo(my_x + Math.ceil(my_w / 2), my_y);
+                                ctx.lineTo(my_x + Math.ceil(my_w / 2), my_y - Math.ceil(oh / 2));
+                                ctx.lineTo(child_x + Math.ceil(child_w / 2), my_y - Math.ceil(oh / 2));
+                                ctx.lineTo(child_x + Math.ceil(child_w / 2), child_y + my_h);
+                            }
+                            else {
+                                ctx.moveTo(my_x + Math.ceil(my_w / 2), my_y + my_h);
+                                ctx.lineTo(my_x + Math.ceil(my_w / 2), my_y + my_h + Math.ceil(oh / 2));
+                                ctx.lineTo(child_x + Math.ceil(child_w / 2), my_y + my_h + Math.ceil(oh / 2));
+                                ctx.lineTo(child_x + Math.ceil(child_w / 2), child_y);
+                            }
                             ctx.stroke();
                         }
                     }
