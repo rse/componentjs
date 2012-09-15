@@ -213,8 +213,7 @@ _cs.dbg_refresh = function () {
     /*  expand to viewport width/height  */
     var vw = _cs.jq(_cs.dbg).width();
     var vh = _cs.jq(_cs.dbg).height();
-    _cs.jq("dbg", _cs.dbg.document).width(vw);
-    _cs.jq("dbg", _cs.dbg.document).height(vh);
+    _cs.jq("dbg", _cs.dbg.document).width(vw).height(vh);
 
     /*  expand viewer and console to half of the viewport height  */
     var h = vh - (
@@ -227,10 +226,9 @@ _cs.dbg_refresh = function () {
     _cs.jq(".dbg .console", _cs.dbg.document).height(h2);
 
     /*  explicitly set the canvas size of the viewer  */
-    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height(h1 - 20);
-    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).attr("height", h1 - 20);
-    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width(vw - 20);
-    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).attr("width", vw - 20);
+    _cs.jq(".dbg .viewer canvas", _cs.dbg.document)
+        .height(h1 - 20).attr("height", h1 - 20)
+        .width(vw - 20) .attr("width", vw - 20);
 
     /*  trigger an initial update  */
     _cs.dbg_update();
