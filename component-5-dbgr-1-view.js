@@ -335,6 +335,7 @@ _cs.dbg_update_once = function () {
             ctx.clearRect(0, 0, cw, ch);
 
             /*  walk the component tree to draw each component (on upward steps only)  */
+            var natural = _cs.dbg_natural;
             _cs.root.walk_down(function (level, comp, X, depth_first) {
                 if (depth_first) {
                     /*  grab previously calculated information  */
@@ -346,10 +347,7 @@ _cs.dbg_update_once = function () {
                     if (t == 1) {
                         /*  CASE 1: leaf node  */
                         my_x = gw * X++;
-                        if (_cs.dbg_natural)
-                            my_y = ch - gh * d - gh;
-                        else
-                            my_y = gh * d;
+                        my_y = natural ? (ch - gh * d - gh) : (gh * d);
                         my_w = gw - ow;
                         my_h = gh - oh;
                     }
@@ -369,10 +367,7 @@ _cs.dbg_update_once = function () {
 
                         /*  calculate our information  */
                         my_x = minx + Math.ceil((maxx - minx) / 2);
-                        if (_cs.dbg_natural)
-                            my_y = ch - gh * d - gh;
-                        else
-                            my_y = gh * d;
+                        my_y = natural ? (ch - gh * d - gh) : (gh * d);
                         my_w = gw - ow;
                         my_h = gh - oh;
 
@@ -385,18 +380,14 @@ _cs.dbg_update_once = function () {
                             ctx.strokeStyle = "#999999";
                             ctx.lineWidth = 2;
                             ctx.beginPath();
-                            if (_cs.dbg_natural) {
-                                ctx.moveTo(my_x + Math.ceil(my_w / 2), my_y);
-                                ctx.lineTo(my_x + Math.ceil(my_w / 2), my_y - Math.ceil(oh / 2));
-                                ctx.lineTo(child_x + Math.ceil(child_w / 2), my_y - Math.ceil(oh / 2));
-                                ctx.lineTo(child_x + Math.ceil(child_w / 2), child_y + my_h);
-                            }
-                            else {
-                                ctx.moveTo(my_x + Math.ceil(my_w / 2), my_y + my_h);
-                                ctx.lineTo(my_x + Math.ceil(my_w / 2), my_y + my_h + Math.ceil(oh / 2));
-                                ctx.lineTo(child_x + Math.ceil(child_w / 2), my_y + my_h + Math.ceil(oh / 2));
-                                ctx.lineTo(child_x + Math.ceil(child_w / 2), child_y);
-                            }
+                            ctx.moveTo(my_x + Math.ceil(my_w / 2),
+                                       my_y + (natural ? 0 : my_h));
+                            ctx.lineTo(my_x + Math.ceil(my_w / 2),
+                                       my_y + (natural ? -Math.ceil(oh / 2) : my_h + Math.ceil(oh / 2)));
+                            ctx.lineTo(child_x + Math.ceil(child_w / 2),
+                                       my_y + (natural ? -Math.ceil(oh / 2) : my_h + Math.ceil(oh / 2)));
+                            ctx.lineTo(child_x + Math.ceil(child_w / 2),
+                                       child_y + (natural ? my_h : 0));
                             ctx.stroke();
                         }
                     }
@@ -416,7 +407,12 @@ _cs.dbg_update_once = function () {
                     /*  draw component state indicator bulp  */
                     ctx.fillStyle = _cs.states[comp.__state].color;
                     ctx.beginPath();
-                    ctx.arc(my_x + my_w - (my_h / 4) - 1, my_y + 3 * (my_h / 4), (my_h / 4) - 3, 0, 2 * Math.PI, true); 
+                    ctx.arc(
+                        my_x + my_w - (my_h / 4) - 1,
+                        my_y + 3 * (my_h / 4),
+                        (my_h / 4) - 3,
+                        0, 2 * Math.PI, true
+                    ); 
                     ctx.closePath();
                     ctx.fill();
 
