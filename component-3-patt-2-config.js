@@ -11,40 +11,16 @@
 $cs.pattern.config = $cs.trait({
     dynamics: {
         /*  attributes  */
-        __configuration: {}
+        __config: {}
     },
     protos: {
         /*  method: get/set particular configuration item  */
         cfg: function (name, value_new) {
-            var cfg = this.__configuration;
+            var cfg = this.__config;
             var value_old = cfg[name];
             if (typeof value_new !== "undefined")
                 cfg[name] = value_new;
             return value_old;
-        },
-
-        /*  method: dump configuration items  */
-        cfg_dump: function () {
-            var dump = "";
-            for (var name in this.__configuration) {
-                if (_cs.isown(this.__configuration, name)) {
-                    var value = this.__configuration[name];
-                    switch (_cs.istypeof(value)) {
-                        case "boolean":                        break;
-                        case "number":                         break;
-                        case "string":                         break;
-                        case "null":     value = "<null>";     break;
-                        case "function": value = "<function>"; break;
-                        case "object":   value = "<object>";   break;
-                        case "array":    value = "<array>";    break;
-                        default:         value = "<unknown>";  break;
-                    }
-                    dump += (dump !== "" ? ", " : "");
-                    dump += name + ": \"" + value + "\"";
-                }
-            }
-            dump = "{" + dump + "}";
-            return dump;
         }
     }
 });
