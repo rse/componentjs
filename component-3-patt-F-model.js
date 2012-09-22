@@ -37,14 +37,21 @@ $cs.pattern.model = $cs.trait({
                 value: { pos: 1, def: undefined           }
             });
 
-            /*  fetch model  */
-            var model = this.property({ name: "model" });
-            if (typeof model === "undefined")
-                throw _cs.exception("value", "no model found");
-
-            /*  sanity check model value reference  */
-            if (typeof model[params.name] === "undefined")
-                throw _cs.exception("value", "no such model field: \"" + params.name + "\"");
+            /*  determine component owning model with requested value  */
+            var owner = null;
+            var model = null;
+            var comp = this;
+            while (comp !== null) {
+                owner = comp.property({ name: "model", returnowner: true });
+                if (typeof owner === "undefined")
+                    throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
+                model = owner.property("model");
+                if (_cs.isdefined(model[params.name]))
+                    break;
+                comp = owner.parent();
+            }
+            if (comp === null)
+                throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
 
             /*  get old model value  */
             var value_old = model[params.name].value;
@@ -59,13 +66,9 @@ $cs.pattern.model = $cs.trait({
                     throw _cs.exception("value", "invalid value \"" + value_new +
                         "\" for model field \"" + params.name + "\"");
 
-                /*  determine the actual component owning the model
-                    as we want to publish the change event from there only  */
-                var comp = this.property({ name: "model", returnowner: true });
-
                 /*  send event to observers for value change and allow observers
                     to reject value set operation and/or change new value to set  */
-                var ev = comp.publish({
+                var ev = owner.publish({
                     name:      "ComponentJS:model:" + params.name,
                     args:      [ params.value, value ],
                     capturing: false,
