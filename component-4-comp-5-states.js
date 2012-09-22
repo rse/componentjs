@@ -40,5 +40,4 @@ $cs.transition("created",      "create",  "destroy", "#999999"); /* created and 
 $cs.transition("prepared",     "prepare", "cleanup", "#cc3333"); /* prepared and ready for rendering */
 $cs.transition("materialized", "render",  "release", "#daac33"); /* rendered onto the DOM tree */
 $cs.transition("visible",      "show",    "hide",    "#339900"); /* visible to the user */
-$cs.transition("enabled",      "enable",  "disable", "#198cff"); /* enabled and the user can operate on it */
 
