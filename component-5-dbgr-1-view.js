@@ -49,6 +49,16 @@ _cs.dbg_log = function (msg) {
 /*  debugger canvas: natural tree direction flag  */
 _cs.dbg_natural = false;
 
+/*  try to determine whether we are running instrumented,
+    i.e., whether the native Browser debugger is active/open  */
+$cs.instrumented = function () {
+    return (
+           window.console
+        && (  window.console.firebug                            /* precision: Firefox Firebug  */
+            || (window.outerHeight - window.innerHeight) > 100) /* guessing:  Chrome Inspector */
+    );
+};
+
 /*  debugger API entry point  */
 $cs.debugger = function () {
     /*  determine parameters  */
