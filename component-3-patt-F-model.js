@@ -115,6 +115,8 @@ $cs.pattern.model = $cs.trait({
             /*  determine the actual component owning the model
                 as we want to subscribe the change event there only  */
             var comp = this.property({ name: "model", returnowner: true });
+            if (typeof comp === "undefined")
+                throw _cs.exception("observe", "no model found");
 
             /*  subscribe to model value change event  */
             var id = comp.subscribe({
@@ -139,6 +141,8 @@ $cs.pattern.model = $cs.trait({
             /*  determine the actual component owning the model
                 as we want to unsubscribe the change event there only  */
             var comp = this.property({ name: "model", returnowner: true });
+            if (typeof comp === "undefined")
+                throw _cs.exception("unobserve", "no model found");
 
             /*  subscribe to model value change event  */
             comp.unsubscribe(params.id);

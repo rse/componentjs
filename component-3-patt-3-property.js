@@ -26,7 +26,7 @@ $cs.pattern.property = $cs.trait({
             });
 
             /*  start resolving with an undefined value  */
-            var value_old = undefined;
+            var result = undefined;
 
             /*  get old configuration value
                 (on current node or on any parent node)  */
@@ -47,7 +47,7 @@ $cs.pattern.property = $cs.trait({
                 if (scope !== null) {
                     v = node.cfg(params.name + "@" + scope);
                     if (typeof v !== "undefined") {
-                        value_old = v;
+                        result = (params.returnowner ? node : v);
                         break;
                     }
                 }
@@ -55,7 +55,7 @@ $cs.pattern.property = $cs.trait({
                 /*  second try: unscoped property  */
                 v = node.cfg(params.name);
                 if (typeof v !== "undefined") {
-                    value_old = v;
+                    result = (params.returnowner ? node : v);
                     break;
                 }
 
@@ -69,9 +69,9 @@ $cs.pattern.property = $cs.trait({
             if (typeof params.value !== "undefined")
                 this.cfg(params.name, params.value);
 
-            /*  return old configuration value
-                (or optionally the owning component)  */
-            return (params.returnowner ? node : value_old);
+            /*  return result (either the old configuration
+                value or the owning component)  */
+            return result;
         }
     }
 });
