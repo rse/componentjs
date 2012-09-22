@@ -19,7 +19,7 @@ _cs.concat = function () {
 };
 
 /*  utility function: map array values  */
-_cs.map = function (mapper, source) {
+_cs.map = function (source, mapper) {
     var target = [];
     for (var i = 0; i < source.length; i++)
         target.push(mapper(source[i], i));
@@ -27,7 +27,7 @@ _cs.map = function (mapper, source) {
 };
 
 /*  utility function: filter array values  */
-_cs.filter = function (filter, source) {
+_cs.filter = function (source, filter) {
     var target = [];
     for (var i = 0; i < source.length; i++)
         if (filter(source[i], i))

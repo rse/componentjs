@@ -53,9 +53,9 @@ $cs.pattern.tree = $cs.trait({
         detach: function () {
             if (this.parent() !== null) {
                 var self = this;
-                this.parent().children(_cs.filter(function (x) {
+                this.parent().children(_cs.filter(this.parent().children(), function (x) {
                     return x !== self;
-                }, this.parent().children()));
+                }));
                 this.parent(null);
             }
         },
