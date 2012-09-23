@@ -50,6 +50,37 @@ $cs.pattern.socket = $cs.trait({
             $cs(this).property(name, params);
         },
 
+        /*  create a linking/pass-through socket  */
+        link: function () {
+            /*  determine parameters  */
+            var params = $cs.params("link", arguments, {
+                name:   {         def: "default"            },
+                scope:  {         def: null                 },
+                ctx:    { pos: 0, def: null,      req: true },
+                target: { pos: 1, def: "default", req: true },
+            });
+
+            /*  create a socket and pass-through the
+                plug/unplug operations to the target  */
+            this.socket({
+                name:   params.name,
+                scope:  params.scope,
+                ctx:    params.ctx,
+                plug:   function (obj) {
+                    return this.plug({
+                        name:   params.target,
+                        object: obj
+                    });
+                },
+                unplug: function (obj) {
+                    return this.unplug({
+                        name:   params.target,
+                        object: obj
+                    });
+                }
+            });
+        },
+
         /*  plug into a defined socket  */
         plug: function () {
             /*  determine parameters  */
@@ -118,7 +149,7 @@ _cs.plugger = function (op, origin, name, object) {
     /*  resolve the socket property on the parents components
         NOTICE 1: we explicitly skip the origin component here as
                   resolving the socket property also on the origin
-                  component might otherwise return the potentially existing 
+                  component might otherwise return the potentially existing
                   socket for the child components of the orgin component.
         NOTICE 2: we intentionally skip the origin and do not directly
                   resolve on the parent component as we want to take
