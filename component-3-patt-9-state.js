@@ -45,7 +45,7 @@ _cs.states_add = function (target, enter, leave, color, source) {
     /*  store state  */
     _cs.states.splice(pos, 0, state);
 };
-        
+
 /*  determine state index via state name  */
 _cs.state_name2idx = function (name) {
     var idx = -1;
@@ -370,7 +370,7 @@ $cs.pattern.state = $cs.trait({
                 /*  deactivate guard  */
                 delete this.__state_guards[params.method];
 
-                /*  give all pending state transitions 
+                /*  give all pending state transitions
                     (which now might proceed) a chance  */
                 _cs.state_progression();
             }

@@ -101,7 +101,7 @@ $cs.params = function (func_name, func_args, spec) {
             "foo({ foo: ..., bar: ...})"  */
         name_based = true;
 
-        /*  ...but do not be mislead by a positional use like 
+        /*  ...but do not be mislead by a positional use like
             "foo(bar)" where "bar" is an arbitrary object!  */
         for (name in func_args[0]) {
             if (_cs.isown(func_args[0], name)) {
