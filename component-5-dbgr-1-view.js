@@ -263,7 +263,7 @@ _cs.dbg_update_once = function () {
     if (_cs.dbg_state_invalid.console) {
         _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
         _cs.jq(".dbg .console", _cs.dbg.document).scrollTop(
-            _cs.jq(".dbg .console .text", _cs.dbg.document).height() 
+            _cs.jq(".dbg .console .text", _cs.dbg.document).height()
         );
         _cs.dbg_state_invalid.console = true;
     }
@@ -422,7 +422,7 @@ _cs.dbg_update_once = function () {
                         my_y + 3 * (my_h / 4),
                         (my_h / 4) - 3,
                         0, 2 * Math.PI, true
-                    ); 
+                    );
                     ctx.closePath();
                     ctx.fill();
 

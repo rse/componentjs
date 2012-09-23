@@ -130,7 +130,7 @@ $cs.pattern.model = $cs.trait({
             /*  if requested, touch the model value once (for an initial observer run)  */
             if (params.touchonce)
                 this.touch(params.name);
-            
+
             return id;
         },
 
