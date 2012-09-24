@@ -42,9 +42,10 @@ _cs.jq_methods = {
             else if (typeof this[i].attachEvent == "function")
                 this[i].attachEvent("on" + name, callback);
         }
+        return this;
     },
     width: function (value) {
-        var result = undefined;
+        var result = (typeof value !== "undefined" ? this : undefined);
         for (var i = 0; i < this.length; i++) {
             if (typeof value === "undefined") {
                 result = this[i].offsetWidth;
@@ -60,7 +61,7 @@ _cs.jq_methods = {
         return result;
     },
     height: function (value) {
-        var result = undefined;
+        var result = (typeof value !== "undefined" ? this : undefined);
         for (var i = 0; i < this.length; i++) {
             if (typeof value === "undefined") {
                 result = this[i].offsetHeight;
@@ -76,7 +77,7 @@ _cs.jq_methods = {
         return result;
     },
     attr: function (name, value) {
-        var result = undefined;
+        var result = (typeof value !== "undefined" ? this : undefined);
         for (var i = 0; i < this.length; i++) {
             if (typeof value === "undefined")
                 result = this[i].getAttribute(name);
@@ -88,10 +89,12 @@ _cs.jq_methods = {
     html: function (html) {
         for (var i = 0; i < this.length; i++)
             this[i].innerHTML = html;
+        return this;
     },
     scrollTop: function (value) {
         for (var i = 0; i < this.length; i++)
             this[i].scrollTop = value;
+        return this;
     },
     get: function (pos) {
         return this[pos];
