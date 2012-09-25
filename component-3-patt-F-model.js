@@ -25,8 +25,19 @@ $cs.pattern.model = $cs.trait({
                 });
             });
 
-            /*  store model as a property  */
-            this.property("model", model);
+            /*  store model  */
+            var model_old = this.property({ name: "ComponentJS:model", bubbling: false });
+            if (_cs.isdefined(model_old)) {
+                /*  merge model into existing one  */
+                var model_new = {};
+                _cs.extend(model_new, model_old);
+                _cs.extend(model_new, model);
+                this.property("ComponentJS:model", model_new);
+            }
+            else {
+                /*  set initial model  */
+                this.property("ComponentJS:model", model);
+            }
         },
 
         /*  get/set model value  */
@@ -42,10 +53,10 @@ $cs.pattern.model = $cs.trait({
             var model = null;
             var comp = this;
             while (comp !== null) {
-                owner = comp.property({ name: "model", returnowner: true });
+                owner = comp.property({ name: "ComponentJS:model", returnowner: true });
                 if (typeof owner === "undefined")
                     throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
-                model = owner.property("model");
+                model = owner.property("ComponentJS:model");
                 if (_cs.isdefined(model[params.name]))
                     break;
                 comp = owner.parent();
@@ -117,7 +128,7 @@ $cs.pattern.model = $cs.trait({
 
             /*  determine the actual component owning the model
                 as we want to subscribe the change event there only  */
-            var comp = this.property({ name: "model", returnowner: true });
+            var comp = this.property({ name: "ComponentJS:model", returnowner: true });
             if (typeof comp === "undefined")
                 throw _cs.exception("observe", "no model found");
 
@@ -143,7 +154,7 @@ $cs.pattern.model = $cs.trait({
 
             /*  determine the actual component owning the model
                 as we want to unsubscribe the change event there only  */
-            var comp = this.property({ name: "model", returnowner: true });
+            var comp = this.property({ name: "ComponentJS:model", returnowner: true });
             if (typeof comp === "undefined")
                 throw _cs.exception("unobserve", "no model found");
 
