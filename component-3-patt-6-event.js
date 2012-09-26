@@ -149,6 +149,7 @@ $cs.pattern.eventing = $cs.trait({
                 completed:    {             def: $cs.nop         },
                 directresult: {             def: false           },
                 firstonly:    {             def: false           },
+                silent:       {             def: false           },
                 args:         { pos: "...", def: []              }
             });
 
@@ -187,15 +188,17 @@ $cs.pattern.eventing = $cs.trait({
                 return ev;
 
             /*  tracing  */
-            $cs.debug(1, "event: " +
-                ev.target().path("/") + ": publish: " +
-                " name=" + ev.name() +
-                " async=" + ev.async() +
-                " capturing=" + params.capturing +
-                " bubbling=" + params.bubbling +
-                " directresult=" + params.directresult +
-                " firstonly=" + params.firstonly
-            );
+            if (!params.silent) {
+                $cs.debug(1, "event: " +
+                    ev.target().path("/") + ": publish: " +
+                    " name=" + ev.name() +
+                    " async=" + ev.async() +
+                    " capturing=" + params.capturing +
+                    " bubbling=" + params.bubbling +
+                    " directresult=" + params.directresult +
+                    " firstonly=" + params.firstonly
+                );
+            }
 
             /*  helper function for dispatching event to single component  */
             var event_dispatch_single = function (ev, origin, comp, params, state) {
@@ -207,7 +210,8 @@ $cs.pattern.eventing = $cs.trait({
                             || state === "targeting" && !s.capture
                             || state === "bubbling"  && !s.capture)
                         && ev.matches(s.name, s.spec)             ) {
-                        $cs.debug(1, "event: " + comp.path("/") + ": dispatch on " + state);
+                        if (!params.silent)
+                            $cs.debug(1, "event: " + comp.path("/") + ": dispatch on " + state);
                         ev.state(state);
                         ev.decline(false);
                         var args = _cs.concat(
