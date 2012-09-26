@@ -158,14 +158,22 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                         /*  FULL STOP: state enter method rejected state transition  */
                         $cs.debug(1,
                             "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER METHOD: " +
-                            "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
-                            "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                            "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
+                            "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
                         comp.__state--;
                         return;
                     }
                 }
             }
+            comp.publish({
+                name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
+                directresult: true
+                capturing:    false,
+                bubbling:     false,
+                async:        true,
+                silent:       true
+            });
 
             /*  optionally automatically transition
                 child component(s) to higher state third  */
@@ -235,14 +243,22 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                         /*  FULL STOP: state leave method rejected state transition  */
                         $cs.debug(1,
                             "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE METHOD: " +
-                            "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
-                            "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                            "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
+                            "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
                         comp.__state++;
                         return;
                     }
                 }
             }
+            comp.publish({
+                name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
+                directresult: true
+                capturing:    false,
+                bubbling:     false,
+                async:        true,
+                silent:       true
+            });
 
             /*  optionally automatically transition
                 parent component to lower state third  */
