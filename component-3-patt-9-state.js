@@ -168,7 +168,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             }
             comp.publish({
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
-                directresult: true
+                directresult: true,
                 capturing:    false,
                 bubbling:     false,
                 async:        true,
@@ -253,7 +253,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             }
             comp.publish({
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
-                directresult: true
+                directresult: true,
                 capturing:    false,
                 bubbling:     false,
                 async:        true,
