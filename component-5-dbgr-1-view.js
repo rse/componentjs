@@ -38,7 +38,7 @@ _cs.dbg_log = function (msg) {
     _cs.dbg_logbook +=
         "<table class=\"line\">" +
             "<tr>" +
-                "<td class=\"num\">" + _cs.dbg_logline++ + ".</td>" +
+                "<td class=\"num\">" + _cs.dbg_logline + ".</td>" +
                 "<td class=\"msg\">" + msg + "</td>" +
             "</tr>" +
         "</table>";
