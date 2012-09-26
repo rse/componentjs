@@ -53,9 +53,10 @@ _cs.dbg_natural = false;
     i.e., whether the native Browser debugger is active/open  */
 $cs.instrumented = function () {
     return (
-           window.console
-        && (  window.console.firebug                            /* precision: Firefox Firebug  */
-            || (window.outerHeight - window.innerHeight) > 100) /* guessing:  Chrome Inspector */
+           typeof GLOBAL !== "undefined"
+        && GLOBAL.console
+        && (  GLOBAL.console.firebug                            /* precision: Firefox Firebug  */
+            || (GLOBAL.outerHeight - GLOBAL.innerHeight) > 100) /* guessing:  Chrome Inspector */
     );
 };
 
@@ -87,7 +88,7 @@ $cs.debugger = function () {
                 title += " (" + params.name + ")";
 
             /*  create external debugger window  */
-            _cs.dbg = window.open("", title,
+            _cs.dbg = GLOBAL.open("", title,
                 "width=" + params.width + ",height=" + params.height + "," +
                 "location=no,replace=yes,scrollbars=no,toolbars=no,menubar=no,status=no"
             );
@@ -97,7 +98,7 @@ $cs.debugger = function () {
                 _cs.jq(_cs.dbg.document).ready(function () {
                     /*  optionally automatically close debugger window with application window  */
                     if (params.autoclose) {
-                        _cs.jq(GLOBAL.window).bind("beforeunload", function () {
+                        _cs.jq(GLOBAL).bind("beforeunload", function () {
                             if (_cs.dbg !== null)
                                 _cs.dbg.close();
                         });
