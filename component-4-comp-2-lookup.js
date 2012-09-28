@@ -17,7 +17,7 @@ _cs.lookup = function (base, path) {
             base = _cs.root;
         }
         else
-            /*  special calling via object only: $cs(this) -> $cs(this, "") */
+            /*  special calling via base only: $cs(this) -> $cs(this, "") */
             path = "";
     }
 
@@ -40,10 +40,14 @@ _cs.lookup = function (base, path) {
         /*  use base  */
         if (   _cs.istypeof(base) !== "component"
             && _cs.annotation(base, "comp") !== null)
+            /*  success: find component object via shadow object  */
             comp = _cs.annotation(base, "comp");
         else if (_cs.istypeof(base) !== "component")
-            throw _cs.exception("lookup", "invalid base component (type is \"" + _cs.istypeof(base) + "\")");
+            /*  failure: found other object which is not already component  */
+            throw _cs.exception("lookup", "invalid base component (type is \"" +
+                _cs.istypeof(base) + "\")");
         else
+            /*  success: found component object  */
             comp = base;
     }
 
@@ -55,10 +59,8 @@ _cs.lookup = function (base, path) {
         else if (path === "..") {
             if (comp.parent() !== null)
                 comp = comp.parent();
-            else {
-                /* throw _cs.exception("lookup", "no parent component available") */
+            else
                 comp = _cs.none;
-            }
         }
         else if (path !== "") {
             var found = null;
@@ -71,10 +73,8 @@ _cs.lookup = function (base, path) {
             }
             if (found !== null)
                 comp = found;
-            else {
-                /* throw _cs.exception("lookup", "no children component found with name \"" + path "\""); */
+            else
                 comp = _cs.none;
-            }
         }
         return comp;
     };
