@@ -7,34 +7,40 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  top-level API: create a component  */
+/*  top-level API: create one or more components  */
 $cs.create = function () {
-    /*  parse arguments  */
-    var base  = null;
-    var path  = null;
-    var clazz = null;
-    if (arguments.length >= 1 && typeof arguments[0] === "string") {
-        /*  special calling convention: create("/foo", foo) -> create(_cs.root, "/foo", foo) */
-        base  = _cs.root;
-        path  = arguments[0];
-        clazz = arguments[1];
-    }
-    else if (arguments.length >= 2 && typeof arguments[1] === "string") {
-        /*  standard calling convention  */
-        base  = arguments[0];
-        path  = arguments[1];
-        clazz = arguments[2];
+    /*  sanity check arguments  */
+    if (arguments.length < 2)
+        throw _cs.exception("create", "invalid number of arguments");
 
-        /*  allow passing of underlying objects by mapping back to component  */
-        if (_cs.istypeof(base) !== "component") {
-            var c = _cs.annotation(base, "comp");
-            if (c === null)
-                throw _cs.exception("create", "invalid base argument (not an object attached to a component)");
-            base = c;
+    /*  determine base component  */
+    var i = 0;
+    var comp;
+    if ((arguments.length % 2) == 0)
+        comp = _cs.root;
+    else {
+        comp = arguments[i++];
+        if (_cs.istypeof(comp) !== "component") {
+            comp = _cs.annotation(comp, "comp");
+            if (comp === null)
+                throw _cs.exception("create", "invalid base argument " +
+                    "(not an object attached to a component)");
         }
     }
-    else
-        throw _cs.exception("create", "invalid (number of) arguments");
+
+    /*  iterate over all supplied path/clazz pairs (at least once)  */
+    for (; i < arguments.length; i += 2)
+        comp = _cs.create_single(comp, arguments[i], arguments[i + 1]);
+
+    /*  return (last created) component  */
+    return comp;
+};
+
+/*  internal: create a single component  */
+_cs.create_single = function (base, path, clazz) {
+    /*  sanity check parameters  */
+    if (typeof path !== "string")
+        throw _cs.exception("create", "invalid path argument (not a string)");
 
     /*  split path into existing tree and the not existing component leaf node  */
     var m = path.match(/^(.*?)\/?([^\/]+)$/);
@@ -116,20 +122,17 @@ $cs.create = function () {
 };
 
 /*  top-level API: destroy a component  */
-$cs.destroy = function (path) {
+$cs.destroy = function () {
+    /*  sanity check arguments  */
+    if (arguments.length !== 1 && arguments.length !== 2)
+        throw _cs.exception("destroy", "invalid number of arguments");
+
     /*  determine component  */
-    var comp = null;
-    if (_cs.istypeof(path) === "component")
-        comp = path;
-    else if (typeof path === "string") {
-        comp = _cs.lookup(path);
-        if (comp === _cs.none)
-            throw _cs.exception("destroy", "no such component under path \"" + path + "\"");
-        if (comp === _cs.root)
-            throw _cs.exception("destroy", "root component cannot be destroyed");
-    }
-    else
-        throw _cs.exception("destroy", "invalid path argument");
+    var comp = _cs.lookup.apply(this, arguments);
+    if (comp === _cs.none)
+        throw _cs.exception("destroy", "no such component found to destroy");
+    else if (comp === _cs.root)
+        throw _cs.exception("destroy", "root component cannot be destroyed");
 
     /*  switch component state to "dead"
         (here synchronously as one expects that after a destruction of a

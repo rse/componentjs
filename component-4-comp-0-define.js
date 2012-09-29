@@ -36,14 +36,13 @@ _cs.comp = $cs.clazz({
     },
     protos: {
         /*  create a sub-component  */
-        create: function (name, clazz) {
-            return $cs.create(this, name, clazz);
+        create: function () {
+            return $cs.create.apply(this, _cs.concat([ this ], arguments));
         },
 
-        /*  destroy this or a sub-component  */
-        destroy: function (name) {
-            var comp = _cs.isdefined(name) ? $cs(this, name) : $cs(this);
-            $cs.destroy(comp.path("/"));
+        /*  destroy sub-component (or just this component) */
+        destroy: function () {
+            return $cs.destroy.apply(this, _cs.concat([ this ], arguments));
         },
 
         /*  check for existance of a component  */
