@@ -51,37 +51,82 @@ _cs.lookup = function (base, path) {
             comp = base;
     }
 
-    /*  lookup component via subsequent path stepping down the tree  */
-    var _lookup = function (comp, path) {
-        if (path === ".") {
-            /* no-op */
-        }
-        else if (path === "..") {
+    /*  lookup component(s) at "comp", reachable via path segment "path[i]"  */
+    var _lookup = function (result, comp, path, i) {
+        if (i >= path.length)
+            /*  stop recursion  */
+            result.push(comp);
+        else if (path[i] === ".")
+            /*  CASE 1: current component (= no-op)  */
+            _lookup(result, comp, path, i + 1);
+        else if (path[i] === "..") {
+            /*  CASE 2: parent component  */
             if (comp.parent() !== null)
-                comp = comp.parent();
-            else
-                comp = _cs.none;
+                _lookup(result, comp.parent(), path, i + 1); /* RECURSION */
         }
-        else if (path !== "") {
-            var found = null;
+        else if (path[i] === "*") {
+            /*  CASE 3: all child components  */
             var children = comp.children();
-            for (var i = 0; i < children.length; i++) {
-                if (children[i].name() === path) {
-                    found = children[i];
+            for (var j = 0; j < children.length; j++)
+                _lookup(result, children[j], path, i + 1); /* RECURSION */
+        }
+        else if (path[i] === "") {
+            /*  CASE 4: all descendent components  */
+            var nodes = comp.walk_down(function (depth, node, nodes, depth_first) {
+                if (!depth_first)
+                    nodes.push(node);
+                return nodes;
+            }, []);
+            for (var j = 0; j < nodes.length; j++)
+                _lookup(result, nodes[j], path, i + 1); /* RECURSION */
+        }
+        else {
+            /*  CASE 5: a specific child component  */
+            var children = comp.children();
+            for (var j = 0; j < children.length; j++) {
+                if (children[j].name() === path[i]) {
+                    _lookup(result, children[j], path, i + 1); /* RECURSION */
                     break;
                 }
             }
-            if (found !== null)
-                comp = found;
-            else
-                comp = _cs.none;
         }
-        return comp;
     };
     if (path !== "") {
-        var path_steps = path.split("/");
-        for (var i = 0; i < path_steps.length; i++)
-            comp = _lookup(comp, path_steps[i]);
+        /*  lookup components  */
+        var comps = []
+        _lookup(comps, comp, path.split("/"), 0);
+
+        /*  post-process component result set  */
+        if (comps.length === 0)
+            /*  no component found  */
+            comp = _cs.none;
+        else if (comps.length === 1)
+            /*  single and hence unambitous component found  */
+            comp = comps[0];
+        else {
+            /*  more than one result found: try to reduce duplicates first  */
+            var seen = {};
+            comps = _cs.filter(comps, function (comp) {
+                var id = comp.id();
+                var take = (typeof seen[id] === "undefined");
+                seen[id] = true;
+                return take;
+            })
+            if (comps.length === 1)
+                /*  after de-duplication now only a single component found  */
+                comp = comps[0];
+            else {
+                /*  error: still more than one component found  */
+                var components = "";
+                for (var i = 0; i < comps.length; i++)
+                    components += " " + comps[i].path("/");
+                throw _cs.exception("lookup",
+                    "ambiguous component path \"" + path + "\" at " + comp.path("/") + ": " +
+                    "expected only 1 component, but found " + comps.length + " components:" +
+                    components
+                );
+            }
+        }
     }
 
     /*  return component  */
