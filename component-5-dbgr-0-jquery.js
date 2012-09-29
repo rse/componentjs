@@ -9,8 +9,6 @@
 
 /*  minimum emulation of jQuery  */
 _cs.jq = function (sel, el) {
-    if (typeof GLOBAL.jQuery !== "undefined")
-        return GLOBAL.jQuery(sel, el);
     var result = [];
     if (arguments.length === 1 && typeof sel !== "string")
         result.push(sel);
@@ -18,6 +16,7 @@ _cs.jq = function (sel, el) {
         if (typeof el === "undefined")
             el = GLOBAL.document;
         result = el.querySelectorAll(sel);
+        result = _cs.concat([], result);
     }
     _cs.extend(result, _cs.jq_methods);
     return result;
@@ -87,8 +86,29 @@ _cs.jq_methods = {
         return result;
     },
     html: function (html) {
-        for (var i = 0; i < this.length; i++)
-            this[i].innerHTML = html;
+        for (var i = 0; i < this.length; i++) {
+            try {
+                /*  direct approach (but does not work on all elements,
+                    especially not on html, head and body, etc)  */
+                this[i].innerHTML = html;
+            }
+            catch (e) {
+                /*  create an arbitrary element on which we can use innerHTML  */
+                var content = _cs.dbg.document.createElement("div");
+
+                /*  set innerHTML, but use an outer wrapper element
+                    to ensure we have a single root element  */
+                content.innerHTML = "<div>" + html + "</div>";
+
+                /*  remove all nodes from target node  */
+                while (this[i].firstChild)
+                    this[i].removeChild(this[i].firstChild);
+
+                /*  add all nodes in our <div><div>...</div></div> enclosure  */
+                for (var j = 0; j < content.firstChild.childNodes.length; j++)
+                    this[i].appendChild(content.firstChild.childNodes[j]);
+            }
+        }
         return this;
     },
     scrollTop: function (value) {

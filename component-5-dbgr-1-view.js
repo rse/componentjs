@@ -122,101 +122,97 @@ $cs.debugger = function () {
                     }
 
                     /*  create markup  */
-                    _cs.jq("html", _cs.dbg.document).html(
-                        "<html>" +
-                            "<head>" +
-                                "<title>" + title + "</title>" +
-                                "<style type=\"text/css\">" +
-                                    "html, body {" +
-                                        "margin: 0px;" +
-                                        "padding: 0px;" +
-                                    "}" +
-                                    ".dbg {" +
-                                        "width: 100%;" +
-                                        "height: 100%;" +
-                                        "font-family: Helvetica, Arial, sans-serif;" +
-                                        "background-color: #e0e0e0;" +
-                                        "overflow: hidden;" +
-                                        "font-size: 9pt;" +
-                                    "}" +
-                                    ".dbg .header {" +
-                                        "width: 100%;" +
-                                        "height: 30px;" +
-                                        "background-color: #000000;" +
-                                        "text-align: center;" +
-                                        "position: relative;" +
-                                    "}" +
-                                    ".dbg .header .text {" +
-                                        "position: relative;" +
-                                        "top: 6px;" +
-                                        "color: #ffffff;" +
-                                        "font-size: 12pt;" +
-                                        "font-weight: bold;" +
-                                    "}" +
-                                    ".dbg .viewer {" +
-                                        "width: 100%;" +
-                                        "height: 50%;" +
-                                        "background-color: #d0d0d0;" +
-                                        "overflow: hidden;" +
-                                    "}" +
-                                    ".dbg .viewer canvas {" +
-                                        "position: relative;" +
-                                        "top: 10px;" +
-                                        "left: 10px;" +
-                                        "width: 100%;" +
-                                        "height: 100%;" +
-                                    "}" +
-                                    ".dbg .status {" +
-                                        "width: 100%;" +
-                                        "height: 20px;" +
-                                        "background-color: #666666;" +
-                                        "color: #f0f0f0;" +
-                                        "text-align: center;" +
-                                    "}" +
-                                    ".dbg .status .text {" +
-                                        "position: relative;" +
-                                        "top: 3px;" +
-                                        "color: #ffffff;" +
-                                        "font-size: 9pt;" +
-                                    "}" +
-                                    ".dbg .console {" +
-                                        "width: 100%;" +
-                                        "height: 50%;" +
-                                        "background-color: #ffffff;" +
-                                        "color: #000000;" +
-                                        "overflow: scroll;" +
-                                        "font-size: 9pt;" +
-                                    "}" +
-                                    ".dbg .console .text {" +
-                                        "width: 100%;" +
-                                        "height: auto;" +
-                                    "}" +
-                                    ".dbg .console .text .line {" +
-                                        "border-collapse: collapse;" +
-                                        "width: 100%;" +
-                                        "border-bottom: 1px solid #d0d0d0;" +
-                                        "font-size: 9pt;" +
-                                    "}" +
-                                    ".dbg .console .text .num {" +
-                                        "width: 40px;" +
-                                        "background-color: #f0f0f0;" +
-                                        "text-align: right;" +
-                                    "}" +
-                                    ".dbg .console .text .msg {" +
-                                        "padding-left: 10px;" +
-                                    "}" +
-                                "</style>" +
-                            "</head>" +
-                            "<body>" +
-                                "<div class=\"dbg\">" +
-                                    "<div class=\"header\"><div class=\"text\">" + title + "</div></div>" +
-                                    "<div class=\"viewer\"><canvas></canvas></div>" +
-                                    "<div class=\"status\"><div class=\"text\"></div></div>" +
-                                    "<div class=\"console\"><div class=\"text\"></div></div>" +
-                                "</div>" +
-                            "</body>" +
-                        "</html>"
-                    )
+                    _cs.jq("html head", _cs.dbg.document).html(
+                        "<title>" + title + "</title>"
+                    );
+                    _cs.jq("html body", _cs.dbg.document).html(
+                        "<style type=\"text/css\">" +
+                            "html, body {" +
+                                "margin: 0px;" +
+                                "padding: 0px;" +
+                            "}" +
+                            ".dbg {" +
+                                "width: 100%;" +
+                                "height: 100%;" +
+                                "font-family: Helvetica, Arial, sans-serif;" +
+                                "background-color: #e0e0e0;" +
+                                "overflow: hidden;" +
+                                "font-size: 9pt;" +
+                            "}" +
+                            ".dbg .header {" +
+                                "width: 100%;" +
+                                "height: 30px;" +
+                                "background-color: #000000;" +
+                                "text-align: center;" +
+                                "position: relative;" +
+                            "}" +
+                            ".dbg .header .text {" +
+                                "position: relative;" +
+                                "top: 6px;" +
+                                "color: #ffffff;" +
+                                "font-size: 12pt;" +
+                                "font-weight: bold;" +
+                            "}" +
+                            ".dbg .viewer {" +
+                                "width: 100%;" +
+                                "height: 50%;" +
+                                "background-color: #d0d0d0;" +
+                                "overflow: hidden;" +
+                            "}" +
+                            ".dbg .viewer canvas {" +
+                                "position: relative;" +
+                                "top: 10px;" +
+                                "left: 10px;" +
+                                "width: 100%;" +
+                                "height: 100%;" +
+                            "}" +
+                            ".dbg .status {" +
+                                "width: 100%;" +
+                                "height: 20px;" +
+                                "background-color: #666666;" +
+                                "color: #f0f0f0;" +
+                                "text-align: center;" +
+                            "}" +
+                            ".dbg .status .text {" +
+                                "position: relative;" +
+                                "top: 3px;" +
+                                "color: #ffffff;" +
+                                "font-size: 9pt;" +
+                            "}" +
+                            ".dbg .console {" +
+                                "width: 100%;" +
+                                "height: 50%;" +
+                                "background-color: #ffffff;" +
+                                "color: #000000;" +
+                                "overflow: scroll;" +
+                                "font-size: 9pt;" +
+                            "}" +
+                            ".dbg .console .text {" +
+                                "width: 100%;" +
+                                "height: auto;" +
+                            "}" +
+                            ".dbg .console .text .line {" +
+                                "border-collapse: collapse;" +
+                                "width: 100%;" +
+                                "border-bottom: 1px solid #d0d0d0;" +
+                                "font-size: 9pt;" +
+                            "}" +
+                            ".dbg .console .text .num {" +
+                                "width: 40px;" +
+                                "background-color: #f0f0f0;" +
+                                "text-align: right;" +
+                            "}" +
+                            ".dbg .console .text .msg {" +
+                                "padding-left: 10px;" +
+                            "}" +
+                        "</style>" +
+                        "<div class=\"dbg\">" +
+                            "<div class=\"header\"><div class=\"text\">" + title + "</div></div>" +
+                            "<div class=\"viewer\"><canvas></canvas></div>" +
+                            "<div class=\"status\"><div class=\"text\"></div></div>" +
+                            "<div class=\"console\"><div class=\"text\"></div></div>" +
+                        "</div>"
+                    );
                     _cs.dbg_refresh();
                     _cs.jq(_cs.dbg).bind("resize", function () {
                         _cs.dbg_refresh();
