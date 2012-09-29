@@ -60,6 +60,14 @@ $cs.instrumented = function () {
     );
 };
 
+/*  try to determine whether Internet Explorer is used  */
+_cs.isIE = function () {
+    return (
+           navigator.appName == "Microsoft Internet Explorer"
+        && navigator.userAgent.match(new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})"))
+    );
+};
+
 /*  debugger API entry point  */
 $cs.debugger = function () {
     /*  determine parameters  */
@@ -88,10 +96,19 @@ $cs.debugger = function () {
                 title += " (" + params.name + ")";
 
             /*  create external debugger window  */
-            _cs.dbg = GLOBAL.open("", title,
-                "width=" + params.width + ",height=" + params.height + "," +
-                "location=no,replace=yes,scrollbars=no,toolbars=no,menubar=no,status=no"
-            );
+            var wname = title;
+            var wopts = "location=no,scrollbars=no,toolbars=no,menubar=no,status=no";
+            wopts += ",width=" + params.width + ",height=" + params.height;
+            if (_cs.isIE())
+                wname = wname.replace(/ /g, "_").replace(/[()]/g, "");
+            else
+                wopts += ",replace=yes";
+            _cs.dbg = GLOBAL.open("about:blank", wname, wopts);
+            if (_cs.isIE()) {
+                /*  IE does not support reuse flag, so close old instance and open a fresh one  */
+                _cs.dbg.close();
+                _cs.dbg = GLOBAL.open("about:blank", wname, wopts);
+            }
 
             /*  initialize the window content (deferred to avoid problems)  */
             setTimeout(function () {
