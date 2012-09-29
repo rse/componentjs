@@ -241,7 +241,7 @@ _cs.dbg_refresh = function () {
     /*  expand to viewport width/height  */
     var vw = _cs.jq(_cs.dbg).width();
     var vh = _cs.jq(_cs.dbg).height();
-    _cs.jq("dbg", _cs.dbg.document).width(vw).height(vh);
+    _cs.jq(".dbg", _cs.dbg.document).width(vw).height(vh);
 
     /*  expand viewer and console to half of the viewport height  */
     var h = vh - (
