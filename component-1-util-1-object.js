@@ -35,8 +35,11 @@ _cs.isdefined = function (obj) {
     (instead of implicitly resolved through the constructor's prototype object)  */
 _cs.isown = function (obj, field) {
     var isown = Object.hasOwnProperty.call(obj, field);
-    if (field === "constructor" || field === "prototype")
+    if (field === "constructor" || field === "prototype") {
         isown = isown && Object.propertyIsEnumerable.call(obj, field);
+        if (obj[field].toString().indexOf('[native code]') !== -1)
+            isown = false;
+    }
     return isown;
 };
 
