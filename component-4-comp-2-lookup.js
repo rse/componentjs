@@ -38,14 +38,14 @@ _cs.lookup = function (base, path) {
     }
     else {
         /*  use base  */
-        if (   _cs.istypeof(base) !== "component"
-            && _cs.annotation(base, "comp") !== null)
-            /*  success: find component object via shadow object  */
-            comp = _cs.annotation(base, "comp");
-        else if (_cs.istypeof(base) !== "component")
+        var base_type = _cs.istypeof(base);
+        var base_comp = _cs.annotation(base, "comp");
+        if (base_type !== "component" && base_comp !== null)
+            /*  success: found component object via shadow object  */
+            comp = base_comp;
+        else if (base_type !== "component")
             /*  failure: found other object which is not already component  */
-            throw _cs.exception("lookup", "invalid base component (type is \"" +
-                _cs.istypeof(base) + "\")");
+            throw _cs.exception("lookup", "invalid base component (type is \"" + base_type + "\")");
         else
             /*  success: found component object  */
             comp = base;
