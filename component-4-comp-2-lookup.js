@@ -7,7 +7,7 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  top-level API: lookup component by path  */
+/*  lookup component by path  */
 _cs.lookup = function (base, path) {
     /*  handle special calling conventions  */
     if (arguments.length === 1) {
@@ -51,50 +51,10 @@ _cs.lookup = function (base, path) {
             comp = base;
     }
 
-    /*  lookup component(s) at "comp", reachable via path segment "path[i]"  */
-    var _lookup = function (result, comp, path, i) {
-        if (i >= path.length)
-            /*  stop recursion  */
-            result.push(comp);
-        else if (path[i] === ".")
-            /*  CASE 1: current component (= no-op)  */
-            _lookup(result, comp, path, i + 1);
-        else if (path[i] === "..") {
-            /*  CASE 2: parent component  */
-            if (comp.parent() !== null)
-                _lookup(result, comp.parent(), path, i + 1); /* RECURSION */
-        }
-        else if (path[i] === "*") {
-            /*  CASE 3: all child components  */
-            var children = comp.children();
-            for (var j = 0; j < children.length; j++)
-                _lookup(result, children[j], path, i + 1); /* RECURSION */
-        }
-        else if (path[i] === "") {
-            /*  CASE 4: all descendent components  */
-            var nodes = comp.walk_down(function (depth, node, nodes, depth_first) {
-                if (!depth_first)
-                    nodes.push(node);
-                return nodes;
-            }, []);
-            for (var j = 0; j < nodes.length; j++)
-                _lookup(result, nodes[j], path, i + 1); /* RECURSION */
-        }
-        else {
-            /*  CASE 5: a specific child component  */
-            var children = comp.children();
-            for (var j = 0; j < children.length; j++) {
-                if (children[j].name() === path[i]) {
-                    _lookup(result, children[j], path, i + 1); /* RECURSION */
-                    break;
-                }
-            }
-        }
-    };
     if (path !== "") {
         /*  lookup components  */
         var comps = []
-        _lookup(comps, comp, path.split("/"), 0);
+        _cs.lookup_step(comps, comp, path.split("/"), 0);
 
         /*  post-process component result set  */
         if (comps.length === 0)
@@ -131,5 +91,46 @@ _cs.lookup = function (base, path) {
 
     /*  return component  */
     return comp;
+};
+
+/*  lookup component(s) at "comp", reachable via path segment "path[i]"  */
+_cs.lookup_step = function (result, comp, path, i) {
+    if (i >= path.length)
+        /*  stop recursion  */
+        result.push(comp);
+    else if (path[i] === ".")
+        /*  CASE 1: current component (= no-op)  */
+        _cs.lookup_step(result, comp, path, i + 1);                /* RECURSION */
+    else if (path[i] === "..") {
+        /*  CASE 2: parent component  */
+        if (comp.parent() !== null)
+            _cs.lookup_step(result, comp.parent(), path, i + 1);   /* RECURSION */
+    }
+    else if (path[i] === "*") {
+        /*  CASE 3: all child components  */
+        var children = comp.children();
+        for (var j = 0; j < children.length; j++)
+            _cs.lookup_step(result, children[j], path, i + 1);     /* RECURSION */
+    }
+    else if (path[i] === "") {
+        /*  CASE 4: all descendent components  */
+        var nodes = comp.walk_down(function (depth, node, nodes, depth_first) {
+            if (!depth_first)
+                nodes.push(node);
+            return nodes;
+        }, []);
+        for (var j = 0; j < nodes.length; j++)
+            _cs.lookup_step(result, nodes[j], path, i + 1);        /* RECURSION */
+    }
+    else {
+        /*  CASE 5: a specific child component  */
+        var children = comp.children();
+        for (var j = 0; j < children.length; j++) {
+            if (children[j].name() === path[i]) {
+                _cs.lookup_step(result, children[j], path, i + 1); /* RECURSION */
+                break;
+            }
+        }
+    }
 };
 
