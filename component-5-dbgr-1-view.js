@@ -56,7 +56,7 @@ $cs.instrumented = function () {
            typeof GLOBAL !== "undefined"
         && GLOBAL.console
         && (  GLOBAL.console.firebug                            /* precision: Firefox Firebug  */
-            || (GLOBAL.outerHeight - GLOBAL.innerHeight) > 100) /* guessing:  Chrome Inspector */
+            || (GLOBAL.outerHeight - GLOBAL.innerHeight) > 100) /* guessing:  Chrome Inspector, IE Debugger  */
     );
 };
 
