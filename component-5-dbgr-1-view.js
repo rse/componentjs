@@ -220,10 +220,10 @@ $cs.debugger = function () {
                                 "color: #999999;" +
                             "}" +
                             ".dbg .console .text .msg .context {" +
-                                "color: #3366cc;" +
+                                "font-weight: bold;" +
                             "}" +
                             ".dbg .console .text .msg .path {" +
-                                "font-weight: bold;" +
+                                "color: #003399;" +
                             "}" +
                             ".dbg .console .text .msg .state {" +
                                 "font-style: italic;" +
