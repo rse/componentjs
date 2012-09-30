@@ -379,8 +379,8 @@ _cs.dbg_update_once = function () {
             /*  determine canvas width/height and calculate grid width/height and offset width/height  */
             var ch = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height();
             var cw = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width();
-            var gw = Math.floor(cw / (W+1));
-            var gh = Math.floor(ch / (D+1));
+            var gw = Math.floor(cw / W);
+            var gh = Math.floor(ch / (D + 1));
             var ow = Math.floor(gw / 8);
             var oh = Math.floor(gh / 3);
 
