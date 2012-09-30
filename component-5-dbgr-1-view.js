@@ -35,6 +35,17 @@ _cs.dbg_log = function (msg) {
         .replace(">", "&gt;")
         .replace("\n", "<br/>");
     _cs.dbg_logline++;
+    msg = msg.replace(/(DEBUG\[\d+\]: )([^:]+)/,
+        '<span class="prefix">$1</span>' +
+        '<span class="context">$2</span>'
+    );
+    msg = msg.replace(/(\s+)(\/[^:\s]*)/g, '$1<span class="path">$2</span>');
+    msg = msg.replace(/(\s+)(@[a-z]+)/g,   '$1<span class="state">$2</span>');
+    msg = msg.replace(/((?:&lt;)?--\()([a-z]+)(\)--(?:&gt;)?)/g,
+        '<span class="arrow">$1</span>' +
+        '<span class="method">$2</span>' +
+        '<span class="arrow">$3</span>'
+    );
     _cs.dbg_logbook +=
         "<table class=\"line\">" +
             "<tr>" +
@@ -204,6 +215,24 @@ $cs.debugger = function () {
                             "}" +
                             ".dbg .console .text .msg {" +
                                 "padding-left: 10px;" +
+                            "}" +
+                            ".dbg .console .text .msg .prefix {" +
+                                "color: #999999;" +
+                            "}" +
+                            ".dbg .console .text .msg .context {" +
+                                "color: #3366cc;" +
+                            "}" +
+                            ".dbg .console .text .msg .path {" +
+                                "font-weight: bold;" +
+                            "}" +
+                            ".dbg .console .text .msg .state {" +
+                                "font-style: italic;" +
+                            "}" +
+                            ".dbg .console .text .msg .arrow {" +
+                                "color: #999999;" +
+                            "}" +
+                            ".dbg .console .text .msg .method {" +
+                                "font-family: monospace;" +
                             "}" +
                         "</style>" +
                         "<div class=\"dbg\">" +
