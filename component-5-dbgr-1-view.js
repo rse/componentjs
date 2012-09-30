@@ -169,7 +169,7 @@ $cs.debugger = function () {
                             ".dbg .status {" +
                                 "width: 100%;" +
                                 "height: 20px;" +
-                                "background-color: #666666;" +
+                                "background-color: #000000;" +
                                 "color: #f0f0f0;" +
                                 "text-align: center;" +
                             "}" +
@@ -401,7 +401,7 @@ _cs.dbg_update_once = function () {
                             var child_y = _cs.annotation(children[i], "debugger_y");
                             var child_w = _cs.annotation(children[i], "debugger_w");
                             var child_h = _cs.annotation(children[i], "debugger_h");
-                            ctx.strokeStyle = "#999999";
+                            ctx.strokeStyle = "#888888";
                             ctx.lineWidth = 2;
                             ctx.beginPath();
                             ctx.moveTo(my_x + Math.ceil(my_w / 2),
@@ -416,20 +416,38 @@ _cs.dbg_update_once = function () {
                         }
                     }
 
+                    /*  determine type of component  */
+                    var type = "";
+                    if (_cs.marked(comp.obj(), "view"))       type += "V";
+                    if (_cs.marked(comp.obj(), "model"))      type += "M";
+                    if (_cs.marked(comp.obj(), "controller")) type += "C";
+                    if (_cs.marked(comp.obj(), "cross"))      type += "X";
+                    if (_cs.marked(comp.obj(), "service"))    type += "S";
+
                     /*  draw component background  */
-                    if (_cs.marked(comp.obj(), "generic"))
-                        ctx.fillStyle = "#003366";
-                    else
-                        ctx.fillStyle = "#333333";
+                    var bg1, fg1, bg2, fg2;
+                    if      (type === "V") { bg1 = "#14426f"; fg1 = "#ffffff"; bg2 = "#2068b0"; fg2 = "#97c1ec"; }
+                    else if (type === "M") { bg1 = "#6f5014"; fg1 = "#ffffff"; bg2 = "#9a6f1c"; fg2 = "#e8c581"; }
+                    else if (type === "S") { bg1 = "#e8e8e8"; fg1 = "#000000"; bg2 = "#ffffff"; fg2 = "#666666"; }
+                    else                   { bg1 = "#444444"; fg1 = "#ffffff"; bg2 = "#777777"; fg2 = "#cccccc"; }
+                    ctx.save();
+                    ctx.fillStyle = bg1;
+                    ctx.shadowColor = '#888888';
+                    ctx.shadowBlur = 6;
+                    ctx.shadowOffsetX = 1;
+                    ctx.shadowOffsetY = 1;
                     ctx.fillRect(my_x, my_y, my_w, my_h);
-                    if (_cs.marked(comp.obj(), "generic"))
-                        ctx.fillStyle = "#336699";
-                    else
-                        ctx.fillStyle = "#666666";
+                    ctx.restore();
+                    ctx.fillStyle = bg2;
                     ctx.fillRect(my_x, my_y + my_h / 2, my_w, my_h / 2);
 
                     /*  draw component state indicator bulp  */
+                    ctx.save();
                     ctx.fillStyle = _cs.states[comp.__state].color;
+                    ctx.shadowColor = '#000000';
+                    ctx.shadowBlur = 2;
+                    ctx.shadowOffsetX = 0;
+                    ctx.shadowOffsetY = 0;
                     ctx.beginPath();
                     ctx.arc(
                         my_x + my_w - (my_h / 4) - 1,
@@ -439,6 +457,7 @@ _cs.dbg_update_once = function () {
                     );
                     ctx.closePath();
                     ctx.fill();
+                    ctx.restore();
 
                     /*  common text rendering  */
                     var renderText = function (text, color, x, y, width) {
@@ -458,28 +477,20 @@ _cs.dbg_update_once = function () {
                     }
 
                     /*  draw component type indicators  */
-                    var type = "";
-                    if (_cs.marked(comp.obj(), "view"))       type += "V";
-                    if (_cs.marked(comp.obj(), "model"))      type += "M";
-                    if (_cs.marked(comp.obj(), "controller")) type += "C";
-                    if (_cs.marked(comp.obj(), "cross"))      type += "X";
-                    if (_cs.marked(comp.obj(), "service"))    type += "S";
                     var width = 0;
                     if (type !== "") {
                         ctx.font = "bold " + ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
                         ctx.textBaseline = "top";
-                        var color = _cs.marked(comp.obj(), "generic") ? "#99ccff" : "#cccccc";
                         var metric = ctx.measureText(type);
-                        renderText(type, color, my_x + my_w - metric.width - 4, my_y + 2, metric.width);
+                        renderText(type, fg2, my_x + my_w - metric.width - 4, my_y + 2, metric.width);
                         width = metric.width;
                     }
 
                     /*  draw component information (name and state)  */
                     ctx.font = ((my_h / 2) * 0.7) + "px Helvetica, Arial, sans-serif";
                     ctx.textBaseline = "top";
-                    renderText(comp.name(),  "#ffffff", my_x + 4, my_y + 2, my_w - width - 8);
-                    var color = _cs.marked(comp.obj(), "generic") ? "#ccccff" : "#cccccc";
-                    renderText(comp.state(), color, my_x + 4, my_y + (my_h / 2) + 2, my_w - (my_h / 2) - 8);
+                    renderText(comp.name(),  fg1, my_x + 4, my_y + 2, my_w - width - 8);
+                    renderText(comp.state(), fg2, my_x + 4, my_y + (my_h / 2) + 2, my_w - (my_h / 2) - 8);
 
                     /*  provide our information to the parent component  */
                     _cs.annotation(comp, "debugger_x", my_x);
