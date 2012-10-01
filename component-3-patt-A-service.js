@@ -102,15 +102,23 @@ $cs.pattern.service = $cs.trait({
             });
 
             /*  dispatch service event onto target component  */
-            return this.publish({
+            var ev = this.publish({
                 name:         "ComponentJS:service:" + params.name,
                 args:         params.args,
                 capturing:    false,
                 bubbling:     params.bubbling,
-                directresult: true,
                 firstonly:    true,
                 async:        false
             });
+
+            /*  ensure that the service event was successfully dispatched
+                at least once (or our result value would have no meaning)  */
+            if (!ev.dispatched())
+                throw _cs.exception("call", "no such registered service found" +
+                    " (or at least all rejected the call)");
+
+            /*  return the result value  */
+            return ev.result();
         }
     }
 });
