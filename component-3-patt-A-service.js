@@ -114,8 +114,8 @@ $cs.pattern.service = $cs.trait({
             /*  ensure that the service event was successfully dispatched
                 at least once (or our result value would have no meaning)  */
             if (!ev.dispatched())
-                throw _cs.exception("call", "no such registered service found" +
-                    " (or at least all rejected the call)");
+                throw _cs.exception("call", "no such registered service found:" +
+                    " \"" + params.name + "\"");
 
             /*  return the result value  */
             return ev.result();
