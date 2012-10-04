@@ -57,7 +57,7 @@ $cs.pattern.socket = $cs.trait({
                 name:   {         def: "default"            },
                 scope:  {         def: null                 },
                 ctx:    { pos: 0, def: null,      req: true },
-                target: { pos: 1, def: "default", req: true },
+                target: { pos: 1, def: "default", req: true }
             });
 
             /*  create a socket and pass-through the

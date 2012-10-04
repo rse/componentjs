@@ -118,6 +118,6 @@ _cs.jq_methods = {
     },
     get: function (pos) {
         return this[pos];
-    },
+    }
 };
 
