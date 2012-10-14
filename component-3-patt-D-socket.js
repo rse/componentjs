@@ -62,23 +62,23 @@ $cs.pattern.socket = $cs.trait({
 
             /*  create a socket and pass-through the
                 plug/unplug operations to the target  */
-            this.socket({
-                name:   params.name,
-                scope:  params.scope,
-                ctx:    params.ctx,
-                plug:   function (obj) {
-                    return this.plug({
-                        name:   params.target,
-                        object: obj
-                    });
-                },
-                unplug: function (obj) {
-                    return this.unplug({
-                        name:   params.target,
-                        object: obj
-                    });
-                }
-            });
+            var comp = this;
+            (function (id) {
+                comp.socket({
+                    name:   params.name,
+                    scope:  params.scope,
+                    ctx:    params.ctx,
+                    plug:   function (obj) {
+                        id = cs(this).plug({
+                            name:   params.target,
+                            object: obj
+                        });
+                    },
+                    unplug: function (obj) {
+                        cs(this).unplug(id);
+                    }
+                });
+            })(-1);
         },
 
         /*  plug into a defined socket  */
@@ -87,65 +87,42 @@ $cs.pattern.socket = $cs.trait({
             var params = $cs.params("plug", arguments, {
                 name:     {         def: "default"           },
                 object:   { pos: 0,                req: true },
-                remember: {         def: true                },
                 spool:    {         def: null                }
             });
 
-            /*  optionally remember plug operation  */
-            if (params.remember)
-                this.__plugs[this.__plugs_id++] = { name: params.name, object: params.object };
+            /*  remember plug operation  */
+            var id = this.__plugs_id++;
+            this.__plugs[id] = params;
 
             /*  pass-though operation to common helper function  */
             _cs.plugger("plug", this, params.name, params.object);
 
             /*  optionally spool reverse operation  */
             if (params.spool !== null)
-                this.spool(params.spool, this, "unplug",
-                    { name: params.name, object: params.object });
+                this.spool(params.spool, this, "unplug", id);
+
+            return id;
         },
 
         /*  unplug from a defined socket  */
         unplug: function () {
             /*  determine parameters  */
             var params = $cs.params("unplug", arguments, {
-                name:   {         def: "default"  },
-                object: { pos: 0, def: null       }
+                id: { pos: 0, req: true }
             });
 
-            /*  object parameter determines operation mode... */
-            if (params.object === null) {
-                /*  mode 1: unplug all remembered objects  */
+            /*  determine plugging information  */
+            if (typeof this.__plugs[params.id] === "undefined")
+                throw _cs.exception("unplug", "plugging not found");
+            var name   = this.__plugs[params.id].name;
+            var object = this.__plugs[params.id].object;
 
-                /*  iterate over all remembered plug operations  */
-                var remove = [];
-                var object = undefined;
-                for (var id in this.__plugs) {
-                    if (!_cs.isown(this.__plugs, id))
-                        continue;
-                    if (params.name === this.__plugs[id].name) {
-                        object = this.__plugs[id].object;
+            /*  pass-though operation to common helper function  */
+            _cs.plugger("unplug", this, name, object);
 
-                        /*  pass-though operation to common helper function  */
-                        _cs.plugger("unplug", this, params.name, object);
-
-                        remove.push(id);
-                    }
-                }
-                if (typeof object === "undefined")
-                    throw _cs.exception("unplug", "object(s) to unplug neither given nor previously remembered");
-
-                /*  deferred cleanup  */
-                var self = this;
-                _cs.foreach(remove, function (id) {
-                    delete self.__plugs[id];
-                });
-            }
-            else {
-                /*  mode 2: unplug one provided object  */
-
-                /*  pass-though operation to common helper function  */
-                _cs.plugger("unplug", this, params.name, params.object);
-            }
+            /*  remove plugging  */
+            delete this.__plugs[params.id];
+            return;
         }
     }
 });
