@@ -151,21 +151,29 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             );
             _cs.dbg_state_invalidate("states");
             _cs.dbg_update();
+
+            /*  execute pending spooled actions  */
+            var name = "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter";
+            if (comp.spooled(name))
+                comp.unspool(name)
+
+            /*  execute enter method  */
             obj = comp.obj();
-            if (obj !== null) {
-                if (typeof obj[enter] === "function") {
-                    if (obj[enter]() === false) {
-                        /*  FULL STOP: state enter method rejected state transition  */
-                        $cs.debug(1,
-                            "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER METHOD: " +
-                            "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
-                            "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
-                        );
-                        comp.__state--;
-                        return;
-                    }
+            if (   obj !== null
+                && typeof obj[enter] === "function") {
+                if (obj[enter]() === false) {
+                    /*  FULL STOP: state enter method rejected state transition  */
+                    $cs.debug(1,
+                        "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER METHOD: " +
+                        "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
+                        "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                    );
+                    comp.__state--;
+                    return;
                 }
             }
+
+            /*  notify subscribers about new state  */
             comp.publish({
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
                 directresult: true,
@@ -236,21 +244,31 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
                 "@" + _cs.states[comp.__state + 1].state
             );
+            _cs.dbg_state_invalidate("states");
+            _cs.dbg_update();
+
+            /*  execute pending spooled actions  */
+            var name = "ComponentJS:state:" + _cs.states[comp.__state + 1].state + ":leave";
+            if (comp.spooled(name))
+                comp.unspool(name)
+
+            /*  execute leave method  */
             obj = comp.obj();
-            if (obj !== null) {
-                if (typeof obj[leave] === "function") {
-                    if (obj[leave]() === false) {
-                        /*  FULL STOP: state leave method rejected state transition  */
-                        $cs.debug(1,
-                            "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE METHOD: " +
-                            "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
-                            "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
-                        );
-                        comp.__state++;
-                        return;
-                    }
+            if (   obj !== null
+                && typeof obj[leave] === "function") {
+                if (obj[leave]() === false) {
+                    /*  FULL STOP: state leave method rejected state transition  */
+                    $cs.debug(1,
+                        "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE METHOD: " +
+                        "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
+                        "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                    );
+                    comp.__state++;
+                    return;
                 }
             }
+
+            /*  notify subscribers about new state  */
             comp.publish({
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
                 directresult: true,

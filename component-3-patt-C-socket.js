@@ -87,7 +87,8 @@ $cs.pattern.socket = $cs.trait({
             var params = $cs.params("plug", arguments, {
                 name:     {         def: "default"           },
                 object:   { pos: 0,                req: true },
-                remember: {         def: true                }
+                remember: {         def: true                },
+                spool:    {         def: null                }
             });
 
             /*  optionally remember plug operation  */
@@ -96,6 +97,11 @@ $cs.pattern.socket = $cs.trait({
 
             /*  pass-though operation to common helper function  */
             _cs.plugger("plug", this, params.name, params.object);
+
+            /*  optionally spool reverse operation  */
+            if (params.spool !== null)
+                this.spool(params.spool, this, "unplug",
+                    { name: params.name, object: params.object });
         },
 
         /*  unplug from a defined socket  */

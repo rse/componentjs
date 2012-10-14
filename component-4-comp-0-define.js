@@ -15,6 +15,7 @@ _cs.comp = $cs.clazz({
         $cs.pattern.data,
         $cs.pattern.tree,
         $cs.pattern.config,
+        $cs.pattern.spool,
         $cs.pattern.state,
         $cs.pattern.service,
         $cs.pattern.eventing,

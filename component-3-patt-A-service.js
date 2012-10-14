@@ -17,12 +17,13 @@ $cs.pattern.service = $cs.trait({
         register: function () {
             /*  determine parameters  */
             var params = $cs.params("register", arguments, {
-                name:   { pos: 0,     def: null,    req: true },
-                ctx:    {             def: this               },
-                func:   { pos: 1,     def: $cs.nop, req: true },
-                args:   { pos: "...", def: []                 },
-                async:  {             def: false              },
-                origin: {             def: false              }
+                name:    { pos: 0,     def: null,    req: true },
+                ctx:     {             def: this               },
+                func:    { pos: 1,     def: $cs.nop, req: true },
+                args:    { pos: "...", def: []                 },
+                async:   {             def: false              },
+                origin:  {             def: false              },
+                spool:   {             def: null               }
             });
 
             /*  create command object to wrap service  */
@@ -58,6 +59,11 @@ $cs.pattern.service = $cs.trait({
                 origin:    params.origin,
                 exclusive: true
             });
+
+            /*  optionally spool reverse operation  */
+            if (params.spool !== null)
+                this.spool(params.spool, this, "unregister", id);
+
             return id;
         },
 

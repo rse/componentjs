@@ -17,10 +17,11 @@ $cs.pattern.hook = $cs.trait({
         latch: function () {
             /*  determine parameters  */
             var params = $cs.params("latch", arguments, {
-                name:   { pos: 0,     def: null,    req: true },
-                ctx:    {             def: this               },
-                func:   { pos: 1,     def: $cs.nop, req: true },
-                args:   { pos: "...", def: []                 }
+                name:    { pos: 0,     def: null,    req: true },
+                ctx:     {             def: this               },
+                func:    { pos: 1,     def: $cs.nop, req: true },
+                args:    { pos: "...", def: []                 },
+                spool:   {             def: null               }
             });
 
             /*  subscribe to hook event  */
@@ -30,6 +31,10 @@ $cs.pattern.hook = $cs.trait({
                 func: params.func,
                 args: params.args
             });
+
+            /*  optionally spool reverse operation  */
+            if (params.spool !== null)
+                this.spool(params.spool, this, "notch", id);
 
             return id;
         },

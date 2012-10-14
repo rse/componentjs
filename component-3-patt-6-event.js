@@ -78,7 +78,8 @@ $cs.pattern.eventing = $cs.trait({
                 capture:   {             def: false              },
                 noevent:   {             def: false              },
                 exclusive: {             def: false              },
-                origin:    {             def: false              }
+                origin:    {             def: false              },
+                spool:     {             def: null               }
             });
 
             /*  honor exclusive request  */
@@ -91,6 +92,11 @@ $cs.pattern.eventing = $cs.trait({
             /*  attach parameters to component  */
             var id = this.__subscription_id++;
             this.__subscription[id] = params;
+
+            /*  optionally spool reverse operation  */
+            if (params.spool !== null)
+                this.spool(params.spool, this, "unsubscribe", id);
+
             return id;
         },
 
