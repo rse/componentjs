@@ -34,15 +34,15 @@ $cs.pattern.hook = $cs.trait({
 
             /*  optionally spool reverse operation  */
             if (params.spool !== null)
-                this.spool(params.spool, this, "notch", id);
+                this.spool(params.spool, this, "unlatch", id);
 
             return id;
         },
 
-        /*  notch from a hook  */
-        notch: function () {
+        /*  unlatch from a hook  */
+        unlatch: function () {
             /*  determine parameters  */
-            var params = $cs.params("notch", arguments, {
+            var params = $cs.params("unlatch", arguments, {
                 id: { pos: 0, req: true }
             });
 
