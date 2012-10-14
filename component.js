@@ -44,19 +44,20 @@
     $include("component-3-patt-0-base.js");
     $include("component-3-patt-1-tree.js");
     $include("component-3-patt-2-config.js");
-    $include("component-3-patt-3-property.js");
-    $include("component-3-patt-4-spec.js");
-    $include("component-3-patt-5-observable.js");
-    $include("component-3-patt-6-event.js");
-    $include("component-3-patt-7-cmd.js");
-    $include("component-3-patt-8-autoattr.js");
-    $include("component-3-patt-9-state.js");
-    $include("component-3-patt-A-service.js");
-    $include("component-3-patt-B-shadow.js");
-    $include("component-3-patt-C-socket.js");
-    $include("component-3-patt-D-hook.js");
-    $include("component-3-patt-E-marker.js");
-    $include("component-3-patt-F-model.js");
+    $include("component-3-patt-3-spool.js");
+    $include("component-3-patt-4-property.js");
+    $include("component-3-patt-5-spec.js");
+    $include("component-3-patt-6-observable.js");
+    $include("component-3-patt-7-event.js");
+    $include("component-3-patt-8-cmd.js");
+    $include("component-3-patt-9-autoattr.js");
+    $include("component-3-patt-A-state.js");
+    $include("component-3-patt-B-service.js");
+    $include("component-3-patt-C-shadow.js");
+    $include("component-3-patt-D-socket.js");
+    $include("component-3-patt-E-hook.js");
+    $include("component-3-patt-F-marker.js");
+    $include("component-3-patt-G-model.js");
 
     /*
     **  COMPONENT API
