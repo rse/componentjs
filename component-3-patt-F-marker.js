@@ -24,13 +24,6 @@ _cs.marked = function (obj, name) {
     return (marker[name] === true);
 };
 
-/*  marker trait: cross component */
-$cs.marker.cross = $cs.trait({
-    constructor: function () {
-        _cs.mark(this, "cross");
-    }
-});
-
 /*  marker trait: service-style component */
 $cs.marker.service = $cs.trait({
     constructor: function () {
@@ -56,13 +49,6 @@ $cs.marker.model = $cs.trait({
 $cs.marker.view = $cs.trait({
     constructor: function () {
         _cs.mark(this, "view");
-    }
-});
-
-/*  marker trait: generic/reusable (view/controller) component */
-$cs.marker.generic = $cs.trait({
-    constructor: function () {
-        _cs.mark(this, "generic");
     }
 });
 
