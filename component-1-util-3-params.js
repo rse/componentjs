@@ -62,7 +62,6 @@ _cs.validate = function (value, valid) {
     return params.valid(params.value);
 };
 
-
 /*  utility function: flexible parameter handling  */
 $cs.params = function (func_name, func_args, spec) {
     /*  start with a fresh parameter object  */
