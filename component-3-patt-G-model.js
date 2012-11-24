@@ -13,31 +13,75 @@ $cs.pattern.model = $cs.trait({
         /*  define model  */
         model: function (model) {
             /*  sanity check model  */
-            _cs.foreach(model, function (name) {
-                if (typeof model[name].value === "undefined")
-                    model[name].value = "";
-                if (typeof model[name].valid === "undefined")
-                    model[name].valid = "string";
-                _cs.foreach(model[name], function (key) {
-                    if (key !== "value" && key !== "valid")
-                        throw _cs.exception("model", "invalid specification key \"" +
-                            key + "\" in specification of model field \"" + name + "\"");
+            if (_cs.isdefined(model)) {
+                _cs.foreach(model, function (name) {
+                    if (typeof model[name].value === "undefined")
+                        model[name].value = "";
+                    if (typeof model[name].valid === "undefined")
+                        model[name].valid = "string";
+                    if (typeof model[name].autoreset === "undefined")
+                        model[name].autoreset = false;
+                    _cs.foreach(model[name], function (key) {
+                        if (key !== "value" && key !== "valid")
+                            throw _cs.exception("model", "invalid specification key \"" +
+                                key + "\" in specification of model field \"" + name + "\"");
+                    });
                 });
-            });
+            }
+
+            /*  retrieve old model  */
+            var model_old = this.property({ name: "ComponentJS:model", bubbling: false });
 
             /*  store model  */
-            var model_old = this.property({ name: "ComponentJS:model", bubbling: false });
-            if (_cs.isdefined(model_old)) {
-                /*  merge model into existing one  */
-                var model_new = {};
-                _cs.extend(model_new, model_old);
-                _cs.extend(model_new, model);
-                this.property("ComponentJS:model", model_new);
+            if (_cs.isdefined(model)) {
+                if (_cs.isdefined(model_old)) {
+                    /*  merge model into existing one  */
+                    var model_new = {};
+                    _cs.extend(model_new, model_old);
+                    _cs.extend(model_new, model);
+                    this.property("ComponentJS:model", model_new);
+                }
+                else {
+                    /*  set initial model  */
+                    this.property("ComponentJS:model", model);
+                }
             }
-            else {
-                /*  set initial model  */
-                this.property("ComponentJS:model", model);
+
+            /*  return old model  */
+            return model_old;
+        },
+
+        /*  retrieve a property based values object  */
+        values: function () {
+            /*  sanity check run-time environment  */
+            if (_cs.istypeof(Object.defineProperty) !== "function")
+                throw _cs.exception("values", "sorry, mandatory Object.defineProperty not supported by run-time environment");
+
+            /*  retrieve values object  */
+            var values_comp = comp.property({ name: "ComponentJS:model:values", returnowner: true });
+            if (!_cs.isdefined(values_comp)) {
+                /*  create initial values object  */
+                model_comp = comp.property({ name: "ComponentJS:model", returnowner: true });
+                if (!_cs.isdefined(model_comp))
+                    throw _cs.exception("values", "no model found");
+                values = {};
+                model_comp.property("ComponentJS:model:values", values);
+
+                /*  enhance values object with properties  */
+                var model = model_comp.property("ComponentJS:model");
+                _cs.foreach(model, function (name) {
+                    (function (comp, name) {
+                        Object.defineProperty(values, name, {
+                            enumerable:   false,
+                            configurable: false,
+                            writable:     true,
+                            get: function ()      { return comp.value(name);        },
+                            set: function (value) { return comp.value(name, value); }
+                        });
+                    })(comp, name);
+                });
             }
+            return values;
         },
 
         /*  get/set model value  */
@@ -45,7 +89,8 @@ $cs.pattern.model = $cs.trait({
             /*  determine parameters  */
             var params = $cs.params("value", arguments, {
                 name:  { pos: 0, def: null,     req: true },
-                value: { pos: 1, def: undefined           }
+                value: { pos: 1, def: undefined           },
+                force: { pos: 2, def: false               }
             });
 
             /*  determine component owning model with requested value  */
@@ -54,7 +99,7 @@ $cs.pattern.model = $cs.trait({
             var comp = this;
             while (comp !== null) {
                 owner = comp.property({ name: "ComponentJS:model", returnowner: true });
-                if (typeof owner === "undefined")
+                if (!_cs.isdefined(owner))
                     throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
                 model = owner.property("ComponentJS:model");
                 if (_cs.isdefined(model[params.name]))
@@ -64,13 +109,13 @@ $cs.pattern.model = $cs.trait({
             if (comp === null)
                 throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
 
-            /*  get old model value  */
+            /*  get old and new model values  */
             var value_old = model[params.name].value;
+            var value_new = params.value;
 
             /*  optionally set new model value  */
-            if (typeof params.value !== "undefined") {
-                var value_new = params.value;
-                var set_value = true;
+            if (   typeof value_new !== "undefined"
+                && (params.force || value_old !== value_new)) {
 
                 /*  check validity of new value  */
                 if (!_cs.validate(value_new, model[params.name].valid))
@@ -81,22 +126,21 @@ $cs.pattern.model = $cs.trait({
                     to reject value set operation and/or change new value to set  */
                 var ev = owner.publish({
                     name:      "ComponentJS:model:" + params.name,
-                    args:      [ params.value, value ],
+                    args:      [ value_new, value_old ],
                     capturing: false,
                     bubbling:  false,
                     async:     false
                 });
                 if (ev.processing()) {
+                    /*  allow value to be overridden  */
                     var result = ev.result();
                     if (typeof result !== "undefined")
                         value_new = result;
-                }
-                else
-                    set_value = false;
 
-                /*  set new value  */
-                if (set_value)
-                    model[params.name].value = value_new;
+                    /*  set new value  */
+                    if (!model[params.name].autoreset)
+                        model[params.name].value = value_new;
+                }
             }
 
             /*  return old model value  */
@@ -110,10 +154,11 @@ $cs.pattern.model = $cs.trait({
                 name: { pos: 0, req: true }
             });
 
-            /*  simply set value to same value in order to trigger event  */
+            /*  simply force value to same value in order to trigger event  */
             this.value({
                 name: params.name,
-                value: this.value(params.name)
+                value: this.value(params.name),
+                force: true
             });
         },
 
