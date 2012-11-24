@@ -14,19 +14,19 @@ $cs.pattern.model = $cs.trait({
         model: function (model) {
             /*  sanity check model  */
             if (_cs.isdefined(model)) {
-                _cs.foreach(model, function (name) {
+                for (var name in model) {
                     if (typeof model[name].value === "undefined")
                         model[name].value = "";
                     if (typeof model[name].valid === "undefined")
                         model[name].valid = "string";
                     if (typeof model[name].autoreset === "undefined")
                         model[name].autoreset = false;
-                    _cs.foreach(model[name], function (key) {
-                        if (key !== "value" && key !== "valid")
+                    for (var key in model[name]) {
+                        if (key !== "value" && key !== "valid" && key !== "autoreset")
                             throw _cs.exception("model", "invalid specification key \"" +
                                 key + "\" in specification of model field \"" + name + "\"");
-                    });
-                });
+                    }
+                }
             }
 
             /*  retrieve old model  */
@@ -70,17 +70,18 @@ $cs.pattern.model = $cs.trait({
 
                 /*  enhance values object with properties  */
                 var model = model_comp.property("ComponentJS:model");
-                _cs.foreach(model, function (name) {
-                    (function (comp, name) {
-                        Object.defineProperty(values, name, {
+                for (var name in model) {
+                    var symbol = name.replace(/[^a-zA-Z0-9_]+/g, "_");
+                    (function (comp, name, symbol) {
+                        Object.defineProperty(values, symbol, {
                             enumerable:   false,
                             configurable: false,
-                            writable:     true,
+                            writeable:    true,
                             get: function ()      { return comp.value(name);        },
                             set: function (value) { return comp.value(name, value); }
                         });
-                    })(comp, name);
-                });
+                    })(comp, name, symbol);
+                }
             }
             return values;
         },
