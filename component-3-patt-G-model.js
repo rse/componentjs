@@ -58,6 +58,7 @@ $cs.pattern.model = $cs.trait({
                 throw _cs.exception("values", "sorry, mandatory Object.defineProperty not supported by run-time environment");
 
             /*  retrieve values object  */
+            var comp = this;
             var values_comp = comp.property({ name: "ComponentJS:model:values", returnowner: true });
             if (!_cs.isdefined(values_comp)) {
                 /*  create initial values object  */
