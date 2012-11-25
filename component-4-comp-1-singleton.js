@@ -13,3 +13,18 @@ _cs.root = new _cs.comp("<root>", null, []);
 /*  singleton component: special return value on lookups */
 _cs.none = new _cs.comp("<none>", null, []);
 
+/*  reasonable error catching for _cs.none usage  */
+var methods = [
+    "create", "destroy", "detach", "exists", "guard", "hook", "invoke",
+    "latch", "link", "listen", "listening", "model", "notify", "observe",
+    "plug", "property", "publish", "register", "service_enabled", "socket",
+    "spool", "spooled", "state", "state_compare", "store", "subscribe",
+    "subscribers", "touch", "unlatch", "unlisten", "unobserve", "unplug",
+    "unregister", "unspool", "unsubscribe", "value", "values"
+];
+_cs.foreach(methods, function (method) {
+    _cs.none[method] = function () {
+        throw _cs.exception(method, "no such component");
+    };
+});
+
