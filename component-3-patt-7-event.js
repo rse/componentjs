@@ -195,8 +195,8 @@ $cs.pattern.eventing = $cs.trait({
 
             /*  tracing  */
             if (!params.silent) {
-                $cs.debug(1, "event: " +
-                    ev.target().path("/") + ": publish: " +
+                $cs.debug(1, "event:" +
+                    " " + ev.target().path("/") + ": publish:" +
                     " name=" + ev.name() +
                     " async=" + ev.async() +
                     " capturing=" + params.capturing +
