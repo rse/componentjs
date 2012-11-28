@@ -58,6 +58,7 @@
     $include("component-3-patt-E-hook.js");
     $include("component-3-patt-F-marker.js");
     $include("component-3-patt-G-model.js");
+    $include("component-3-patt-H-store.js");
 
     /*
     **  COMPONENT API

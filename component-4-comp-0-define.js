@@ -22,7 +22,8 @@ _cs.comp = $cs.clazz({
         $cs.pattern.property,
         $cs.pattern.shadow,
         $cs.pattern.socket,
-        $cs.pattern.model
+        $cs.pattern.model,
+        $cs.pattern.store
     ],
     constructor: function (name, parent, children) {
         /*  component marking  */

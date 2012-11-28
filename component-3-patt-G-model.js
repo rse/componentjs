@@ -21,10 +21,23 @@ $cs.pattern.model = $cs.trait({
                         model[name].valid = "string";
                     if (typeof model[name].autoreset === "undefined")
                         model[name].autoreset = false;
+                    if (typeof model[name].persist === "undefined")
+                        model[name].persist = false;
                     for (var key in model[name]) {
-                        if (key !== "value" && key !== "valid" && key !== "autoreset")
+                        if (key !== "value" && key !== "valid" && key !== "autoreset" && key !== "persist")
                             throw _cs.exception("model", "invalid specification key \"" +
                                 key + "\" in specification of model field \"" + name + "\"");
+                    }
+                }
+            }
+
+            /*  try to load persistent model values  */
+            var store = this.store("model");
+            if (store !== null) {
+                for (var name in model) {
+                    if (model[name].persist) {
+                        if (_cs.isdefined(store[name]))
+                            model[name].value = store[name];
                     }
                 }
             }
@@ -40,11 +53,24 @@ $cs.pattern.model = $cs.trait({
                     _cs.extend(model_new, model_old);
                     _cs.extend(model_new, model);
                     this.property("ComponentJS:model", model_new);
+                    model = model_new;
                 }
                 else {
                     /*  set initial model  */
                     this.property("ComponentJS:model", model);
                 }
+
+                /*  optionally save persistent model values  */
+                store = {};
+                var save = false;
+                for (var name in model) {
+                    if (model[name].persist) {
+                        store[name] = model[name].value;
+                        save = true;
+                    }
+                }
+                if (save)
+                    this.store("model", store);
             }
 
             /*  return old model  */
@@ -140,8 +166,14 @@ $cs.pattern.model = $cs.trait({
                         value_new = result;
 
                     /*  set new value  */
-                    if (!model[params.name].autoreset)
+                    if (!model[params.name].autoreset) {
                         model[params.name].value = value_new;
+                        if (model[params.name].persist) {
+                            var store = owner.store("model");
+                            store[params.name] = value_new;
+                            owner.store("model", store);
+                        }
+                    }
                 }
             }
 
