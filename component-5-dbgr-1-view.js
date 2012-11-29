@@ -450,7 +450,6 @@ _cs.dbg_update_once = function () {
                     if (_cs.marked(comp.obj(), "view"))       type += "V";
                     if (_cs.marked(comp.obj(), "model"))      type += "M";
                     if (_cs.marked(comp.obj(), "controller")) type += "C";
-                    if (_cs.marked(comp.obj(), "cross"))      type += "X";
                     if (_cs.marked(comp.obj(), "service"))    type += "S";
 
                     /*  draw component background  */
