@@ -8,7 +8,7 @@
 */
 
 /*  utility function: mark a component  */
-_cs.mark = function (obj, name) {
+$cs.mark = function (obj, name) {
     var marker = _cs.annotation(obj, "marker");
     if (marker === null)
         marker = {};
@@ -17,7 +17,7 @@ _cs.mark = function (obj, name) {
 };
 
 /*  utility function: determine whether a component is marked  */
-_cs.marked = function (obj, name) {
+$cs.marked = function (obj, name) {
     var marker = _cs.annotation(obj, "marker");
     if (marker === null)
         marker = {};
@@ -27,28 +27,28 @@ _cs.marked = function (obj, name) {
 /*  marker trait: service-style component */
 $cs.marker.service = $cs.trait({
     constructor: function () {
-        _cs.mark(this, "service");
+        $cs.mark(this, "service");
     }
 });
 
 /*  marker trait: controller-style component */
 $cs.marker.controller = $cs.trait({
     constructor: function () {
-        _cs.mark(this, "controller");
+        $cs.mark(this, "controller");
     }
 });
 
 /*  marker trait: model-style component */
 $cs.marker.model = $cs.trait({
     constructor: function () {
-        _cs.mark(this, "model");
+        $cs.mark(this, "model");
     }
 });
 
 /*  marker trait: view-style component */
 $cs.marker.view = $cs.trait({
     constructor: function () {
-        _cs.mark(this, "view");
+        $cs.mark(this, "view");
     }
 });
 

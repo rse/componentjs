@@ -447,10 +447,10 @@ _cs.dbg_update_once = function () {
 
                     /*  determine type of component  */
                     var type = "";
-                    if (_cs.marked(comp.obj(), "view"))       type += "V";
-                    if (_cs.marked(comp.obj(), "model"))      type += "M";
-                    if (_cs.marked(comp.obj(), "controller")) type += "C";
-                    if (_cs.marked(comp.obj(), "service"))    type += "S";
+                    if ($cs.marked(comp.obj(), "view"))       type += "V";
+                    if ($cs.marked(comp.obj(), "model"))      type += "M";
+                    if ($cs.marked(comp.obj(), "controller")) type += "C";
+                    if ($cs.marked(comp.obj(), "service"))    type += "S";
 
                     /*  draw component background  */
                     var bg1, fg1, bg2, fg2;
