@@ -18,6 +18,16 @@ _cs.concat = function () {
     return target;
 };
 
+/*  utility function: slice array values  */
+_cs.slice = function (source, start, len) {
+    var target = [];
+    if (typeof len === "undefined")
+        len = source.length;
+    for (var i = start; i < len; i++)
+        target.push(source[i]);
+    return target;
+};
+
 /*  utility function: map array values  */
 _cs.map = function (source, mapper) {
     var target = [];
