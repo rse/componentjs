@@ -60,11 +60,11 @@ $cs.pattern.hook = $cs.trait({
 
             /*  dispatch hook event onto target component  */
             return this.publish({
-                name: "ComponentJS:hook:" + params.name,
-                args: params.args,
-                capturing: false,
-                bubbling: false,
-                async: false,
+                name:         "ComponentJS:hook:" + params.name,
+                args:         params.args,
+                capturing:    false,
+                bubbling:     false,
+                async:        false,
                 directresult: true
             });
         }
