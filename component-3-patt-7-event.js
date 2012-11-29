@@ -153,6 +153,8 @@ $cs.pattern.eventing = $cs.trait({
                 capturing:    {             def: true            },
                 bubbling:     {             def: true            },
                 completed:    {             def: $cs.nop         },
+                resultinit:   {             def: undefined       },
+                resultstep:   {             def: function (a, b) { return b; } },
                 directresult: {             def: false           },
                 firstonly:    {             def: false           },
                 silent:       {             def: false           },
@@ -172,7 +174,7 @@ $cs.pattern.eventing = $cs.trait({
                 }
                 if (!subscribers) {
                     if (params.directresult)
-                        return undefined;
+                        return params.resultinit;
                     else
                         short_circuit = true;
                 }
@@ -183,6 +185,7 @@ $cs.pattern.eventing = $cs.trait({
                 name:        params.name,
                 spec:        params.spec,
                 async:       params.async,
+                result:      params.resultinit,
                 target:      self,
                 propagation: true,
                 processing:  true,
@@ -228,7 +231,7 @@ $cs.pattern.eventing = $cs.trait({
                         );
                         var result = s.func.apply(s.ctx, args);
                         if (s.noevent && _cs.isdefined(result))
-                            ev.result(result);
+                            ev.result(params.resultstep(ev.result(), result));
                         if (!ev.decline()) {
                             ev.dispatched(true);
                             if (params.firstonly)
