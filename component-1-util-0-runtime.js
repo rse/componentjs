@@ -9,13 +9,14 @@
 
 /*  utility function: create an exception string for throwing  */
 _cs.exception = function (method, error) {
+    var trace;
     if (_cs.dbg !== null) {
         if (typeof printStackTrace !== "undefined") {
-            var trace = printStackTrace();
+            trace = printStackTrace();
             _cs.dbg_log(trace.join("\n"));
         }
         else if (typeof GLOBAL.printStackTrace !== "undefined") {
-            var trace = GLOBAL.printStackTrace();
+            trace = GLOBAL.printStackTrace();
             _cs.dbg_log(trace.join("\n"));
         }
     }
@@ -33,7 +34,7 @@ _cs.exception = function (method, error) {
             GLOBAL.console.trace();
         else if (   typeof GLOBAL.printStackTrace !== "undefined"
                  && typeof GLOBAL.console.log === "function") {
-            var trace = GLOBAL.printStackTrace();
+            trace = GLOBAL.printStackTrace();
             GLOBAL.console.log(trace.join("\n"));
         }
     }

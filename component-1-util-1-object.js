@@ -163,7 +163,7 @@ _cs.clone = function (source, continue_recursion) {
             return f.apply(this, arguments);
         };
         g.prototype = f.prototype;
-        for (prop in f) {
+        for (var prop in f) {
             if (_cs.isown(f, prop)) {
                 if (continue_recursion(prop, f))
                     g[prop] = myself(f[prop], continue_recursion); /* RECURSION */

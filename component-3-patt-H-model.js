@@ -12,9 +12,11 @@ $cs.pattern.model = $cs.trait({
     protos: {
         /*  define model  */
         model: function (model) {
+            var name;
+
             /*  sanity check model  */
             if (_cs.isdefined(model)) {
-                for (var name in model) {
+                for (name in model) {
                     if (typeof model[name].value === "undefined")
                         model[name].value = "";
                     if (typeof model[name].valid === "undefined")
@@ -31,10 +33,10 @@ $cs.pattern.model = $cs.trait({
                 }
             }
 
-            /*  try to load storeent model values  */
+            /*  try to load stored model values  */
             var store = this.store("model");
             if (store !== null) {
-                for (var name in model) {
+                for (name in model) {
                     if (model[name].store) {
                         if (_cs.isdefined(store[name]))
                             model[name].value = store[name];
@@ -60,10 +62,10 @@ $cs.pattern.model = $cs.trait({
                     this.property("ComponentJS:model", model);
                 }
 
-                /*  optionally save storeent model values  */
+                /*  optionally save stored model values  */
                 store = {};
                 var save = false;
-                for (var name in model) {
+                for (name in model) {
                     if (model[name].store) {
                         store[name] = model[name].value;
                         save = true;

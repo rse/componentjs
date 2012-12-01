@@ -16,7 +16,7 @@ $cs.create = function () {
     /*  determine base component  */
     var i = 0;
     var comp;
-    if ((arguments.length % 2) == 0)
+    if ((arguments.length % 2) === 0)
         comp = _cs.root;
     else {
         comp = arguments[i++];

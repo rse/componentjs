@@ -15,7 +15,7 @@ else {
     /*  ...to globally scoped environment  */
     var name = "ComponentJS";
     var s = DOCUMENT.getElementsByTagName("script");
-    var regex = new RegExp("^(?:.*/)?component(?:-[0-9]+(?:\.[0-9]+)*)?(?:-min)?\.js$");
+    var regex = new RegExp("^(?:.*/)?component(?:-[0-9]+(?:\\.[0-9]+)*)?(?:-min)?\\.js$");
     for (var i = 0; i < s.length; i++) {
         var src = s[i].getAttribute("src");
         if (src !== null) {

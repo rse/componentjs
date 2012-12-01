@@ -75,12 +75,12 @@ $cs.instrumented = function () {
 _cs.isIE = function () {
     return (
            navigator.appName == "Microsoft Internet Explorer"
-        && navigator.userAgent.match(new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})"))
+        && navigator.userAgent.match(new RegExp("MSIE ([0-9]+[.0-9]*)"))
     );
 };
 
-/*  debugger API entry point  */
-$cs.debugger = function () {
+/*  debugger window API entry point  */
+$cs.debug_window = function () {
     /*  determine parameters  */
     var params = $cs.params("debugger", arguments, {
         enable:    { pos: 0, def: null  },
@@ -335,7 +335,7 @@ _cs.dbg_update_once = function () {
                         width += _cs.annotation(children[i], "debugger_width");
                         total += _cs.annotation(children[i], "debugger_total");
                     }
-                    if (total == 0)
+                    if (total === 0)
                         width++;
                     total++;
                     _cs.annotation(comp, "debugger_width", width);

@@ -100,7 +100,7 @@ _cs.state_progression_single = function (req) {
 /*  perform a single synchronous progression run for a particular component  */
 _cs.state_progression_run = function (comp, arg, _direction) {
     var i, children, obj;
-    var state, enter, leave;
+    var name, state, enter, leave;
 
     /*  handle optional argument (USED INTERNALLY ONLY)  */
     if (typeof _direction === "undefined")
@@ -153,7 +153,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             _cs.dbg_update();
 
             /*  execute pending spooled actions  */
-            var name = "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter";
+            name = "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter";
             if (comp.spooled(name))
                 comp.unspool(name)
 
@@ -248,7 +248,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             _cs.dbg_update();
 
             /*  execute pending spooled actions  */
-            var name = "ComponentJS:state:" + _cs.states[comp.__state + 1].state + ":leave";
+            name = "ComponentJS:state:" + _cs.states[comp.__state + 1].state + ":leave";
             if (comp.spooled(name))
                 comp.unspool(name)
 
