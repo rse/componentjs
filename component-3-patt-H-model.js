@@ -202,10 +202,10 @@ $cs.pattern.model = $cs.trait({
         observe: function () {
             /*  determine parameters  */
             var params = $cs.params("observe", arguments, {
-                name:      { pos: 0, req: true  },
-                func:      { pos: 1, req: true  },
-                touchonce: { pos: 2, def: false },
-                spool:     {         def: null  }
+                name:  { pos: 0, req: true  },
+                func:  { pos: 1, req: true  },
+                touch: { pos: 2, def: false },
+                spool: {         def: null  }
             });
 
             /*  determine the actual component owning the model
@@ -225,7 +225,7 @@ $cs.pattern.model = $cs.trait({
                 this.spool(params.spool, this, "unobserve", id);
 
             /*  if requested, touch the model value once (for an initial observer run)  */
-            if (params.touchonce)
+            if (params.touch)
                 this.touch(params.name);
 
             return id;
