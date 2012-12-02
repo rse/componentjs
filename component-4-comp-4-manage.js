@@ -13,24 +13,90 @@ $cs.create = function () {
     if (arguments.length < 2)
         throw _cs.exception("create", "invalid number of arguments");
 
+    /*  initialize processing state  */
+    var k = 0;
+    var comp = null;
+    var base = null;
+    var base_stack = [];
+
     /*  determine base component  */
-    var i = 0;
-    var comp;
-    if ((arguments.length % 2) === 0)
+    if (_cs.istypeof(arguments[k]) === "string") {
+        if (arguments[k].substr(0, 1) !== "/")
+            throw _cs.exception("create", "either base component has to be given " +
+                 "or the tree specification has to start with the root component (\"/\")");
         comp = _cs.root;
+    }
     else {
-        comp = arguments[i++];
-        if (_cs.istypeof(comp) !== "component") {
-            comp = _cs.annotation(comp, "comp");
-            if (comp === null)
+        base = arguments[k++];
+        if (_cs.istypeof(base) !== "component") {
+            base = _cs.annotation(base, "comp");
+            if (base === null)
                 throw _cs.exception("create", "invalid base argument " +
                     "(not an object attached to a component)");
         }
     }
 
-    /*  iterate over all supplied path/clazz pairs (at least once)  */
-    for (; i < arguments.length; i += 2)
-        comp = _cs.create_single(comp, arguments[i], arguments[i + 1]);
+    /*  tokenize the tree specification  */
+    var token = [];
+    var spec = arguments[k++];
+    var m;
+    while (spec !== "") {
+        m = spec.match(/^\s*([^\/{},]+|[\/{},])/);
+        if (m === null)
+            break;
+        token.push(m[1]);
+        spec = spec.substr(m[1].length);
+    }
+
+    /*  return the tree specification, marked at token k  */
+    var at_pos = function (token, k) {
+        var str = "";
+        for (var i = 0; i < k && i < token.length; i++)
+            str += token[i];
+        if (i < token.length) {
+            str += "<";
+            str += token[i++];
+            str += ">";
+            for (; i < token.length; i++)
+                str += token[i];
+        }
+        return str;
+    }
+
+    /*  iterate over all tokens...  */
+    for (var i = 0; i < token.length; i++) {
+        if (token[i] === "/") {
+            /*  switch base  */
+            if (comp === null)
+                throw "ERROR: no parent component for step-down at " + at_pos(token, i);
+            base = comp;
+        }
+        else if (token[i] === "{") {
+            /*  save base  */
+            base_stack.push(base);
+        }
+        else if (token[i] === ",") {
+            /*  reset base  */
+            if (base_stack.length === 0)
+                throw "ERROR: no open brace section for parallelism at " + at_pos(token, i);
+            base = base_stack[base_stack.length - 1];
+        }
+        else if (token[i] === "}") {
+            /*  restore base  */
+            if (base_stack.length === 0)
+                throw "ERROR: no more open brace section for closing at " + at_pos(token, i);
+            base = base_stack.pop();
+            comp = null;
+        }
+        else {
+            /*  create new component  */
+            if (base === null)
+                throw "ERROR: no base component at " + at_pos(token, i);
+            comp = _cs.create_single(base, token[i], arguments[k++]);
+        }
+    }
+    if (base_stack.length > 0)
+        throw "ERROR: still open brace sections at end of tree specification";
 
     /*  return (last created) component  */
     return comp;
