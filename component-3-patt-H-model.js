@@ -139,9 +139,35 @@ $cs.pattern.model = $cs.trait({
             if (comp === null)
                 throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
 
-            /*  get old and new model values  */
-            var value_old = model[params.name].value;
+            /*  get new model value  */
             var value_new = params.value;
+
+            /*  get old model value  */
+            var ev;
+            var value_old = model[params.name].value;
+            if (typeof value_new === "undefined") {
+                if (owner.property({ name: "ComponentJS:model:subscribers:get", bubbling: false }) === true) {
+                    /*  send event to observers for value get and allow observers
+                        to reject value get operation and/or change old value to get  */
+                    ev = owner.publish({
+                        name:      "ComponentJS:model:" + params.name + ":get",
+                        args:      [ value_old ],
+                        capturing: false,
+                        bubbling:  false,
+                        async:     false
+                    });
+                    if (ev.processing()) {
+                        /*  re-fetch value from model
+                            (in case the callback set a new value directly)  */
+                        value_old = model[params.name].value;
+
+                        /*  allow value to be overridden by event result  */
+                        var result = ev.result();
+                        if (typeof result !== "undefined")
+                            value_old = result;
+                    }
+                }
+            }
 
             /*  optionally set new model value  */
             if (   typeof value_new !== "undefined"
@@ -152,10 +178,10 @@ $cs.pattern.model = $cs.trait({
                     throw _cs.exception("value", "invalid value \"" + value_new +
                         "\" for model field \"" + params.name + "\"");
 
-                /*  send event to observers for value change and allow observers
+                /*  send event to observers for value set operation and allow observers
                     to reject value set operation and/or change new value to set  */
-                var ev = owner.publish({
-                    name:      "ComponentJS:model:" + params.name,
+                ev = owner.publish({
+                    name:      "ComponentJS:model:" + params.name + ":set",
                     args:      [ value_new, value_old ],
                     capturing: false,
                     bubbling:  false,
@@ -202,10 +228,11 @@ $cs.pattern.model = $cs.trait({
         observe: function () {
             /*  determine parameters  */
             var params = $cs.params("observe", arguments, {
-                name:  { pos: 0, req: true  },
-                func:  { pos: 1, req: true  },
-                touch: { pos: 2, def: false },
-                spool: {         def: null  }
+                name:      { pos: 0, req: true  },
+                func:      { pos: 1, req: true  },
+                touch:     {         def: false },
+                operation: {         def: "set" },
+                spool:     {         def: null  }
             });
 
             /*  determine the actual component owning the model
@@ -216,9 +243,13 @@ $cs.pattern.model = $cs.trait({
 
             /*  subscribe to model value change event  */
             var id = comp.subscribe({
-                name: "ComponentJS:model:" + params.name,
+                name: "ComponentJS:model:" + params.name + ":" + params.operation,
                 func: params.func
             });
+
+            /*  mark component for having subscribers of operation
+                (for performance optimization reasons)  */
+            comp.property("ComponentJS:model:subscribers:" + params.operation, true);
 
             /*  optionally spool reverse operation  */
             if (params.spool !== null)
