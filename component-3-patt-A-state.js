@@ -379,8 +379,8 @@ $cs.pattern.state = $cs.trait({
         guard: function () {
             /*  determine parameters  */
             var params = $cs.params("guard", arguments, {
-                method:   { pos: 0, valid: "string",  req: true },
-                activate: { pos: 1, valid: "boolean", req: true }
+                method: { pos: 0, valid: "string", req: true },
+                level:  { pos: 1, valid: "number", req: true }
             });
 
             /*  sanity check enter/leave method name  */
@@ -396,12 +396,30 @@ $cs.pattern.state = $cs.trait({
                 throw _cs.exception("guard", "no such declared enter/leave method: \""
                     + params.method + "\"");
 
+            /*  ensure the guard slot exists  */
+            if (!_cs.isdefined(this.__state_guards[params.method]))
+                this.__state_guards[params.method] = 0;
+
             /*  activate/deactivate guard  */
-            if (params.activate)
-                /*  activate guard  */
-                this.__state_guards[params.method] = true;
+            var deactivate = false;
+            if (params.level > 0)
+                /*  increase guard level  */
+                this.__state_guards[params.method] += params.level;
+            else  if (params.level < 0) {
+                /*  decrease guard level  */
+                if (this.__state_guards[params.method] < (-params.level))
+                    throw _cs.exception("guard", "guard level decrease request too large");
+                this.__state_guards[params.method] += params.level;
+                if (this.__state_guards[params.method] === 0)
+                    deactivate = true;
+            }
             else {
-                /*  deactivate guard  */
+                /*  reset guard level  */
+                this.__state_guards[params.method] = 0;
+                deactivate = true;
+            }
+            if (deactivate) {
+                /*  finally deactivate guard  */
                 delete this.__state_guards[params.method];
 
                 /*  give all pending state transitions
