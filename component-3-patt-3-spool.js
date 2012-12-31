@@ -37,7 +37,6 @@ $cs.pattern.spool = $cs.trait({
             if (!_cs.isdefined(this.__spool[params.name]))
                 this.__spool[params.name] = [];
             this.__spool[params.name].push(params);
-
             return;
         },
 
@@ -71,7 +70,6 @@ $cs.pattern.spool = $cs.trait({
 
             /*  destroy spool of now executed cleanup actions  */
             delete this.__spool[params.name];
-
             return;
         }
     }
