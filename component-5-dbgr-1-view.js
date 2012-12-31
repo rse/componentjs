@@ -62,7 +62,7 @@ _cs.dbg_natural = false;
 
 /*  try to determine whether we are running instrumented,
     i.e., whether the native Browser debugger is active/open  */
-$cs.instrumented = function () {
+$cs.debug_instrumented = function () {
     return (
            typeof GLOBAL !== "undefined"
         && GLOBAL.console
