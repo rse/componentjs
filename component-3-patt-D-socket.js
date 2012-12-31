@@ -54,31 +54,33 @@ $cs.pattern.socket = $cs.trait({
         link: function () {
             /*  determine parameters  */
             var params = $cs.params("link", arguments, {
-                name:   {         def: "default"            },
-                scope:  {         def: null                 },
-                ctx:    { pos: 0, def: null,      req: true },
-                target: { pos: 1, def: "default", req: true }
+                name:   {         def: "default" },
+                scope:  {         def: null      },
+                target: { pos: 0, req: true      },
+                socket: { pos: 1, req: true      }
             });
 
             /*  create a socket and pass-through the
                 plug/unplug operations to the target  */
-            var comp = this;
-            (function (id) {
-                comp.socket({
-                    name:   params.name,
-                    scope:  params.scope,
-                    ctx:    params.ctx,
-                    plug:   function (obj) {
-                        id = cs(this).plug({
-                            name:   params.target,
-                            object: obj
-                        });
-                    },
-                    unplug: function (obj) {
-                        cs(this).unplug(id);
-                    }
-                });
-            })(-1);
+            this.socket({
+                name:   params.name,
+                scope:  params.scope,
+                ctx:    { id: -1 },
+                plug:   function (obj) {
+                    if (this.id !== -1)
+                        throw _cs.exception("link:plug: cannot plug, you have to unplug first")
+                    this.id = cs(params.target).plug({
+                        name:   params.socket,
+                        object: obj
+                    });
+                },
+                unplug: function (obj) {
+                    if (this.id === -1)
+                        throw _cs.exception("link:unplug: cannot unplug, you have to plug first")
+                    cs(params.target).unplug(this.id);
+                    this.id = -1;
+                }
+            });
         },
 
         /*  plug into a defined socket  */
