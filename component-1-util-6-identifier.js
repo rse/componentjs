@@ -8,13 +8,13 @@
 */
 
 /*  simple: 128-bit Random-ID generation  */
-$cs.rid = function () {
+_cs.rid = function () {
     var data = _cs.prng(16, 255);
     return _cs.base16_bytearray(data, 0, 15, true).toUpperCase();
 };
 
 /*  advanced: 128-bit Counter-ID generation  */
-$cs.cid = (function () {
+_cs.cid = (function () {
     /*  128-bit emulated via 4 x 32-bit JavaScript 64-bit-floating-point-based "number"  */
     var counter = [ 0, 0, 0, 0 ];
     var base    = 4294967296; /* = 2^32 */
@@ -41,7 +41,7 @@ $cs.cid = (function () {
 })();
 
 /*  complex: 128-bit RFC4122-compliant UUID generation  */
-$cs.uuid = (function () {
+_cs.uuid = (function () {
     /*  internal state  */
     var time_last = 0;
     var time_seq  = 0;

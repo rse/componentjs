@@ -21,10 +21,3 @@ $cs.pattern.name = $cs.trait({
     }
 });
 
-/*  generic pattern: data  */
-$cs.pattern.data = $cs.trait({
-    dynamics: {
-        data: $cs.attribute("data", null)
-    }
-});
-

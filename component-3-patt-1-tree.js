@@ -40,7 +40,7 @@ $cs.pattern.tree = $cs.trait({
         },
 
         /*  method: attach node to tree  */
-        attach: function (theparent) {
+        _attach: function (theparent) {
             if (this.parent() !== null)
                 this.detach();
             var children = theparent.children();
@@ -50,7 +50,7 @@ $cs.pattern.tree = $cs.trait({
         },
 
         /*  method: detach node from tree  */
-        detach: function () {
+        _detach: function () {
             if (this.parent() !== null) {
                 var self = this;
                 this.parent().children(_cs.filter(this.parent().children(), function (x) {
@@ -85,7 +85,7 @@ $cs.pattern.tree = $cs.trait({
         },
 
         /*  method: dump tree as indented string representation  */
-        tree_dump: function (callback) {
+        _tree_dump: function (callback) {
             return this.walk_down(function (depth, node, output, depth_first) {
                 if (!depth_first) {
                     for (var n = 0; n < depth; n++)

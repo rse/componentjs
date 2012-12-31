@@ -12,7 +12,7 @@
     has a particular excecution scope. Also supports
     optional cloning which allows to carry a private
     context which will be cloned together with function  */
-$cs.proxy = function (ctx, func, clonable) {
+_cs.proxy = function (ctx, func, clonable) {
     /*  support plain method name  */
     if (_cs.istypeof(func) === "string")
         if (_cs.istypeof(ctx) === "object")
@@ -47,7 +47,7 @@ $cs.proxy = function (ctx, func, clonable) {
 
         /*  set "guid" property to the same of original function,
             so it is garbage collected correctly  */
-        proxy.guid = func.guid = (func.guid || proxy.guid || $cs.cid());
+        proxy.guid = func.guid = (func.guid || proxy.guid || _cs.cid());
 
         /*  return the new wrapper function  */
         return proxy;
@@ -60,7 +60,7 @@ $cs.proxy = function (ctx, func, clonable) {
 /*  generate a proxy function which memoizes/caches the result of an
     idempotent function (a function without side-effects which always
     returns the same output value on the same input parameters)  */
-$cs.memoize = function (func) {
+_cs.memoize = function (func) {
     var f = function () {
         var key = _cs.json(Array.prototype.slice.call(arguments));
         var val = undefined;
@@ -81,7 +81,7 @@ $cs.memoize = function (func) {
 
 /*  generate a proxy function which uses "currying"
     to remember its initially supplied arguments  */
-$cs.curry = function (func) {
+_cs.curry = function (func) {
     var args_stored = Array.prototype.slice.call(arguments, 1);
     return function () {
         var args_supplied = Array.prototype.slice.call(arguments);

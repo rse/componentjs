@@ -116,7 +116,7 @@ _cs.create_single = function (base, path, clazz) {
     var path_leaf = m[2];
 
     /*  create new component id  */
-    var id = $cs.cid();
+    var id = _cs.cid();
 
     /*  substitute special "{id}" constructs in leaf path  */
     path_leaf = path_leaf.replace(/\{id\}/g, id);
@@ -163,7 +163,7 @@ _cs.create_single = function (base, path, clazz) {
     comp.id(id);
 
     /*  attach to tree  */
-    comp.attach(comp_parent);
+    comp._attach(comp_parent);
 
     /*  remember bi-directional relationship between component and object  */
     comp.obj(obj);
@@ -206,7 +206,7 @@ $cs.destroy = function () {
     comp.state({ state: "dead", sync: true });
 
     /*  detach component from component tree  */
-    comp.detach();
+    comp._detach();
 
     /*  remove bi-directional relationship between component and object  */
     comp.obj(null);

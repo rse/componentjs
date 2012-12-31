@@ -17,7 +17,7 @@ $cs.attribute = function () {
     });
 
     /*  return closure-based getter/setter method  */
-    return $cs.proxy({ value: params.def }, function (value_new, validate_only) {
+    return _cs.proxy({ value: params.def }, function (value_new, validate_only) {
         /*  remember old value  */
         var value_old = this.value;
 

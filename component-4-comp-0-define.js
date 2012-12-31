@@ -12,7 +12,6 @@ _cs.comp = $cs.clazz({
     mixin: [
         $cs.pattern.id,
         $cs.pattern.name,
-        $cs.pattern.data,
         $cs.pattern.tree,
         $cs.pattern.config,
         $cs.pattern.spool,

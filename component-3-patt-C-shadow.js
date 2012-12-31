@@ -9,24 +9,25 @@
 
 /*  generic pattern: shadow object  */
 $cs.pattern.shadow = $cs.trait({
-    mixin: [
-        $cs.pattern.data
-    ],
+    dynamics: {
+        __obj: null
+    },
     protos: {
         /*  get/set corresponding object  */
         obj: function (obj) {
             if (typeof obj === "undefined")
                 /*  get current object  */
-                return this.data();
+                return this.__obj;
             else if (typeof obj === "object") {
                 /*  set new object  */
                 if (obj !== null) {
                     _cs.annotation(obj, "comp", this);
-                    this.data(obj);
+                    this.__obj = obj;
                 }
                 else {
-                    _cs.annotation(this.data(), "comp", null);
-                    this.data(null);
+                    if (this.__obj !== null)
+                        _cs.annotation(this.__obj, "comp", null);
+                    this.__obj = null;
                 }
             }
             else
