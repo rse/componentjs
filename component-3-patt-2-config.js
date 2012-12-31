@@ -15,12 +15,32 @@ $cs.pattern.config = $cs.trait({
     },
     protos: {
         /*  method: get/set particular configuration item  */
-        cfg: function (name, value_new) {
-            var cfg = this.__config;
-            var value_old = cfg[name];
-            if (typeof value_new !== "undefined")
-                cfg[name] = value_new;
-            return value_old;
+        cfg: function (name, value) {
+            var result;
+            if (arguments.length === 0) {
+                /*  return list of keys  */
+                result = []
+                for (var key in this.__config)
+                    if (_cs.isown(this.__config, key))
+                        result.push(key)
+            }
+            else if (arguments.length === 1 && typeof name === "string") {
+                /*  retrieve value  */
+                result = this.__config[name];
+            }
+            else if (arguments.length === 2 && typeof value !== "undefined") {
+                /*  set value  */
+                result = this.__config[name];
+                this.__config[name] = value;
+            }
+            else if (arguments.length === 2) {
+                /*  remove key/value pair  */
+                result = this.__config[name];
+                delete this.__config[name];
+            }
+            else
+                throw _cs.exception("cfg", "invalid arguments");
+            return result;
         }
     }
 });
