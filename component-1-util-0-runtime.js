@@ -25,7 +25,7 @@ _cs.exception = function (method, error) {
             console.trace();
         else if (   typeof printStackTrace !== "undefined"
                  && typeof console.log === "function") {
-            var trace = printStackTrace();
+            trace = printStackTrace();
             console.log(trace.join("\n"));
         }
     }
@@ -38,7 +38,7 @@ _cs.exception = function (method, error) {
             GLOBAL.console.log(trace.join("\n"));
         }
     }
-    return "[ComponentJS]: ERROR: " + method + ": " + error;
+    return new Error("[ComponentJS]: ERROR: " + method + ": " + error);
 };
 
 /*  utility function: minimal Pseudo Random Number Generator (PRNG)  */
