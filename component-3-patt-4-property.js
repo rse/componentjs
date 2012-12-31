@@ -45,7 +45,7 @@ $cs.pattern.property = $cs.trait({
 
                 /*  first try: child-scoped property  */
                 if (scope !== null) {
-                    v = node.cfg(params.name + "@" + scope);
+                    v = node.cfg("ComponentJS:property:" + params.name + "@" + scope);
                     if (typeof v !== "undefined") {
                         result = (params.returnowner ? node : v);
                         break;
@@ -53,7 +53,7 @@ $cs.pattern.property = $cs.trait({
                 }
 
                 /*  second try: unscoped property  */
-                v = node.cfg(params.name);
+                v = node.cfg("ComponentJS:property:" + params.name);
                 if (typeof v !== "undefined") {
                     result = (params.returnowner ? node : v);
                     break;
@@ -67,7 +67,7 @@ $cs.pattern.property = $cs.trait({
             /*  optionally set new configuration value
                 (on current node only)  */
             if (typeof params.value !== "undefined")
-                this.cfg(params.name, params.value);
+                this.cfg("ComponentJS:property:" + params.name, params.value);
 
             /*  return result (either the old configuration
                 value or the owning component)  */
