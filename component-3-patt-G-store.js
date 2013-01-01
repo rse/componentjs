@@ -30,7 +30,7 @@ _cs.store_load = function (comp) {
             if (typeof obj === "string")
                 comp.__store = GLOBAL.JSON.parse(obj);
         }
-        if (   comp.__store === null 
+        if (   comp.__store === null
             || typeof comp.__store !== "object")
             comp.__store = {};
     }
@@ -58,11 +58,12 @@ $cs.pattern.store = $cs.trait({
     },
     protos: {
         store: function () {
+            var key, val;
             if (arguments.length === 0) {
                 /*  get all keys  */
                 _cs.store_load(this);
                 var keys = [];
-                for (var key in this.__store)
+                for (key in this.__store)
                     keys.push(key);
                 return keys;
             }
@@ -75,7 +76,7 @@ $cs.pattern.store = $cs.trait({
             else if (arguments.length === 1 && typeof arguments[0] === "string") {
                 /*  get value  */
                 _cs.store_load(this);
-                var key = arguments[0];
+                key = arguments[0];
                 if (typeof this.__store[key] === "undefined")
                     return null;
                 else
@@ -84,7 +85,7 @@ $cs.pattern.store = $cs.trait({
             else if (arguments.length === 2 && arguments[1] === null) {
                 /*  delete value  */
                 _cs.store_load(this);
-                var key = arguments[0];
+                key = arguments[0];
                 delete this.__store[key];
                 _cs.store_save(this);
                 return null;
@@ -92,8 +93,8 @@ $cs.pattern.store = $cs.trait({
             else if (arguments.length === 2) {
                 /*  set value  */
                 _cs.store_load(this);
-                var key = arguments[0];
-                var val = arguments[1];
+                key = arguments[0];
+                val = arguments[1];
                 this.__store[key] = val;
                 _cs.store_save(this);
                 return val;

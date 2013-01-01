@@ -83,7 +83,8 @@ $cs.pattern.model = $cs.trait({
         values: function () {
             /*  sanity check run-time environment  */
             if (_cs.istypeof(Object.defineProperty) !== "function")
-                throw _cs.exception("values", "sorry, mandatory Object.defineProperty not supported by run-time environment");
+                throw _cs.exception("values", "sorry, mandatory Object.defineProperty " +
+                    "not supported by run-time environment");
 
             /*  retrieve values object  */
             var comp = this;
@@ -145,6 +146,7 @@ $cs.pattern.model = $cs.trait({
             /*  get old model value  */
             var ev;
             var value_old = model[params.name].value;
+            var result;
             if (typeof value_new === "undefined") {
                 if (owner.property({ name: "ComponentJS:model:subscribers:get", bubbling: false }) === true) {
                     /*  send event to observers for value get and allow observers
@@ -162,7 +164,7 @@ $cs.pattern.model = $cs.trait({
                         value_old = model[params.name].value;
 
                         /*  allow value to be overridden by event result  */
-                        var result = ev.result();
+                        result = ev.result();
                         if (typeof result !== "undefined")
                             value_old = result;
                     }
@@ -189,7 +191,7 @@ $cs.pattern.model = $cs.trait({
                 });
                 if (ev.processing()) {
                     /*  allow value to be overridden  */
-                    var result = ev.result();
+                    result = ev.result();
                     if (typeof result !== "undefined")
                         value_new = result;
 

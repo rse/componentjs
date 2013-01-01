@@ -25,6 +25,10 @@ $cs.pattern.property = $cs.trait({
                 returnowner: {         def: false               }
             });
 
+            /*  sanity check usage  */
+            if (!params.targeting && !params.bubbling)
+                throw _cs.exception("property", "disabling both targeting and bubbling makes no sense");
+
             /*  start resolving with an undefined value  */
             var result = undefined;
 

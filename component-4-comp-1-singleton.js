@@ -15,7 +15,7 @@ _cs.none = new _cs.comp("<none>", null, []);
 
 /*  reasonable error catching for _cs.none usage  */
 var methods = [
-    "create", "destroy", "detach", "exists", "guard", "hook", "invoke",
+    "create", "destroy", "exists", "guard", "hook", "invoke",
     "latch", "link", "listen", "listening", "model", "notify", "observe",
     "plug", "property", "publish", "register", "service_enabled", "socket",
     "spool", "spooled", "state", "state_compare", "store", "subscribe",
