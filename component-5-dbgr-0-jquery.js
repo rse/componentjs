@@ -26,12 +26,12 @@ _cs.jq_methods = {
         /*  not correct (because too complicated to
             emulate portably), but sufficient for now!  */
         for (var i = 0; i < this.length; i++) {
-            (function () {
+            (function (i) {
                 var el = this[i];
                 setTimeout(function () {
                     callback.call(el);
                 }, 250);
-            })();
+            })(i);
         }
     },
     bind: function (name, callback) {

@@ -116,7 +116,7 @@ $cs.pattern.model = $cs.trait({
         },
 
         /*  get/set model value  */
-        value: function (value) {
+        value: function () {
             /*  determine parameters  */
             var params = $cs.params("value", arguments, {
                 name:  { pos: 0, def: null,     req: true },
