@@ -119,9 +119,10 @@ $cs.pattern.model = $cs.trait({
         value: function () {
             /*  determine parameters  */
             var params = $cs.params("value", arguments, {
-                name:  { pos: 0, def: null,     req: true },
-                value: { pos: 1, def: undefined           },
-                force: { pos: 2, def: false               }
+                name:        { pos: 0, def: null,     req: true },
+                value:       { pos: 1, def: undefined           },
+                force:       { pos: 2, def: false               },
+                returnowner: {         def: false               }
             });
 
             /*  determine component owning model with requested value  */
@@ -208,7 +209,7 @@ $cs.pattern.model = $cs.trait({
             }
 
             /*  return old model value  */
-            return value_old;
+            return (params.returnowner ? owner : value_old);
         },
 
         /*  touch a model value and trigger event  */
