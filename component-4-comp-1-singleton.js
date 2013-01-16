@@ -13,9 +13,11 @@ _cs.root = new _cs.comp("<root>", null, []);
 /*  singleton component: special return value on lookups */
 _cs.none = new _cs.comp("<none>", null, []);
 
-/*  reasonable error catching for _cs.none usage  */
+/*  reasonable error catching for _cs.none usage
+    ATTENTION: method "exists" intentionally is missing here,
+               because it is required to be called on _cs.none, of course!  */
 var methods = [
-    "create", "destroy", "exists", "guard", "hook", "invoke",
+    "create", "destroy", "guard", "hook", "invoke",
     "latch", "link", "listen", "listening", "model", "notify", "observe",
     "plug", "property", "publish", "register", "service_enabled", "socket",
     "spool", "spooled", "state", "state_compare", "store", "subscribe",
