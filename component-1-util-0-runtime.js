@@ -10,6 +10,8 @@
 /*  utility function: create an exception string for throwing  */
 _cs.exception = function (method, error) {
     var trace;
+
+    /*  optionally log stack trace to debugger  */
     if (_cs.dbg !== null) {
         if (typeof printStackTrace !== "undefined") {
             trace = printStackTrace();
@@ -20,24 +22,30 @@ _cs.exception = function (method, error) {
             _cs.dbg_log(trace.join("\n"));
         }
     }
-    if (typeof console === "object") {
-        if (typeof console.trace === "function")
-            console.trace();
-        else if (   typeof printStackTrace !== "undefined"
-                 && typeof console.log === "function") {
-            trace = printStackTrace();
-            console.log(trace.join("\n"));
+
+    /*  optionally log stack trace to console  */
+    if ($cs.debug() > 0) {
+        if (typeof console === "object") {
+            if (typeof console.trace === "function")
+                console.trace();
+            else if (   typeof printStackTrace !== "undefined"
+                     && typeof console.log === "function") {
+                trace = printStackTrace();
+                console.log(trace.join("\n"));
+            }
+        }
+        else if (typeof GLOBAL.console === "object") {
+            if (typeof GLOBAL.console.trace === "function")
+                GLOBAL.console.trace();
+            else if (   typeof GLOBAL.printStackTrace !== "undefined"
+                     && typeof GLOBAL.console.log === "function") {
+                trace = GLOBAL.printStackTrace();
+                GLOBAL.console.log(trace.join("\n"));
+            }
         }
     }
-    else if (typeof GLOBAL.console === "object") {
-        if (typeof GLOBAL.console.trace === "function")
-            GLOBAL.console.trace();
-        else if (   typeof GLOBAL.printStackTrace !== "undefined"
-                 && typeof GLOBAL.console.log === "function") {
-            trace = GLOBAL.printStackTrace();
-            GLOBAL.console.log(trace.join("\n"));
-        }
-    }
+
+    /*  return Error exception object  */
     return new Error("[ComponentJS]: ERROR: " + method + ": " + error);
 };
 
@@ -73,8 +81,11 @@ _cs.log = function (msg) {
 $cs.debug = (function () {
     var debug_level = 9;
     return function (level, msg) {
-        if (arguments.length === 1)
-            /*  configure debugging  */
+        if (arguments.length === 0)
+            /*  return old debug level  */
+            return debug_level;
+        else if (arguments.length === 1)
+            /*  configure new debug level  */
             debug_level = level;
         else {
             /*  perform runtime logging  */
