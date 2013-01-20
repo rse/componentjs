@@ -17,13 +17,16 @@ $cs.pattern.service = $cs.trait({
         register: function () {
             /*  determine parameters  */
             var params = $cs.params("register", arguments, {
-                name:    { pos: 0,     def: null,    req: true },
-                ctx:     {             def: this               },
-                func:    { pos: 1,     def: $cs.nop, req: true },
-                args:    { pos: "...", def: []                 },
-                async:   {             def: false              },
-                origin:  {             def: false              },
-                spool:   {             def: null               }
+                name:      { pos: 0,     def: null,    req: true },
+                ctx:       {             def: this               },
+                func:      { pos: 1,     def: $cs.nop, req: true },
+                args:      { pos: "...", def: []                 },
+                async:     {             def: false              },
+                origin:    {             def: false              },
+                spool:     {             def: null               },
+                capturing: {             def: false              },
+                spreading: {             def: false              },
+                bubbling:  {             def: true               }
             });
 
             /*  create command object to wrap service  */
@@ -44,6 +47,7 @@ $cs.pattern.service = $cs.trait({
                         name:      "ComponentJS:service:" + name + ":enabled",
                         args:      [ value_new, value_old ],
                         capturing: false,
+                        spreading: false,
                         bubbling:  false,
                         async:     true
                     });
@@ -57,6 +61,9 @@ $cs.pattern.service = $cs.trait({
                 func:      cmd,
                 noevent:   true,
                 origin:    params.origin,
+                capturing: params.capturing,
+                spreading: params.spreading,
+                bubbling:  params.bubbling,
                 exclusive: true
             });
 
@@ -101,17 +108,20 @@ $cs.pattern.service = $cs.trait({
         call: function () {
             /*  determine parameters  */
             var params = $cs.params("call", arguments, {
-                name:     { pos: 0,     def: null,  req: true },
-                args:     { pos: "...", def: []               },
-                result:   {             def: null             },
-                bubbling: {             def: true             }
+                name:      { pos: 0,     def: null,  req: true },
+                args:      { pos: "...", def: []               },
+                result:    {             def: null             },
+                capturing: {             def: false            },
+                spreading: {             def: false            },
+                bubbling:  {             def: true             }
             });
 
             /*  dispatch service event onto target component  */
             var ev = this.publish({
                 name:         "ComponentJS:service:" + params.name,
                 args:         params.args,
-                capturing:    false,
+                capturing:    params.capturing,
+                spreading:    params.spreading,
                 bubbling:     params.bubbling,
                 firstonly:    true,
                 async:        false

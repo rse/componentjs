@@ -156,6 +156,7 @@ $cs.pattern.model = $cs.trait({
                         name:      "ComponentJS:model:" + params.name + ":get",
                         args:      [ value_old ],
                         capturing: false,
+                        spreading: false,
                         bubbling:  false,
                         async:     false
                     });
@@ -187,6 +188,7 @@ $cs.pattern.model = $cs.trait({
                     name:      "ComponentJS:model:" + params.name + ":set",
                     args:      [ value_new, value_old ],
                     capturing: false,
+                    spreading: false,
                     bubbling:  false,
                     async:     false
                 });

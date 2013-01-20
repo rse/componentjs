@@ -178,6 +178,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
                 directresult: true,
                 capturing:    false,
+                spreading:    false,
                 bubbling:     false,
                 async:        true,
                 silent:       true
@@ -273,6 +274,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
                 directresult: true,
                 capturing:    false,
+                spreading:    false,
                 bubbling:     false,
                 async:        true,
                 silent:       true

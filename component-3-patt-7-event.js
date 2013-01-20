@@ -19,7 +19,7 @@ $cs.pattern.event = $cs.clazz({
         processing:  $cs.attribute("processing",  true),        /*  whether final default event processing should be performed  */
         dispatched:  $cs.attribute("dispatched",  false),       /*  whether event was dispatched at least once to a subscriber  */
         decline:     $cs.attribute("decline",     false),       /*  whether event was declined by subscriber  */
-        state:       $cs.attribute("state",       "targeting"), /*  state of dispatching: capturing, targeting, bubbling */
+        state:       $cs.attribute("state",       "targeting"), /*  state of dispatching: capturing, targeting, spreading, bubbling */
         result:      $cs.attribute("result",      undefined),   /*  optional result value event subscribers can provide  */
         async:       $cs.attribute("async",       false)        /*  whether event is dispatched asynchronously  */
     }
@@ -75,7 +75,9 @@ $cs.pattern.eventing = $cs.trait({
                 ctx:       {             def: this               },
                 func:      { pos: 1,     def: $cs.nop, req: true },
                 args:      { pos: "...", def: []                 },
-                capture:   {             def: false              },
+                capturing: {             def: false              },
+                spreading: {             def: false              },
+                bubbling:  {             def: true               },
                 noevent:   {             def: false              },
                 exclusive: {             def: false              },
                 origin:    {             def: false              },
@@ -151,6 +153,7 @@ $cs.pattern.eventing = $cs.trait({
                 spec:         {             def: {}              },
                 async:        {             def: false           },
                 capturing:    {             def: true            },
+                spreading:    {             def: true            },
                 bubbling:     {             def: true            },
                 completed:    {             def: $cs.nop         },
                 resultinit:   {             def: undefined       },
@@ -164,7 +167,7 @@ $cs.pattern.eventing = $cs.trait({
             /*  short-circuit processing (1/2) to speed up cases
                 where no subscribers exist for a local event  */
             var short_circuit = false;
-            if (!params.capturing && !params.bubbling) {
+            if (!params.capturing && !params.spreading && !params.bubbling) {
                 var subscribers = false;
                 for (var id in this.__subscription) {
                     if (!_cs.isown(this.__subscription, id))
@@ -203,6 +206,7 @@ $cs.pattern.eventing = $cs.trait({
                     " name=" + ev.name() +
                     " async=" + ev.async() +
                     " capturing=" + params.capturing +
+                    " spreading=" + params.spreading +
                     " bubbling=" + params.bubbling +
                     " directresult=" + params.directresult +
                     " firstonly=" + params.firstonly
@@ -215,10 +219,11 @@ $cs.pattern.eventing = $cs.trait({
                     if (!_cs.isown(comp.__subscription, id))
                         continue;
                     var s = comp.__subscription[id];
-                    if (   (   state === "capturing" &&  s.capture
-                            || state === "targeting" && !s.capture
-                            || state === "bubbling"  && !s.capture)
-                        && ev.matches(s.name, s.spec)             ) {
+                    if (   (   (state === "capturing" && s.capturing)
+                            || (state === "targeting"               )
+                            || (state === "spreading" && s.spreading)
+                            || (state === "bubbling"  && s.bubbling ))
+                        && ev.matches(s.name, s.spec)                 ) {
                         if (!params.silent)
                             $cs.debug(1, "event: " + comp.path("/") + ": dispatch on " + state);
                         ev.state(state);
@@ -264,7 +269,34 @@ $cs.pattern.eventing = $cs.trait({
                 if (ev.propagation())
                     event_dispatch_single(ev, comp, comp, params, "targeting");
 
-                /*  phase 3: BUBBLING
+                /*  phase 3: SPREADING
+                    dispatch event to all descendant components  */
+                if (params.spreading && ev.propagation()) {
+                    var visit = function (origin, comp, isTarget) {
+                        var cont = true;
+                        if (!isTarget) {
+                            /*  dispatch on non-target component  */
+                            event_dispatch_single(ev, origin, comp, params, "spreading");
+                            if (!ev.propagation()) {
+                                /*  if propagation should stop, reset the flag again
+                                    as in the spreading phase propagation stops only(!)
+                                    for the particular sub-tree, not the propagation
+                                    process as a whole!  */
+                                ev.propagation(true);
+                                cont = false;
+                            }
+                        }
+                        if (cont) {
+                            /*  dispatch onto all direct child components  */
+                            var children = comp.children();
+                            for (var i = 0; i < children.length; i++)
+                                visit(origin, children[i], false);
+                        }
+                    };
+                    visit(comp, comp, true);
+                }
+
+                /*  phase 4: BUBBLING
                     dispatch event upwards from target component towards
                     root component for bubbling (regular) subscribers  */
                 if (params.bubbling && ev.propagation()) {

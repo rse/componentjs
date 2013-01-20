@@ -78,6 +78,7 @@ $cs.pattern.hook = $cs.trait({
                 name:         "ComponentJS:hook:" + params.name,
                 args:         params.args,
                 capturing:    false,
+                spreading:    false,
                 bubbling:     false,
                 async:        false,
                 resultinit:   _cs.hook_proc[params.proc].init,
