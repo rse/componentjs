@@ -1,0 +1,10 @@
+
+    ComponentJS -- Component System for JavaScript <http://componentjs.com>
+    Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+
+    ComponentJS is an MPL-licensed Open Source library for JavaScript,
+    providing a powerful Component System for hierarchically structuring
+    the User-Interface (UI) dialogs of complex HTML5-based Rich Clients —
+    with maximum Separation of Concerns, through Model, View and Controller
+    component roles, and in a fully UI-toolkit-independent way.
+
