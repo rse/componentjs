@@ -75,58 +75,58 @@ SOURCE          = component.js \
                   component-5-dbgr-1-view.js \
                   component-6-glob-0-export.js
 
-TARGET          = out/component-$(VERSION).js \
-                  out/component-$(VERSION).min.js
+TARGET          = build/component-$(VERSION).js \
+                  build/component-$(VERSION).min.js
 
 all: $(TARGET)
 
-out/component-$(VERSION).js: $(SOURCE)
-	@$(SHTOOL) mkdir -f -p -m 755 out
-	@echo "++ assembling out/component-$(VERSION).js <- $(SOURCE) (Custom Build Tool)"; \
-	$(PERL) build.pl out/component-$(VERSION).js component.js "$(VERSION_MAJOR)" "$(VERSION_MINOR)" "$(VERSION_MICRO)" "$(VERSION_DATE)"
+build/component-$(VERSION).js: $(SOURCE)
+	@$(SHTOOL) mkdir -f -p -m 755 build
+	@echo "++ assembling build/component-$(VERSION).js <- $(SOURCE) (Custom Build Tool)"; \
+	$(PERL) build.pl build/component-$(VERSION).js component.js "$(VERSION_MAJOR)" "$(VERSION_MINOR)" "$(VERSION_MICRO)" "$(VERSION_DATE)"
 
-out/component-$(VERSION).min.js: out/component-$(VERSION).js
-	@$(SHTOOL) mkdir -f -p -m 755 out
-	@echo "++ compressing out/component-$(VERSION).min.js <- out/component-$(VERSION).js (Google Closure Compiler)"; \
+build/component-$(VERSION).min.js: build/component-$(VERSION).js
+	@$(SHTOOL) mkdir -f -p -m 755 build
+	@echo "++ compressing build/component-$(VERSION).min.js <- build/component-$(VERSION).js (Google Closure Compiler)"; \
 	$(CLOSURECOMPILER) \
-	    --js_output_file out/component-$(VERSION).min.js \
-	    --js out/component-$(VERSION).js && \
-	(sed -e '/(function/,$$d' component.js; cat out/component-$(VERSION).min.js) >out/.tmp && \
-	cp out/.tmp out/component-$(VERSION).min.js && rm -f out/.tmp
+	    --js_output_file build/component-$(VERSION).min.js \
+	    --js build/component-$(VERSION).js && \
+	(sed -e '/(function/,$$d' component.js; cat build/component-$(VERSION).min.js) >build/.tmp && \
+	cp build/.tmp build/component-$(VERSION).min.js && rm -f build/.tmp
 
-out/component-$(VERSION).min-ug.js: out/component-$(VERSION).js
-	@$(SHTOOL) mkdir -f -p -m 755 out
-	@echo "++ compressing out/component-$(VERSION).min-ug.js <- out/component-$(VERSION).js (UglifyJS)"; \
+build/component-$(VERSION).min-ug.js: build/component-$(VERSION).js
+	@$(SHTOOL) mkdir -f -p -m 755 build
+	@echo "++ compressing build/component-$(VERSION).min-ug.js <- build/component-$(VERSION).js (UglifyJS)"; \
 	$(UGLIFYJS) \
-	    -o out/component-$(VERSION).min-ug.js \
-	    out/component-$(VERSION).js && \
-	(sed -e '/(function/,$$d' component.js; cat out/component-$(VERSION).min-ug.js) >out/.tmp && \
-	cp out/.tmp out/component-$(VERSION).min-ug.js && rm -f out/.tmp
+	    -o build/component-$(VERSION).min-ug.js \
+	    build/component-$(VERSION).js && \
+	(sed -e '/(function/,$$d' component.js; cat build/component-$(VERSION).min-ug.js) >build/.tmp && \
+	cp build/.tmp build/component-$(VERSION).min-ug.js && rm -f build/.tmp
 
-out/component-$(VERSION).min-yc.js: out/component-$(VERSION).js
-	@$(SHTOOL) mkdir -f -p -m 755 out
-	@echo "++ compressing out/component-$(VERSION).min-ug.js <- out/component-$(VERSION).js (Yahoo UI Compressor)"; \
+build/component-$(VERSION).min-yc.js: build/component-$(VERSION).js
+	@$(SHTOOL) mkdir -f -p -m 755 build
+	@echo "++ compressing build/component-$(VERSION).min-ug.js <- build/component-$(VERSION).js (Yahoo UI Compressor)"; \
 	$(YUICOMPRESSOR) \
-	    -o out/component-$(VERSION).min-yc.js \
-	    out/component-$(VERSION).js && \
-	(sed -e '/(function/,$$d' component.js; cat out/component-$(VERSION).min-yc.js) >out/.tmp && \
-	cp out/.tmp out/component-$(VERSION).min-yc.js && rm -f out/.tmp
+	    -o build/component-$(VERSION).min-yc.js \
+	    build/component-$(VERSION).js && \
+	(sed -e '/(function/,$$d' component.js; cat build/component-$(VERSION).min-yc.js) >build/.tmp && \
+	cp build/.tmp build/component-$(VERSION).min-yc.js && rm -f build/.tmp
 
 lint: lint1
 
-lint1: out/component-$(VERSION).js
-	@echo "++ linting out/component-$(VERSION).js (Google Closure Linter)"; \
-	$(GJSLINT) out/component-$(VERSION).js |\
+lint1: build/component-$(VERSION).js
+	@echo "++ linting build/component-$(VERSION).js (Google Closure Linter)"; \
+	$(GJSLINT) build/component-$(VERSION).js |\
 	egrep -v "E:(0001|0131|0110)" | grep -v "FILE  :" | sed -e '/^Found/,$$d'
 
-lint2: out/component-$(VERSION).js
-	@echo "++ linting out/component-$(VERSION).js (JSLint)"; \
-	$(JSLINT) out/component-$(VERSION).js
+lint2: build/component-$(VERSION).js
+	@echo "++ linting build/component-$(VERSION).js (JSLint)"; \
+	$(JSLINT) build/component-$(VERSION).js
 
 clean:
-	@echo "++ removing out/component-$(VERSION).js"; rm -f out/component-$(VERSION).js
-	@echo "++ removing out/component-$(VERSION).min.js"; rm -f out/component-$(VERSION).min.js
-	@echo "++ removing out/component-$(VERSION).min-ug.js"; rm -f out/component-$(VERSION).min-ug.js
-	@echo "++ removing out/component-$(VERSION).min-yc.js"; rm -f out/component-$(VERSION).min-yc.js
-	@echo "++ removing out"; rmdir out >/dev/null 2>&1 || true
+	@echo "++ removing build/component-$(VERSION).js"; rm -f build/component-$(VERSION).js
+	@echo "++ removing build/component-$(VERSION).min.js"; rm -f build/component-$(VERSION).min.js
+	@echo "++ removing build/component-$(VERSION).min-ug.js"; rm -f build/component-$(VERSION).min-ug.js
+	@echo "++ removing build/component-$(VERSION).min-yc.js"; rm -f build/component-$(VERSION).min-yc.js
+	@echo "++ removing build"; rmdir build >/dev/null 2>&1 || true
 
