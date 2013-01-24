@@ -184,33 +184,38 @@ $cs.pattern.model = $cs.trait({
 
                 /*  send event to observers for value set operation and allow observers
                     to reject value set operation and/or change new value to set  */
-                ev = owner.publish({
-                    name:      "ComponentJS:model:" + params.name + ":set",
-                    args:      [ value_new, value_old ],
-                    capturing: false,
-                    spreading: false,
-                    bubbling:  false,
-                    async:     false
-                });
-                if (ev.processing()) {
-                    /*  allow value to be overridden  */
-                    result = ev.result();
-                    if (typeof result !== "undefined")
-                        value_new = result;
+                var cont = true;
+                if (owner.property({ name: "ComponentJS:model:subscribers:set", bubbling: false }) === true) {
+                    ev = owner.publish({
+                        name:      "ComponentJS:model:" + params.name + ":set",
+                        args:      [ value_new, value_old ],
+                        capturing: false,
+                        spreading: false,
+                        bubbling:  false,
+                        async:     false
+                    });
+                    if (!ev.processing())
+                        cont = false;
+                    else {
+                        /*  allow value to be overridden  */
+                        result = ev.result();
+                        if (typeof result !== "undefined")
+                            value_new = result;
+                    }
+                }
+                if (cont && !model[params.name].autoreset) {
+                    /*  set value in model  */
+                    model[params.name].value = value_new;
 
-                    /*  set new value  */
-                    if (!model[params.name].autoreset) {
-                        /*  set value in model  */
-                        model[params.name].value = value_new;
+                    /*  synchronize model with underlying store  */
+                    if (model[params.name].store) {
+                        var store = owner.store("model");
+                        store[params.name] = model[params.name].value;
+                        owner.store("model", store);
+                    }
 
-                        /*  synchronize model with underlying store  */
-                        if (model[params.name].store) {
-                            var store = owner.store("model");
-                            store[params.name] = model[params.name].value;
-                            owner.store("model", store);
-                        }
-
-                        /*  send event to observers after value finally changed  */
+                    /*  send event to observers after value finally changed  */
+                    if (owner.property({ name: "ComponentJS:model:subscribers:changed", bubbling: false }) === true) {
                         owner.publish({
                             name:      "ComponentJS:model:" + params.name + ":changed",
                             args:      [ value_new, value_old ],
