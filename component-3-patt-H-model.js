@@ -200,12 +200,26 @@ $cs.pattern.model = $cs.trait({
 
                     /*  set new value  */
                     if (!model[params.name].autoreset) {
+                        /*  set value in model  */
                         model[params.name].value = value_new;
+
+                        /*  synchronize model with underlying store  */
                         if (model[params.name].store) {
                             var store = owner.store("model");
-                            store[params.name] = value_new;
+                            store[params.name] = model[params.name].value;
                             owner.store("model", store);
                         }
+
+                        /*  send event to observers after value finally changed  */
+                        owner.publish({
+                            name:      "ComponentJS:model:" + params.name + ":changed",
+                            args:      [ value_new, value_old ],
+                            noresult:  true,
+                            capturing: false,
+                            spreading: false,
+                            bubbling:  false,
+                            async:     false
+                        });
                     }
                 }
             }
