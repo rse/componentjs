@@ -11,8 +11,7 @@
 $cs.pattern.observable = $cs.trait({
     dynamics: {
         /*  internal state  */
-        __listener:     {},
-        __listener_id:  0
+        __listener: {}
     },
     protos: {
         /*  attach a listener  */
@@ -27,7 +26,7 @@ $cs.pattern.observable = $cs.trait({
             });
 
             /*  attach listener information  */
-            var id = this.__listener_id++;
+            var id = _cs.cid();
             this.__listener[id] = params;
             return id;
         },

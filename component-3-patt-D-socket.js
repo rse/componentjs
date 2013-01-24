@@ -14,8 +14,7 @@ $cs.pattern.socket = $cs.trait({
         $cs.pattern.property
     ],
     dynamics: {
-        __plugs: {},
-        __plugs_id: 0
+        __plugs: {}
     },
     protos: {
         /*  define a socket  */
@@ -93,7 +92,7 @@ $cs.pattern.socket = $cs.trait({
             });
 
             /*  remember plug operation  */
-            var id = this.__plugs_id++;
+            var id = _cs.cid();
             this.__plugs[id] = params;
 
             /*  pass-though operation to common helper function  */

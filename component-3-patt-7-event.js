@@ -62,8 +62,7 @@ $cs.event = function () {
 /*  generic pattern: eventing  */
 $cs.pattern.eventing = $cs.trait({
     dynamics: {
-        __subscription: {},
-        __subscription_id: 0
+        __subscription: {}
     },
     protos: {
         /*  subscribe on an event  */
@@ -92,7 +91,7 @@ $cs.pattern.eventing = $cs.trait({
             }
 
             /*  attach parameters to component  */
-            var id = this.__subscription_id++;
+            var id = _cs.cid();
             this.__subscription[id] = params;
 
             /*  optionally spool reverse operation  */
@@ -114,6 +113,17 @@ $cs.pattern.eventing = $cs.trait({
                 throw _cs.exception("unsubscribe", "subscription not found");
             delete this.__subscription[params.id];
             return;
+        },
+
+        /*  determine subscription existence  */
+        subscription: function () {
+            /*  determine parameters  */
+            var params = $cs.params("subscription", arguments, {
+                id: { pos: 0, req: true }
+            });
+
+            /*  determine whether subscription exists  */
+            return (typeof this.__subscription[params.id] !== "undefined");
         },
 
         /*  determine subscribers  */
