@@ -261,19 +261,33 @@ $cs.pattern.model = $cs.trait({
 
             /*  determine the actual component owning the model
                 as we want to subscribe the change event there only  */
-            var comp = this.property({ name: "ComponentJS:model", returnowner: true });
-            if (typeof comp === "undefined")
-                throw _cs.exception("observe", "no model found");
+            var owner = null;
+            var model = null;
+            var comp = this;
+            while (comp !== null) {
+                owner = comp.property({ name: "ComponentJS:model", returnowner: true });
+                if (!_cs.isdefined(owner))
+                    throw _cs.exception("observe", "no model found containing value \"" + params.name + "\"");
+                model = owner.property("ComponentJS:model");
+                if (_cs.isdefined(model[params.name]))
+                    break;
+                comp = owner.parent();
+            }
+            if (comp === null)
+                throw _cs.exception("observe", "no model found containing value \"" + params.name + "\"");
 
             /*  subscribe to model value change event  */
-            var id = comp.subscribe({
-                name: "ComponentJS:model:" + params.name + ":" + params.operation,
-                func: params.func
+            var id = owner.subscribe({
+                name:      "ComponentJS:model:" + params.name + ":" + params.operation,
+                capturing: false,
+                spreading: false,
+                bubbling:  false,
+                func:      params.func
             });
 
             /*  mark component for having subscribers of operation
                 (for performance optimization reasons)  */
-            comp.property("ComponentJS:model:subscribers:" + params.operation, true);
+            owner.property("ComponentJS:model:subscribers:" + params.operation, true);
 
             /*  optionally spool reverse operation  */
             if (params.spool !== null)
@@ -295,12 +309,21 @@ $cs.pattern.model = $cs.trait({
 
             /*  determine the actual component owning the model
                 as we want to unsubscribe the change event there only  */
-            var comp = this.property({ name: "ComponentJS:model", returnowner: true });
-            if (typeof comp === "undefined")
-                throw _cs.exception("unobserve", "no model found");
+            var owner = null;
+            var comp = this;
+            while (comp !== null) {
+                owner = comp.property({ name: "ComponentJS:model", returnowner: true });
+                if (!_cs.isdefined(owner))
+                    throw _cs.exception("unobserve", "no model subscription found");
+                if (owner.subscription(params.id))
+                    break;
+                comp = owner.parent();
+            }
+            if (comp === null)
+                throw _cs.exception("unobserve", "no model subscription found");
 
             /*  subscribe to model value change event  */
-            comp.unsubscribe(params.id);
+            owner.unsubscribe(params.id);
         }
     }
 });
