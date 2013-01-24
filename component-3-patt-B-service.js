@@ -49,7 +49,8 @@ $cs.pattern.service = $cs.trait({
                         capturing: false,
                         spreading: false,
                         bubbling:  false,
-                        async:     true
+                        async:     true,
+                        noresult:  true
                     });
                 }
             });

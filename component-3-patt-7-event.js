@@ -159,6 +159,7 @@ $cs.pattern.eventing = $cs.trait({
                 resultinit:   {             def: undefined       },
                 resultstep:   {             def: function (a, b) { return b; } },
                 directresult: {             def: false           },
+                noresult:     {             def: false           },
                 firstonly:    {             def: false           },
                 silent:       {             def: false           },
                 args:         { pos: "...", def: []              }
@@ -176,7 +177,9 @@ $cs.pattern.eventing = $cs.trait({
                     break;
                 }
                 if (!subscribers) {
-                    if (params.directresult)
+                    if (params.noresult)
+                        return;
+                    else if (params.directresult)
                         return params.resultinit;
                     else
                         short_circuit = true;
@@ -209,6 +212,7 @@ $cs.pattern.eventing = $cs.trait({
                     " spreading=" + params.spreading +
                     " bubbling=" + params.bubbling +
                     " directresult=" + params.directresult +
+                    " noresult=" + params.noresult +
                     " firstonly=" + params.firstonly
                 );
             }
@@ -318,8 +322,13 @@ $cs.pattern.eventing = $cs.trait({
             else
                 event_dispatch_all(ev, self, params);
 
-            /*  return the event or directly the result value  */
-            return (params.directresult ? ev.result() : ev);
+            /*  return the event, directly the result value or no result value at all  */
+            if (params.noresult)
+                return;
+            else if (params.directresult)
+                return ev.result();
+            else
+                return ev;
         }
     }
 });

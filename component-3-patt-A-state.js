@@ -176,7 +176,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             /*  notify subscribers about new state  */
             comp.publish({
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
-                directresult: true,
+                noresult:     true,
                 capturing:    false,
                 spreading:    false,
                 bubbling:     false,
@@ -272,7 +272,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             /*  notify subscribers about new state  */
             comp.publish({
                 name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
-                directresult: true,
+                noresult:     true,
                 capturing:    false,
                 spreading:    false,
                 bubbling:     false,
