@@ -60,7 +60,7 @@ $cs.ns = function (name, value) {
         throw "invalid namespace path";
 
     /*  determine path  */
-    var path = name.split('.');
+    var path = name.split(".");
     var len = path.length;
     if (typeof value !== "undefined")
         len--;

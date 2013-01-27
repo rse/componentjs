@@ -36,15 +36,15 @@ _cs.dbg_log = function (msg) {
         .replace("\n", "<br/>");
     _cs.dbg_logline++;
     msg = msg.replace(/(DEBUG\[\d+\]: )([^:]+)/,
-        '<span class="prefix">$1</span>' +
-        '<span class="context">$2</span>'
+        "<span class=\"prefix\">$1</span>" +
+        "<span class=\"context\">$2</span>"
     );
-    msg = msg.replace(/(\s+)(\/[^:\s]*)/g, '$1<span class="path">$2</span>');
-    msg = msg.replace(/(\s+)(@[a-z]+)/g,   '$1<span class="state">$2</span>');
+    msg = msg.replace(/(\s+)(\/[^:\s]*)/g, "$1<span class=\"path\">$2</span>");
+    msg = msg.replace(/(\s+)(@[a-z]+)/g,   "$1<span class=\"state\">$2</span>");
     msg = msg.replace(/((?:&lt;)?--\()([a-z]+)(\)--(?:&gt;)?)/g,
-        '<span class="arrow">$1</span>' +
-        '<span class="method">$2</span>' +
-        '<span class="arrow">$3</span>'
+        "<span class=\"arrow\">$1</span>" +
+        "<span class=\"method\">$2</span>" +
+        "<span class=\"arrow\">$3</span>"
     );
     _cs.dbg_logbook +=
         "<table class=\"line\">" +
@@ -74,7 +74,7 @@ $cs.debug_instrumented = function () {
 /*  try to determine whether Internet Explorer is used  */
 _cs.isIE = function () {
     return (
-           navigator.appName == "Microsoft Internet Explorer"
+           navigator.appName === "Microsoft Internet Explorer"
         && navigator.userAgent.match(new RegExp("MSIE ([0-9]+[.0-9]*)"))
     );
 };
@@ -397,7 +397,7 @@ _cs.dbg_update_once = function () {
                     var t = _cs.annotation(comp, "debugger_total");
                     var my_x, my_y, my_w, my_h;
 
-                    if (t == 1) {
+                    if (t === 1) {
                         /*  CASE 1: leaf node  */
                         my_x = gw * X++;
                         my_y = natural ? (ch - gh * d - gh) : (gh * d);
@@ -460,7 +460,7 @@ _cs.dbg_update_once = function () {
                     else                   { bg1 = "#444444"; fg1 = "#ffffff"; bg2 = "#777777"; fg2 = "#cccccc"; }
                     ctx.save();
                     ctx.fillStyle = bg1;
-                    ctx.shadowColor = '#888888';
+                    ctx.shadowColor = "#888888";
                     ctx.shadowBlur = 6;
                     ctx.shadowOffsetX = 1;
                     ctx.shadowOffsetY = 1;
@@ -472,7 +472,7 @@ _cs.dbg_update_once = function () {
                     /*  draw component state indicator bulp  */
                     ctx.save();
                     ctx.fillStyle = _cs.states[comp.__state].color;
-                    ctx.shadowColor = '#000000';
+                    ctx.shadowColor = "#000000";
                     ctx.shadowBlur = 2;
                     ctx.shadowOffsetX = 0;
                     ctx.shadowOffsetY = 0;
