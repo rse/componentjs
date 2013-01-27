@@ -8,3 +8,36 @@
     with maximum Separation of Concerns, through Model, View and Controller
     component roles, and in a fully UI-toolkit-independent way.
 
+    Building ComponentJS
+    ====================
+
+    For building the ComponentJS JavaScript library "component-N.N.N.js"
+    with "make all" the following mandatory Unix tools have to
+    be installed. The ComponentJS author uses an OpenPKG-based
+    software-stack for this. The OpenPKG package names are given in
+    brackets.
+
+    - GNU Make
+      http://www.gnu.org/software/make/ 
+      [OpenPKG "make"]
+
+    - GNU Portable Shell Tool (shtool)
+      http://www.gnu.org/software/shtool/ 
+      [OpenPKG "shtool"]
+
+    - Perl
+      http://www.perl.org/
+      [OpenPKG "perl"]
+
+    - Google Closure Compiler
+      http://code.google.com/closure/compiler/
+      [OpenPKG "closurecompiler"]
+
+    - Google Closure Linter
+      http://code.google.com/p/closure-linter/
+      [OpenPKG "closurelinter"]
+
+    - JSHint
+      http://www.jshint.com/
+      [OpenPKG "jshint"]
+
