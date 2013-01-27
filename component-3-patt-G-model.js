@@ -79,42 +79,6 @@ $cs.pattern.model = $cs.trait({
             return model_old;
         },
 
-        /*  retrieve a property based values object  */
-        values: function () {
-            /*  sanity check run-time environment  */
-            if (_cs.istypeof(Object.defineProperty) !== "function")
-                throw _cs.exception("values", "sorry, mandatory Object.defineProperty " +
-                    "not supported by run-time environment");
-
-            /*  retrieve values object  */
-            var comp = this;
-            var values_comp = comp.property({ name: "ComponentJS:model:values", returnowner: true });
-            if (!_cs.isdefined(values_comp)) {
-                /*  create initial values object  */
-                model_comp = comp.property({ name: "ComponentJS:model", returnowner: true });
-                if (!_cs.isdefined(model_comp))
-                    throw _cs.exception("values", "no model found");
-                values = {};
-                model_comp.property("ComponentJS:model:values", values);
-
-                /*  enhance values object with properties  */
-                var model = model_comp.property("ComponentJS:model");
-                for (var name in model) {
-                    var symbol = name.replace(/[^a-zA-Z0-9_]+/g, "_");
-                    (function (comp, name, symbol) {
-                        Object.defineProperty(values, symbol, {
-                            enumerable:   false,
-                            configurable: false,
-                            writeable:    true,
-                            get: function ()      { return comp.value(name);        },
-                            set: function (value) { return comp.value(name, value); }
-                        });
-                    })(comp, name, symbol);
-                }
-            }
-            return values;
-        },
-
         /*  get/set model value  */
         value: function () {
             /*  determine parameters  */
