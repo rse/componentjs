@@ -36,9 +36,9 @@ _cs.jq_methods = {
     },
     bind: function (name, callback) {
         for (var i = 0; i < this.length; i++) {
-            if (typeof this[i].addEventListener == "function")
+            if (typeof this[i].addEventListener === "function")
                 this[i].addEventListener(name, callback, false);
-            else if (typeof this[i].attachEvent == "function")
+            else if (typeof this[i].attachEvent === "function")
                 this[i].attachEvent("on" + name, callback);
         }
         return this;
