@@ -102,7 +102,7 @@ $cs.pattern.eventing = $cs.trait({
         },
 
         /*  unsubscribe from an event  */
-        unsubscribe: function (id) {
+        unsubscribe: function () {
             /*  determine parameters  */
             var params = $cs.params("unsubscribe", arguments, {
                 id: { pos: 0, req: true }
