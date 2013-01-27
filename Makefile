@@ -91,7 +91,8 @@ build: $(TARGET)
 build/component-$(VERSION).js: $(SOURCE)
 	@$(SHTOOL) mkdir -f -p -m 755 build
 	@echo "++ assembling build/component-$(VERSION).js <- $(SOURCE) (Custom Build Tool)"; \
-	$(PERL) build.pl build/component-$(VERSION).js component.js "$(VERSION_MAJOR)" "$(VERSION_MINOR)" "$(VERSION_MICRO)" "$(VERSION_DATE)"
+	$(PERL) build.pl build/component-$(VERSION).js component.js \
+	    "$(VERSION_MAJOR)" "$(VERSION_MINOR)" "$(VERSION_MICRO)" "$(VERSION_DATE)"
 
 #   minify/compress the JavaScript library (with Google Closure Compiler)
 build/component-$(VERSION).min.js: build/component-$(VERSION).js
