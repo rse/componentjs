@@ -16,6 +16,12 @@ CLOSURECOMPILER = closure-compiler \
 				  --language_in ECMASCRIPT5 \
 				  --third_party
 GJSLINT         = gjslint
+JSHINT          = jshint \
+                  +maxerr=200 +bitwise -camelcase -curly +eqeqeq \
+                  -forin +immed +latedef -newcap -noarg -noempty +nonew -plusplus \
+                  +quotmark=double -regexp +undef +unused -strict +trailing \
+                  +maxparams=9 +maxdepth=4 +maxstatements=120 +maxlen=150 \
+                  +loopfunc +browser +node
 
 #   optional build tools
 UGLIFYJS        = uglifyjs \
@@ -25,16 +31,12 @@ UGLIFYJS        = uglifyjs \
 YUICOMPRESSOR   = yuicompressor \
                   --type js \
 				  --line-break 512
-JSLINT          = jslint \
-                  +indent=4 +maxerr=100 -anon +browser +continue \
-				  +eqeq -evil +nomen +plusplus -passfail +regexp \
-				  +unparam +sloppy +vars +white
 
 #   current version
 VERSION_MAJOR   = 0
 VERSION_MINOR   = 0
 VERSION_MICRO   = 0
-VERSION_DATE    = 00000000
+VERSION_DATE    = 19700101
 VERSION         = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
 #   list of all source files
@@ -125,7 +127,7 @@ build/component-$(VERSION).min-yc.js: build/component-$(VERSION).js
 	cp build/.tmp build/component-$(VERSION).min-yc.js && rm -f build/.tmp
 
 #   perform linting steps
-lint: lint1
+lint: lint1 lint2
 
 #   lint assembled JavaScript library (Google Closure Linter)
 lint1: build/component-$(VERSION).js
@@ -133,10 +135,10 @@ lint1: build/component-$(VERSION).js
 	$(GJSLINT) build/component-$(VERSION).js |\
 	egrep -v "E:(0001|0131|0110)" | grep -v "FILE  :" | sed -e '/^Found/,$$d'
 
-#   lint assembled JavaScript library (JSLint)
+#   lint assembled JavaScript library (JSHint)
 lint2: build/component-$(VERSION).js
-	@echo "++ linting build/component-$(VERSION).js (JSLint)"; \
-	$(JSLINT) build/component-$(VERSION).js
+	@echo "++ linting build/component-$(VERSION).js (JSHint)"; \
+	$(JSHINT) build/component-$(VERSION).js
 
 #   remove all target/build files
 clean:

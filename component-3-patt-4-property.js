@@ -30,7 +30,7 @@ $cs.pattern.property = $cs.trait({
                 throw _cs.exception("property", "disabling both targeting and bubbling makes no sense");
 
             /*  start resolving with an undefined value  */
-            var result = undefined;
+            var result; result = undefined;
 
             /*  get old configuration value
                 (on current node or on any parent node)  */

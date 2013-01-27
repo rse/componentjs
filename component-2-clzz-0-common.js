@@ -77,7 +77,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
      *  STEP 2: OPTIONALLY IMPLICITLY INHERIT FROM PARENT CLASS
      */
 
-    var no_internals = function (name, value) {
+    var no_internals = function (name /*, value */) {
         return !name.match("^(?:base|__ComponentJS_[A-Za-z]+__)$");
     };
 

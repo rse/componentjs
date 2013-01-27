@@ -12,6 +12,6 @@ $cs.version = {
     major: 0,
     minor: 0,
     micro: 0,
-    date:  00000000
+    date:  19700101
 };
 

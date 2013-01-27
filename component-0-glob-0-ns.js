@@ -27,7 +27,7 @@ $cs.marker = {};
 /*  top-level API method: change symbol of external API  */
 $cs.symbol = (function () {
     /*  internal state  */
-    var value_original = undefined;
+    var value_original; value_original = undefined;
     var symbol_current = null;
 
     /*  top-level API method  */

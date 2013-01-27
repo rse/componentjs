@@ -393,7 +393,7 @@ _cs.dbg_update_once = function () {
                 if (depth_first) {
                     /*  grab previously calculated information  */
                     var d = _cs.annotation(comp, "debugger_depth");
-                    var w = _cs.annotation(comp, "debugger_width");
+                    /* var w = _cs.annotation(comp, "debugger_width"); */
                     var t = _cs.annotation(comp, "debugger_total");
                     var my_x, my_y, my_w, my_h;
 
@@ -429,7 +429,7 @@ _cs.dbg_update_once = function () {
                             var child_x = _cs.annotation(children[i], "debugger_x");
                             var child_y = _cs.annotation(children[i], "debugger_y");
                             var child_w = _cs.annotation(children[i], "debugger_w");
-                            var child_h = _cs.annotation(children[i], "debugger_h");
+                            /* var child_h = _cs.annotation(children[i], "debugger_h"); */
                             ctx.strokeStyle = "#888888";
                             ctx.lineWidth = 2;
                             ctx.beginPath();
@@ -524,7 +524,7 @@ _cs.dbg_update_once = function () {
                     _cs.annotation(comp, "debugger_x", my_x);
                     _cs.annotation(comp, "debugger_y", my_y);
                     _cs.annotation(comp, "debugger_w", my_w);
-                    _cs.annotation(comp, "debugger_h", my_h);
+                    /* _cs.annotation(comp, "debugger_h", my_h); */
                 }
 
                 /*  pass-through the global X position  */

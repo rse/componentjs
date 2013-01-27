@@ -63,7 +63,7 @@ _cs.proxy = function (ctx, func, clonable) {
 _cs.memoize = function (func) {
     var f = function () {
         var key = _cs.json(Array.prototype.slice.call(arguments));
-        var val = undefined;
+        var val; val = undefined;
         if (typeof arguments.callee.cache[key] !== "undefined") {
             /*  take memoized/cached value  */
             val = arguments.callee.cache[key];

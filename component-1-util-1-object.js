@@ -149,10 +149,10 @@ _cs.json = (function () {
 _cs.clone = function (source, continue_recursion) {
     /*  allow recursive cloning to be controlled  */
     if (typeof continue_recursion === "undefined")
-        continue_recursion = function (name, value) { return true; };
+        continue_recursion = function (/* name, value */) { return true; };
     else if (typeof continue_recursion === "string") {
         var pattern = continue_recursion;
-        continue_recursion = function (name, value) { return name.match(pattern); };
+        continue_recursion = function (name /*, value */) { return name.match(pattern); };
     }
 
     /*  helper functions  */
@@ -174,7 +174,7 @@ _cs.clone = function (source, continue_recursion) {
         return g;
     };
 
-    var target = undefined;
+    var target; target = undefined;
     if (typeof source === "function")
         /*  special case: primitive function  */
         target = clone_func(source, continue_recursion);
@@ -184,13 +184,13 @@ _cs.clone = function (source, continue_recursion) {
             target = null;
         else if (Object.prototype.toString.call(source) === "[object String]")
             /*  special case: String object  */
-            target = new String(source.valueOf());
+            target = "" + source.valueOf();
         else if (Object.prototype.toString.call(source) === "[object Number]")
             /*  special case: Number object  */
-            target = new Number(source.valueOf());
+            target = 0 + source.valueOf();
         else if (Object.prototype.toString.call(source) === "[object Boolean]")
             /*  special case: Boolean object  */
-            target = new Boolean(source.valueOf());
+            target = !!source.valueOf();
         else if (Object.prototype.toString.call(source) === "[object Function]")
             /*  special case: Function object  */
             target = clone_func(source, continue_recursion);
@@ -209,7 +209,7 @@ _cs.clone = function (source, continue_recursion) {
         }
         else {
             /*  special case: hash object  */
-            target = new Object();
+            target = {};
             for (var key in source) {
                 if (key !== "constructor" && _cs.isown(source, key)) {
                     if (continue_recursion(key, source))
@@ -234,10 +234,10 @@ _cs.clone = function (source, continue_recursion) {
 /*  utility function: extend an object with other object(s)  */
 _cs.extend = function (target, source, filter) {
     if (typeof filter === "undefined")
-        filter = function (name, value) { return true; };
+        filter = function (/* name, value */) { return true; };
     else if (typeof filter === "string") {
         var pattern = filter;
-        filter = function (name, value) { return name.match(pattern); };
+        filter = function (name /*, value */) { return name.match(pattern); };
     }
     for (var key in source)
         if (_cs.isown(source, key))
@@ -249,10 +249,10 @@ _cs.extend = function (target, source, filter) {
 /*  utility function: mixin objects into another object by chaining methods  */
 _cs.mixin = function (target, source, filter) {
     if (typeof filter === "undefined")
-        filter = function (name, value) { return true; };
+        filter = function (/* name, value */) { return true; };
     else if (typeof filter === "string") {
         var pattern = filter;
-        filter = function (name, value) { return name.match(pattern); };
+        filter = function (name /*, value */) { return name.match(pattern); };
     }
     for (var key in source) {
         if (_cs.isown(source, key)) {

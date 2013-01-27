@@ -43,7 +43,7 @@ $js =~ s/
 $js =~ s/(major:\s+)0/$1$major/s;
 $js =~ s/(minor:\s+)0/$1$minor/s;
 $js =~ s/(micro:\s+)0/$1$micro/s;
-$js =~ s/(date:\s+)00000000/$1$date/s;
+$js =~ s/(date:\s+)\d+/$1$date/s;
 
 #   generate assembled output file
 $js > io($target);

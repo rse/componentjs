@@ -11,7 +11,7 @@
 $cs.nop = function () {};
 
 /*  utility function: validate a value against a validation specification  */
-_cs.validate = function (value, valid) {
+_cs.validate = function () {
     /*  determine parameters  */
     var params = $cs.params("validate", arguments, {
         value: { pos: 0, req: true },

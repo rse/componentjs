@@ -14,7 +14,7 @@ _cs.jq = function (sel, el) {
         result.push(sel);
     else {
         if (typeof el === "undefined")
-            el = GLOBAL.document;
+            el = DOCUMENT;
         result = el.querySelectorAll(sel);
         result = _cs.concat([], result);
     }

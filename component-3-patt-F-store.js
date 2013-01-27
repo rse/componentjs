@@ -10,10 +10,10 @@
 /*  determine unique store id  */
 _cs.store_id = function (comp) {
     var id = "ComponentJS:store:";
-    if (   typeof document !== "undefined"
-        && typeof document.location !== "undefined"
-        && typeof document.location.pathname === "string")
-        id += document.location.pathname;
+    if (   typeof DOCUMENT !== "undefined"
+        && typeof DOCUMENT.location !== "undefined"
+        && typeof DOCUMENT.location.pathname === "string")
+        id += DOCUMENT.location.pathname;
     else
         id += "unknown-path";
     id += ":" + comp.path("/");
