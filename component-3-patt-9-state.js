@@ -125,7 +125,8 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                     _cs.state_progression_run(comp.parent(), state, "upward");
                     if (comp.parent().state_compare(state) < 0) {
                         $cs.debug(1,
-                            "state: " + comp.path("/") + ": transition (increase) REJECTED BY PARENT COMPONENT (" + comp.parent().path("/") + "): " +
+                            "state: " + comp.path("/") + ": transition (increase) " +
+                            "REJECTED BY PARENT COMPONENT (" + comp.parent().path("/") + "): " +
                             "@" + _cs.states[comp.__state].state + " --(" + enter + ")--> " +
                             "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
@@ -221,7 +222,8 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                     _cs.state_progression_run(children[i], state_lower, "downward");
                     if (children[i].state_compare(state_lower) > 0) {
                         $cs.debug(1,
-                            "state: " + comp.path("/") + ": transition (decrease) REJECTED BY CHILD COMPONENT (" + children[i].path("/") + "): " +
+                            "state: " + comp.path("/") + ": transition (decrease) " +
+                            "REJECTED BY CHILD COMPONENT (" + children[i].path("/") + "): " +
                             "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
                             "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
