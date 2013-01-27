@@ -73,7 +73,7 @@ $cs.pattern.socket = $cs.trait({
                         object: obj
                     });
                 },
-                unplug: function (obj) {
+                unplug: function (/* obj */) {
                     if (this.id === -1)
                         throw _cs.exception("link:unplug: cannot unplug, you have to plug first");
                     $cs(params.target).unplug(this.id);
