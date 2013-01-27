@@ -49,15 +49,14 @@
     $include("component-3-patt-6-observable.js");
     $include("component-3-patt-7-event.js");
     $include("component-3-patt-8-cmd.js");
-    $include("component-3-patt-9-autoattr.js");
-    $include("component-3-patt-A-state.js");
-    $include("component-3-patt-B-service.js");
-    $include("component-3-patt-C-shadow.js");
-    $include("component-3-patt-D-socket.js");
-    $include("component-3-patt-E-hook.js");
-    $include("component-3-patt-F-marker.js");
-    $include("component-3-patt-G-store.js");
-    $include("component-3-patt-H-model.js");
+    $include("component-3-patt-9-state.js");
+    $include("component-3-patt-A-service.js");
+    $include("component-3-patt-B-shadow.js");
+    $include("component-3-patt-C-socket.js");
+    $include("component-3-patt-D-hook.js");
+    $include("component-3-patt-E-marker.js");
+    $include("component-3-patt-F-store.js");
+    $include("component-3-patt-G-model.js");
 
     /*
     **  COMPONENT API
@@ -66,9 +65,8 @@
     $include("component-4-comp-0-define.js");
     $include("component-4-comp-1-singleton.js");
     $include("component-4-comp-2-lookup.js");
-    $include("component-4-comp-3-pimpup.js");
-    $include("component-4-comp-4-manage.js");
-    $include("component-4-comp-5-states.js");
+    $include("component-4-comp-3-manage.js");
+    $include("component-4-comp-4-states.js");
 
     /*
     **  DEBUGGER

@@ -168,9 +168,6 @@ _cs.create_single = function (base, path, clazz) {
     /*  remember bi-directional relationship between component and object  */
     comp.obj(obj);
 
-    /*  optionally pimpup the object  */
-    _cs.pimpup(obj);
-
     /*  debug hint  */
     $cs.debug(1, "component: " + comp.path("/") + ": created component [" + comp.id() + "]");
 

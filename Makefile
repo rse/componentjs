@@ -55,21 +55,19 @@ SOURCE          = component.js \
                   component-3-patt-6-observable.js \
                   component-3-patt-7-event.js \
                   component-3-patt-8-cmd.js \
-                  component-3-patt-9-autoattr.js \
-                  component-3-patt-A-state.js \
-                  component-3-patt-B-service.js \
-                  component-3-patt-C-shadow.js \
-                  component-3-patt-D-socket.js \
-                  component-3-patt-E-hook.js \
-                  component-3-patt-F-marker.js \
-                  component-3-patt-G-store.js \
-                  component-3-patt-H-model.js \
+                  component-3-patt-9-state.js \
+                  component-3-patt-A-service.js \
+                  component-3-patt-B-shadow.js \
+                  component-3-patt-C-socket.js \
+                  component-3-patt-D-hook.js \
+                  component-3-patt-E-marker.js \
+                  component-3-patt-F-store.js \
+                  component-3-patt-G-model.js \
                   component-4-comp-0-define.js \
                   component-4-comp-1-singleton.js \
                   component-4-comp-2-lookup.js \
-                  component-4-comp-3-pimpup.js \
-                  component-4-comp-4-manage.js \
-                  component-4-comp-5-states.js \
+                  component-4-comp-3-manage.js \
+                  component-4-comp-4-states.js \
                   component-5-dbgr-0-jquery.js \
                   component-5-dbgr-1-view.js \
                   component-6-glob-0-export.js
