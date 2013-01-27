@@ -2,14 +2,28 @@
     ComponentJS -- Component System for JavaScript <http://componentjs.com>
     Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
 
-    ComponentJS is an MPL-licensed Open Source library for JavaScript,
-    providing a powerful Component System for hierarchically structuring
-    the User-Interface (UI) dialogs of complex HTML5-based Rich Clients —
-    with maximum Separation of Concerns, through Model, View and Controller
-    component roles, and in a fully UI-toolkit-independent way.
+    License
+    =======
 
-    Building ComponentJS
-    ====================
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+
+    Elevator Pitch
+    ==============
+
+    ComponentJS is a stand-alone MPL-licensed Open Source library
+    for JavaScript, providing a powerful Component System for
+    hierarchically structuring the User-Interface (UI) dialogs of
+    complex HTML5-based Rich Clients (aka Single-Page-Apps) — under
+    maximum applied Separation of Concerns (SoC) architecture principle,
+    through optional Model, View and Controller component roles, with
+    sophisticated hierarchical Event, Service, Hook, Model, Socket and
+    Property mechanisms, and fully independent and agnostic of the
+    particular UI widget toolkit.
+
+    Building
+    ========
 
     For building the ComponentJS JavaScript library "component-N.N.N.js"
     with "make all" the following mandatory Unix tools have to
