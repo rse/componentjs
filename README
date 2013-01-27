@@ -14,30 +14,35 @@
     For building the ComponentJS JavaScript library "component-N.N.N.js"
     with "make all" the following mandatory Unix tools have to
     be installed. The ComponentJS author uses an OpenPKG-based
-    software-stack for this. The OpenPKG package names are given in
-    brackets.
+    software-stack for this. The Unix program names which have to be in
+    $PATH are given brackets. The OpenPKG package names which have to be
+    installed are given in parenthesis.
 
-    - GNU Make
+    - OpenPKG
+      http://www.openpkg.org/
+      (OpenPKG "openpkg")
+
+    - GNU Make [make]
       http://www.gnu.org/software/make/ 
-      [OpenPKG "make"]
+      (OpenPKG "make")
 
-    - GNU Portable Shell Tool (shtool)
+    - GNU Portable Shell Tool [shtool]
       http://www.gnu.org/software/shtool/ 
-      [OpenPKG "shtool"]
+      (OpenPKG "shtool")
 
-    - Perl
+    - Perl [perl]
       http://www.perl.org/
-      [OpenPKG "perl"]
+      (OpenPKG "perl")
 
-    - Google Closure Compiler
+    - Google Closure Compiler [closure-compiler]
       http://code.google.com/closure/compiler/
-      [OpenPKG "closurecompiler"]
+      (OpenPKG "closurecompiler")
 
-    - Google Closure Linter
+    - Google Closure Linter [gjslint]
       http://code.google.com/p/closure-linter/
-      [OpenPKG "closurelinter"]
+      (OpenPKG "closurelinter")
 
-    - JSHint
+    - JSHint [jshint]
       http://www.jshint.com/
-      [OpenPKG "jshint"]
+      (OpenPKG "jshint")
 
