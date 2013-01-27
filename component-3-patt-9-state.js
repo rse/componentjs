@@ -19,7 +19,7 @@ _cs.states = [
 
 /*  clear all state transitions (except for "dead" state)  */
 _cs.states_clear = function () {
-    _cs.states = _cs.states.slice(1);
+    _cs.states = _cs.slice(_cs.states, 1);
     return;
 };
 

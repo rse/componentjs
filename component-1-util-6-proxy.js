@@ -62,7 +62,7 @@ _cs.proxy = function (ctx, func, clonable) {
     returns the same output value on the same input parameters)  */
 _cs.memoize = function (func) {
     var f = function () {
-        var key = _cs.json(Array.prototype.slice.call(arguments));
+        var key = _cs.json(_cs.slice(arguments, 0));
         var val; val = undefined;
         if (typeof arguments.callee.cache[key] !== "undefined") {
             /*  take memoized/cached value  */
@@ -82,10 +82,10 @@ _cs.memoize = function (func) {
 /*  generate a proxy function which uses "currying"
     to remember its initially supplied arguments  */
 _cs.curry = function (func) {
-    var args_stored = Array.prototype.slice.call(arguments, 1);
+    var args_stored = _cs.slice(arguments, 1);
     return function () {
-        var args_supplied = Array.prototype.slice.call(arguments);
-        var args = args_stored.concat(args_supplied);
+        var args_supplied = _cs.slice(arguments, 0);
+        var args = _cs.concat(args_stored, args_supplied);
         return func.apply(this, args);
     };
 };
