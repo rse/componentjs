@@ -61,7 +61,7 @@ $cs.create = function () {
                 str += token[i];
         }
         return str;
-    }
+    };
 
     /*  iterate over all tokens...  */
     for (var i = 0; i < token.length; i++) {

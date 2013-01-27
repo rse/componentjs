@@ -19,10 +19,10 @@ $cs.pattern.config = $cs.trait({
             var result;
             if (arguments.length === 0) {
                 /*  return list of keys  */
-                result = []
+                result = [];
                 for (var key in this.__config)
                     if (_cs.isown(this.__config, key))
-                        result.push(key)
+                        result.push(key);
             }
             else if (arguments.length === 1 && typeof name === "string") {
                 /*  retrieve value  */

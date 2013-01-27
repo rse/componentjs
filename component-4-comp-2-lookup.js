@@ -53,7 +53,7 @@ _cs.lookup = function (base, path) {
 
     if (path !== "") {
         /*  lookup components  */
-        var comps = []
+        var comps = [];
         _cs.lookup_step(comps, comp, path.split("/"), 0);
 
         /*  post-process component result set  */
@@ -71,7 +71,7 @@ _cs.lookup = function (base, path) {
                 var take = (typeof seen[id] === "undefined");
                 seen[id] = true;
                 return take;
-            })
+            });
             if (comps.length === 1)
                 /*  after de-duplication now only a single component found  */
                 comp = comps[0];

@@ -75,7 +75,7 @@ SOURCE          = component.js \
 TARGET          = build/component-$(VERSION).js \
                   build/component-$(VERSION).min.js
 
-all: $(TARGET)
+all: $(TARGET) lint1
 
 build/component-$(VERSION).js: $(SOURCE)
 	@$(SHTOOL) mkdir -f -p -m 755 build

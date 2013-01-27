@@ -155,7 +155,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             /*  execute pending spooled actions  */
             name = "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter";
             if (comp.spooled(name))
-                comp.unspool(name)
+                comp.unspool(name);
 
             /*  execute enter method  */
             obj = comp.obj();
@@ -251,7 +251,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             /*  execute pending spooled actions  */
             name = "ComponentJS:state:" + _cs.states[comp.__state + 1].state + ":leave";
             if (comp.spooled(name))
-                comp.unspool(name)
+                comp.unspool(name);
 
             /*  execute leave method  */
             obj = comp.obj();

@@ -371,7 +371,7 @@ _cs.dbg_update_once = function () {
         if (_cs.dbg_state_invalid.components || _cs.dbg_state_invalid.states) {
 
             /*  ensure the canvas (already) exists  */
-            var ctx = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0)
+            var ctx = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0);
             if (typeof ctx === "undefined")
                 return;
             ctx = ctx.getContext("2d");
@@ -502,7 +502,7 @@ _cs.dbg_update_once = function () {
                             }
                         }
                         ctx.fillText(text, x, y, width);
-                    }
+                    };
 
                     /*  draw component type indicators  */
                     var width = 0;

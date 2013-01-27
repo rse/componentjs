@@ -89,7 +89,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
             but WITHOUT calling the parent class's constructor function  */
         var ctor = function () {
             this.constructor = clazz;
-        }
+        };
         ctor.prototype = params.extend.prototype;
         clazz.prototype = new ctor();
 

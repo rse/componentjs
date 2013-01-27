@@ -67,7 +67,7 @@ $cs.pattern.socket = $cs.trait({
                 ctx:    { id: -1 },
                 plug:   function (obj) {
                     if (this.id !== -1)
-                        throw _cs.exception("link:plug: cannot plug, you have to unplug first")
+                        throw _cs.exception("link:plug: cannot plug, you have to unplug first");
                     this.id = cs(params.target).plug({
                         name:   params.socket,
                         object: obj
@@ -75,7 +75,7 @@ $cs.pattern.socket = $cs.trait({
                 },
                 unplug: function (obj) {
                     if (this.id === -1)
-                        throw _cs.exception("link:unplug: cannot unplug, you have to plug first")
+                        throw _cs.exception("link:unplug: cannot unplug, you have to plug first");
                     cs(params.target).unplug(this.id);
                     this.id = -1;
                 }

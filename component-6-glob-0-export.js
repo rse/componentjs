@@ -22,7 +22,7 @@ else {
             if (regex.exec(src)) {
                 var data = s[i].getAttribute("data-symbol");
                 if (data !== null) {
-                    name = data
+                    name = data;
                     break;
                 }
             }
