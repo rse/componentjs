@@ -95,6 +95,7 @@ _cs.lookup = function (base, path) {
 
 /*  lookup component(s) at "comp", reachable via path segment "path[i]"  */
 _cs.lookup_step = function (result, comp, path, i) {
+    var j, children, nodes;
     if (i >= path.length)
         /*  stop recursion  */
         result.push(comp);
@@ -108,24 +109,24 @@ _cs.lookup_step = function (result, comp, path, i) {
     }
     else if (path[i] === "*") {
         /*  CASE 3: all child components  */
-        var children = comp.children();
-        for (var j = 0; j < children.length; j++)
+        children = comp.children();
+        for (j = 0; j < children.length; j++)
             _cs.lookup_step(result, children[j], path, i + 1);     /* RECURSION */
     }
     else if (path[i] === "") {
         /*  CASE 4: all descendent components  */
-        var nodes = comp.walk_down(function (depth, node, nodes, depth_first) {
+        nodes = comp.walk_down(function (depth, node, nodes, depth_first) {
             if (!depth_first)
                 nodes.push(node);
             return nodes;
         }, []);
-        for (var j = 0; j < nodes.length; j++)
+        for (j = 0; j < nodes.length; j++)
             _cs.lookup_step(result, nodes[j], path, i + 1);        /* RECURSION */
     }
     else {
         /*  CASE 5: a specific child component  */
-        var children = comp.children();
-        for (var j = 0; j < children.length; j++) {
+        children = comp.children();
+        for (j = 0; j < children.length; j++) {
             if (children[j].name() === path[i]) {
                 _cs.lookup_step(result, children[j], path, i + 1); /* RECURSION */
                 break;
