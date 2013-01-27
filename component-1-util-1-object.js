@@ -113,7 +113,6 @@ _cs.json = (function () {
                 break;
             case "object":
                 var a = [];
-                var m;
                 if (!value)
                     value = "null";
                 else if (_cs.annotation(value, "type") !== null)
