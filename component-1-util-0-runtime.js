@@ -13,11 +13,7 @@ _cs.exception = function (method, error) {
 
     /*  optionally log stack trace to debugger  */
     if (_cs.dbg !== null) {
-        if (typeof printStackTrace !== "undefined") {
-            trace = printStackTrace();
-            _cs.dbg_log(trace.join("\n"));
-        }
-        else if (typeof GLOBAL.printStackTrace !== "undefined") {
+        if (typeof GLOBAL.printStackTrace !== "undefined") {
             trace = GLOBAL.printStackTrace();
             _cs.dbg_log(trace.join("\n"));
         }
@@ -25,16 +21,7 @@ _cs.exception = function (method, error) {
 
     /*  optionally log stack trace to console  */
     if ($cs.debug() > 0) {
-        if (typeof console === "object") {
-            if (typeof console.trace === "function")
-                console.trace();
-            else if (   typeof printStackTrace !== "undefined"
-                     && typeof console.log === "function") {
-                trace = printStackTrace();
-                console.log(trace.join("\n"));
-            }
-        }
-        else if (typeof GLOBAL.console === "object") {
+        if (typeof GLOBAL.console === "object") {
             if (typeof GLOBAL.console.trace === "function")
                 GLOBAL.console.trace();
             else if (   typeof GLOBAL.printStackTrace !== "undefined"
