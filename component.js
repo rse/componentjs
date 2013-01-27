@@ -25,10 +25,9 @@
     $include("component-1-util-2-array.js");
     $include("component-1-util-3-params.js");
     $include("component-1-util-4-encoding.js");
-    $include("component-1-util-5-arithmetic.js");
-    $include("component-1-util-6-identifier.js");
-    $include("component-1-util-7-proxy.js");
-    $include("component-1-util-8-attribute.js");
+    $include("component-1-util-5-identifier.js");
+    $include("component-1-util-6-proxy.js");
+    $include("component-1-util-7-attribute.js");
 
     /*
     **  CLASS SYSTEM

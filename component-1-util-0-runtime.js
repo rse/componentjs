@@ -49,16 +49,6 @@ _cs.exception = function (method, error) {
     return new Error("[ComponentJS]: ERROR: " + method + ": " + error);
 };
 
-/*  utility function: minimal Pseudo Random Number Generator (PRNG)  */
-_cs.prng = function (len, radix) {
-    if (typeof radix === "undefined")
-        radix = 256;
-    var bytes = [];
-    for (var i = 0; i < len; i++)
-        bytes[i] = Math.floor(Math.random() * radix + 1);
-    return bytes;
-};
-
 /*  utility function: logging via environment console  */
 _cs.log = function (msg) {
     /*  try ComponentJS debugger  */

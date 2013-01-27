@@ -41,10 +41,9 @@ SOURCE          = component.js \
                   component-1-util-2-array.js \
                   component-1-util-3-params.js \
                   component-1-util-4-encoding.js \
-                  component-1-util-5-arithmetic.js \
-                  component-1-util-6-identifier.js \
-                  component-1-util-7-proxy.js \
-                  component-1-util-8-attribute.js \
+                  component-1-util-5-identifier.js \
+                  component-1-util-6-proxy.js \
+                  component-1-util-7-attribute.js \
                   component-2-clzz-0-common.js \
                   component-2-clzz-1-api.js \
                   component-3-patt-0-base.js \
