@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<!--
+    ComponentJS - Component System for JavaScript <http://componentjs.com>
+    Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+
+    This Source Code Form is subject to the terms of the Mozilla Public
+    License, v. 2.0. If a copy of the MPL was not distributed with this
+    file, You can obtain one at http://mozilla.org/MPL/2.0/.
+-->
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+        <title>ComponentJS: Application Programming Interface (API)</title>
+        <link rel="stylesheet" type="text/css" href="http://componentjs.com/fonts/out/DejaVu.css"/>
+        <link rel="shortcut icon" href="http://componentjs.com/ComponentJS-icon.ico"/>
+        <link rel="icon" type="image/png" href="http://componentjs.com/ComponentJS-icon.png"/>
+        <style type="text/css">
+            /*
+             *  HTML
+             */
+            @media screen {
+                body {
+                    background-color: #808080;
+                    color: #000000;
+                    font-family: "DejaVu Sans", sans-serif;
+                    font-size: 10pt;
+                }
+                div.head {
+                    position: fixed;
+                    z-index: 100;
+                    left: 20px;
+                    top: 0px;
+                    width: 860px;
+                    height: 30px;
+                    background-color: #2068b0;
+                }
+                div.head1 {
+                    color: #ffffff;
+                    position: absolute;
+                    top: 8px;
+                    left: 50px;
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    font-weight: bold;
+                }
+                div.head2 {
+                    color: #c2dbf4;
+                    position: absolute;
+                    top: 8px;
+                    left: 135px;
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    padding-left: 8px;
+                    border-left: 1px solid #60aefc;
+                    margin-left: 6px;
+                }
+                div.foot {
+                    position: fixed;
+                    z-index: 100;
+                    left: 20px;
+                    bottom: 0px;
+                    width: 860px;
+                    height: 30px;
+                    background-color: #2068b0;
+                }
+                div.foot1 {
+                    color: #ffffff;
+                    position: absolute;
+                    top: 8px;
+                    left: 50px;
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    font-weight: bold;
+                }
+                div.foot2 {
+                    color: #c2dbf4;
+                    position: absolute;
+                    top: 8px;
+                    left: 135px;
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    padding-left: 8px;
+                    border-left: 0.1px solid #60aefc;
+                    margin-left: 6px;
+                }
+                div.the_version {
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 8pt;
+                    color: #c2dbf4;
+                    position: fixed;
+                    left: 800px;
+                    top: 10px;
+                    z-index: 1000;
+                }
+                div.spec {
+                    -webkit-box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.5);
+                    box-shadow: 0px 0px 8px 2px rgba(0, 0, 0, 0.5);
+                    background-color: #ffffff;
+                    padding: 40px 80px 40px 80px;
+                    width: 700px;
+                    position: absolute;
+                    left: 20px;
+                    top: 0px;
+                }
+                div.navi {
+                    z-index: 200;
+                    width: 230px;
+                    height: 100%;
+                    position: fixed;
+                    top: 0px;
+                    left: 900px;
+                    background-color: #808080;
+                    overflow: scroll;
+                    overflow-x: hidden;
+                    padding-left: 5px;
+                }
+                div.navi h1 {
+                    margin-top: 8px;
+                    margin-bottom: 0px;
+                }
+                div.navi h2 {
+                    margin-top: 8px;
+                    margin-bottom: 0px;
+                }
+                div.navi h1 a {
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 14pt;
+                    color: #c0c0c0;
+                    text-decoration: none;
+                }
+                div.navi h2 a {
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 12pt;
+                    color: #c0c0c0;
+                    text-decoration: none;
+                }
+                div.navi ul {
+                    list-style-type: none;
+                    padding-left: 0px;
+                    margin: 0px;
+                }
+                div.navi ul li {
+                    margin-bottom: 0px;
+                }
+                div.navi ul li a {
+                    font-size: 10pt;
+                    color: #e0e0e0;
+                    text-decoration: none;
+                }
+            }
+
+            /*
+             *  PDF
+             */
+            @media print {
+                @page {
+                    size: A4;
+                    margin-left:    2.00cm;
+                    margin-right:   2.00cm;
+                    margin-top:     0.75cm;
+                    margin-bottom:  0.75cm;
+                    padding-top:    0.75cm;
+                    padding-bottom: 0.75cm;
+                    @top-left-corner {
+                        content: "";
+                        background: #2068b0;
+                    }
+                    @top-center {
+                        font-family: "DejaVu Sans", sans-serif;
+                        font-family: sans-serif;
+                        font-size:   10pt;
+                        content: flow(head);
+                        background: #2068b0;
+                        color: #ffffff;
+                    }
+                    @top-right-corner {
+                        content: flow(the_version);
+                        background: #2068b0;
+                    }
+                    @bottom-left-corner {
+                        content: "";
+                        background: #2068b0;
+                    }
+                    @bottom-center {
+                        content: flow(head);
+                        background: #2068b0;
+                        font-family: "DejaVu Sans", sans-serif;
+                        font-family: sans-serif;
+                        font-size:   10pt;
+                        color: #ffffff;
+                    }
+                    @bottom-right-corner {
+                        content: counter(page) " / " counter(pages);
+                        background: #2068b0;
+                        font-family: "DejaVu Sans", sans-serif;
+                        font-family: sans-serif;
+                        font-size:   9pt;
+                        color: #ffffff;
+                    }
+                }
+                body {
+                    margin: 0px;
+                    padding: 0px;
+                    background-color: #ffffff;
+                    color: #000000;
+                    font-family: "DejaVu Sans", sans-serif;
+                    font-size: 9pt;
+                    position: relative;
+                }
+                h1 {
+                    prince-bookmark-level: 1;
+                }
+                h2 {
+                    prince-bookmark-level: 2;
+                }
+                div.spec ul li a[name] {
+                    prince-bookmark-level: 3;
+                }
+                div.head {
+                    flow: static(head);
+                }
+                div.head div.head1 {
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    font-weight: bold;
+                    color: #ffffff;
+                    display: inline;
+                }
+                div.head div.head2 {
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    color: #c2dbf4;
+                    display: inline;
+                    padding-left: 8px;
+                    border-left: 0.5px solid #60aefc;
+                    margin-left: 6px;
+                }
+                div.foot {
+                    flow: static(foot);
+                }
+                div.foot div.foot1 {
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    font-weight: bold;
+                    color: #ffffff;
+                    display: inline;
+                }
+                div.foot div.foot2 {
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 9pt;
+                    color: #ffffff;
+                    display: inline;
+                    padding-left: 8px;
+                    border-left: 0.5px solid #60aefc;
+                    margin-left: 6px;
+                }
+                div.the_version {
+                    flow: static(the_version);
+                    font-family: "DejaVu Sans Condensed", sans-serif;
+                    font-size: 7pt;
+                    color: #c2dbf4;
+                }
+                div.spec {
+                    width: 100%;
+                }
+                div.navi {
+                    display: none;
+                }
+            }
+
+            /*
+             *  COMMON
+             */
+            div.spec h1 {
+                font-family: "DejaVu Sans Condensed", sans-serif;
+                color: #2068b0;
+                margin-bottom: 4px;
+                font-size: 20pt;
+            }
+            div.spec h2 {
+                font-family: "DejaVu Sans Condensed", sans-serif;
+                color: #2068b0;
+                margin-bottom: 4px;
+                font-size: 14pt;
+            }
+            div.spec > ul {
+            }
+            div.spec > ul > li {
+                list-style-type: none;
+            }
+            a {
+                text-decoration: none;
+            }
+            span.M, span.M a {
+                color: #2068b0;
+            }
+            span.meta {
+                font-family: "DejaVu Sans", sans-serif;
+                color: #999999;
+            }
+            span.P {
+                font-family: "DejaVu Sans", sans-serif;
+                font-style: italic;
+                color: #408edc;
+            }
+            span.F {
+                font-family: "DejaVu Sans Mono", monospace;
+                color: #408edc;
+            }
+            span.T {
+                font-family: "DejaVu Sans", sans-serif;
+                font-style: italic;
+                color: #707070;
+            }
+            span.O {
+                font-family: "DejaVu Sans", sans-serif;
+                font-style: italic;
+            }
+            span.M {
+                font-family: "DejaVu Sans Mono", sans-serif;
+                font-weight: bold;
+            }
+            code {
+                font-family: "DejaVu Sans Mono", monospace;
+            }
+            div.intro {
+                margin-bottom: 12px;
+            }
+            div.synopsis {
+                margin-top: 8px;
+            }
+            div.synopsis + div.synopsis {
+                margin-top: 4px;
+            }
+            div.synopsis {
+                font-family: "DejaVu Sans Mono", monospace;
+                border: 1px solid #d0d0d0;
+                background-color: #f8f8f8;
+                padding: 4px 8px 4px 8px;
+            }
+            div.desc {
+                margin-top: 8px;
+                margin-bottom: 8px;
+            }
+            div.example {
+                white-space: pre;
+                font-family: "DejaVu Sans Mono", monospace;
+                border-left: 1px solid #d0d0d0;
+                padding-left: 20px;
+                margin-bottom: 20px;
+                color: #707070;
+            }
+            span.componentjs {
+                font-family: "DejaVu Sans Condensed", sans-serif;
+                font-weight: bold;
+                font-style: italic;
+            }
+            span.FIXME {
+                color: #ffffff;
+                background-color:  #cc3333;
+                padding: 3px 4px 1px 4px;
+            }
+            img.logo {
+                margin-top: 20px;
+                width: 70%;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="head" class="head">
+            <div id="head1" class="head1">ComponentJS</div>
+            <div id="head2" class="head2">Application Programming Interface (API)</div>
+        </div>
+        <div id="the_version" class="the_version">1.0.0</div>
+        <div class="spec">
+            <img class="logo" src="http://componentjs.com/ComponentJS-logo.svg" alt="ComponentJS"/>
+            @SPEC@
+        </div>
+        <div class="navi">
+            @NAVI@
+        </div>
+        <div id="foot" class="foot">
+            <div id="foot1" class="foot1">ComponentJS</div>
+            <div id="foot2" class="foot2">Application Programming Interface (API)</div>
+        </div>
+    </body>
+</html>

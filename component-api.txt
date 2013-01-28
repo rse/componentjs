@@ -1,0 +1,873 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2012 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+API Management
+--------------
+
+Change the API symbol in the global variable namespace under which ComponentJS
+is exposed. By default ComponentJS is exposed under the symbol name
+C<ComponentJS>. It is a common convention to change the symbol to C<cs> (for
+"component system/service") to have a convenient short-hand.
+
+- ComponentJS.M<symbol>([P<name>: T<String>]): T<ComponentJS>
+
+  Change symbol of ComponentJS API to global variable P<name> and return it.
+  If P<name> is not given, ComponentJS does not occupy any global namespace slot at all --
+  then it is required to store the return value and use ComponentJS directly through it.
+
+  ComponentJS.symbol("cs")        /* standard    */
+  var cs = ComponentJS.symbol()   /* alternative */
+
+- ComponentJS.M<version> = {
+      F<major>: T<Number>, F<minor>: T<Number>, F<micro>: T<Number>, F<date>:  T<Number>
+  }
+
+  Access the ComponentJS implementation version "F<major>C<.>F<minor>C<.>F<micro>"
+  and the corresponding release F<date> (in format YYYYMMDD).
+
+  if (ComponentJS.version.date &lt; 20120101)
+       throw new Error("need at least ComponentJS as of 20120101")
+
+Debugging
+---------
+
+ComponentJS has special support for debugging its run-time processing,
+especially for visualizing the current component tree in real-time.
+
+- ComponentJS.M<debug>(): T<Number>;
+  ComponentJS.M<debug>(P<level>: T<Number>): T<Void>;
+  ComponentJS.M<debug>(P<level>: T<Number>, P<message>: T<String>): T<Void>
+
+  Get current debug level, or configure the debugging through maximum debug-level P<level>
+  (C<0> disables all debug messages, C<9> enables all debug messages) or log a particular
+  P<message> under debug-level P<level>.
+
+  cs.debug(0)
+  if (cs.debug_instrumented()) {
+       cs.debug(9)
+       cs.debug_window({ ... })
+  }
+
+- ComponentJS.M<debug_instrumented>(): T<Boolean>
+
+  Determine whether the current browser is "instrumented" for debugging, i.e., whether
+  the browser's built-in debugger is activated (in detached mode only). Currently
+  ComponentJS is able to determine Firefox's Firebug and Chrome's Inspector only.
+
+  if (cs.debug_instrumented()) ...
+
+- ComponentJS.M<debug_window>({
+      F<enable>: T<Boolean>,
+      F<autoclose>: T<Boolean>,
+      F<name>: T<String>,
+      F<width>: T<Number> = 800,
+      F<height>: T<Number> = 600,
+      F<natural>: T<Boolean> = false
+  });
+  ComponentJS.M<debug_window>(
+      P<enable>: T<Boolean>,
+      P<autoclose>: T<Boolean>,
+      P<name>: T<String>)
+
+  On F<enable> C<true>/C<false> open/close the extra browser window
+  containing the ComponentJS debugger view for the ComponentJS application
+  identified by F<name>. If F<autoclose> is C<true>,
+  optionally automatically close the debugger window with application window
+  (which usually is inconvenient during debugging because on application
+  reloads the ComponentJS debugger window is recreated with default width/height
+  at default position instead of reused). Parameters F<width> and F<height> can be
+  used to change the initial window size. Parameter F<natural> controls whether
+  the component tree is drawn with the root component at the bottom (C<true>)
+  or at the top (C<false>).
+
+  cs.debug_window({
+      enable: true,
+      autoclose: false,
+      name "My App"
+      width: 800,
+      height: 800,
+      natural: true
+  })
+
+Code Structuring
+----------------
+
+ComponentJS internally uses a few code structuring utility functions for implementing
+class method parameters and class attributes. Those utility functions
+are also exposed for consumption by application developers, but they are
+NOT(!) required for using ComponentJS. Especially, it is NOT(!) required
+that component shadow objects are defined by C<cs.clazz>!
+
+- ComponentJS.M<ns>(P<path>: T<String>[, P<leaf>: T<Object> = {}]): T<Object>
+
+  Classes and traits should be structured through namespaces. A namespace is a
+  JavaScript (hash) object, potentially itself part of a parent namespace
+  object. The top-most implicit namespace object is C<window>. A namespace has a
+  dot-separated fully-qualified symbol path like C<foo.bar.quux>. This
+  method allows to create the fully-qualified path of nested objects throught the
+  dot-separated P<path> of object names, optionally assign the
+  right-most/leaf object to P<leave> and finally return the right-most/leaf T<Object>.
+
+  cs.ns("my.app"); my.app.ui = cs.clazz({ ... })  /* standard    */
+  cs.ns("my.app").ui = cs.clazz({ ... })          /* alternative */
+  cs.ns("my.app.ui", cs.clazz({ ... })            /* alternative */
+
+- ComponentJS.M<params>(P<name>: T<String>, P<args>: T<Object[]>, P<spec>: T<Object>): T<Object>
+
+  Handle positional and named function parameters by processing
+  a function's C<arguments> array. Parameter P<name> is the name
+  of the function for use in exceptions in case of invalid parameters.
+  Parameter P<args> usually is the JavaScript C<arguments> pseudo-array of
+  a function. Parameter P<spec> is the parameter specification: each key
+  is the name of a parameter and the value has to be an T<Object> with
+  the following possible fields: P<pos> for the optional position in case
+  of positional usage, P<def> for the default value (of not required
+  and hence optional parameters), P<req> to indicate whether the
+  parameter is required and P<valid> for type validation (either
+  the string returned by JavaScript C<typeof> operator, or the string
+  C<"array(...)"> for arrays or a valid regular expression C</.../>
+  for validating a T<String> against it.
+
+  function config () {
+      var params = $cs.params("config", arguments, {
+          scope: { pos: 0, req: true,      valid: "boolean"           },
+          key:   { pos: 1, req: true,      valid: /^[a-z][a-z0-9_]*$/ },
+          value: { pos: 2, def: undefined, valid: "object"            },
+          force: {         def: false,     valid: "boolean"           }
+      });
+      var result = db_get(params.scope, params.key);
+      if (typeof params.value !== "undefined")
+          db_set(params.scope, params.key, params.value, params.force);
+      return result;
+  }
+  var value = config("foo", "bar");
+  config("foo", "bar", "quux");
+  config({ scope: "foo", key: "bar", value: "quux", force: true });
+
+- ComponentJS.M<attribute>({ F<name>: T<String>, F<def>: T<Object>, F<validate>: T<Object> }): T<Function>;
+  ComponentJS.M<attribute>(P<name>: T<String>, P<def>: T<Object>, P<validate>: T<Object>): T<Function>
+
+  Create a clonable attribute capturing getter/setter function with name P<name> (for exception
+  handling reasons only), the default value P<def> and the value validation P<validate>.
+
+  var id = ComponentJS.attribute("id", "foo", /^[a-z][a-zA-Z0-9_]*/);
+  id() === "foo"
+  id("bar") -> "foo"; id() -> "bar"
+
+- ComponentJS.M<clazz>({
+        [F<name>:        T<String>,]
+        [F<extend>:      T<Clazz>,]
+        [F<mixin>:       T<Array(Trait)>,]
+        [F<constructor>: T<Function>,]
+        [F<dynamics>:    T<Object>,]
+        [F<protos>:      T<Object>,]
+        [F<statics>:     T<Object>]
+  })
+
+  Define a JavaScript Class, optionally stored under the absolute dot-separated
+  object path F<name>, optionally extending the base/super/parent Class F<extend>
+  and optionally mixing in the functionality of one or more Traits via F<mixin>. The class
+  can have a constructor function F<constructor> which is called once the
+  Class is instanciated and which can further initialize the dynamic fields of the class.
+  On each instanciation, all fields which are specified with F<dynamics> are
+  cloned and instanciated and all methods in F<protos> are copied into the
+  Class C<prototypes> object. The F<statics> content is copied into the
+  Class itself only. In case of F<extend> and/or F<mixin>, both the F<constructor>
+  and methods of F<protos> can call C<this.base(...)> for the base/super/parent
+  method.
+
+  var foo = cs.clazz({
+      constructor: function (bar, baz) {
+          this._bar = bar;
+          this._baz = baz;
+      },
+      dynamics: {
+          _bar: "bar",
+          _baz: 42
+      },
+      protos: {
+          bar: function (value_new) {
+              var value_old = this._bar;
+              if (typeof value_new !=== "undefined")
+                  this._bar = value_new;
+              return value_old;
+          }
+          [...]
+      }
+  })
+
+- ComponentJS.M<trait>({
+        [F<name>:        T<String>,]
+        [F<mixin>:       T<Array(trait)>,]
+        [F<constructor>: T<Function>,]
+        [F<setup>:       T<Function>,]
+        [F<dynamics>:    T<Object>,]
+        [F<protos>:      T<Object>,]
+        [F<statics>:     T<Object>]
+  })
+
+  Define a JavaScript Trait (a Class which can be mixed in), optionally stored under the absolute dot-separated
+  object path F<name> and
+  optionally mixing in the functionality of one or more other Traits via F<mixin>. The trait
+  can have a constructor function F<constructor> which is called once the
+  Class the Trait is mixed in is instanciated and which can further initialize the dynamic fields of the Class.
+  On each instanciation, all fields which are specified with F<dynamics> are
+  cloned and instanciated and all methods in F<protos> are copied into the
+  Class C<prototypes> object. The F<statics> content is copied into the
+  Class itself only. The optional F<setup> function is called directly at the end of Class
+  definition (not instanciation) and can further refine the defined Class.
+
+  var foo = cs.trait({
+      protos: {
+          bar: function () {
+              [...]
+          }
+      }
+  })
+
+Component Creation
+------------------
+
+Components are managed in hierarchical fashion within a component tree.
+The component tree can be traversed and its components can be created,
+looked up, state transitioned, communicated on and be destroyed.
+
+- ComponentJS.M<create>(P<abs-tree-spec>: T<String>, P<class>: T<Class>[, ...]): T<Object>;
+  ComponentJS.M<create>(P<base>: T<Component>, P<rel-tree-spec>: T<String>, P<class>: T<Class>[, ...]): T<Object>;
+  O<component>.M<create>(P<rel-tree-spec>: T<String>, P<class>: T<Class>[, ...]): T<Object>
+
+  Create one or more components. Their structure is specified by the
+  absolute (P<abs-tree-spec>) or relative (P<rel-tree-spec>) tree specification
+  which is string containing a set (C<{...}>) of slash-separated (C<.../...>) paths
+  of component names. For instance, the specification C<foo/{bar/baz,quux}> is the
+  tree consisting of the two maximum length paths: C<foo/bar/baz> and C<foo/quux>.
+  For each name from left-to-right in the tree specification you have to give
+  either a to be instanciated class constructor (T<Function>) or an already
+  instanciated object (T<Object>).
+
+  cs.create("/{sv,ui/{one,two}}", my.sv, {}, my.ui.one, my.ui.two);
+  cs.create(this, "/model/view", model, view);
+  cs(this).create("/model/view", model, view);
+
+- ComponentJS.M<destroy>(P<abs-path>: T<String>): T<Void>
+  O<component>.M<destroy>(): T<Void>
+  O<component>.M<destroy>(): T<Void>
+
+  Destroy the component uniquely identified by P<abs-path> or
+  the O<component> on which this method is called upon.
+
+  cs.destroy("/foo/bar")
+  cs.destroy(comp, "foo/bar")
+  cs("/foo/bar").destroy()
+
+
+Component Information
+---------------------
+
+Components carry a few distinct information. They can be
+accessed via the following getter/setter-style methods.
+
+- O<component>.M<id>(): T<String>;
+  O<component>.M<id>(P<id>: T<String>): T<String>
+
+  Get current unique id of O<component> or set new P<id> on O<component> and return
+  the old id. Setting the id of a component should be not done by the application
+  as it is done by ComponentJS internally on component creation time.
+
+  cs(this).id()
+
+- O<component>.M<name>(): T<String>;
+  O<component>.M<name>(P<name>: T<String>): T<String>
+
+  Get current non-unique name of O<component> or set new P<name> on O<component> and return
+  the old name. Setting the name of a component should be not done by the application
+  as it is done by ComponentJS internally on component creation time.
+
+  cs("/foo/bar").name() === "bar"
+
+- O<component>.M<obj>(): T<Object>
+
+  Retrieve the shadow T<Object> P<object> to the corresponding T<Component>.
+
+  cs(this).obj() === this
+
+- O<component>.M<cfg>(): T<Array(String)>;
+  O<component>.M<cfg>(P<key>: T<String>): T<Object>;
+  O<component>.M<cfg>(P<key>: T<String>, P<value>: T<Object>): T<Object>
+  O<component>.M<cfg>(P<key>: T<String>, C<undefined>): T<Object>
+
+  Components can have key/value pairs attached for application configuration purposes.
+  Four use cases exists for this method: 1. get array of all key strings, 2. get current configuration property identified by P<key>, 3. set
+  configuration property identified by P<key> to new value P<value> and return the old value, and 4. delete the
+  configuration property identified by P<key>.
+
+  var value = cs("/foo/bar").cfg("quux")
+  cs("/foo/bar").cfg("quux", value)
+  cs("/foo/bar").cfg("quux", undefined)
+
+Component Lookup
+----------------
+
+Before performing certain operations on a component, it first have to
+be looked up in the component tree. As this is one of the most prominent
+functionalities of ComponentJS, it is directly exposed through the
+global API symbol.
+
+- M<ComponentJS>(P<abs-path>: T<string>): T<Component>;
+  M<ComponentJS>(P<component>: T<Component>, P<rel-path>: T<String>): T<Component>;
+  M<ComponentJS>(P<object>: T<Object>, P<rel-path>: T<String>): T<Component>;
+  M<ComponentJS>(P<component>: T<Component>): T<Component>;
+  M<ComponentJS>(P<object>: T<Object>): T<Component>
+
+  Components can be looked up by absolute/relative paths
+  from root/base components. A path is a string of slash-separated component names
+  with four special names allowed: "C<.>" for current component name, "C<..>" for parent
+  component name, "C<*>" for any component name and an empty name (C<//>) for
+  any component trees between current and following components. In any case, the result has
+  to uniquely identify a single component.
+  The following usages exist:
+  1. Lookup T<Component> by absolute path P<path> (this is usually never done explicitly,
+     but occurs implicity if the input parameter is already a T<Component>).
+  2. Lookup T<Component> by path P<path>, relative to T<Component> P<component>.
+  3. Lookup T<Component> by path P<path>, relative to the T<Component> corresponding
+  to T<Object> P<object>.
+  4. Lookup T<Component> object via shadow object P<object>.
+  5. Lookup T<Component> object via the P<component> itself (no-operation).
+
+  cs("/foo/bar")           /* absolute */
+  cs(comp, "model/view")   /* relative to component */
+  cs(this, "model/view")   /* relative to component via shadow object */
+  cs("//bar")              /* full-tree lookup */
+  cs(comp, "//bar")        /* sub-tree lookup */
+  cs(this, "*/view")       /* wildcard lookup */
+  cs(this, "..//view")     /* parent sub-tree lookup */
+
+- O<component>.M<exists>(): T<Boolean>
+
+  Check whether a (usually previously looked up) O<component> (either a real
+  existing on or the special pre-existing singleton component with name "C<&lt;none&gt;>") really
+  exists in the component tree.
+
+  if (cs("//quux").exists()) ...
+  if (cs("//quux").name() !== "&lt;none&gt;") ...
+
+Component Tree
+--------------
+
+Components are managed within a component tree.
+The following functions allow you to traverse this tree.
+
+- O<component>.M<path>(): T<Array(Component)>;
+  O<component>.M<path>(P<separator>: T<String>): T<String>
+
+  Either retrieve as an array all T<Components> from the current O<component>
+  up to and including the root component, or get the slash-separated component name path T<String>
+  from the root component down to and including the current O<component>.
+
+  cs("/foo/bar").path("/") -> "/foo/bar"
+  cs("/foo/bar").path() -> [ cs("/foo/bar"), cs("/foo"), cs("/") ]
+
+- O<component>.M<parent>(): T<Component>
+
+  Return the parent component of O<component>, or C<null> if O<component> is the root or none component.
+
+  cs(this).parent() === cs(this, "..")
+
+- O<component>.M<children>(): T<Array(Component)>
+
+  Return the array of child components of O<component>.
+
+  cs(this).children()
+
+- O<component>.M<walk_up>(P<callback>: T<Function>, P<ctx>: T<Object>): T<Object>
+
+  Walk the component tree upwards from the current component (inclusive) to
+  the root component (inclusive). The P<callback> T<Function> has to be
+  of signature P<callback>(P<depth>: T<Number>, P<component>: T<Component>, P<ctx>: T<Object>): T<Object>
+  and for each component it is called like "C<ctx = >P<callback>C<(depth++, comp, ctx)>" where
+  initially C<ctx=>P<ctx>, C<comp=>O<component> and C<depth=>C<0> was set.
+
+  var path = cs(this).walk_up("", function (depth, comp, ctx) {
+      return "/" + comp.name() + ctx;
+  }, "")
+
+- O<component>.M<walk_down>(P<callback>: T<Function>, P<ctx>: T<Object>): T<Object>
+
+  Walk the component tree downwards from the current component (inclusive) to all the transitive child components
+  (inclusive). The P<callback> T<Function> has to be of signature P<callback>(P<ctx>: T<Object>, P<component>:
+  T<Component>, P<depth>: T<Number>, P<depth_first>: T<Boolean>): T<Object> and for each component it is called twice(!): once
+  like "C<ctx = >P<callback>C<(depth, comp, ctx, false)>"  when entering the component (before all children will be
+  visited) and once like "C<ctx = >P<callback>C<(depth, comp, ctx, true)>" when leaving a component (after all children
+  were visited). Initially C<ctx=>P<ctx>, C<comp=>O<component> and C<depth=>C<0> is set.
+
+  var output = cs(this).walk_down(
+      function (depth, comp, output, depth_first) {
+          if (!depth_first) {
+              for (var n = 0; n &lt; depth; n++)
+                  output += "    ";
+              output += "\"" + comp.name() + "\"\n";
+          }
+          return output;
+      },
+  "")
+
+States
+------
+
+Components, during their life-cycle, are in various particular states.
+Components can be triggered to change their state. During those state
+transitions, enter and leave methods are called accordingly.
+
+- ComponentJS.M<transition>(C<null>);
+  ComponentJS.M<transition>(
+        P<target>: T<String>,
+        P<enter>: T<String>,
+        P<leave>: T<String>,
+        P<color>: T<String>,
+        [P<source>: T<String>]
+  );
+  ComponentJS.M<transition>({
+        F<target>: T<String>,
+        F<enter>: T<String>,
+        F<leave>: T<String>,
+        F<color>: T<String>,
+        [F<source>: T<String>]
+  })
+
+  Clear all (if passed just a single C<null> parameter) or add one state transition to target state
+  P<target>, either at the top of the transition stack or in the middle, above the source state
+  P<source>. When entering the target state, the optional component shadow object method P<enter> is
+  called. When leaving the target state, the optional component shadow object method P<leave> is called.
+  The P<color> is a "#RRGGBB" string used for visualizing the state in the debugger view. The default
+  state transition definitions are given as an example.
+
+  cs.transition(null);
+  cs.transition("created",      "create",  "destroy", "#cc3333");
+  cs.transition("prepared",     "prepare", "cleanup", "#eabc43");
+  cs.transition("materialized", "render",  "release", "#6699cc");
+  cs.transition("visible",      "show",    "hide",    "#669933");
+
+- O<component>.M<state>(): T<String>;
+  O<component>.M<state>(P<state>: T<String>[, P<callback>: T<Function>]): T<String>;
+  O<component>.M<state>({
+      F<state>: T<String>,
+      [F<callback>: T<Function> = undefined,]
+      [F<sync>: T<Boolean> = false,]
+  }): T<String>
+
+  Determine the current state or request a transition to a new state of O<component>.
+  By default a state transition is performed asynchronously, but you
+  can request a synchronous transition with F<sync>. For asynchronous
+  transitions you can await the transition finish with F<callback>.
+  The old state is returned on state transitions.
+  On each state transition, for each transitively involved component and each
+  target or intermediate state, a non-capturing/non-bubbling event is
+  internally published named "C<ComponentJS:state:>F<state>C<:enter>"
+  or "C<ComponentJS:state:>F<state>C<:leave>". You can subscribe to those
+  in order to react to state transitions from outside the component, too.
+
+  cs("/ui").state("visible")
+
+- O<component>.M<state_compare>({ F<state>: T<String> }): T<Number>;
+  O<component>.M<state_compare>(P<state>: T<String>): T<Number>
+
+  Compare the state of O<component> with F<state>. If O<component> is
+  in a lower state than F<state>, a negative number is returned. If
+  O<component> is in same state than F<state>, a zero is returned.
+  If O<component> is in a higher state than F<state>, a positive number
+  is returned.
+
+  if (cs(this).state_compare("visible") &lt; 0) ...
+
+- O<component>.M<state_auto_increase>(P<increase>: T<Boolean>): T<Boolean>;
+  O<component>.M<state_auto_increase>(): T<Boolean>
+
+  Get or set component O<component> to automatically
+  transition to same higher/increased state than its
+  parent component.
+
+  cs(this).state_auto_increase(true)
+
+- O<component>.M<state_auto_decrease>(P<decrease>: T<Boolean>): T<Boolean>;
+  O<component>.M<state_auto_decrease>(): T<Boolean>
+
+  Get or set component O<component> to automatically
+  transition to same lower/decreased state than its
+  child components. Notice that this means that a child can
+  drag down the parent component and this way implicitly also
+  all of its other sibling child components. Hence, use with care!
+
+  cs(this).state_auto_decrease(true)
+
+- O<component>.M<guard>({ F<method>: T<String>, F<level>: T<Number> }): T<Void>;
+  O<component>.M<guard>(P<method>: T<String>, P<level>: T<Number>): T<Void>
+
+  Guard component O<component> from calling the state enter/leave method F<method>
+  and this way prevent it from entering/leaving the corresponding state.
+  The F<level> can be increased and decreased. Initially it should be set to
+  a positive number to activate the guard. Then it should be set to
+  a negative number to (potentially) deactivate the guard. A usage with
+  an initial call of C<+1> and then followed by a C<-1> is a boolean guard.
+  An initial call of C<+N> and then followed by N times a C<-1> call is a semaphore-like
+  guard which ensures that only after the Nth C<-1> call the guard is finally deactivated
+  again. This is useful if activate the guard in order to await N asynchronous operations.
+  Then the guard should be deactivated once the last asynchronous operation is finished
+  (independent which one of the N operations this is).
+
+  var self = this;
+  cs(self).guard("render", +2)
+  $.get(url1, function (data) {
+      self.data1 = data;
+      cs(self).guard("render", -1)
+  });
+  $.get(url2, function (data) {
+      self.data2 = data;
+      cs(self).guard("render", -1)
+  });
+
+Spools
+------
+
+In ComponentJS there are at least 4 resource allocating operations which have corresponding deallocation operations:
+Model M<observe>/M<unobserve>, Socket M<plug>/M<unplug>, Event M<subscribe>/M<unsubscribe>, Service
+M<register>/M<unregister> and Hook M<latch>/M<unlatch>. For correct run-time operation it is required that each
+allocation operation, performed in a state enter method, is properly reversed with the corresponding deallocation
+operation in the state leave method. As this is extremely cumbersome (especially because you have to store the
+identifiers returned by the allocation operations as you need them for the deallocation operation), ComponentJS provides
+a convenient spool mechanism which all of the above allocation operations support and which also can be used by the
+application itself.
+
+- O<component>.M<spool>({
+      F<name>: T<String>,
+      [F<ctx>: T<Object> = this,]
+      F<func>: T<Function>
+      [F<args>: T<Array(Object)> = new Array()]
+  }): T<Void>;
+  O<component>.M<spool>(
+      P<name>: T<String>,
+      P<func>: T<Function>
+  ): T<Void>
+
+  Remember action "F<ctx>.F<func>(F<args>)" on spool named F<name>.
+
+  cs(this).spool({
+      name: "foo",
+      ctx: this,
+      func: function (num, str) { ... },
+      args: [ 42, "foo" ]
+  });
+
+- O<component>.M<spooled>({ F<name>: T<String> }): T<Boolean>;
+  O<component>.M<spooled>(P<name>: T<String>): T<Boolean>
+
+  Check whether any actions are spooled under spool named F<name>.
+  Usually done before calling M<unspool>() as it would throw an
+  exception if there are no spooled actions at all.
+
+  if (cs(this).spooled("foo"))
+      cs(this).unspool("foo")
+
+- O<component>.M<unspool>({ F<name>: T<String> }): T<Void>;
+  O<component>.M<unspool>(P<name>: T<String>): T<Void>
+
+  Perform all actions previously spooled on spool F<name>
+  in reverse spooling order (those spooled last are executed first).
+
+  release: function () {
+      cs(this).unspool("materialized")
+  }
+
+Properties
+----------
+
+Every component can have an arbitrary number of key/value based properties attached to it.
+The keys have to be of type T<String>, the values can be of any type. A property
+is set on a target component but is resolved on both the target component and
+all parent components (up to and including the root component). This way properties
+feel like inherited and overrideable values which can be used for both storing
+component-local information and to communicate information to foreign components.
+
+- O<component>.M<property>({
+      F<name>: T<String>,
+      [F<value>: T<Object> = "undefined",]
+      [F<bubbling>: T<Boolean> = true,]
+      [F<targeting>: T<Boolean> = true,]
+      [F<returnowner>: T<Boolean> = false]
+  }): T<Object>;
+  O<component>.M<property>(P<name>: T<String>, P<value>: T<Object>): T<Object>;
+  O<component>.M<property>(P<name>: T<String>): T<Object>
+
+  Get or set property with name F<name> and value F<value> on component O<component>.
+  If F<bubbling> is set to C<false> a property get operation does not resolve
+  on any parent components ("it does not bubble up to the root").
+  If F<targeting> is set to C<false> a property get operation does not resolve
+  on the target component O<component> (resolving starts on parent component).
+  If F<returnowner> is set to F<true> instead of the property value, the
+  owning component is returned.
+  Finally, properties can be scoped with a child component name: on each attempt
+  to resolve the property, first the scoped variant is tried. This means,
+  if a property was set with name "C<bar@prop>" on component C</foo>,
+  if you resolve the property with C<cs("/foo/bar/baz", "prop")> you
+  the value, but if you resolve the property with C<cs("/foo/quux", "prop")> you
+  do not get the value. This allows you to set the same property with different
+  values for different child components.
+
+  cs(this).property("foo")
+
+Sockets
+-------
+
+Sockets are a special form of component Properties with callback functions as the values. They are intended to link
+Views of child/descendant components into the View of a parent/ancestor component. In contrast to regular Properties,
+Sockets are never resolved directly on the target component. Instead they always start to resolve on the parent
+component because the sockets on the target component are intended for its child/ancestor components and not for the
+target component itself.
+
+- O<component>.M<socket>({
+      [F<name>: T<String> = "default",]
+      [F<scope>: T<Object> = null,]
+      F<ctx>: T<Object>,
+      F<plug>: T<Function>,
+      F<unplug>: T<Function>
+  });
+  O<component>.M<socket>(
+      P<ctx>: T<Object>,
+      P<plug>: T<Function>,
+      P<unplug>: T<Function>
+  )
+
+  Create a socket on O<component>, named F<name> and optionally
+  scoped for the child component named F<scope>, where M<plug>()
+  and M<unplug>() calls on child/ancestor components execute
+  the supplied F<plug>/F<unplug> functions with F<ctx> supplied as
+  C<this>.
+
+  var ui = $(...);
+  cs(this).socket({
+      ctx:    ui,
+      plug:   function (el) { $(this).append(el); },
+      unplug: function (el) { $(el).remove(); }
+  })
+
+- O<component>.M<link>({
+      [F<name>: T<String> = "default",]
+      [F<scope>: T<Object> = null,]
+      F<target>: T<Object>,
+      F<socket>: T<String>
+  });
+  O<component>.M<link>(
+      P<target>: T<Object>,
+      P<socket>: T<String>
+  )
+
+  Create a socket on O<component>, named F<name> and optionally
+  scoped for the child component named F<scope>, and pass-through the
+  M<plug>/M<unplug>() calls to the target component F<target>
+  and its socket named F<socket>. Usually used by Controller
+  components to link their default socket (for the View below itself) to a
+  particular socket of a parent component (because a View should be reusable
+  and hence is not allowed to know the particular socket intended for it).
+
+  cs(this).link({ name: "default", target: this, socket: "menu1" })
+
+- O<component>.M<plug>({
+      [F<name>: T<String> = "default",]
+      F<object>: T<Object>,
+      [F<spool>: T<String>]
+  }): T<String>;
+  O<component>.M<plug>(P<object>: T<Object>): T<String>
+
+  Plugs F<object> into the socket named F<name> provided by any
+  parent/ancestor component of O<component>. Optionally spool the
+  corresponding M<unplug>() operation on spool F<spool> attached to O<component>.
+  Returns an identifier for use with the corresponding M<unplug>() operation.
+
+  cs(this).plug({ object: ui, spool: "materialized" })
+
+- O<component>.M<unplug>({ F<id>: T<String> }): T<Void>;
+  O<component>.M<unplug>(P<id>: T<String>): T<Void>
+
+  Unplugs the object previously plugged under F<id>.
+  This is usually performed indirectly through the Spool mechanism.
+
+  cs(this).unplug(id)
+
+Models
+------
+
+When using Model/View/Controller roles for components, the Model
+component needs a so-called Presentation Model: an
+abstraction of presentation onto which both View and Controller
+components attach via Observer pattern. The Controller component
+for provisioning business information into the Model and triggering
+business services upon Model changes. The View component for
+displaying the Model information and storing events into it.
+
+- O<component>.M<model>(P<spec>: T<Object>): T<Object>
+
+  Define a model through the specification in P<spec>. Each key
+  is the name of a model element and the value has to be an T<Object> with
+  the following possible fields: F<value> (T<Object>) for the default
+  value, F<valid> (T<String>/T<RegExp>) for validating the values, F<autoreset> (T<Boolean>) for
+  indicating that on each value write, the value should be
+  automatically reset to the initial F<value>, and F<store> (T<Boolean>) for
+  indicating that the value should be persistently stored in the browser's C<localStorage>.
+  Multiple calls to the M<model> method on the same component incrementally
+  add model elements.
+
+  cs(this).model({
+      "param:realms":         { value: [],      valid: "array(string)" },
+      "data:realm":           { value: "",      valid: "string", store: true },
+      "data:username":        { value: "",      valid: "string", store: true },
+      "data:password":        { value: "",      valid: "string" },
+      "state:username":       { value: "empty", valid: "string" },
+      "state:username-hint":  { value: "",      valid: "string" },
+      "state:password":       { value: "empty", valid: "string" },
+      "state:password-hint":  { value: "",      valid: "string" },
+      "state:hashcode-col":   { value: 0,       valid: "number" },
+      "state:hashcode-txt":   { value: "",      valid: "string" },
+      "state:button-enabled": { value: false,   valid: "boolean" },
+      "event:button-clicked": { value: false,   valid: "boolean", autoreset: true }
+  })
+
+- O<component>.M<value>({
+      F<name>: T<String>,
+      [F<value>: T<Object>,]
+      [F<force>: T<Boolean>]
+  });
+  O<component>.M<value>(
+      P<name>: T<String>,
+      [P<value>: T<Object>,]
+      [P<force>: T<Boolean>]
+  )
+
+  Get the value of O<component>'s model element named F<name> or
+  set the value of O<component>'s model element named F<name> to F<value>.
+  As each value change causes observers to be triggered, by default
+  changing a value to the same value does not trigger anything.
+  But if F<force> is C<true> even setting a model element to its
+  current value triggers observers.
+
+  var val = cs(this).value("foo")
+  cs(this).value("foo", "bar")
+
+- O<component>.M<observe>({
+      F<name>: T<String>,
+      F<func>: T<Function>,
+      [F<touch>: T<Boolean> = false,]
+      [F<operation>: T<String> = "set",]
+      [F<spool>: T<String> = null]
+  }): T<String>;
+  O<component>.M<observe>(
+      F<name>: T<String>,
+      F<func>: T<Function>
+  ): T<String>
+
+  Observe the value of O<component>'s model element named F<name>
+  for F<operation> operations (by default set/change operations).
+  For "get" operations, the callback function F<func> has to be of
+  signature F<func>(P<ev>: T<Event>, P<value>: T<Object>): T<Void>.
+  For "set" operations, the callback function F<func> has to be of signature
+  F<func>(P<ev>: T<Event>, P<value-new>: T<Object>, P<value-old>: T<Object>): T<Void>.
+  Both types of callbacks can override the value by using P<ev>.M<result>(P<value>).
+  The M<observe> method returns an id which uniquely identifies the observation.
+  Instead of having to manually release the observation later via M<unobserve>()
+  you can use the spool mechanism and spool the corresponding M<unobserve>()
+  operation via F<spool>.
+
+  id = cs(this).observe("state:username", function (ev, username) {
+      ...
+  })
+
+- O<component>.M<unobserve>({ F<id>: T<String> }): T<Void>;
+  O<component>.M<unobserve>(P<id>: T<String>): T<Void>;
+
+  Release the observation identified by F<id>, previously acquired by a call to M<observe>().
+  This is usually done implicitly through the spooling mechanism.
+
+  cs(this).unobserve(id)
+
+Events
+------
+
+The Event mechanism is a central one in ComponentJS. Both
+Models, Services and Hooks are all internally based on the Events mechanism.
+An Event is an object published towards a target component. It is delivered
+in 4 phases: in phase 1 (the "capturing" phase) the Event is delivered
+to all components on the path from the root component (inclusive) towards the target
+component (exclusive); in phase 2 (the "targeting" phase) the Event is delivered to the target component;
+in phase 3 (the "spreading" phase) the Event is delivered to all descendant components of
+the target component in a depth-first traversal order
+and in phase 4 (the "bubbling" phase) the Event is delivered (again) to all components on
+the path from the target component (exclusive) to the root component (inclusive).
+
+Event objects are implicitly created by the M<publish>() operation and
+they provide various getter/setter methods:
+M<target> (T<Component>): target component the event is send to;
+M<propagation> (T<Boolean>): whether event propagation should continue;
+M<processing> (T<Boolean>): whether final default event processing should be performed;
+M<dispatched> (T<Boolean>): whether event was dispatched at least once to a subscriber;
+M<decline> (T<Boolean>): whether event was declined by subscriber;
+M<state> (T<Boolean>): state of dispatching: C<capturing>, C<targeting>, C<spreading> or C<bubbling>;
+M<result> (T<Object>): optional result value event subscribers can provide;
+M<async> (T<Boolean>): whether event is dispatched asynchronously.
+
+
+- O<component>.M<subscribe>({
+      F<name>: T<String>,
+      [F<spec>: T<Object> = C<{}>],
+      [F<ctx>: T<Object> = O<component>,]
+      F<func>: T<Function>,
+      [F<args>: T<Object[]> = C<[]>],
+      [F<capturing>: T<Boolean> = C<false>],
+      [F<spreading>: T<Boolean> = C<false>],
+      [F<bubbling>: T<Boolean> = C<true>],
+      [F<noevent>: T<Boolean> = C<false>],
+      [F<exclusive>: T<Boolean> = C<false>],
+      [F<origin>: T<Boolean> = C<false>],
+      [F<spool>: T<String> = C<null>]
+  });
+  O<component>.M<subscribe>(
+      P<name>: T<String>,
+      P<func>: T<Function>,
+      [P<arg>: T<Object>, ...]
+  )
+
+  Subscribe to event F<name> on component O<component> and
+  execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>C<, >P<args>C<: >T<Object[]>C<)>
+  once the event is dispatched to O<component> after it was published.
+  Option F<ctx> allows FIXME.
+  By default an event is dispatched in the targeting and bubbling phases.
+  Setting option F<capture> to C<true> indicates that the event should
+  be dispatched in the capturing phase.
+
+  FIXME
+
+Services
+--------
+
+FIXME
+
+- FIXME
+
+  FIXME
+
+  FIXME
+
+Hooks
+-----
+
+FIXME
+
+- FIXME
+
+  FIXME
+
+  FIXME
+

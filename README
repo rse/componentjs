@@ -25,24 +25,29 @@
     Building
     ========
 
-    For building the ComponentJS JavaScript library "component-N.N.N.js"
-    with "make all" the following mandatory Unix tools have to
-    be installed. The ComponentJS author uses an OpenPKG-based
-    software-stack for this. The Unix program names which have to be in
-    $PATH are given brackets. The OpenPKG package names which have to be
-    installed are given in parenthesis.
+    The ComponentJS build process is split into three stages. The
+    following Unix tools have to be installed. The ComponentJS author
+    uses an OpenPKG-based software-stack for this. The Unix program
+    names which have to be in $PATH are given brackets. The OpenPKG
+    package names which have to be installed are given in parenthesis.
+
+    Common (mandatory)
+    ------------------
 
     - OpenPKG
       http://www.openpkg.org/
       (OpenPKG "openpkg")
 
     - GNU Make [make]
-      http://www.gnu.org/software/make/ 
+      http://www.gnu.org/software/make/
       (OpenPKG "make")
 
     - GNU Portable Shell Tool [shtool]
-      http://www.gnu.org/software/shtool/ 
+      http://www.gnu.org/software/shtool/
       (OpenPKG "shtool")
+
+    Stage 1 (mandatory)
+    -------------------
 
     - Perl [perl]
       http://www.perl.org/
@@ -52,6 +57,20 @@
       http://code.google.com/closure/compiler/
       (OpenPKG "closurecompiler")
 
+    Stage 1 (optional)
+    -------------------
+
+    - UglifyJS [uglifyjs]
+      https://github.com/mishoo/UglifyJS
+      (OpenPKG "uglifyjs")
+
+    - Yahoo! UI Compressor [yuicompressor]
+      http://developer.yahoo.com/yui/compressor/
+      (OpenPKG "yuicompressor")
+
+    Stage 2 (mandatory)
+    -------------------
+
     - Google Closure Linter [gjslint]
       http://code.google.com/p/closure-linter/
       (OpenPKG "closurelinter")
@@ -59,4 +78,15 @@
     - JSHint [jshint]
       http://www.jshint.com/
       (OpenPKG "jshint")
+
+    Stage 3 (mandatory)
+    -------------------
+
+    - Perl [perl]
+      http://www.perl.org/
+      (OpenPKG "perl")
+
+    - PrinceXML [prince]
+      http://www.princexml.com/
+      (OpenPKG "prince")
 
