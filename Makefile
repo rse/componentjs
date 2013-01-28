@@ -35,6 +35,7 @@ YUICOMPRESSOR   = yuicompressor \
 				  --line-break 512
 
 #   tools mandatory for stage3
+W3M             = w3m
 PRINCE          = prince
 
 #   current version
@@ -95,6 +96,7 @@ LNT_BLD         = build/.linted.gcl \
 API_SRC         = component-api.tmpl \
                   component-api.txt
 API_BLD         = build/component-$(VERSION)-api.screen.html \
+                  build/component-$(VERSION)-api.screen.txt \
 				  build/component-$(VERSION)-api.print-us.pdf \
 				  build/component-$(VERSION)-api.print-a4.pdf
 
@@ -166,6 +168,12 @@ build/component-$(VERSION)-api.screen.html: component-api.txt component-api.tmpl
 	@echo "++ generating build/component-$(VERSION)-api.screen.html <- component-api.txt component-api.tmpl (Custom Build Tool)"; \
 	$(PERL) build-api.pl component-api.txt component-api.tmpl build/component-$(VERSION)-api.screen.html
 
+#   build API documentation in screen TXT format
+build/component-$(VERSION)-api.screen.txt: build/component-$(VERSION)-api.screen.html
+	@$(SHTOOL) mkdir -f -p -m 755 build
+	@echo "++ generating build/component-$(VERSION)-api.screen.txt <- build/component-$(VERSION)-api.screen.html (W3M)"; \
+	$(W3M) -dump build/component-$(VERSION)-api.screen.html >build/component-$(VERSION)-api.screen.txt
+
 #   build API documentation in print PDF (A4 paper) format
 build/component-$(VERSION)-api.print-a4.pdf: build/component-$(VERSION)-api.screen.html
 	@$(SHTOOL) mkdir -f -p -m 755 build
@@ -189,6 +197,7 @@ clean:
 	@echo "++ removing build/component-$(VERSION).min-ug.js"; rm -f build/component-$(VERSION).min-ug.js
 	@echo "++ removing build/component-$(VERSION).min-yc.js"; rm -f build/component-$(VERSION).min-yc.js
 	@echo "++ removing build/component-$(VERSION)-api.screen.html"; rm -f build/component-$(VERSION)-api.screen.html
+	@echo "++ removing build/component-$(VERSION)-api.screen.txt"; rm -f build/component-$(VERSION)-api.screen.txt
 	@echo "++ removing build/component-$(VERSION)-api.print-us.pdf"; rm -f build/component-$(VERSION)-api.print-us.pdf
 	@echo "++ removing build/component-$(VERSION)-api.print-a4.pdf"; rm -f build/component-$(VERSION)-api.print-a4.pdf
 	@rm -f build/.linted.* >/dev/null 2>&1 || true
