@@ -166,7 +166,7 @@ build/.linted.jshint: build/component-$(VERSION).js
 build/component-$(VERSION)-api.screen.html: component-api.txt component-api.tmpl
 	@$(SHTOOL) mkdir -f -p -m 755 build
 	@echo "++ generating build/component-$(VERSION)-api.screen.html <- component-api.txt component-api.tmpl (Custom Build Tool)"; \
-	$(PERL) build-api.pl component-api.txt component-api.tmpl build/component-$(VERSION)-api.screen.html
+	$(PERL) build-api.pl component-api.txt component-api.tmpl build/component-$(VERSION)-api.screen.html "$(VERSION)"
 
 #   build API documentation in screen TXT format
 build/component-$(VERSION)-api.screen.txt: build/component-$(VERSION)-api.screen.html

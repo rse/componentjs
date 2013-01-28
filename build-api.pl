@@ -10,11 +10,14 @@
 use IO::All;
 
 #   command-line arguments
-my ($filename_txt, $filename_tmpl, $filename_html) = @ARGV;
+my ($filename_txt, $filename_tmpl, $filename_html, $version) = @ARGV;
 
 #   read textual description and template
 my $txt  < io($filename_txt);
 my $tmpl < io($filename_tmpl);
+
+#   replace version information
+$tmpl =~ s/0\.0\.0/$version/s;
 
 #   start generating
 my $html_spec = "";
