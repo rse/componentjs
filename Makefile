@@ -205,5 +205,5 @@ clean:
 
 #   create a release distribution
 release: build
-	$(SHTOOL) tarball -c "gzip -9" -e "componentjs-*,.git,.gitignore" -o componentjs-$(VERSION).tar.gz .
+	$(SHTOOL) tarball -c "gzip -9" -e "componentjs-*,.git,.gitignore,build/.linted*" -o componentjs-$(VERSION).tar.gz .
 
