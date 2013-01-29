@@ -204,6 +204,8 @@ clean:
 	@rmdir build >/dev/null 2>&1 || true
 
 #   create a release distribution
-release: build
-	$(SHTOOL) tarball -c "gzip -9" -e "componentjs-*,.git,.gitignore,build/.linted*" -o componentjs-$(VERSION).tar.gz .
+release: stage1 stage2 stage3
+	@echo "++ rolling release tarball ComponentJS-$(VERSION).tar.gz"; \
+	$(SHTOOL) tarball -c "gzip -9" -e "ComponentJS-*,.git,.gitignore,build/.linted*" -o ComponentJS-$(VERSION).tar.gz .; \
+	ls -l ComponentJS-$(VERSION).tar.gz
 
