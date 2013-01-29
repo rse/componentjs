@@ -209,3 +209,9 @@ release: stage1 stage2 stage3
 	$(SHTOOL) tarball -c "gzip -9" -e "ComponentJS-*,.git,.gitignore,build/.linted*" -o ComponentJS-$(VERSION).tar.gz .; \
 	ls -l ComponentJS-$(VERSION).tar.gz
 
+#   create a snapshot distribution
+snapshot: stage1 stage2 stage3
+	@echo "++ rolling snapshot tarball ComponentJS-SNAPSHOT.tar.gz"; \
+	$(SHTOOL) tarball -c "gzip -9" -e "ComponentJS-*,.git,.gitignore,build/.linted*" -o ComponentJS-SNAPSHOT.tar.gz .; \
+	ls -l ComponentJS-SNAPSHOT.tar.gz
+
