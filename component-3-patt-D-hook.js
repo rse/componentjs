@@ -12,6 +12,7 @@ _cs.hook_proc = {
     "none":   { init: undefined, step: function (a, b) { return b;              } },
     "or":     { init: false,     step: function (a, b) { return a || b;         } },
     "and":    { init: true,      step: function (a, b) { return a && b;         } },
+    "mult":   { init: 1,         step: function (a, b) { return a * b;          } },
     "add":    { init: 0,         step: function (a, b) { return a + b;          } },
     "concat": { init: "",        step: function (a, b) { return a + b;          } },
     "append": { init: [],        step: function (a, b) { a.push(b);   return a; } },
