@@ -73,8 +73,10 @@ $cs.debug_instrumented = function () {
 
 /*  try to determine whether Internet Explorer is used  */
 _cs.isIE = function () {
+    /*global navigator:false */
     return (
-           navigator.appName === "Microsoft Internet Explorer"
+           typeof navigator !== "undefined"
+        && navigator.appName === "Microsoft Internet Explorer"
         && navigator.userAgent.match(new RegExp("MSIE ([0-9]+[.0-9]*)"))
     );
 };
@@ -122,6 +124,7 @@ $cs.debug_window = function () {
             }
 
             /*  initialize the window content (deferred to avoid problems)  */
+            /*global setTimeout:false */
             setTimeout(function () {
                 _cs.jq(_cs.dbg.document).ready(function () {
                     /*  optionally automatically close debugger window with application window  */
@@ -293,6 +296,7 @@ _cs.dbg_update = function () {
     if (_cs.dbg === null)
         return;
     if (_cs.dbg_timer === null) {
+        /*global setTimeout:false */
         _cs.dbg_timer = setTimeout(function () {
             _cs.dbg_update_once();
             _cs.dbg_timer = null;

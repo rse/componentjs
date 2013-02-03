@@ -23,7 +23,7 @@ JSHINT          = jshint \
                   -forin +immed +latedef -newcap -noarg -noempty +nonew -plusplus \
                   +quotmark=double -regexp +undef +unused -strict +trailing \
                   +maxparams=9 +maxdepth=4 +maxstatements=120 +maxlen=150 \
-                  +loopfunc +browser +node
+                  +loopfunc 
 
 #   tools optional for stage2
 UGLIFYJS        = uglifyjs \

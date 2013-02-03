@@ -28,6 +28,7 @@ _cs.jq_methods = {
         for (var i = 0; i < this.length; i++) {
             (function (i) {
                 var el = this[i];
+                /*global setTimeout:false */
                 setTimeout(function () {
                     callback.call(el);
                 }, 250);

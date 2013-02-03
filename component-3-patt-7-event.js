@@ -328,6 +328,7 @@ $cs.pattern.eventing = $cs.trait({
             /*  perform event publishing,
                 either asynchronous or synchronous  */
             if (ev.async())
+                /*global setTimeout:false */
                 setTimeout(function () { event_dispatch_all(ev, self, params); }, 0);
             else
                 event_dispatch_all(ev, self, params);
