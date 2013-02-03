@@ -7,7 +7,7 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-(function (GLOBAL, DOCUMENT, EXPORTS) {
+(function (GLOBAL, DOCUMENT, EXPORTS, DEFINE) {
 
     /*
     **  GLOBAL LIBRARY NAMESPACING
@@ -81,9 +81,29 @@
 
     $include("component-6-glob-0-export.js");
 
-})((typeof window   !== "undefined" ? window :
-   (typeof this     !== "undefined" ? this   : {})),
-   (typeof document !== "undefined" ? document :
-   (typeof this     !== "undefined" ? this   : {})),
-   (typeof exports  === "object"    ? exports : undefined) );
+})(
+    /*global window:false */
+    /*global global:false */
+    /*global document:false */
+    /*global exports:false */
+    /*global define:false */
+    ( typeof window   !== "undefined"
+        ? window
+        : ( typeof global !== "undefined"
+            ? global
+            : ( typeof this !== "undefined"
+                ? this
+                : {} ))),
+    ( typeof document !== "undefined"
+        ? document
+        : ( typeof this !== "undefined"
+            ? this 
+            : {} )),
+    ( typeof exports === "object"
+        ? exports
+        : undefined ),
+    ( typeof define === "function"
+        ? define
+        : undefined )
+);
 
