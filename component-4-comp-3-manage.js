@@ -68,7 +68,7 @@ $cs.create = function () {
         if (token[i] === "/") {
             /*  switch base  */
             if (comp === null)
-                throw "ERROR: no parent component for step-down at " + at_pos(token, i);
+                throw _cs.exception("create", "no parent component for step-down at " + at_pos(token, i));
             base = comp;
         }
         else if (token[i] === "{") {
@@ -78,25 +78,25 @@ $cs.create = function () {
         else if (token[i] === ",") {
             /*  reset base  */
             if (base_stack.length === 0)
-                throw "ERROR: no open brace section for parallelism at " + at_pos(token, i);
+                throw _cs.exception("create", "no open brace section for parallelism at " + at_pos(token, i));
             base = base_stack[base_stack.length - 1];
         }
         else if (token[i] === "}") {
             /*  restore base  */
             if (base_stack.length === 0)
-                throw "ERROR: no more open brace section for closing at " + at_pos(token, i);
+                throw _cs.exception("create", "no more open brace section for closing at " + at_pos(token, i));
             base = base_stack.pop();
             comp = null;
         }
         else {
             /*  create new component  */
             if (base === null)
-                throw "ERROR: no base component at " + at_pos(token, i);
+                throw _cs.exception("create", "no base component at " + at_pos(token, i));
             comp = _cs.create_single(base, token[i], arguments[k++]);
         }
     }
     if (base_stack.length > 0)
-        throw "ERROR: still open brace sections at end of tree specification";
+        throw _cs.exception("create", "still open brace sections at end of tree specification");
 
     /*  return (last created) component  */
     return comp;
