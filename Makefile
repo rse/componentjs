@@ -41,8 +41,8 @@ PRINCE          = prince
 #   current version
 VERSION_MAJOR   = 0
 VERSION_MINOR   = 9
-VERSION_MICRO   = 0
-VERSION_DATE    = 20130130
+VERSION_MICRO   = 1
+VERSION_DATE    = 20130207
 VERSION         = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
 #   list of all library files
