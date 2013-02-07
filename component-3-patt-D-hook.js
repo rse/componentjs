@@ -7,18 +7,6 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  pre-defined reusable hook result value processings  */
-_cs.hook_proc = {
-    "none":   { init: undefined, step: function (a, b) { return b;              } },
-    "or":     { init: false,     step: function (a, b) { return a || b;         } },
-    "and":    { init: true,      step: function (a, b) { return a && b;         } },
-    "mult":   { init: 1,         step: function (a, b) { return a * b;          } },
-    "add":    { init: 0,         step: function (a, b) { return a + b;          } },
-    "concat": { init: "",        step: function (a, b) { return a + b;          } },
-    "append": { init: [],        step: function (a, b) { a.push(b);   return a; } },
-    "insert": { init: {},        step: function (a, b) { a[b] = true; return a; } }
-};
-
 /*  generic pattern: hook  */
 $cs.pattern.hook = $cs.trait({
     mixin: [

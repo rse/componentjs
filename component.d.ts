@@ -186,6 +186,9 @@ interface ComponentJS_api {
     (selector: string):              ComponentJS_comp;
     (object: any, selector: string): ComponentJS_comp;
 
+    bootstrap(): void;
+    shutdown(): void;
+
     /* create(selector: string, object: any): void; */
     create(spec: string, ...rest: any[]);
     create(base: any, spec: string, ...rest: any[]);

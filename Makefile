@@ -22,7 +22,7 @@ JSHINT          = jshint \
                   +maxerr=200 +bitwise -camelcase -curly +eqeqeq \
                   -forin +immed +latedef -newcap -noarg -noempty +nonew -plusplus \
                   +quotmark=double -regexp +undef +unused -strict +trailing \
-                  +maxparams=9 +maxdepth=4 +maxstatements=120 +maxlen=150 \
+                  +maxparams=9 +maxdepth=4 +maxstatements=130 +maxlen=150 \
                   +loopfunc 
 
 #   tools optional for stage2
@@ -57,6 +57,7 @@ LIB_SRC         = component.js \
                   component-1-util-5-identifier.js \
                   component-1-util-6-proxy.js \
                   component-1-util-7-attribute.js \
+                  component-1-util-8-hook.js \
                   component-2-clzz-0-common.js \
                   component-2-clzz-1-api.js \
                   component-3-patt-0-base.js \
@@ -77,13 +78,14 @@ LIB_SRC         = component.js \
                   component-3-patt-F-store.js \
                   component-3-patt-G-model.js \
                   component-4-comp-0-define.js \
-                  component-4-comp-1-singleton.js \
+                  component-4-comp-1-bootstrap.js \
                   component-4-comp-2-lookup.js \
                   component-4-comp-3-manage.js \
                   component-4-comp-4-states.js \
                   component-5-dbgr-0-jquery.js \
                   component-5-dbgr-1-view.js \
-                  component-6-glob-0-export.js
+                  component-6-glob-0-export.js \
+                  component-6-glob-1-plugin.js
 LIB_BLD         = build/component-$(VERSION).js \
                   build/component-$(VERSION).min.js \
 

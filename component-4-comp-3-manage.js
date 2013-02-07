@@ -9,6 +9,15 @@
 
 /*  top-level API: create one or more components  */
 $cs.create = function () {
+    /*  sanity check environment  */
+    if (!_cs.bootstrapped) {
+        /*  give warning but still be backward compatible  */
+        /*global alert:false */
+        alert("WARNING: ComponentJS still not bootstrapped " +
+            "(please call \"bootstrap\" method before first \"create\" method call!)");
+        $cs.bootstrap();
+    }
+
     /*  sanity check arguments  */
     if (arguments.length < 2)
         throw _cs.exception("create", "invalid number of arguments");

@@ -28,6 +28,7 @@
     $include("component-1-util-5-identifier.js");
     $include("component-1-util-6-proxy.js");
     $include("component-1-util-7-attribute.js");
+    $include("component-1-util-8-hook.js");
 
     /*
     **  CLASS SYSTEM
@@ -63,7 +64,7 @@
     */
 
     $include("component-4-comp-0-define.js");
-    $include("component-4-comp-1-singleton.js");
+    $include("component-4-comp-1-bootstrap.js");
     $include("component-4-comp-2-lookup.js");
     $include("component-4-comp-3-manage.js");
     $include("component-4-comp-4-states.js");
@@ -80,6 +81,7 @@
     */
 
     $include("component-6-glob-0-export.js");
+    $include("component-6-glob-1-plugin.js");
 
 })(
     /*global window:false */

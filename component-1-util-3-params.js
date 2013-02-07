@@ -64,6 +64,9 @@ _cs.validate = function () {
 
 /*  utility function: flexible parameter handling  */
 $cs.params = function (func_name, func_args, spec) {
+    /*  provide parameter processing hook  */
+    _cs.hook("ComponentJS:params:" + func_name, "none", { args: func_args, spec: spec });
+
     /*  start with a fresh parameter object  */
     var params = {};
 

@@ -34,6 +34,27 @@ C<ComponentJS>. It is a common convention to change the symbol to C<cs> (for
   if (ComponentJS.version.date &lt; 20120101)
        throw new Error("need at least ComponentJS as of 20120101")
 
+Library Management
+------------------
+
+ComponentJS can be extended through plugins, so it can initialize
+some of its internals only once all plugins were loaded and executed.
+
+- ComponentJS.M<bootstrap>(): T<Void>
+
+  Bootstrap the ComponentJS library by Initializing its internals.
+  This has to be called at least before any calls to M<create>(),
+  but can by called after calls to M<symbol>, M<debug> or M<ns>.
+
+  cs.bootstrap()
+
+- ComponentJS.M<shutdown>(): T<Void>
+
+  Shutdown the ComponentJS library by destroying its internals.
+  This implicitly destroy the existing component tree, too.
+
+  cs.shutdown()
+
 Debugging
 ---------
 
