@@ -47,7 +47,8 @@ $cs.bootstrap = function () {
     ];
     _cs.foreach(methods, function (method) {
         _cs.none[method] = function () {
-            throw _cs.exception(method, "no such component");
+            throw _cs.exception(method, "no such component " +
+                "(you are calling method \"" + method + "\" on component \"<none>\")");
         };
     });
 
