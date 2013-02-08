@@ -23,9 +23,9 @@ $cs.bootstrap = function () {
     /*  lazy define component class
         (to give plugins a chance to have added mixins)  */
     _cs.comp = $cs.clazz({
-        mixin:       _cs.comp_mixins,
-        constructor: _cs.comp_constructor,
-        protos:      _cs.comp_protos
+        mixin:   _cs.comp_mixins,
+        cons:    _cs.comp_cons,
+        protos:  _cs.comp_protos
     });
 
     /*  create singleton component: root of the tree */

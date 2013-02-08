@@ -25,7 +25,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
             return new clz(); /* RECURSION */
 
         /*  initialize all mixin traits and this class (or trait)  */
-        var init = function (obj, clz, arg, exec_constructor) {
+        var init = function (obj, clz, arg, exec_cons) {
             /*  depth-first visit of parent class  */
             if (_cs.annotation(clz, "extend") !== null)
                 arguments.callee(obj, _cs.annotation(clz, "extend"), arg, false); /* RECURSION */
@@ -60,8 +60,8 @@ _cs.clazz_or_trait = function (params, is_clazz) {
                 but a trait intentionally gets no constructor parameters
                 passed-through (as it cannot know where it gets mixed
                 into, so it cannot know what to do with the parameters)  */
-            if (exec_constructor && _cs.annotation(clz, "constructor") !== null) {
-                var cons = _cs.annotation(clz, "constructor");
+            if (exec_cons && _cs.annotation(clz, "cons") !== null) {
+                var cons = _cs.annotation(clz, "cons");
                 if (_cs.istypeof(clz) === "clazz")
                     cons.apply(obj, arg);
                 else
@@ -121,18 +121,18 @@ _cs.clazz_or_trait = function (params, is_clazz) {
 
     /*  remember user-supplied constructor function
         (and provide fallback implementation)  */
-    if (_cs.isdefined(params.constructor))
-        _cs.annotation(clazz, "constructor", params.constructor);
+    if (_cs.isdefined(params.cons))
+        _cs.annotation(clazz, "cons", params.cons);
     else if (_cs.isdefined(params.extend))
-        _cs.annotation(clazz, "constructor", function () { this.base(); });
+        _cs.annotation(clazz, "cons", function () { this.base(); });
     else
-        _cs.annotation(clazz, "constructor", $cs.nop);
+        _cs.annotation(clazz, "cons", $cs.nop);
 
     /*  provide name for underlying implementation of "base()"  */
-    _cs.annotation(_cs.annotation(clazz, "constructor"), "name", "constructor");
+    _cs.annotation(_cs.annotation(clazz, "cons"), "name", "cons");
     if (_cs.isdefined(params.extend))
-        _cs.annotation(_cs.annotation(clazz, "constructor"), "base",
-            _cs.annotation(params.extend, "constructor"));
+        _cs.annotation(_cs.annotation(clazz, "cons"), "base",
+            _cs.annotation(params.extend, "cons"));
 
     /*  remember user-supplied setup function  */
     if (_cs.isdefined(params.setup))

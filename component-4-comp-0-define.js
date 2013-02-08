@@ -32,7 +32,7 @@ _cs.comp_mixins = [
 ];
 
 /*  component constructor  */
-_cs.comp_constructor = function (name, parent, children) {
+_cs.comp_cons = function (name, parent, children) {
     /*  component marking  */
     _cs.annotation(this, "type", "component");
     if (_cs.istypeof(name) !== "string")

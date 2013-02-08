@@ -26,28 +26,28 @@ $cs.marked = function (obj, name) {
 
 /*  marker trait: service-style component */
 $cs.marker.service = $cs.trait({
-    constructor: function () {
+    cons: function () {
         $cs.mark(this, "service");
     }
 });
 
 /*  marker trait: controller-style component */
 $cs.marker.controller = $cs.trait({
-    constructor: function () {
+    cons: function () {
         $cs.mark(this, "controller");
     }
 });
 
 /*  marker trait: model-style component */
 $cs.marker.model = $cs.trait({
-    constructor: function () {
+    cons: function () {
         $cs.mark(this, "model");
     }
 });
 
 /*  marker trait: view-style component */
 $cs.marker.view = $cs.trait({
-    constructor: function () {
+    cons: function () {
         $cs.mark(this, "view");
     }
 });

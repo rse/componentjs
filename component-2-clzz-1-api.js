@@ -14,7 +14,7 @@ $cs.clazz = function () {
         name:        { def: undefined, valid: "string"       },
         extend:      { def: undefined, valid: "clazz"        },
         mixin:       { def: undefined, valid: "array(trait)" },
-        constructor: { def: undefined, valid: "function"     },
+        cons:        { def: undefined, valid: "function"     },
         dynamics:    { def: undefined, valid: "object"       },
         protos:      { def: undefined, valid: "object"       },
         statics:     { def: undefined, valid: "object"       }
@@ -36,7 +36,7 @@ $cs.trait = function () {
     var params = $cs.params("trait", arguments, {
         name:        { def: undefined, valid: "string"       },
         mixin:       { def: undefined, valid: "array(trait)" },
-        constructor: { def: undefined, valid: "function"     },
+        cons:        { def: undefined, valid: "function"     },
         setup:       { def: undefined, valid: "function"     },
         dynamics:    { def: undefined, valid: "object"       },
         protos:      { def: undefined, valid: "object"       },

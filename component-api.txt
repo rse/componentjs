@@ -185,7 +185,7 @@ that component shadow objects are defined by C<cs.clazz>!
         [F<name>:        T<String>,]
         [F<extend>:      T<Clazz>,]
         [F<mixin>:       T<Array(Trait)>,]
-        [F<constructor>: T<Function>,]
+        [F<cons>:        T<Function>,]
         [F<dynamics>:    T<Object>,]
         [F<protos>:      T<Object>,]
         [F<statics>:     T<Object>]
@@ -194,17 +194,17 @@ that component shadow objects are defined by C<cs.clazz>!
   Define a JavaScript Class, optionally stored under the absolute dot-separated
   object path F<name>, optionally extending the base/super/parent Class F<extend>
   and optionally mixing in the functionality of one or more Traits via F<mixin>. The class
-  can have a constructor function F<constructor> which is called once the
+  can have a constructor function F<cons> which is called once the
   Class is instanciated and which can further initialize the dynamic fields of the class.
   On each instanciation, all fields which are specified with F<dynamics> are
   cloned and instanciated and all methods in F<protos> are copied into the
   Class C<prototypes> object. The F<statics> content is copied into the
-  Class itself only. In case of F<extend> and/or F<mixin>, both the F<constructor>
+  Class itself only. In case of F<extend> and/or F<mixin>, both the F<cons>
   and methods of F<protos> can call C<this.base(...)> for the base/super/parent
   method.
 
   var foo = cs.clazz({
-      constructor: function (bar, baz) {
+      cons: function (bar, baz) {
           this._bar = bar;
           this._baz = baz;
       },
@@ -226,7 +226,7 @@ that component shadow objects are defined by C<cs.clazz>!
 - ComponentJS.M<trait>({
         [F<name>:        T<String>,]
         [F<mixin>:       T<Array(trait)>,]
-        [F<constructor>: T<Function>,]
+        [F<cons>:        T<Function>,]
         [F<setup>:       T<Function>,]
         [F<dynamics>:    T<Object>,]
         [F<protos>:      T<Object>,]
@@ -236,7 +236,7 @@ that component shadow objects are defined by C<cs.clazz>!
   Define a JavaScript Trait (a Class which can be mixed in), optionally stored under the absolute dot-separated
   object path F<name> and
   optionally mixing in the functionality of one or more other Traits via F<mixin>. The trait
-  can have a constructor function F<constructor> which is called once the
+  can have a constructor function F<cons> which is called once the
   Class the Trait is mixed in is instanciated and which can further initialize the dynamic fields of the Class.
   On each instanciation, all fields which are specified with F<dynamics> are
   cloned and instanciated and all methods in F<protos> are copied into the
