@@ -13,7 +13,7 @@
  *  core framework.
  */
 
-ComponentJS.plugin(function (_cs, $cs, GLOBAL, DOCUMENT) {
+ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL, DOCUMENT) {
     /*
      *  SPECIALIZED JQUERY SOCKET SUPPORT
      */
