@@ -36,8 +36,9 @@ $cs.transition = function () {
 };
 
 /*  initialize state transition set with a reasonable default  */
-$cs.transition("created",      "create",  "destroy", "#cc3333"); /* created and attached to component tree */
-$cs.transition("prepared",     "prepare", "cleanup", "#eabc43"); /* prepared and ready for rendering */
-$cs.transition("materialized", "render",  "release", "#6699cc"); /* rendered onto the DOM tree */
-$cs.transition("visible",      "show",    "hide",    "#669933"); /* visible to the user */
+$cs.transition("created",      "create",  "destroy",  "#cc3333"); /* created and attached to component tree */
+$cs.transition("configured",   "setup",   "teardown", "#eabc43"); /* configured and wired */
+$cs.transition("prepared",     "prepare", "cleanup",  "#f2ec00"); /* prepared and ready for rendering */
+$cs.transition("materialized", "render",  "release",  "#6699cc"); /* rendered onto the DOM tree */
+$cs.transition("visible",      "show",    "hide",     "#669933"); /* visible to the user */
 
