@@ -117,14 +117,14 @@ sub conv {
     my ($anchor, $txt) = @_;
 
     #   convert types
-    $txt =~ s/R<(.+?)>/"<span class=\"R\">" . mklink($anchor, $1) . "<\/span>"/sge;
-    $txt =~ s/M<(.+?)>/"<span class=\"M\">" . mklink($anchor, $1) . "<\/span>"/sge;
-    $txt =~ s/P<(.+?)>/<span class="P">$1<\/span>/sg;
-    $txt =~ s/F<(.+?)>/<span class="F">$1<\/span>/sg;
-    $txt =~ s/T<(.+?)>/<span class="T">$1<\/span>/sg;
-    $txt =~ s/O<(.+?)>/<span class="O">$1<\/span>/sg;
-    $txt =~ s/C<(.+?)>/<code>$1<\/code>/sg;
-    $txt =~ s/I<(.+?):(\d+)>/<img style="float: right;" src="$1" width="$2"\/>/sg;
+    $txt =~ s/R<([^\/].*?)>/"<span class=\"R\">" . mklink($anchor, $1) . "<\/span>"/sge;
+    $txt =~ s/M<([^\/].*?)>/"<span class=\"M\">" . mklink($anchor, $1) . "<\/span>"/sge;
+    $txt =~ s/P<([^\/].*?)>/<span class="P">$1<\/span>/sg;
+    $txt =~ s/F<([^\/].*?)>/<span class="F">$1<\/span>/sg;
+    $txt =~ s/T<([^\/].*?)>/<span class="T">$1<\/span>/sg;
+    $txt =~ s/O<([^\/].*?)>/<span class="O">$1<\/span>/sg;
+    $txt =~ s/C<([^\/].*?)>/<code>$1<\/code>/sg;
+    $txt =~ s/I<([^\/].*?):(\d+)>/<img style="float: right;" src="$1" width="$2"\/>/sg;
 
     #   convert typography aspects
     $txt =~ s/->/&rarr;/sg;
