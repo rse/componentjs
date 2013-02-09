@@ -49,6 +49,7 @@ _cs.states_add = function (target, enter, leave, color, source) {
 /*  determine state index via state name  */
 _cs.state_name2idx = function (name) {
     var idx = -1;
+    var i;
     for (i = 0; i < _cs.states.length; i++) {
         if (_cs.states[i].state === name) {
             idx = i;
@@ -390,6 +391,7 @@ $cs.pattern.state = $cs.trait({
 
             /*  sanity check enter/leave method name  */
             var valid = false;
+            var i;
             for (i = 0; i < _cs.states.length; i++) {
                 if (   _cs.states[i].enter === params.method
                     || _cs.states[i].leave === params.method) {

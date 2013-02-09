@@ -25,25 +25,6 @@ else if (   (   typeof DEFINE === "function"
     });
 else {
     /*  ...to regular global environment  */
-    var name = "ComponentJS";
-
-    /*  (with optionally configured symbol name via
-        HTML tag <script data-symbol="<name>" [...]>)  */
-    var s = DOCUMENT.getElementsByTagName("script");
-    var regex = new RegExp("^(?:.*/)?component(?:-[0-9]+(?:\\.[0-9]+)*)?(?:-min)?\\.js$");
-    for (var i = 0; i < s.length; i++) {
-        var src = s[i].getAttribute("src");
-        if (src !== null) {
-            if (regex.exec(src)) {
-                var data = s[i].getAttribute("data-symbol");
-                if (data !== null) {
-                    name = data;
-                    break;
-                }
-            }
-        }
-    }
-
-    $cs.symbol(name);
+    $cs.symbol("ComponentJS");
 }
 
