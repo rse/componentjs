@@ -55,6 +55,38 @@ some of its internals only once all plugins were loaded and executed.
 
   cs.shutdown()
 
+- ComponentJS.M<plugin>(): T<String[]>;
+  ComponentJS.M<plugin>(P<name>: T<String>): T<Boolean>;
+  ComponentJS.M<plugin>(P<name>: T<String>, P<callback>: T<Function>): T<Void>
+
+  Return the names of all registered plugins, check for the
+  registration of a particular plugin with name P<name> or register
+  a new plugin under name P<name> with callback function P<callback>.
+  The callback function P<callback> should have the signature
+  "P<callback>(P<_cs>: T<ComponentJS_API_internal>, P<$cs>:
+  T<ComponentJS_API_external>, P<GLOBAL>: T<Environment>,
+  P<DOCUMENT>: T<Document>): T<Void>" where P<_cs> is the internal ComponentJS
+  API (you have to check the source code of ComponentJS to know
+  what you can do with it), P<$cs> is the external ComponentJS API
+  (the one described in this document), P<GLOBAL> is the global
+  environment object (usually C<window> in a browser, C<global> in
+  Node.js, etc) and P<DOCUMENT> is the global document (usually
+  C<document> in a browser and none in Node.js, etc).
+
+  /*  add a "foo()" method to all components  */
+  ComponentJS.plugin("foo", function (_cs, $cs, GLOBAL, DOCUMENT) {
+      var trait = $cs.trait({
+          protos: {
+              foo: function () {
+                  ...
+              }
+          }
+      });
+      _cs.latch("ComponentJS:bootstrap:comp:mixin", function (mixins) {
+          mixins.push(trait);
+      });
+  });
+
 Debugging
 ---------
 
@@ -70,13 +102,16 @@ especially for visualizing the current component tree in real-time.
   P<message> under debug-level P<level>.
 
   cs.debug(0)
-  if (cs.debug_instrumented()) {
-       cs.debug(9)
-       cs.debug_window({ ... })
+  if (cs.plugin("debugger")) {
+      if (cs.debug_instrumented()) {
+           cs.debug(9)
+           cs.debug_window({ ... })
+      }
   }
 
 - ComponentJS.M<debug_instrumented>(): T<Boolean>
 
+  [AVAILABLE THROUGH THE COMPONENTJS PLUGIN "debugger" ONLY]
   Determine whether the current browser is "instrumented" for debugging, i.e., whether
   the browser's built-in debugger is activated (in detached mode only). Currently
   ComponentJS is able to determine Firefox's Firebug and Chrome's Inspector only.
@@ -96,6 +131,7 @@ especially for visualizing the current component tree in real-time.
       P<autoclose>: T<Boolean>,
       P<name>: T<String>)
 
+  [AVAILABLE THROUGH THE COMPONENTJS PLUGIN "debugger" ONLY]
   On F<enable> C<true>/C<false> open/close the extra browser window
   containing the ComponentJS debugger view for the ComponentJS application
   identified by F<name>. If F<autoclose> is C<true>,
@@ -633,7 +669,7 @@ component-local information and to communicate information to foreign components
   owning component is returned.
   Finally, properties can be scoped with a child component name: on each attempt
   to resolve the property, first the scoped variant is tried. This means,
-  if a property was set with name "C<bar@prop>" on component C</foo>,
+  if a property was set with name "C<bar@prop>" on component C< /foo>,
   if you resolve the property with C<cs("/foo/bar/baz", "prop")> you
   the value, but if you resolve the property with C<cs("/foo/quux", "prop")> you
   do not get the value. This allows you to set the same property with different
