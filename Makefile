@@ -109,7 +109,8 @@ PLG_SRC         = component.plugin.debugger.js \
                   component.plugin.extjs.js
 PLG_BLD         = build/component.plugin.debugger.js \
                   build/component.plugin.jquery.js \
-                  build/component.plugin.extjs.js
+                  build/component.plugin.extjs.js \
+                  build/component.plugin.values.js
 
 #   list of all linting files
 LNT_SRC         = build/component.js
@@ -194,6 +195,8 @@ build/component.plugin.jquery.js: component.plugin.jquery.js
 	@NAME="jquery"; $(MAKE_PLUGIN)
 build/component.plugin.extjs.js: component.plugin.extjs.js
 	@NAME="extjs"; $(MAKE_PLUGIN)
+build/component.plugin.values.js: component.plugin.values.js
+	@NAME="values"; $(MAKE_PLUGIN)
 
 #   build API documentation in screen HTML format
 build/component-api.screen.html: component-api.txt component-api.tmpl
