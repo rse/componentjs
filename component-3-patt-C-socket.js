@@ -64,20 +64,23 @@ $cs.pattern.socket = $cs.trait({
             this.socket({
                 name:   params.name,
                 scope:  params.scope,
-                ctx:    { id: -1 },
+                ctx:    {},
                 plug:   function (obj) {
-                    if (this.id !== -1)
+                    var id = _cs.annotation(obj, "link");
+                    if (id !== null)
                         throw _cs.exception("link:plug: cannot plug, you have to unplug first");
-                    this.id = $cs(params.target).plug({
+                    id = $cs(params.target).plug({
                         name:   params.socket,
                         object: obj
                     });
+                    _cs.annotation(obj, "link", id);
                 },
-                unplug: function (/* obj */) {
-                    if (this.id === -1)
+                unplug: function (obj) {
+                    var id = _cs.annotation(obj, "link");
+                    if (id === null)
                         throw _cs.exception("link:unplug: cannot unplug, you have to plug first");
-                    $cs(params.target).unplug(this.id);
-                    this.id = -1;
+                    $cs(params.target).unplug(id);
+                    _cs.annotation(obj, "link", null);
                 }
             });
         },
