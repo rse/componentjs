@@ -127,13 +127,13 @@ interface ComponentJS_comp {
         name?: string;
         scope?: any;
         ctx: any;
-        plug: any;
-        unplug: any;
+        plug?: any;
+        unplug?: any;
     }): void;
     socket(
         ctx: any,
-        plug: any,
-        unplug: any
+        plug?: any,
+        unplug?: any
     ): void;
 
     subscribe(params: {
@@ -170,7 +170,7 @@ interface ComponentJS_comp {
         target: string;
     }): void;
     link(
-        tx: any,
+        ctx: any,
         target: string
     ): void;
 
@@ -185,6 +185,10 @@ interface ComponentJS_api {
     (object: any):                   ComponentJS_comp;
     (selector: string):              ComponentJS_comp;
     (object: any, selector: string): ComponentJS_comp;
+
+    plugin(): string[];
+    plugin(name: string): bool;
+    plugin(name: string, callback: (_cs: any, $cs: any, GLOBAL: any, DOCUMENT: any) => void): void;
 
     bootstrap(): void;
     shutdown(): void;
@@ -215,6 +219,9 @@ interface ComponentJS_api {
     symbol(name: string): void;
     symbol(): string;
 }
+
+/*  the official export method  */
+declare var ComponentJS_export: String
 
 /*  the official/default global symbol  */
 declare var ComponentJS: ComponentJS_api
