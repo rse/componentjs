@@ -67,7 +67,7 @@ $cs.pattern.shadow = $cs.trait({
                 throw _cs.exception("invoke", "anything named \"" + name + "\" existing, but not a function");
 
             /*  call method  */
-            var args = _cs.filter(arguments, function (_, i) { return i >= 1; });
+            var args = _cs.slice(arguments, 1);
             return obj[name].apply(obj, args);
         }
     }
