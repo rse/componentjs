@@ -81,8 +81,8 @@ _cs.state_progression = function () {
             delete _cs.state_requests[cid];
         });
 
-        /*  give the debugger a chance to update itself  */
-        _cs.dbg_update();
+        /*  give plugins a chance to react  */
+        _cs.hook("ComponentJS:state-change", "none");
     }, 0);
 };
 
@@ -151,8 +151,8 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
                 "@" + _cs.states[comp.__state].state
             );
-            _cs.dbg_state_invalidate("states");
-            _cs.dbg_update();
+            _cs.hook("ComponentJS:state-invalidate", "none", "states");
+            _cs.hook("ComponentJS:state-change", "none");
 
             /*  execute pending spooled actions  */
             name = "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter";
@@ -199,8 +199,8 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                                 /*  enqueue state transition for child  */
                                 _cs.state_requests[children[i].id()] =
                                     { comp: children[i], state: state };
-                                _cs.dbg_state_invalidate("requests");
-                                _cs.dbg_update();
+                                _cs.hook("ComponentJS:state-invalidate", "none", "requests");
+                                _cs.hook("ComponentJS:state-change", "none");
                             }
                         }
                     }
@@ -248,8 +248,8 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
                 "@" + _cs.states[comp.__state + 1].state
             );
-            _cs.dbg_state_invalidate("states");
-            _cs.dbg_update();
+            _cs.hook("ComponentJS:state-invalidate", "none", "states");
+            _cs.hook("ComponentJS:state-change", "none");
 
             /*  execute pending spooled actions  */
             name = "ComponentJS:state:" + _cs.states[comp.__state + 1].state + ":leave";
@@ -295,8 +295,8 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                                 /*  enqueue state transition for parent  */
                                 _cs.state_requests[comp.parent().id()] =
                                     { comp: comp.parent(), state: state_lower };
-                                _cs.dbg_state_invalidate("requests");
-                                _cs.dbg_update();
+                                _cs.hook("ComponentJS:state-invalidate", "none", "requests");
+                                _cs.hook("ComponentJS:state-change", "none");
                             }
                         }
                     }
@@ -351,7 +351,7 @@ $cs.pattern.state = $cs.trait({
                     /*  enqueue new state transition request and trigger
                         state transition progression (asynchronously)  */
                     _cs.state_requests[this.id()] = request;
-                    _cs.dbg_state_invalidate("requests");
+                    _cs.hook("ComponentJS:state-invalidate", "none", "requests");
                     _cs.state_progression();
                 }
             }

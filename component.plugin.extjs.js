@@ -13,6 +13,9 @@
  *  core framework.
  */
 
+/*global ComponentJS:false */
+/*jshint unused:false */
+
 ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL, DOCUMENT) {
     /*
      *  SPECIALIZED EXTJS SOCKET SUPPORT
@@ -29,7 +32,7 @@ ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL, DOCUMENT) {
                     ctx:    { pos: 0, def: null, req: true },
                     plug:   { pos: 1, def: null            }, /*  removed "req: true"  */
                     unplug: { pos: 2, def: null            }, /*  removed "req: true"  */
-                    type:   {         def: "extjs"         }  /*  added  */
+                    type:   {         def: "standard"      }  /*  added  */
                 });
 
                 /*  create pass-through information  */
@@ -39,8 +42,8 @@ ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL, DOCUMENT) {
                 /*  optionally change behaviour  */
                 if (params.type === "extjs") {
                     /*  provide specialized ExtJS socket functionality  */
-                    arg.plug   = function (el) { $(this).add(el);    };
-                    arg.unplug = function (el) { $(this).remove(el); };
+                    arg.plug   = function (el) { this.add(el);    };
+                    arg.unplug = function (el) { this.remove(el); };
                 }
 
                 /*  pass-through execution to original/base method  */

@@ -13,6 +13,10 @@
  *  core framework.
  */
 
+/*global ComponentJS:false */
+/*global jQuery:false */
+/*jshint unused:false */
+
 ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL, DOCUMENT) {
     /*
      *  SPECIALIZED JQUERY SOCKET SUPPORT
@@ -29,7 +33,7 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL, DOCUMENT) {
                     ctx:    { pos: 0, def: null, req: true },
                     plug:   { pos: 1, def: null            }, /*  removed "req: true"  */
                     unplug: { pos: 2, def: null            }, /*  removed "req: true"  */
-                    type:   {         def: "jquery"        }  /*  added  */
+                    type:   {         def: "standard"      }  /*  added  */
                 });
 
                 /*  create pass-through information  */
@@ -39,8 +43,8 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL, DOCUMENT) {
                 /*  optionally change behaviour  */
                 if (params.type === "jquery") {
                     /*  provide specialized jQuery socket functionality  */
-                    arg.plug   = function (el) { $(this).append(el); };
-                    arg.unplug = function (el) { $(el).remove();     };
+                    arg.plug   = function (el) { jQuery(this).append(el); };
+                    arg.unplug = function (el) { jQuery(el).remove();     };
                 }
 
                 /*  pass-through execution to original/base method  */

@@ -185,9 +185,9 @@ _cs.create_single = function (base, path, clazz) {
         component, the state is really already "created", of course)  */
     comp.state({ state: "created", sync: true });
 
-    /*  optionally update debugger view  */
-    _cs.dbg_state_invalidate("components");
-    _cs.dbg_update();
+    /*  give plugins a chance to react  */
+    _cs.hook("ComponentJS:state-invalidate", "none", "components");
+    _cs.hook("ComponentJS:state-change", "none");
 
     /*  return new component  */
     return comp;
@@ -220,9 +220,9 @@ $cs.destroy = function () {
     /*  debug hint  */
     $cs.debug(1, "component: " + comp.path("/") + ": destroyed component [" + comp.id() + "]");
 
-    /*  optionally update debugger view  */
-    _cs.dbg_state_invalidate("components");
-    _cs.dbg_update();
+    /*  give plugins a chance to react  */
+    _cs.hook("ComponentJS:state-invalidate", "none", "components");
+    _cs.hook("ComponentJS:state-change", "none");
 
     return;
 };

@@ -70,18 +70,11 @@
     $include("component-4-comp-4-states.js");
 
     /*
-    **  DEBUGGER
-    */
-
-    $include("component-5-dbgr-0-jquery.js");
-    $include("component-5-dbgr-1-view.js");
-
-    /*
     **  GLOBAL LIBRARY EXPORTING
     */
 
-    $include("component-6-glob-0-export.js");
-    $include("component-6-glob-1-plugin.js");
+    $include("component-5-glob-0-export.js");
+    $include("component-5-glob-1-plugin.js");
 
 })(
     /*global window:false */

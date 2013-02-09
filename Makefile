@@ -11,10 +11,10 @@
 PERL            = perl
 SHTOOL          = shtool
 CLOSURECOMPILER = closure-compiler \
-	              --warning_level DEFAULT \
-	              --compilation_level SIMPLE_OPTIMIZATIONS \
-				  --language_in ECMASCRIPT5 \
-				  --third_party
+                  --warning_level DEFAULT \
+                  --compilation_level SIMPLE_OPTIMIZATIONS \
+                  --language_in ECMASCRIPT5 \
+                  --third_party
 
 #   tools mandatory for stage2
 GJSLINT         = gjslint
@@ -28,11 +28,11 @@ JSHINT          = jshint \
 #   tools optional for stage2
 UGLIFYJS        = uglifyjs \
                   --no-dead-code \
-				  --no-copyright \
-				  --max-line-len 512
+                  --no-copyright \
+                  --max-line-len 512
 YUICOMPRESSOR   = yuicompressor \
                   --type js \
-				  --line-break 512
+                  --line-break 512
 
 #   tools mandatory for stage3
 W3M             = w3m
@@ -44,6 +44,22 @@ VERSION_MINOR   = 9
 VERSION_MICRO   = 2
 VERSION_DATE    = 20130208
 VERSION         = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
+
+#   make plugin
+MAKE_PLUGIN     = echo "++ linting component.plugin.$$NAME.js (Google Closure Linter)"; \
+                  $(GJSLINT) component.plugin.$$NAME.js | \
+                  egrep -v "E:(0001|0131|0110)" | grep -v "FILE  :" | sed -e '/^Found/,$$d'; \
+                  echo "++ linting component.plugin.$$NAME.js (JSHint)"; \
+                  $(JSHINT) component.plugin.$$NAME.js; \
+                  echo "++ copying build/component.plugin.$$NAME.js <- component.plugin.$$NAME.js"; \
+                  $(SHTOOL) mkdir -f -p -m 755 build; \
+                  cp component.plugin.$$NAME.js build/component.plugin.$$NAME.js; \
+                  echo "++ compressing build/component.min.js <- build/component.js (Google Closure Compiler)"; \
+                  $(CLOSURECOMPILER) \
+                  --js_output_file build/component.plugin.$$NAME.min.js \
+                  --js build/component.plugin.$$NAME.js && \
+                  (sed -e '/^$$/,$$d' component.plugin.$$NAME.js; echo ""; cat build/component.plugin.$$NAME.min.js) >build/.tmp && \
+                  cp build/.tmp build/component.plugin.$$NAME.min.js && rm -f build/.tmp
 
 #   list of all library files
 LIB_SRC         = component.js \
@@ -82,126 +98,142 @@ LIB_SRC         = component.js \
                   component-4-comp-2-lookup.js \
                   component-4-comp-3-manage.js \
                   component-4-comp-4-states.js \
-                  component-5-dbgr-0-jquery.js \
-                  component-5-dbgr-1-view.js \
-                  component-6-glob-0-export.js \
-                  component-6-glob-1-plugin.js
-LIB_BLD         = build/component-$(VERSION).js \
-                  build/component-$(VERSION).min.js \
+                  component-5-glob-0-export.js \
+                  component-5-glob-1-plugin.js
+LIB_BLD         = build/component.js \
+                  build/component.min.js \
+
+#   list of all plugin files
+PLG_SRC         = component.plugin.debugger.js \
+                  component.plugin.jquery.js \
+                  component.plugin.extjs.js
+PLG_BLD         = build/component.plugin.debugger.js \
+                  build/component.plugin.jquery.js \
+                  build/component.plugin.extjs.js
 
 #   list of all linting files
-LNT_SRC         = build/component-$(VERSION).js
+LNT_SRC         = build/component.js
 LNT_BLD         = build/.linted.gcl \
                   build/.linted.jshint
 
 #   list of all api files
 API_SRC         = component-api.tmpl \
                   component-api.txt
-API_BLD         = build/component-$(VERSION)-api.screen.html \
-                  build/component-$(VERSION)-api.screen.txt \
-				  build/component-$(VERSION)-api.print-us.pdf \
-				  build/component-$(VERSION)-api.print-a4.pdf
+API_BLD         = build/component-api.screen.html \
+                  build/component-api.screen.txt \
+                  build/component-api.print-us.pdf \
+                  build/component-api.print-a4.pdf
 
 #   standard targets
-all:   stage1 stage2 stage3
-build: stage1 stage3
+all:   stage1 stage2 stage3 stage4
+build: stage1        stage3 stage4
 lint:  stage2
 
 #   standard stages
 stage1: $(LIB_BLD)
 stage2: $(LNT_BLD)
 stage3: $(API_BLD)
+stage4: $(PLG_BLD)
 
 #   assemble the JavaScript library
-build/component-$(VERSION).js: $(LIB_SRC)
+build/component.js: $(LIB_SRC)
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ assembling build/component-$(VERSION).js <- $(LIB_SRC) (Custom Build Tool)"; \
-	$(PERL) build-src.pl build/component-$(VERSION).js component.js \
+	@echo "++ assembling build/component.js <- $(LIB_SRC) (Custom Build Tool)"; \
+	$(PERL) build-src.pl build/component.js component.js \
 	    "$(VERSION_MAJOR)" "$(VERSION_MINOR)" "$(VERSION_MICRO)" "$(VERSION_DATE)"
 
 #   minify/compress the JavaScript library (with Google Closure Compiler)
-build/component-$(VERSION).min.js: build/component-$(VERSION).js
+build/component.min.js: build/component.js
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ compressing build/component-$(VERSION).min.js <- build/component-$(VERSION).js (Google Closure Compiler)"; \
+	@echo "++ compressing build/component.min.js <- build/component.js (Google Closure Compiler)"; \
 	$(CLOSURECOMPILER) \
-	    --js_output_file build/component-$(VERSION).min.js \
-	    --js build/component-$(VERSION).js && \
-	(sed -e '/(function/,$$d' component.js; cat build/component-$(VERSION).min.js) >build/.tmp && \
-	cp build/.tmp build/component-$(VERSION).min.js && rm -f build/.tmp
+	    --js_output_file build/component.min.js \
+	    --js build/component.js && \
+	(sed -e '/(function/,$$d' component.js; cat build/component.min.js) >build/.tmp && \
+	cp build/.tmp build/component.min.js && rm -f build/.tmp
 
 #   minify/compress the JavaScript library (with UglifyJS)
-build/component-$(VERSION).min-ug.js: build/component-$(VERSION).js
+build/component.min-ug.js: build/component.js
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ compressing build/component-$(VERSION).min-ug.js <- build/component-$(VERSION).js (UglifyJS)"; \
+	@echo "++ compressing build/component.min-ug.js <- build/component.js (UglifyJS)"; \
 	$(UGLIFYJS) \
-	    -o build/component-$(VERSION).min-ug.js \
-	    build/component-$(VERSION).js && \
-	(sed -e '/(function/,$$d' component.js; cat build/component-$(VERSION).min-ug.js) >build/.tmp && \
-	cp build/.tmp build/component-$(VERSION).min-ug.js && rm -f build/.tmp
+	    -o build/component.min-ug.js \
+	    build/component.js && \
+	(sed -e '/(function/,$$d' component.js; cat build/component.min-ug.js) >build/.tmp && \
+	cp build/.tmp build/component.min-ug.js && rm -f build/.tmp
 
 #   minify/compress the JavaScript library (with Yahoo Compressor)
-build/component-$(VERSION).min-yc.js: build/component-$(VERSION).js
+build/component.min-yc.js: build/component.js
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ compressing build/component-$(VERSION).min-ug.js <- build/component-$(VERSION).js (Yahoo UI Compressor)"; \
+	@echo "++ compressing build/component.min-ug.js <- build/component.js (Yahoo UI Compressor)"; \
 	$(YUICOMPRESSOR) \
-	    -o build/component-$(VERSION).min-yc.js \
-	    build/component-$(VERSION).js && \
-	(sed -e '/(function/,$$d' component.js; cat build/component-$(VERSION).min-yc.js) >build/.tmp && \
-	cp build/.tmp build/component-$(VERSION).min-yc.js && rm -f build/.tmp
+	    -o build/component.min-yc.js \
+	    build/component.js && \
+	(sed -e '/(function/,$$d' component.js; cat build/component.min-yc.js) >build/.tmp && \
+	cp build/.tmp build/component.min-yc.js && rm -f build/.tmp
 
 #   lint assembled JavaScript library (Google Closure Linter)
-build/.linted.gcl: build/component-$(VERSION).js
+build/.linted.gcl: build/component.js
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ linting build/component-$(VERSION).js (Google Closure Linter)"; \
-	$(GJSLINT) build/component-$(VERSION).js | \
+	@echo "++ linting build/component.js (Google Closure Linter)"; \
+	$(GJSLINT) build/component.js | \
 	egrep -v "E:(0001|0131|0110)" | grep -v "FILE  :" | sed -e '/^Found/,$$d'; \
 	touch build/.linted.gcl
 
 #   lint assembled JavaScript library (JSHint)
-build/.linted.jshint: build/component-$(VERSION).js
+build/.linted.jshint: build/component.js
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ linting build/component-$(VERSION).js (JSHint)"; \
-	$(JSHINT) build/component-$(VERSION).js; \
+	@echo "++ linting build/component.js (JSHint)"; \
+	$(JSHINT) build/component.js; \
 	touch build/.linted.jshint
 
+#   plugins
+build/component.plugin.debugger.js: component.plugin.debugger.js
+	@NAME="debugger"; $(MAKE_PLUGIN)
+build/component.plugin.jquery.js: component.plugin.jquery.js
+	@NAME="jquery"; $(MAKE_PLUGIN)
+build/component.plugin.extjs.js: component.plugin.extjs.js
+	@NAME="extjs"; $(MAKE_PLUGIN)
+
 #   build API documentation in screen HTML format
-build/component-$(VERSION)-api.screen.html: component-api.txt component-api.tmpl
+build/component-api.screen.html: component-api.txt component-api.tmpl
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ generating build/component-$(VERSION)-api.screen.html <- component-api.txt component-api.tmpl (Custom Build Tool)"; \
-	$(PERL) build-api.pl component-api.txt component-api.tmpl build/component-$(VERSION)-api.screen.html "$(VERSION)"
+	@echo "++ generating build/component-api.screen.html <- component-api.txt component-api.tmpl (Custom Build Tool)"; \
+	$(PERL) build-api.pl component-api.txt component-api.tmpl build/component-api.screen.html "$(VERSION)"
 
 #   build API documentation in screen TXT format
-build/component-$(VERSION)-api.screen.txt: build/component-$(VERSION)-api.screen.html
+build/component-api.screen.txt: build/component-api.screen.html
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ generating build/component-$(VERSION)-api.screen.txt <- build/component-$(VERSION)-api.screen.html (W3M)"; \
-	$(W3M) -dump build/component-$(VERSION)-api.screen.html >build/component-$(VERSION)-api.screen.txt
+	@echo "++ generating build/component-api.screen.txt <- build/component-api.screen.html (W3M)"; \
+	$(W3M) -dump build/component-api.screen.html >build/component-api.screen.txt
 
 #   build API documentation in print PDF (A4 paper) format
-build/component-$(VERSION)-api.print-a4.pdf: build/component-$(VERSION)-api.screen.html
+build/component-api.print-a4.pdf: build/component-api.screen.html
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ generating build/component-$(VERSION)-api.print-a4.pdf <- build/component-$(VERSION)-api.screen.html (PrinceXML)"; \
+	@echo "++ generating build/component-api.print-a4.pdf <- build/component-api.screen.html (PrinceXML)"; \
     echo "@media print { @page { size: A4 !important; } }" >build/component-api.paper.css; \
-	$(PRINCE) --style build/component-api.paper.css -o build/component-$(VERSION)-api.print-a4.pdf build/component-$(VERSION)-api.screen.html; \
+	$(PRINCE) --style build/component-api.paper.css -o build/component-api.print-a4.pdf build/component-api.screen.html; \
 	rm -f build/component-api.paper.css
 
 #   build API documentation in print PDF (US paper) format
-build/component-$(VERSION)-api.print-us.pdf: build/component-$(VERSION)-api.screen.html
+build/component-api.print-us.pdf: build/component-api.screen.html
 	@$(SHTOOL) mkdir -f -p -m 755 build
-	@echo "++ generating build/component-$(VERSION)-api.print-us.pdf <- build/component-$(VERSION)-api.screen.html (PrinceXML)"; \
+	@echo "++ generating build/component-api.print-us.pdf <- build/component-api.screen.html (PrinceXML)"; \
     echo "@media print { @page { size: US-Letter !important; } }" >build/component-api.paper.css; \
-	$(PRINCE) --style build/component-api.paper.css -o build/component-$(VERSION)-api.print-us.pdf build/component-$(VERSION)-api.screen.html; \
+	$(PRINCE) --style build/component-api.paper.css -o build/component-api.print-us.pdf build/component-api.screen.html; \
 	rm -f build/component-api.paper.css
 
 #   remove all target/build files
 clean:
-	@echo "++ removing build/component-$(VERSION).js"; rm -f build/component-$(VERSION).js
-	@echo "++ removing build/component-$(VERSION).min.js"; rm -f build/component-$(VERSION).min.js
-	@echo "++ removing build/component-$(VERSION).min-ug.js"; rm -f build/component-$(VERSION).min-ug.js
-	@echo "++ removing build/component-$(VERSION).min-yc.js"; rm -f build/component-$(VERSION).min-yc.js
-	@echo "++ removing build/component-$(VERSION)-api.screen.html"; rm -f build/component-$(VERSION)-api.screen.html
-	@echo "++ removing build/component-$(VERSION)-api.screen.txt"; rm -f build/component-$(VERSION)-api.screen.txt
-	@echo "++ removing build/component-$(VERSION)-api.print-us.pdf"; rm -f build/component-$(VERSION)-api.print-us.pdf
-	@echo "++ removing build/component-$(VERSION)-api.print-a4.pdf"; rm -f build/component-$(VERSION)-api.print-a4.pdf
+	@echo "++ removing build/component.js"; rm -f build/component.js
+	@echo "++ removing build/component.min.js"; rm -f build/component.min.js
+	@echo "++ removing build/component.min-ug.js"; rm -f build/component.min-ug.js
+	@echo "++ removing build/component.min-yc.js"; rm -f build/component.min-yc.js
+	@echo "++ removing build/component-api.screen.html"; rm -f build/component-api.screen.html
+	@echo "++ removing build/component-api.screen.txt"; rm -f build/component-api.screen.txt
+	@echo "++ removing build/component-api.print-us.pdf"; rm -f build/component-api.print-us.pdf
+	@echo "++ removing build/component-api.print-a4.pdf"; rm -f build/component-api.print-a4.pdf
+	@echo "++ removing build/component.plugin.*.js"; rm -f build/component.plugin.*.js
 	@rm -f build/.linted.* >/dev/null 2>&1 || true
 	@rmdir build >/dev/null 2>&1 || true
 

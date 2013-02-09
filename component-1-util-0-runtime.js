@@ -11,14 +11,6 @@
 _cs.exception = function (method, error) {
     var trace;
 
-    /*  optionally log stack trace to debugger  */
-    if (_cs.dbg !== null) {
-        if (typeof GLOBAL.printStackTrace !== "undefined") {
-            trace = GLOBAL.printStackTrace();
-            _cs.dbg_log(trace.join("\n"));
-        }
-    }
-
     /*  optionally log stack trace to console  */
     if ($cs.debug() > 0) {
         if (typeof GLOBAL.console === "object") {
@@ -39,8 +31,8 @@ _cs.exception = function (method, error) {
 /*  utility function: logging via environment console  */
 _cs.log = function (msg) {
     /*  try ComponentJS debugger  */
-    if (_cs.dbg !== null)
-        _cs.dbg_log(msg);
+    if (_cs.hook("ComponentJS:log", "or", msg))
+        {} /*  do nothing, as plugins have already logged the message  */
 
     /*  try Firebug-style console (in regular browser or Node)  */
     else if (   typeof GLOBAL.console     !== "undefined"
