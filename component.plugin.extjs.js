@@ -16,7 +16,7 @@
 /*global ComponentJS:false */
 /*jshint unused:false */
 
-ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL, DOCUMENT) {
+ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL) {
     /*
      *  SPECIALIZED EXTJS SOCKET SUPPORT
      */

@@ -17,7 +17,7 @@
 /*global jQuery:false */
 /*jshint unused:false */
 
-ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL, DOCUMENT) {
+ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL) {
     /*
      *  SPECIALIZED JQUERY SOCKET SUPPORT
      */

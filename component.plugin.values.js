@@ -21,7 +21,7 @@
 /*global ComponentJS:false */
 /*jshint unused:false */
 
-ComponentJS.plugin("values", function (_cs, $cs, GLOBAL, DOCUMENT) {
+ComponentJS.plugin("values", function (_cs, $cs, GLOBAL) {
     /*  sanity check run-time environment  */
     if (_cs.istypeof(Object.defineProperty) !== "function")
         throw _cs.exception("plugin:values", "sorry, mandatory ECMAScript/5 " +

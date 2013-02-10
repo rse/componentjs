@@ -34,7 +34,7 @@ $cs.plugin = function (name, callback) {
             throw _cs.exception("plugin", "invalid plugin name parameter");
         if (typeof _cs.plugins[name] !== "undefined")
             throw _cs.exception("plugin", "plugin named \"" + name + "\" already registered");
-        callback.call(this, _cs, $cs, GLOBAL, DOCUMENT);
+        callback.call(this, _cs, $cs, GLOBAL);
         _cs.plugins[name] = true;
     }
     else

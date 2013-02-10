@@ -14,7 +14,7 @@
 
 /*global ComponentJS:false */
 
-ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL, DOCUMENT) {
+ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
 
     /*
      *  minimum emulation of jQuery
@@ -26,7 +26,7 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL, DOCUMENT) {
             result.push(sel);
         else {
             if (typeof el === "undefined")
-                el = DOCUMENT;
+                el = GLOBAL.document;
             result = el.querySelectorAll(sel);
             result = _cs.concat([], result);
         }

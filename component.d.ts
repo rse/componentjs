@@ -188,7 +188,7 @@ interface ComponentJS_api {
 
     plugin(): string[];
     plugin(name: string): bool;
-    plugin(name: string, callback: (_cs: any, $cs: any, GLOBAL: any, DOCUMENT: any) => void): void;
+    plugin(name: string, callback: (_cs: any, $cs: any, GLOBAL: any) => void): void;
 
     bootstrap(): void;
     shutdown(): void;
