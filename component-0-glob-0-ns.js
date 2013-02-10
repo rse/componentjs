@@ -15,7 +15,7 @@ var _cs = function () {
 /*  external API  */
 var $cs = function () {
     /*  under run-time just pass through to lookup functionality  */
-    return _cs.lookup.apply(DOCUMENT, arguments);
+    return _cs.lookup.apply(GLOBAL, arguments);
 };
 
 /*  pattern sub-namespace  */
