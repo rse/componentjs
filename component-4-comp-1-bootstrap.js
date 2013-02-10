@@ -38,11 +38,11 @@ $cs.bootstrap = function () {
         ATTENTION: method "exists" intentionally is missing here,
                    because it is required to be called on _cs.none, of course!  */
     var methods = [
-        "create", "destroy", "guard", "hook", "invoke",
-        "latch", "link", "listen", "listening", "model", "notify", "observe",
-        "plug", "property", "publish", "register", "service_enabled", "socket",
-        "spool", "spooled", "state", "state_compare", "store", "subscribe",
-        "subscribers", "touch", "unlatch", "unlisten", "unobserve", "unplug",
+        "call", "create", "destroy", "guard", "hook", "invoke",
+        "latch", "link", "model", "observe", "plug", "property",
+        "publish", "register", "service_enabled", "socket", "spool",
+        "spooled", "state", "state_compare", "store", "subscribe",
+        "subscribers", "touch", "unlatch", "unobserve", "unplug",
         "unregister", "unspool", "unsubscribe", "value", "values"
     ];
     _cs.foreach(methods, function (method) {
