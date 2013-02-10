@@ -41,8 +41,8 @@ PRINCE          = prince
 #   current version
 VERSION_MAJOR   = 0
 VERSION_MINOR   = 9
-VERSION_MICRO   = 3
-VERSION_DATE    = 20130209
+VERSION_MICRO   = 4
+VERSION_DATE    = 20130210
 VERSION         = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
 #   make plugin
