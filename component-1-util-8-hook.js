@@ -12,17 +12,17 @@ _cs.hooks = {};
 
 /*  internal hook processing  */
 _cs.hook_proc = {
-    "none":   { init: undefined, step: function (    ) {                          } },
-    "pass":   { init: undefined, step: function (a, b) { return b;                } },
-    "or":     { init: false,     step: function (a, b) { return a || b;           } },
-    "and":    { init: true,      step: function (a, b) { return a && b;           } },
-    "mult":   { init: 1,         step: function (a, b) { return a * b;            } },
-    "add":    { init: 0,         step: function (a, b) { return a + b;            } },
-    "append": { init: "",        step: function (a, b) { return a + b;            } },
-    "push":   { init: [],        step: function (a, b) { a.push(b); return a;     } },
-    "concat": { init: [],        step: function (a, b) { return _cs.concat(a, b); } },
-    "insert": { init: {},        step: function (a, b) { a[b] = true; return a;   } },
-    "extend": { init: {},        step: function (a, b) { return _cs.extend(a, b); } }
+    "none":   { init: undefined,                     step: function (    ) {                          } },
+    "pass":   { init: function (a) { return a[0]; }, step: function (a, b) { return b;                } },
+    "or":     { init: false,                         step: function (a, b) { return a || b;           } },
+    "and":    { init: true,                          step: function (a, b) { return a && b;           } },
+    "mult":   { init: 1,                             step: function (a, b) { return a * b;            } },
+    "add":    { init: 0,                             step: function (a, b) { return a + b;            } },
+    "append": { init: "",                            step: function (a, b) { return a + b;            } },
+    "push":   { init: [],                            step: function (a, b) { a.push(b); return a;     } },
+    "concat": { init: [],                            step: function (a, b) { return _cs.concat(a, b); } },
+    "insert": { init: {},                            step: function (a, b) { a[b] = true; return a;   } },
+    "extend": { init: {},                            step: function (a, b) { return _cs.extend(a, b); } }
 };
 
 /*  latch into internal ComponentJS hook  */
@@ -76,14 +76,20 @@ _cs.hook = function (name, proc) {
 
     /*  start result with the initial value  */
     var result = _cs.hook_proc[proc].init;
+    var args = null;
+    if (typeof result === "function") {
+        args = _cs.slice(arguments, 2);
+        result = result.call(null, args);
+    }
 
     /*  give all registered callbacks a chance to
         execute and modify the current result  */
     if (typeof _cs.hooks[name] !== "undefined") {
-        var args = _cs.slice(arguments, 2);
+        if (args === null)
+            args = _cs.slice(arguments, 2);
         _cs.foreach(_cs.hooks[name], function (s) {
             var r = s.cb.apply({ args: s.args, _cs: _cs, $cs: $cs }, args);
-            result = _cs.hook_proc[proc].step(result, r);
+            result = _cs.hook_proc[proc].step.call(result, r);
         });
     }
 
