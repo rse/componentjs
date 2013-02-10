@@ -13,7 +13,7 @@ var _cs = function () {};
 /*  external API  */
 var $cs = function () {
     /*  under run-time just pass through to lookup functionality  */
-    return _cs.lookup.apply(GLOBAL, arguments);
+    return _cs.hook("ComponentJS:lookup", "pass", _cs.lookup.apply(GLOBAL, arguments));
 };
 
 /*  pattern sub-namespace  */
