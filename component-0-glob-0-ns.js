@@ -8,9 +8,7 @@
 */
 
 /*  internal API  */
-var _cs = function () {
-    return;
-};
+var _cs = function () {};
 
 /*  external API  */
 var $cs = function () {
