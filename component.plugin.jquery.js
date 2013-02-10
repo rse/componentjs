@@ -41,7 +41,11 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL, DOCUMENT) {
                 delete arg.type;
 
                 /*  optionally change behaviour  */
-                if (params.type === "jquery") {
+                if ( /*  explicitly requested  */
+                     params.type === "jquery" ||
+                     /*  implicitly detected  */
+                     ( typeof params.ctx.jquery === "string" &&
+                       params.ctx.jquery.match(/^[0-9]+(?:\.[0-9]+)+$/) ) ) {
                     /*  provide specialized jQuery socket functionality  */
                     arg.plug   = function (el) { jQuery(this).append(el); };
                     arg.unplug = function (el) { jQuery(el).remove();     };
