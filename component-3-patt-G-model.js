@@ -30,6 +30,10 @@ $cs.pattern.model = $cs.trait({
                             throw _cs.exception("model", "invalid specification key \"" +
                                 key + "\" in specification of model field \"" + name + "\"");
                     }
+                    if (!_cs.validate(model[name].value, model[name].valid))
+                        throw _cs.exception("model", "model field \"" + name + "\" has " +
+                            "default value \"" + model[name].value + "\", which does not validate " +
+                            "against validation \"" + model[name].valid + "\"");
                 }
             }
 
