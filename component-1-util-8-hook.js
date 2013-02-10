@@ -89,7 +89,7 @@ _cs.hook = function (name, proc) {
             args = _cs.slice(arguments, 2);
         _cs.foreach(_cs.hooks[name], function (s) {
             var r = s.cb.apply({ args: s.args, _cs: _cs, $cs: $cs }, args);
-            result = _cs.hook_proc[proc].step.call(result, r);
+            result = _cs.hook_proc[proc].step.call(null, result, r);
         });
     }
 
