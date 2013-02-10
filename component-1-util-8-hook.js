@@ -12,7 +12,7 @@ _cs.hooks = {};
 
 /*  internal hook processing  */
 _cs.hook_proc = {
-    "none":   { init: undefined, step: function (a, b) { return undefined;        } },
+    "none":   { init: undefined, step: function (    ) {                          } },
     "pass":   { init: undefined, step: function (a, b) { return b;                } },
     "or":     { init: false,     step: function (a, b) { return a || b;           } },
     "and":    { init: true,      step: function (a, b) { return a && b;           } },
