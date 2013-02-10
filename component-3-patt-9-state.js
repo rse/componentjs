@@ -59,6 +59,18 @@ _cs.state_name2idx = function (name) {
     return idx;
 };
 
+/*  perform a state enter/leave method call  */
+_cs.state_method_call = function (type, comp, method) {
+    var result = true;
+    var obj = comp.obj();
+    if (obj !== null && typeof obj[method] === "function") {
+        var info = { type: type, comp: comp, method: method, ctx: obj, func: obj[method] };
+        _cs.hook("ComponentJS:state-method-call", "none", info);
+        result = info.func.call(info.ctx);
+    }
+    return result;
+};
+
 /*  set of current state transition requests
     (modeled via a map to the components)  */
 _cs.state_requests = {};
@@ -101,7 +113,7 @@ _cs.state_progression_single = function (req) {
 
 /*  perform a single synchronous progression run for a particular component  */
 _cs.state_progression_run = function (comp, arg, _direction) {
-    var i, children, obj;
+    var i, children;
     var name, state, enter, leave;
 
     /*  handle optional argument (USED INTERNALLY ONLY)  */
@@ -161,19 +173,15 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 comp.unspool(name);
 
             /*  execute enter method  */
-            obj = comp.obj();
-            if (   obj !== null
-                && typeof obj[enter] === "function") {
-                if (obj[enter]() === false) {
-                    /*  FULL STOP: state enter method rejected state transition  */
-                    $cs.debug(1,
-                        "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER METHOD: " +
-                        "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
-                        "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
-                    );
-                    comp.__state--;
-                    return;
-                }
+            if (_cs.state_method_call("enter", comp, enter) === false) {
+                /*  FULL STOP: state enter method rejected state transition  */
+                $cs.debug(1,
+                    "state: " + comp.path("/") + ": transition (increase) REJECTED BY ENTER METHOD: " +
+                    "@" + _cs.states[comp.__state - 1].state + " --(" + enter + ")--> " +
+                    "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                );
+                comp.__state--;
+                return;
             }
 
             /*  notify subscribers about new state  */
@@ -258,19 +266,15 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 comp.unspool(name);
 
             /*  execute leave method  */
-            obj = comp.obj();
-            if (   obj !== null
-                && typeof obj[leave] === "function") {
-                if (obj[leave]() === false) {
-                    /*  FULL STOP: state leave method rejected state transition  */
-                    $cs.debug(1,
-                        "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE METHOD: " +
-                        "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
-                        "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
-                    );
-                    comp.__state++;
-                    return;
-                }
+            if (_cs.state_method_call("leave", comp, leave) === false) {
+                /*  FULL STOP: state leave method rejected state transition  */
+                $cs.debug(1,
+                    "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE METHOD: " +
+                    "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
+                    "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                );
+                comp.__state++;
+                return;
             }
 
             /*  notify subscribers about new state  */
