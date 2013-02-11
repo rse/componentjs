@@ -15,7 +15,9 @@
  *  for direct access to all model values. Getting a property via
  *  component.values().foo is equivalent to component.value("foo").
  *  Setting a property via component.values().foo = "bar" is equivalent
- *  to component.value("foo", "bar").
+ *  to component.value("foo", "bar"). As ECMAScript/5 properties are
+ *  still not available in every environment, this functionality has to
+ *  stay in an optional plugin, of course.
  */
 
 /*global ComponentJS:false */

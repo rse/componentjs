@@ -9,7 +9,10 @@
 
 /*
  *  This is a graphical ComponentJS debugger which provides both a
- *  component tree visualization and a ComponentJS debug message console.
+ *  component tree visualization and a ComponentJS debug message
+ *  console. As in a production environment one might not want to carry
+ *  this functionality with the application, this functionality has to
+ *  stay in a separate optional plugin, of course.
  */
 
 /*global ComponentJS:false */
