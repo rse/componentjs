@@ -241,13 +241,13 @@ clean:
 	@rmdir build >/dev/null 2>&1 || true
 
 #   create a release distribution
-release: stage1 stage2 stage3
+release: stage1 stage2 stage3 stage4
 	@echo "++ rolling release tarball ComponentJS-$(VERSION).tar.gz"; \
 	$(SHTOOL) tarball -c "gzip -9" -e "ComponentJS-*,.git,.gitignore,build/.linted*" -o ComponentJS-$(VERSION).tar.gz .; \
 	ls -l ComponentJS-$(VERSION).tar.gz
 
 #   create a snapshot distribution
-snapshot: stage1 stage2 stage3
+snapshot: stage1 stage2 stage3 stage4
 	@echo "++ rolling snapshot tarball ComponentJS-SNAPSHOT.tar.gz"; \
 	$(SHTOOL) tarball -c "gzip -9" -e "ComponentJS-*,.git,.gitignore,build/.linted*" -o ComponentJS-SNAPSHOT.tar.gz .; \
 	ls -l ComponentJS-SNAPSHOT.tar.gz
