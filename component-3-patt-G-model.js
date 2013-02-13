@@ -25,12 +25,14 @@ $cs.pattern.model = $cs.trait({
                         model[name].autoreset = false;
                     if (typeof model[name].store === "undefined")
                         model[name].store = false;
+                    if (typeof model[name].strict === "undefined")
+                        model[name].strict = true;
                     for (var key in model[name]) {
-                        if (key !== "value" && key !== "valid" && key !== "autoreset" && key !== "store")
+                        if (key !== "value" && key !== "valid" && key !== "autoreset" && key !== "store" && key !== "strict")
                             throw _cs.exception("model", "invalid specification key \"" +
                                 key + "\" in specification of model field \"" + name + "\"");
                     }
-                    if (!_cs.validate(model[name].value, model[name].valid))
+                    if (!_cs.validate(model[name].value, model[name].valid, model[name].strict))
                         throw _cs.exception("model", "model field \"" + name + "\" has " +
                             "default value \"" + model[name].value + "\", which does not validate " +
                             "against validation \"" + model[name].valid + "\"");
