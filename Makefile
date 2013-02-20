@@ -22,7 +22,7 @@ JSHINT          = jshint \
                   +maxerr=200 +bitwise -camelcase -curly +eqeqeq \
                   -forin +immed +latedef -newcap -noarg -noempty +nonew -plusplus \
                   +quotmark=double -regexp +undef +unused -strict +trailing \
-                  +maxparams=9 +maxdepth=4 +maxstatements=130 +maxlen=150 \
+                  +maxparams=9 +maxdepth=4 +maxstatements=150 +maxlen=150 \
                   +loopfunc 
 
 #   tools optional for stage2
@@ -68,12 +68,14 @@ LIB_SRC         = component.js \
                   component-1-util-0-runtime.js \
                   component-1-util-1-object.js \
                   component-1-util-2-array.js \
-                  component-1-util-3-params.js \
-                  component-1-util-4-encoding.js \
-                  component-1-util-5-identifier.js \
-                  component-1-util-6-proxy.js \
-                  component-1-util-7-attribute.js \
-                  component-1-util-8-hook.js \
+                  component-1-util-3-token.js \
+                  component-1-util-4-validate.js \
+                  component-1-util-5-params.js \
+                  component-1-util-6-encoding.js \
+                  component-1-util-7-identifier.js \
+                  component-1-util-8-proxy.js \
+                  component-1-util-9-attribute.js \
+                  component-1-util-A-hook.js \
                   component-2-clzz-0-common.js \
                   component-2-clzz-1-api.js \
                   component-3-patt-0-base.js \

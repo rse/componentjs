@@ -7,62 +7,6 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  utility function: no operation (for passing as dummy callback)  */
-$cs.nop = function () {};
-
-/*  utility function: validate a value against a validation specification  */
-_cs.validate = function () {
-    /*  determine parameters  */
-    var params = $cs.params("validate", arguments, {
-        value:  { pos: 0, req: true },
-        valid:  { pos: 1, req: true },
-        strict: { pos: 2, def: true }
-    });
-
-    /*  map string and regex based validators  */
-    if (typeof params.valid === "string") {
-        var m = params.valid.match(/^array\((.+?)\)$/);
-        if (m) {
-            /*  "array(xxx)"  */
-            (function () {
-                var t = m[1];
-                params.valid = function (a) {
-                    if (_cs.istypeof(a) !== "array")
-                        return false;
-                    for (var i = 0; i < a.length; i++)
-                        if (_cs.istypeof(a[i], !params.strict) !== t)
-                            return false;
-                    return true;
-                };
-            })();
-        }
-        else {
-            /*  "xxx"  */
-            (function () {
-                var t = params.valid;
-                params.valid = function (a) {
-                    return _cs.istypeof(a, !params.strict) === t;
-                };
-            })();
-        }
-    }
-    else if (   typeof params.valid === "object"
-             && params.valid instanceof RegExp) {
-        /*  /xxx/  */
-        (function () {
-            var pattern = params.valid;
-            params.valid = function (a) {
-                return !!(a.match(pattern));
-            };
-        })();
-    }
-    else if (typeof params.valid !== "function")
-        throw _cs.exception("validate", "invalid validator");
-
-    /*  return result of validation  */
-    return params.valid(params.value);
-};
-
 /*  utility function: flexible parameter handling  */
 $cs.params = function (func_name, func_args, spec) {
     /*  provide parameter processing hook  */
@@ -92,10 +36,6 @@ $cs.params = function (func_name, func_args, spec) {
             /*  process default value  */
             if (typeof spec[name].def !== "undefined")
                 params[name] = spec[name].def;
-
-            /*  set specification defaults  */
-            if (typeof spec[name].strict === "undefined")
-                spec[name].strict = true;
         }
     }
 
@@ -128,9 +68,14 @@ $cs.params = function (func_name, func_args, spec) {
             if (_cs.isown(args, name)) {
                 if (typeof spec[name] === "undefined")
                     throw _cs.exception(func_name, "unknown parameter \"" + name + "\"");
-                if (typeof spec[name].valid !== "undefined")
-                    if (!_cs.validate(args[name], spec[name].valid, spec[name].strict))
+                if (typeof spec[name].valid === "string") {
+                    if (!$cs.validate(args[name], spec[name].valid))
                         throw _cs.exception(func_name, "value of parameter \"" + name + "\" not valid");
+                }
+                else if (typeof spec[name].valid === "function") {
+                    if (!spec[name].valid(args[name]))
+                        throw _cs.exception(func_name, "value of parameter \"" + name + "\" not valid");
+                }
                 params[name] = args[name];
             }
         }
@@ -149,9 +94,14 @@ $cs.params = function (func_name, func_args, spec) {
             throw _cs.exception(func_name, "invalid number of arguments " +
                 "(at least " + required + " required)");
         for (i = 0; i < positional && i < func_args.length; i++) {
-            if (typeof spec[pos2name[i]].valid !== "undefined")
-                if (!_cs.validate(func_args[i], spec[pos2name[i]].valid, spec[pos2name[i]].strict))
+            if (typeof spec[pos2name[i]].valid === "string") {
+                if (!$cs.validate(func_args[i], spec[pos2name[i]].valid))
                     throw _cs.exception(func_name, "value of parameter \"" + pos2name[i] + "\" not valid");
+            }
+            else if (typeof spec[pos2name[i]].valid === "function") {
+                if (!spec[pos2name[i]].valid(func_args[i]))
+                    throw _cs.exception(func_name, "value of parameter \"" + pos2name[i] + "\" not valid");
+            }
             params[pos2name[i]] = func_args[i];
         }
         if (i < func_args.length) {
@@ -159,9 +109,14 @@ $cs.params = function (func_name, func_args, spec) {
                 throw _cs.exception(func_name, "too many arguments provided");
             args = [];
             for (; i < func_args.length; i++) {
-                if (typeof spec[pos2name["..."]].valid !== "undefined")
-                    if (!_cs.validate(func_args[i], spec[pos2name["..."]].valid, spec[pos2name["..."]].strict))
+                if (typeof spec[pos2name["..."]].valid === "string") {
+                    if (!$cs.validate(func_args[i], spec[pos2name["..."]].valid))
                         throw _cs.exception(func_name, "value of parameter \"" + pos2name["..."] + "\" not valid");
+                }
+                else if (typeof spec[pos2name["..."]].valid === "function") {
+                    if (!spec[pos2name["..."]].valid(func_args[i]))
+                        throw _cs.exception(func_name, "value of parameter \"" + pos2name["..."] + "\" not valid");
+                }
                 args.push(func_args[i]);
             }
             params[pos2name["..."]] = args;

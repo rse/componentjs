@@ -7,6 +7,9 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
+/*  utility function: no operation (for passing as dummy callback)  */
+$cs.nop = function () {};
+
 /*  utility function: annotate an object  */
 _cs.annotation = function (obj, name, value) {
     var result = null;
@@ -45,38 +48,35 @@ _cs.isown = function (obj, field) {
 
 /*  utility function: determine type of anything,
     an improved version of the built-in "typeof" operator  */
-_cs.istypeof = function (obj, nonstrict) {
+_cs.istypeof = function (obj) {
     var type = typeof obj;
-    if (nonstrict !== true) {
-        /*  strict type-checking  */
-        if (type === "object") {
-            if (obj === null)
-                /*  JavaScript nasty special case: null object  */
-                type = "null";
-            else if (Object.prototype.toString.call(obj) === "[object String]")
-                /*  JavaScript nasty special case: String object  */
-                type = "string";
-            else if (Object.prototype.toString.call(obj) === "[object Number]")
-                /*  JavaScript nasty special case: Number object  */
-                type = "number";
-            else if (Object.prototype.toString.call(obj) === "[object Boolean]")
-                /*  JavaScript nasty special case: Boolean object  */
-                type = "boolean";
-            else if (Object.prototype.toString.call(obj) === "[object Function]")
-                /*  JavaScript nasty special case: Function object  */
-                type = "function";
-            else if (Object.prototype.toString.call(obj) === "[object Array]")
-                /*  JavaScript nasty special case: Array object  */
-                type = "array";
-            else if (_cs.annotation(obj, "type") !== null)
-                /*  ComponentJS special case: "component"  */
-                type = _cs.annotation(obj, "type");
-        }
-        else if (type === "function") {
-            /*  ComponentJS special case: "{clazz,trait}"  */
-            if (_cs.annotation(obj, "type") !== null)
-                type = _cs.annotation(obj, "type");
-        }
+    if (type === "object") {
+        if (obj === null)
+            /*  JavaScript nasty special case: null object  */
+            type = "null";
+        else if (Object.prototype.toString.call(obj) === "[object String]")
+            /*  JavaScript nasty special case: String object  */
+            type = "string";
+        else if (Object.prototype.toString.call(obj) === "[object Number]")
+            /*  JavaScript nasty special case: Number object  */
+            type = "number";
+        else if (Object.prototype.toString.call(obj) === "[object Boolean]")
+            /*  JavaScript nasty special case: Boolean object  */
+            type = "boolean";
+        else if (Object.prototype.toString.call(obj) === "[object Function]")
+            /*  JavaScript nasty special case: Function object  */
+            type = "function";
+        else if (Object.prototype.toString.call(obj) === "[object Array]")
+            /*  JavaScript nasty special case: Array object  */
+            type = "array";
+        else if (_cs.annotation(obj, "type") !== null)
+            /*  ComponentJS special case: "component"  */
+            type = _cs.annotation(obj, "type");
+    }
+    else if (type === "function") {
+        /*  ComponentJS special case: "{clazz,trait}"  */
+        if (_cs.annotation(obj, "type") !== null)
+            type = _cs.annotation(obj, "type");
     }
     return type;
 };
