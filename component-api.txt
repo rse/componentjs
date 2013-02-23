@@ -44,7 +44,7 @@ some of its internals only once all plugins were loaded and executed.
 
   Bootstrap the ComponentJS library by Initializing its internals.
   This has to be called at least before any calls to M<create>(),
-  but can by called after calls to M<symbol>, M<debug> or M<ns>.
+  but can be called after any calls to M<symbol>, M<debug> or M<ns>.
 
   cs.bootstrap()
 
