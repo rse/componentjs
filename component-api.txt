@@ -21,8 +21,8 @@ C<ComponentJS>. It is a common convention to change the symbol to C<cs> (for
   If P<name> is not given, ComponentJS does not occupy any global namespace slot at all --
   then it is required to store the return value and use ComponentJS directly through it.
 
-  ComponentJS.symbol("cs")        /* standard    */
-  var cs = ComponentJS.symbol()   /* alternative */
+  | ComponentJS.symbol("cs")        /* standard    */
+  | var cs = ComponentJS.symbol()   /* alternative */
 
 - ComponentJS.M<version> = {
       F<major>: T<Number>, F<minor>: T<Number>, F<micro>: T<Number>, F<date>:  T<Number>
@@ -31,8 +31,8 @@ C<ComponentJS>. It is a common convention to change the symbol to C<cs> (for
   Access the ComponentJS implementation version "F<major>C<.>F<minor>C<.>F<micro>"
   and the corresponding release F<date> (in format YYYYMMDD).
 
-  if (ComponentJS.version.date &lt; 20120101)
-       throw new Error("need at least ComponentJS as of 20120101")
+  | if (ComponentJS.version.date &lt; 20120101)
+  |      throw new Error("need at least ComponentJS as of 20120101")
 
 Library Management
 ------------------
@@ -46,14 +46,14 @@ some of its internals only once all plugins were loaded and executed.
   This has to be called at least before any calls to M<create>(),
   but can be called after any calls to M<symbol>, M<debug> or M<ns>.
 
-  cs.bootstrap()
+  | cs.bootstrap()
 
 - ComponentJS.M<shutdown>(): T<Void>
 
   Shutdown the ComponentJS library by destroying its internals.
   This implicitly destroy the existing component tree, too.
 
-  cs.shutdown()
+  | cs.shutdown()
 
 - ComponentJS.M<plugin>(): T<String[]>;
   ComponentJS.M<plugin>(P<name>: T<String>): T<Boolean>;
@@ -71,19 +71,19 @@ some of its internals only once all plugins were loaded and executed.
   environment object (usually C<window> in a browser, C<global> in
   Node.js, etc).
 
-  /*  add a "foo()" method to all components  */
-  ComponentJS.plugin("foo", function (_cs, $cs, GLOBAL) {
-      var trait = $cs.trait({
-          protos: {
-              foo: function () {
-                  ...
-              }
-          }
-      });
-      _cs.latch("ComponentJS:bootstrap:comp:mixin", function (mixins) {
-          mixins.push(trait);
-      });
-  });
+  | /*  add a "foo()" method to all components  */
+  | ComponentJS.plugin("foo", function (_cs, $cs, GLOBAL) {
+  |     var trait = $cs.trait({
+  |         protos: {
+  |             foo: function () {
+  |                 ...
+  |             }
+  |         }
+  |     });
+  |     _cs.latch("ComponentJS:bootstrap:comp:mixin", function (mixins) {
+  |         mixins.push(trait);
+  |     });
+  | });
 
 Debugging
 ---------
@@ -99,13 +99,13 @@ especially for visualizing the current component tree in real-time.
   (C<0> disables all debug messages, C<9> enables all debug messages) or log a particular
   P<message> under debug-level P<level>.
 
-  cs.debug(0)
-  if (cs.plugin("debugger")) {
-      if (cs.debug_instrumented()) {
-           cs.debug(9)
-           cs.debug_window({ ... })
-      }
-  }
+  | cs.debug(0)
+  | if (cs.plugin("debugger")) {
+  |     if (cs.debug_instrumented()) {
+  |          cs.debug(9)
+  |          cs.debug_window({ ... })
+  |     }
+  | }
 
 - ComponentJS.M<debug_instrumented>(): T<Boolean>
 
@@ -114,7 +114,7 @@ especially for visualizing the current component tree in real-time.
   the browser's built-in debugger is activated (in detached mode only). Currently
   ComponentJS is able to determine Firefox's Firebug and Chrome's Inspector only.
 
-  if (cs.debug_instrumented()) ...
+  | if (cs.debug_instrumented()) ...
 
 - ComponentJS.M<debug_window>({
       F<enable>: T<Boolean>,
@@ -141,14 +141,14 @@ especially for visualizing the current component tree in real-time.
   the component tree is drawn with the root component at the bottom (C<true>)
   or at the top (C<false>).
 
-  cs.debug_window({
-      enable: true,
-      autoclose: false,
-      name "My App"
-      width: 800,
-      height: 800,
-      natural: true
-  })
+  | cs.debug_window({
+  |     enable: true,
+  |     autoclose: false,
+  |     name "My App"
+  |     width: 800,
+  |     height: 800,
+  |     natural: true
+  | })
 
 Code Structuring
 ----------------
@@ -169,9 +169,31 @@ that component shadow objects are defined by C<cs.clazz>!
   dot-separated P<path> of object names, optionally assign the
   right-most/leaf object to P<leave> and finally return the right-most/leaf T<Object>.
 
-  cs.ns("my.app"); my.app.ui = cs.clazz({ ... })  /* standard    */
-  cs.ns("my.app").ui = cs.clazz({ ... })          /* alternative */
-  cs.ns("my.app.ui", cs.clazz({ ... })            /* alternative */
+  | cs.ns("my.app"); my.app.ui = cs.clazz({ ... })  /* standard    */
+  | cs.ns("my.app").ui = cs.clazz({ ... })          /* alternative */
+  | cs.ns("my.app.ui", cs.clazz({ ... })            /* alternative */
+
+- ComponentJS.M<validate>(P<object>: T<Object>, P<spec>: T<String>): T<Boolean>
+
+  Validate an arbitrary nested JavaScript object P<object> against the
+  textual specification P<spec>. The specification has to follow the
+  following grammar (which is a mixture of JSON-like structure and RegExp-like
+  quantifiers):
+
+  + spec      + ::= + bool-not | bool-or | group | hash | array | primary | class | special
+  + bool-not  + ::= + "C<!>" spec
+  + bool-or   + ::= + spec "C<|>" spec
+  + group     + ::= + "C<(>" spec "C<)>"
+  + hash      + ::= + "C<{>" (key arity? "C<:>" spec ("C<,>" key arity? "C<:>" spec)*)? "C<}>"
+  + array     + ::= + "C<[>" (spec arity? ("C<,>" spec arity?)*)? "C<]>"
+  + arity     + ::= + "C<?>" | "C<*>" | "C<+>"
+  + key       + ::= + /C<^[_a-zA-Z$][_a-zA-Z$0-9]*$>/
+  + primary   + ::= + /C<^(?:undefined|boolean|number|string|function|object)$>/
+  + class     + ::= + /C<^[A-Z][_a-zA-Z$0-9]*$>/
+  + special   + ::= + /C<^(?:class|trait|component)$>/
+
+  | cs.validate({ foo: "Foo", bar: "Bar", baz: [ 42, 7, "Quux" ] },
+  |      "{ foo: string, bar: any, baz: [ number+, string* ], quux?: any }")
 
 - ComponentJS.M<params>(P<name>: T<String>, P<args>: T<Object[]>, P<spec>: T<Object>): T<Object>
 
@@ -189,21 +211,21 @@ that component shadow objects are defined by C<cs.clazz>!
   C<"array(...)"> for arrays or a valid regular expression C</.../>
   for validating a T<String> against it.
 
-  function config () {
-      var params = $cs.params("config", arguments, {
-          scope: { pos: 0, req: true,      valid: "boolean"           },
-          key:   { pos: 1, req: true,      valid: /^[a-z][a-z0-9_]*$/ },
-          value: { pos: 2, def: undefined, valid: "object"            },
-          force: {         def: false,     valid: "boolean"           }
-      });
-      var result = db_get(params.scope, params.key);
-      if (typeof params.value !== "undefined")
-          db_set(params.scope, params.key, params.value, params.force);
-      return result;
-  }
-  var value = config("foo", "bar");
-  config("foo", "bar", "quux");
-  config({ scope: "foo", key: "bar", value: "quux", force: true });
+  | function config () {
+  |     var params = $cs.params("config", arguments, {
+  |         scope: { pos: 0, req: true,      valid: "boolean"           },
+  |         key:   { pos: 1, req: true,      valid: /^[a-z][a-z0-9_]*$/ },
+  |         value: { pos: 2, def: undefined, valid: "object"            },
+  |         force: {         def: false,     valid: "boolean"           }
+  |     });
+  |     var result = db_get(params.scope, params.key);
+  |     if (typeof params.value !== "undefined")
+  |         db_set(params.scope, params.key, params.value, params.force);
+  |     return result;
+  | }
+  | var value = config("foo", "bar");
+  | config("foo", "bar", "quux");
+  | config({ scope: "foo", key: "bar", value: "quux", force: true });
 
 - ComponentJS.M<attribute>({ F<name>: T<String>, F<def>: T<Object>, F<validate>: T<Object> }): T<Function>;
   ComponentJS.M<attribute>(P<name>: T<String>, P<def>: T<Object>, P<validate>: T<Object>): T<Function>
@@ -211,9 +233,9 @@ that component shadow objects are defined by C<cs.clazz>!
   Create a clonable attribute capturing getter/setter function with name P<name> (for exception
   handling reasons only), the default value P<def> and the value validation P<validate>.
 
-  var id = ComponentJS.attribute("id", "foo", /^[a-z][a-zA-Z0-9_]*/);
-  id() === "foo"
-  id("bar") -> "foo"; id() -> "bar"
+  | var id = ComponentJS.attribute("id", "foo", /^[a-z][a-zA-Z0-9_]*/);
+  | id() === "foo"
+  | id("bar") -> "foo"; id() -> "bar"
 
 - ComponentJS.M<clazz>({
         [F<name>:        T<String>,]
@@ -237,25 +259,25 @@ that component shadow objects are defined by C<cs.clazz>!
   and methods of F<protos> can call C<this.base(...)> for the base/super/parent
   method.
 
-  var foo = cs.clazz({
-      cons: function (bar, baz) {
-          this._bar = bar;
-          this._baz = baz;
-      },
-      dynamics: {
-          _bar: "bar",
-          _baz: 42
-      },
-      protos: {
-          bar: function (value_new) {
-              var value_old = this._bar;
-              if (typeof value_new !=== "undefined")
-                  this._bar = value_new;
-              return value_old;
-          }
-          [...]
-      }
-  })
+  | var foo = cs.clazz({
+  |     cons: function (bar, baz) {
+  |         this._bar = bar;
+  |         this._baz = baz;
+  |     },
+  |     dynamics: {
+  |         _bar: "bar",
+  |         _baz: 42
+  |     },
+  |     protos: {
+  |         bar: function (value_new) {
+  |             var value_old = this._bar;
+  |             if (typeof value_new !=== "undefined")
+  |                 this._bar = value_new;
+  |             return value_old;
+  |         }
+  |         [...]
+  |     }
+  | })
 
 - ComponentJS.M<trait>({
         [F<name>:        T<String>,]
@@ -278,13 +300,13 @@ that component shadow objects are defined by C<cs.clazz>!
   Class itself only. The optional F<setup> function is called directly at the end of Class
   definition (not instanciation) and can further refine the defined Class.
 
-  var foo = cs.trait({
-      protos: {
-          bar: function () {
-              [...]
-          }
-      }
-  })
+  | var foo = cs.trait({
+  |     protos: {
+  |         bar: function () {
+  |             [...]
+  |         }
+  |     }
+  | })
 
 Component Creation
 ------------------
@@ -306,9 +328,9 @@ looked up, state transitioned, communicated on and be destroyed.
   either a to be instanciated class constructor (T<Function>) or an already
   instanciated object (T<Object>).
 
-  cs.create("/{sv,ui/{one,two}}", my.sv, {}, my.ui.one, my.ui.two);
-  cs.create(this, "/model/view", model, view);
-  cs(this).create("/model/view", model, view);
+  | cs.create("/{sv,ui/{one,two}}", my.sv, {}, my.ui.one, my.ui.two);
+  | cs.create(this, "/model/view", model, view);
+  | cs(this).create("/model/view", model, view);
 
 - ComponentJS.M<destroy>(P<abs-path>: T<String>): T<Void>
   O<component>.M<destroy>(): T<Void>
@@ -317,10 +339,9 @@ looked up, state transitioned, communicated on and be destroyed.
   Destroy the component uniquely identified by P<abs-path> or
   the O<component> on which this method is called upon.
 
-  cs.destroy("/foo/bar")
-  cs.destroy(comp, "foo/bar")
-  cs("/foo/bar").destroy()
-
+  | cs.destroy("/foo/bar")
+  | cs.destroy(comp, "foo/bar")
+  | cs("/foo/bar").destroy()
 
 Component Information
 ---------------------
@@ -335,7 +356,7 @@ accessed via the following getter/setter-style methods.
   the old id. Setting the id of a component should be not done by the application
   as it is done by ComponentJS internally on component creation time.
 
-  cs(this).id()
+  | cs(this).id()
 
 - O<component>.M<name>(): T<String>;
   O<component>.M<name>(P<name>: T<String>): T<String>
@@ -344,13 +365,13 @@ accessed via the following getter/setter-style methods.
   the old name. Setting the name of a component should be not done by the application
   as it is done by ComponentJS internally on component creation time.
 
-  cs("/foo/bar").name() === "bar"
+  | cs("/foo/bar").name() === "bar"
 
 - O<component>.M<obj>(): T<Object>
 
   Retrieve the shadow T<Object> P<object> to the corresponding T<Component>.
 
-  cs(this).obj() === this
+  | cs(this).obj() === this
 
 - O<component>.M<cfg>(): T<Array(String)>;
   O<component>.M<cfg>(P<key>: T<String>): T<Object>;
@@ -362,9 +383,9 @@ accessed via the following getter/setter-style methods.
   configuration property identified by P<key> to new value P<value> and return the old value, and 4. delete the
   configuration property identified by P<key>.
 
-  var value = cs("/foo/bar").cfg("quux")
-  cs("/foo/bar").cfg("quux", value)
-  cs("/foo/bar").cfg("quux", undefined)
+  | var value = cs("/foo/bar").cfg("quux")
+  | cs("/foo/bar").cfg("quux", value)
+  | cs("/foo/bar").cfg("quux", undefined)
 
 Component Lookup
 ----------------
@@ -395,13 +416,13 @@ global API symbol.
   4. Lookup T<Component> object via shadow object P<object>.
   5. Lookup T<Component> object via the P<component> itself (no-operation).
 
-  cs("/foo/bar")           /* absolute */
-  cs(comp, "model/view")   /* relative to component */
-  cs(this, "model/view")   /* relative to component via shadow object */
-  cs("//bar")              /* full-tree lookup */
-  cs(comp, "//bar")        /* sub-tree lookup */
-  cs(this, "*/view")       /* wildcard lookup */
-  cs(this, "..//view")     /* parent sub-tree lookup */
+  | cs("/foo/bar")           /* absolute */
+  | cs(comp, "model/view")   /* relative to component */
+  | cs(this, "model/view")   /* relative to component via shadow object */
+  | cs("//bar")              /* full-tree lookup */
+  | cs(comp, "//bar")        /* sub-tree lookup */
+  | cs(this, "*/view")       /* wildcard lookup */
+  | cs(this, "..//view")     /* parent sub-tree lookup */
 
 - O<component>.M<exists>(): T<Boolean>
 
@@ -409,8 +430,8 @@ global API symbol.
   existing on or the special pre-existing singleton component with name "C<&lt;none&gt;>") really
   exists in the component tree.
 
-  if (cs("//quux").exists()) ...
-  if (cs("//quux").name() !== "&lt;none&gt;") ...
+  | if (cs("//quux").exists()) ...
+  | if (cs("//quux").name() !== "&lt;none&gt;") ...
 
 Component Tree
 --------------
@@ -425,20 +446,20 @@ The following functions allow you to traverse this tree.
   up to and including the root component, or get the slash-separated component name path T<String>
   from the root component down to and including the current O<component>.
 
-  cs("/foo/bar").path("/") -> "/foo/bar"
-  cs("/foo/bar").path() -> [ cs("/foo/bar"), cs("/foo"), cs("/") ]
+  | cs("/foo/bar").path("/") -> "/foo/bar"
+  | cs("/foo/bar").path() -> [ cs("/foo/bar"), cs("/foo"), cs("/") ]
 
 - O<component>.M<parent>(): T<Component>
 
   Return the parent component of O<component>, or C<null> if O<component> is the root or none component.
 
-  cs(this).parent() === cs(this, "..")
+  | cs(this).parent() === cs(this, "..")
 
 - O<component>.M<children>(): T<Array(Component)>
 
   Return the array of child components of O<component>.
 
-  cs(this).children()
+  | cs(this).children()
 
 - O<component>.M<walk_up>(P<callback>: T<Function>, P<ctx>: T<Object>): T<Object>
 
@@ -448,9 +469,9 @@ The following functions allow you to traverse this tree.
   and for each component it is called like "C<ctx = >P<callback>C<(depth++, comp, ctx)>" where
   initially C<ctx=>P<ctx>, C<comp=>O<component> and C<depth=>C<0> was set.
 
-  var path = cs(this).walk_up("", function (depth, comp, ctx) {
-      return "/" + comp.name() + ctx;
-  }, "")
+  | var path = cs(this).walk_up("", function (depth, comp, ctx) {
+  |     return "/" + comp.name() + ctx;
+  | }, "")
 
 - O<component>.M<walk_down>(P<callback>: T<Function>, P<ctx>: T<Object>): T<Object>
 
@@ -461,16 +482,16 @@ The following functions allow you to traverse this tree.
   visited) and once like "C<ctx = >P<callback>C<(depth, comp, ctx, true)>" when leaving a component (after all children
   were visited). Initially C<ctx=>P<ctx>, C<comp=>O<component> and C<depth=>C<0> is set.
 
-  var output = cs(this).walk_down(
-      function (depth, comp, output, depth_first) {
-          if (!depth_first) {
-              for (var n = 0; n &lt; depth; n++)
-                  output += "    ";
-              output += "\"" + comp.name() + "\"\n";
-          }
-          return output;
-      },
-  "")
+  | var output = cs(this).walk_down(
+  |     function (depth, comp, output, depth_first) {
+  |         if (!depth_first) {
+  |             for (var n = 0; n &lt; depth; n++)
+  |                 output += "    ";
+  |             output += "\"" + comp.name() + "\"\n";
+  |         }
+  |         return output;
+  |     },
+  | "")
 
 States
 ------
@@ -502,11 +523,11 @@ transitions, enter and leave methods are called accordingly.
   The P<color> is a "#RRGGBB" string used for visualizing the state in the debugger view. The default
   state transition definitions are given as an example.
 
-  cs.transition(null);
-  cs.transition("created",      "create",  "destroy", "#cc3333");
-  cs.transition("prepared",     "prepare", "cleanup", "#eabc43");
-  cs.transition("materialized", "render",  "release", "#6699cc");
-  cs.transition("visible",      "show",    "hide",    "#669933");
+  | cs.transition(null);
+  | cs.transition("created",      "create",  "destroy", "#cc3333");
+  | cs.transition("prepared",     "prepare", "cleanup", "#eabc43");
+  | cs.transition("materialized", "render",  "release", "#6699cc");
+  | cs.transition("visible",      "show",    "hide",    "#669933");
 
 - O<component>.M<state>(): T<String>;
   O<component>.M<state>(P<state>: T<String>[, P<callback>: T<Function>]): T<String>;
@@ -527,7 +548,7 @@ transitions, enter and leave methods are called accordingly.
   or "C<ComponentJS:state:>F<state>C<:leave>". You can subscribe to those
   in order to react to state transitions from outside the component, too.
 
-  cs("/ui").state("visible")
+  | cs("/ui").state("visible")
 
 - O<component>.M<state_compare>({ F<state>: T<String> }): T<Number>;
   O<component>.M<state_compare>(P<state>: T<String>): T<Number>
@@ -538,7 +559,7 @@ transitions, enter and leave methods are called accordingly.
   If O<component> is in a higher state than F<state>, a positive number
   is returned.
 
-  if (cs(this).state_compare("visible") &lt; 0) ...
+  | if (cs(this).state_compare("visible") &lt; 0) ...
 
 - O<component>.M<state_auto_increase>(P<increase>: T<Boolean>): T<Boolean>;
   O<component>.M<state_auto_increase>(): T<Boolean>
@@ -547,7 +568,7 @@ transitions, enter and leave methods are called accordingly.
   transition to same higher/increased state than its
   parent component.
 
-  cs(this).state_auto_increase(true)
+  | cs(this).state_auto_increase(true)
 
 - O<component>.M<state_auto_decrease>(P<decrease>: T<Boolean>): T<Boolean>;
   O<component>.M<state_auto_decrease>(): T<Boolean>
@@ -558,7 +579,7 @@ transitions, enter and leave methods are called accordingly.
   drag down the parent component and this way implicitly also
   all of its other sibling child components. Hence, use with care!
 
-  cs(this).state_auto_decrease(true)
+  | cs(this).state_auto_decrease(true)
 
 - O<component>.M<guard>({ F<method>: T<String>, F<level>: T<Number> }): T<Void>;
   O<component>.M<guard>(P<method>: T<String>, P<level>: T<Number>): T<Void>
@@ -575,16 +596,16 @@ transitions, enter and leave methods are called accordingly.
   Then the guard should be deactivated once the last asynchronous operation is finished
   (independent which one of the N operations this is).
 
-  var self = this;
-  cs(self).guard("render", +2)
-  $.get(url1, function (data) {
-      self.data1 = data;
-      cs(self).guard("render", -1)
-  });
-  $.get(url2, function (data) {
-      self.data2 = data;
-      cs(self).guard("render", -1)
-  });
+  | var self = this;
+  | cs(self).guard("render", +2)
+  | $.get(url1, function (data) {
+  |     self.data1 = data;
+  |     cs(self).guard("render", -1)
+  | });
+  | $.get(url2, function (data) {
+  |     self.data2 = data;
+  |     cs(self).guard("render", -1)
+  | });
 
 Spools
 ------
@@ -611,12 +632,12 @@ application itself.
 
   Remember action "F<ctx>.F<func>(F<args>)" on spool named F<name>.
 
-  cs(this).spool({
-      name: "foo",
-      ctx: this,
-      func: function (num, str) { ... },
-      args: [ 42, "foo" ]
-  });
+  | cs(this).spool({
+  |     name: "foo",
+  |     ctx: this,
+  |     func: function (num, str) { ... },
+  |     args: [ 42, "foo" ]
+  | });
 
 - O<component>.M<spooled>({ F<name>: T<String> }): T<Boolean>;
   O<component>.M<spooled>(P<name>: T<String>): T<Boolean>
@@ -625,8 +646,8 @@ application itself.
   Usually done before calling M<unspool>() as it would throw an
   exception if there are no spooled actions at all.
 
-  if (cs(this).spooled("foo"))
-      cs(this).unspool("foo")
+  | if (cs(this).spooled("foo"))
+  |     cs(this).unspool("foo")
 
 - O<component>.M<unspool>({ F<name>: T<String> }): T<Void>;
   O<component>.M<unspool>(P<name>: T<String>): T<Void>
@@ -634,9 +655,9 @@ application itself.
   Perform all actions previously spooled on spool F<name>
   in reverse spooling order (those spooled last are executed first).
 
-  release: function () {
-      cs(this).unspool("materialized")
-  }
+  | release: function () {
+  |     cs(this).unspool("materialized")
+  | }
 
 Properties
 ----------
@@ -673,7 +694,7 @@ component-local information and to communicate information to foreign components
   do not get the value. This allows you to set the same property with different
   values for different child components.
 
-  cs(this).property("foo")
+  | cs(this).property("foo")
 
 Sockets
 -------
@@ -703,12 +724,12 @@ target component itself.
   the supplied F<plug>/F<unplug> functions with F<ctx> supplied as
   C<this>.
 
-  var ui = $(...);
-  cs(this).socket({
-      ctx:    ui,
-      plug:   function (el) { $(this).append(el); },
-      unplug: function (el) { $(el).remove(); }
-  })
+  | var ui = $(...);
+  | cs(this).socket({
+  |     ctx:    ui,
+  |     plug:   function (el) { $(this).append(el); },
+  |     unplug: function (el) { $(el).remove(); }
+  | })
 
 - O<component>.M<link>({
       [F<name>: T<String> = "default",]
@@ -729,7 +750,7 @@ target component itself.
   particular socket of a parent component (because a View should be reusable
   and hence is not allowed to know the particular socket intended for it).
 
-  cs(this).link({ name: "default", target: this, socket: "menu1" })
+  | cs(this).link({ name: "default", target: this, socket: "menu1" })
 
 - O<component>.M<plug>({
       [F<name>: T<String> = "default",]
@@ -743,7 +764,7 @@ target component itself.
   corresponding M<unplug>() operation on spool F<spool> attached to O<component>.
   Returns an identifier for use with the corresponding M<unplug>() operation.
 
-  cs(this).plug({ object: ui, spool: "materialized" })
+  | cs(this).plug({ object: ui, spool: "materialized" })
 
 - O<component>.M<unplug>({ F<id>: T<String> }): T<Void>;
   O<component>.M<unplug>(P<id>: T<String>): T<Void>
@@ -751,7 +772,7 @@ target component itself.
   Unplugs the object previously plugged under F<id>.
   This is usually performed indirectly through the Spool mechanism.
 
-  cs(this).unplug(id)
+  | cs(this).unplug(id)
 
 Models
 ------
@@ -776,20 +797,20 @@ displaying the Model information and storing events into it.
   Multiple calls to the M<model> method on the same component incrementally
   add model elements.
 
-  cs(this).model({
-      "param:realms":         { value: [],      valid: "array(string)" },
-      "data:realm":           { value: "",      valid: "string", store: true },
-      "data:username":        { value: "",      valid: "string", store: true },
-      "data:password":        { value: "",      valid: "string" },
-      "state:username":       { value: "empty", valid: "string" },
-      "state:username-hint":  { value: "",      valid: "string" },
-      "state:password":       { value: "empty", valid: "string" },
-      "state:password-hint":  { value: "",      valid: "string" },
-      "state:hashcode-col":   { value: 0,       valid: "number" },
-      "state:hashcode-txt":   { value: "",      valid: "string" },
-      "state:button-enabled": { value: false,   valid: "boolean" },
-      "event:button-clicked": { value: false,   valid: "boolean", autoreset: true }
-  })
+  | cs(this).model({
+  |     "param:realms":         { value: [],      valid: "array(string)" },
+  |     "data:realm":           { value: "",      valid: "string", store: true },
+  |     "data:username":        { value: "",      valid: "string", store: true },
+  |     "data:password":        { value: "",      valid: "string" },
+  |     "state:username":       { value: "empty", valid: "string" },
+  |     "state:username-hint":  { value: "",      valid: "string" },
+  |     "state:password":       { value: "empty", valid: "string" },
+  |     "state:password-hint":  { value: "",      valid: "string" },
+  |     "state:hashcode-col":   { value: 0,       valid: "number" },
+  |     "state:hashcode-txt":   { value: "",      valid: "string" },
+  |     "state:button-enabled": { value: false,   valid: "boolean" },
+  |     "event:button-clicked": { value: false,   valid: "boolean", autoreset: true }
+  | })
 
 - O<component>.M<value>({
       F<name>: T<String>,
@@ -809,8 +830,8 @@ displaying the Model information and storing events into it.
   But if F<force> is C<true> even setting a model element to its
   current value triggers observers.
 
-  var val = cs(this).value("foo")
-  cs(this).value("foo", "bar")
+  | var val = cs(this).value("foo")
+  | cs(this).value("foo", "bar")
 
 - O<component>.M<observe>({
       F<name>: T<String>,
@@ -836,9 +857,9 @@ displaying the Model information and storing events into it.
   you can use the spool mechanism and spool the corresponding M<unobserve>()
   operation via F<spool>.
 
-  id = cs(this).observe("state:username", function (ev, username) {
-      ...
-  })
+  | id = cs(this).observe("state:username", function (ev, username) {
+  |     ...
+  | })
 
 - O<component>.M<unobserve>({ F<id>: T<String> }): T<Void>;
   O<component>.M<unobserve>(P<id>: T<String>): T<Void>;
@@ -846,7 +867,7 @@ displaying the Model information and storing events into it.
   Release the observation identified by F<id>, previously acquired by a call to M<observe>().
   This is usually done implicitly through the spooling mechanism.
 
-  cs(this).unobserve(id)
+  | cs(this).unobserve(id)
 
 Events
 ------
@@ -872,7 +893,6 @@ M<decline> (T<Boolean>): whether event was declined by subscriber;
 M<state> (T<Boolean>): state of dispatching: C<capturing>, C<targeting>, C<spreading> or C<bubbling>;
 M<result> (T<Object>): optional result value event subscribers can provide;
 M<async> (T<Boolean>): whether event is dispatched asynchronously.
-
 
 - O<component>.M<subscribe>({
       F<name>: T<String>,

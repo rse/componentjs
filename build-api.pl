@@ -31,76 +31,151 @@ my $defined = {};
 $txt =~ s/^#.*$//mg;
 
 #   parse first-level structure
-$txt =~ s/(?<=\n)([A-Z][^\n]+)\n---+[ \t]*\n(.+?\n)(?=[A-Z][^\n]+?\n---+[ \t]*\n|$)/parse2($1, $2), ''/sge;
+$txt =~ s/
+    (?<=\n)([A-Z][^\n]+)\n  # headline
+    ---+[ \t]*\n            # underlining
+    (.+?\n)                 # body
+    (?= [A-Z][^\n]+?\n      # following headline
+        ---+[ \t]*\n        # corresponding underling
+    |   $             )     # or at end file
+/
+    parse2($1, $2), ''
+/sgex;
 
+#   process first-level structure
 sub parse2 {
     my ($title, $body) = @_;
 
+    #   generate body headline
     $html_spec .= "<h2>" . mklink(1, $title) . "</h2>\n";
+
+    #   start navigation entry
     $html_navi .= "<h2>" . mklink(0, $title) . "</h2>\n";
     $html_navi .= "<ul>\n";
 
-    #   parse third-level structure
-    $body =~ s/^(.+?\n)(?=\n-[ \t]+\S+)/$html_spec .= "<div class=\"intro\">" . addpara(conv(0, $1)) . "<\/div>", ''/se;
+    #   parse third-level structure (part 1)
+    $body =~ s/
+        ^(.+?\n)           # intro paragraph
+        (?=\n-[ \t]+\S+)   # start of first function
+    /
+        $html_spec .= "<div class=\"intro\">" . addpara(conv(0, $1)) . "<\/div>", ''
+    /sex;
     sub addpara {
         my ($txt) = @_;
         $txt =~ s/\n{2,}/<p\/>\n/sg;
         return $txt;
     }
-    $body =~ s/(?<=\n)-[ \t]+(\S+.+?)(?=-[ \t]+\S+|$)/parse3($title, $1), ''/sge;
 
-    $html_navi .= "</ul>\n";
-}
+    #   parse third-level structure (part 2)
+    $body =~ s/
+        (?<= \n)
+        -[ \t]+(\S+.+?)    # function start
+        (?= -[ \t]+\S+     # start of next function
+        |   $         )    # or end of file
+    /
+        parse3($title, $1), ''
+    /sgex;
 
-sub parse3 {
-    my ($title, $body) = @_;
+    #   process third-level structure
+    sub parse3 {
+        my ($title, $body) = @_;
 
-    #   parse forth-level structure
-    $html_spec .= "<ul>\n";
-    $body =~ s/^(.+?)\n\n(.+?)\n\n(.+)$/parse4($title, $1, $2, $3), ''/sge;
-    $html_spec .= "</ul>\n";
-}
+        $html_spec .= "<ul>\n";
 
-sub parse4 {
-    my ($title, $synopsis, $desc, $example) = @_;
+        #   parse forth-level structure
+        $body =~ s/
+            ^
+            (.+?)\n   #  synopsis
+            \n        #  blank line
+            (.+)      #  body
+            $
+        /
+            parse4($title, $1, $2), ''
+        /sex;
 
-    $html_spec .= "<li>";
+        #   process forth-level structure
+        sub parse4 {
+            my ($title, $synopsis, $body) = @_;
 
-    my $txt = $synopsis;
-    $txt =~ s/M<(.+?)>/parse5($title, 0, $1), ''/sge;
-    sub parse5 {
-        my ($title, $anchor, $txt) = @_;
-        if (not exists $cache->{$title . ":" . $txt}) {
-            $html_navi .= "<li>" . mklink($anchor, $txt) . "<\/li>";
-            $cache->{$title . ":" . $txt} = 1;
+            $html_spec .= "<li>";
+
+            #   parse fifth-level structure (part 1)
+            my $txt = $synopsis;
+            $txt =~ s/
+                M<(.+?)>
+            /
+                parse5a($title, $1), ''
+            /sgex;
+
+            #   process fifth-level structure
+            sub parse5a {
+                my ($title, $txt) = @_;
+
+                if (not exists $cache->{$title . ":" . $txt}) {
+                    $html_navi .= "<li>" . mklink(0, $txt) . "<\/li>";
+                    $cache->{$title . ":" . $txt} = 1;
+                }
+            }
+
+            $html_spec .= "<div class=\"synopsis\">";
+            $synopsis =~ s/[ \t]{2,}/ /sg;
+            $synopsis = conv(1, $synopsis);
+            $synopsis =~ s/(\[|\]|:|\s+=\s+)/<span class=\"meta\">$1<\/span>/sg;
+            $synopsis =~ s/;/<\/div><div class="synopsis">/sg;
+            $synopsis =~ s/\(\s+/(/sg;
+            $synopsis =~ s/\s+\)/)/sg;
+            $html_spec .= "$synopsis\n";
+            $html_spec .= "</div>";
+
+            #   parse fifth-level structure (part 2)
+            my $txt = $body;
+            $txt =~ s/
+                (.+?\n)
+                (?= \n | $ )
+            /
+                parse5b($1), ''
+            /sgex;
+
+            #   process fifth-level structure
+            sub parse5b {
+                my ($txt) = @_;
+
+                if ($txt =~ m/^\s*\|\s/s) {
+                    $txt =~ s/^\s*\|\s//mg;
+                    $txt = conv(0, $txt);
+                    $txt =~ s/\n+$//s;
+                    $txt =~ s/^\s+//s;
+                    $txt =~ s/^\s\s//mg;
+                    $html_spec .= "<div class=\"example\">";
+                    $html_spec .= "$txt\n";
+                    $html_spec .= "</div>";
+                }
+                elsif ($txt =~ m/^\s*\+\s/s) {
+                    $txt =~ s/^\s*\+\s//mg;
+                    $txt = conv(0, $txt);
+                    $txt =~ s/^(.*)$/<tr><td>$1<\/td><\/tr>/mg;
+                    $txt =~ s/(\s+)\+(\s+)/<\/td><td>/sg;
+                    $html_spec .= "<table class=\"tabular\">";
+                    $html_spec .= "$txt\n";
+                    $html_spec .= "</table>";
+                }
+                else {
+                    $txt = conv(0, $txt);
+                    $txt =~ s/[ \t]{2,}/ /sg;
+                    $html_spec .= "<div class=\"desc\">";
+                    $html_spec .= "$txt\n";
+                    $html_spec .= "</div>";
+                }
+            }
+
+            $html_spec .= "</li>";
         }
+
+        $html_spec .= "</ul>\n";
     }
 
-    $html_spec .= "<div class=\"synopsis\">";
-    $synopsis =~ s/[ \t]{2,}/ /sg;
-    $synopsis = conv(1, $synopsis);
-    $synopsis =~ s/(\[|\]|:|\s+=\s+)/<span class=\"meta\">$1<\/span>/sg;
-    $synopsis =~ s/;/<\/div><div class="synopsis">/sg;
-    $synopsis =~ s/\(\s+/(/sg;
-    $synopsis =~ s/\s+\)/)/sg;
-    $html_spec .= "$synopsis\n";
-    $html_spec .= "</div>";
-
-    $html_spec .= "<div class=\"desc\">";
-    $desc = conv(0, $desc);
-    $desc =~ s/[ \t]{2,}/ /sg;
-    $html_spec .= "$desc\n";
-    $html_spec .= "</div>";
-
-    $html_spec .= "<div class=\"example\">";
-    $example = conv(0, $example);
-    $example =~ s/\n+$//s;
-    $example =~ s/^\s+//s;
-    $example =~ s/^\s\s//mg;
-    $html_spec .= "$example\n";
-    $html_spec .= "</div>";
-
-    $html_spec .= "</li>";
+    #   finish navigation entry
+    $html_navi .= "</ul>\n";
 }
 
 #   create an id suitable for HTML anchors/hyperlinks
