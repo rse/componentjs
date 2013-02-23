@@ -54,7 +54,7 @@ MAKE_PLUGIN     = echo "++ linting component.plugin.$$NAME.js (Google Closure Li
                   echo "++ copying build/component.plugin.$$NAME.js <- component.plugin.$$NAME.js"; \
                   $(SHTOOL) mkdir -f -p -m 755 build; \
                   cp component.plugin.$$NAME.js build/component.plugin.$$NAME.js; \
-                  echo "++ compressing build/component.min.js <- build/component.js (Google Closure Compiler)"; \
+                  echo "++ compressing build/component.plugin.$$NAME.min.js <- build/component.plugin.$$NAME.js (Google Closure Compiler)"; \
                   $(CLOSURECOMPILER) \
                   --js_output_file build/component.plugin.$$NAME.min.js \
                   --js build/component.plugin.$$NAME.js && \
