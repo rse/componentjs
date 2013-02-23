@@ -28,13 +28,19 @@ sub assemble ($$$) {
 my $js = assemble(0, "", $source);
 
 #   move boolean operators from begin to end of line
+#   (especially to make linters more happy)
 $js =~ s/
-    ([ \t]*)(\n[ \t]*)(\&\&|\|\|)([ \t]+)
+    ([ \t]*)(\n
+    [ \t]*)(\&\&|\|\|)([ \t]+)
 /
     $1 . " " . $3 . $2 . "  " . $4
 /sgxe;
+
+#   move arithmetic operators from begin to end of line
+#   (especially to make linters more happy)
 $js =~ s/
-    ([ \t]*)(\n[ \t]*)(-|\+|\?|:)([ \t]+)
+    ([ \t]*)(\n
+    [ \t]*)(-|\+|\?|:)([ \t]+)
 /
     $1 . " " . $3 . $2 . " " . $4
 /sgxe;
