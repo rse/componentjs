@@ -26,7 +26,7 @@ _cs.token.prototype = {
         this.len++;
     },
 
-    /*  peek at the next next or token at particular offset  */
+    /*  peek at the next token or token at particular offset  */
     peek: function (offset) {
         if (typeof offset === "undefined")
             offset = 0;
