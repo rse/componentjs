@@ -73,7 +73,7 @@ $cs.pattern.spec = $cs.trait({
                     case "string":
                         if (!(   (   typeof value === "string"
                                   && spec[key] === value)
-                              || (    typeof value === "object"
+                              || (   typeof value === "object"
                                   && value instanceof RegExp
                                   && !(spec[key].match(value)))))
                             return false;
