@@ -28,7 +28,8 @@ _cs.comp_mixins = [
     $cs.pattern.shadow,
     $cs.pattern.socket,
     $cs.pattern.model,
-    $cs.pattern.store
+    $cs.pattern.store,
+    $cs.pattern.marker
 ];
 
 /*  component constructor  */

@@ -24,10 +24,23 @@ $cs.marked = function (obj, name) {
     return (marker[name] === true);
 };
 
-/*  marker traits  */
+/*  generic pattern for marking components  */
+$cs.pattern.marker = $cs.trait({
+    protos: {
+        mark: function (name) {
+            $cs.mark(this.obj(), name);
+        },
+        marked: function (name) {
+            return $cs.marked(this.obj(), name);
+        }
+    }
+});
+
+/*  convenient marker traits  */
 $cs.marker = {
     service:    $cs.trait({ cons: function () { $cs.mark(this, "service");    } }),
     controller: $cs.trait({ cons: function () { $cs.mark(this, "controller"); } }),
     model:      $cs.trait({ cons: function () { $cs.mark(this, "model");      } }),
     view:       $cs.trait({ cons: function () { $cs.mark(this, "view");       } })
 };
+
