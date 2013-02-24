@@ -84,11 +84,11 @@ $cs.pattern.eventing = $cs.trait({
             });
 
             /*  honor exclusive request  */
-            if (params.exclusive) {
-                var subscribers = this.subscribers(params.name, params.spec);
-                if (subscribers.length > 0)
-                    throw _cs.exception("subscribe", "multiple exclusive subscribers not allowed");
-            }
+            var subscribers = this.subscribers(params.name, params.spec);
+            if (subscribers.length === 1 && subscribers[0].exclusive)
+                throw _cs.exception("subscribe", "existing exclusive subscription prevents additional one");
+            if (params.exclusive && subscribers.length > 0)
+                throw _cs.exception("subscribe", "non-exclusive subscription(s) prevent exclusive one");
 
             /*  attach parameters to component  */
             var id = _cs.cid();
