@@ -79,7 +79,6 @@ $cs.pattern.eventing = $cs.trait({
                 bubbling:  {             def: true               },
                 noevent:   {             def: false              },
                 exclusive: {             def: false              },
-                origin:    {             def: false              },
                 spool:     {             def: null               }
             });
 
@@ -228,7 +227,7 @@ $cs.pattern.eventing = $cs.trait({
             }
 
             /*  helper function for dispatching event to single component  */
-            var event_dispatch_single = function (ev, origin, comp, params, state) {
+            var event_dispatch_single = function (ev, comp, params, state) {
                 for (var id in comp.__subscription) {
                     if (!_cs.isown(comp.__subscription, id))
                         continue;
@@ -243,7 +242,6 @@ $cs.pattern.eventing = $cs.trait({
                         ev.state(state);
                         ev.decline(false);
                         var args = _cs.concat(
-                            s.origin  ? [ origin ] : [],
                             s.noevent ? [] : [ ev ],
                             s.args,
                             params.args
@@ -272,7 +270,7 @@ $cs.pattern.eventing = $cs.trait({
                     towards target component for capturing subscribers  */
                 if (params.capturing) {
                     for (i = comp_path.length - 1; i >= 1; i--) {
-                        event_dispatch_single(ev, comp, comp_path[i], params, "capturing");
+                        event_dispatch_single(ev, comp_path[i], params, "capturing");
                         if (!ev.propagation())
                             break;
                     }
@@ -281,16 +279,16 @@ $cs.pattern.eventing = $cs.trait({
                 /*  phase 2: TARGETING
                     dispatch event to target component  */
                 if (ev.propagation())
-                    event_dispatch_single(ev, comp, comp, params, "targeting");
+                    event_dispatch_single(ev, comp, params, "targeting");
 
                 /*  phase 3: SPREADING
                     dispatch event to all descendant components  */
                 if (params.spreading && ev.propagation()) {
-                    var visit = function (origin, comp, isTarget) {
+                    var visit = function (comp, isTarget) {
                         var cont = true;
                         if (!isTarget) {
                             /*  dispatch on non-target component  */
-                            event_dispatch_single(ev, origin, comp, params, "spreading");
+                            event_dispatch_single(ev, comp, params, "spreading");
                             if (!ev.propagation()) {
                                 /*  if propagation should stop, reset the flag again
                                     as in the spreading phase propagation stops only(!)
@@ -304,10 +302,10 @@ $cs.pattern.eventing = $cs.trait({
                             /*  dispatch onto all direct child components  */
                             var children = comp.children();
                             for (var i = 0; i < children.length; i++)
-                                visit(origin, children[i], false);
+                                visit(children[i], false);
                         }
                     };
-                    visit(comp, comp, true);
+                    visit(comp, true);
                 }
 
                 /*  phase 4: BUBBLING
@@ -315,7 +313,7 @@ $cs.pattern.eventing = $cs.trait({
                     root component for bubbling (regular) subscribers  */
                 if (params.bubbling && ev.propagation()) {
                     for (i = 1; i < comp_path.length; i++) {
-                        event_dispatch_single(ev, comp, comp_path[i], params, "bubbling");
+                        event_dispatch_single(ev, comp_path[i], params, "bubbling");
                         if (!ev.propagation())
                             break;
                     }
