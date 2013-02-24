@@ -120,7 +120,6 @@ $cs.pattern.service = $cs.trait({
             var params = $cs.params("call", arguments, {
                 name:      { pos: 0,     def: null,  req: true },
                 args:      { pos: "...", def: []               },
-                result:    {             def: null             },
                 capturing: {             def: false            },
                 spreading: {             def: false            },
                 bubbling:  {             def: true             }
