@@ -1045,9 +1045,17 @@ the functionality consumer M<call>s the service.
   O<component>.M<callable>(P<name>: T<String>[, P<value>: T<Boolean>]): T<Boolean>
 
   Checks whether a registered service is callable/enabled or enable/disable
-  a registered service.
+  a registered service. On every change to the "callable" status of a service,
+  an internal event named "C<ComponentJS:service:>F<name>C<:callable>" is
+  published with two arguments: the new and old boolean value.
 
-  | cs(this).registration(id)
+  | cs(this).subscribe("ComponentJS:service:load-person:callable", function (old, new) {
+  |     if (new) {
+  |         /* react on now callable service  */
+  |     }
+  | })
+  | cs(this).callable("load-person", false)
+  | cs(this).callable("load-person", true)
 
 - O<component>.M<call>({
       F<name>: T<String>,
