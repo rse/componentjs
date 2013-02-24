@@ -22,7 +22,7 @@ JSHINT          = jshint \
                   +maxerr=200 +bitwise -camelcase -curly +eqeqeq \
                   -forin +immed +latedef -newcap -noarg -noempty +nonew -plusplus \
                   +quotmark=double -regexp +undef +unused -strict +trailing \
-                  +maxparams=9 +maxdepth=4 +maxstatements=150 +maxlen=150 \
+                  +maxparams=9 +maxdepth=4 +maxstatements=150 +maxlen=200 \
                   +loopfunc 
 
 #   tools optional for stage2
