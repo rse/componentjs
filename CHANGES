@@ -17,6 +17,8 @@
       removed as the Event object on callbacks has the origin via its
       <ev>.target() method.
 
+    o fixed "exclusive" subcription handling.
+
     Major changes between ComponentJS 0.9.4 and 0.9.5
     -------------------------------------------------
 
