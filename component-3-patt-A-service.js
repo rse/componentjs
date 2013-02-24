@@ -86,17 +86,6 @@ $cs.pattern.service = $cs.trait({
             return this.subscription(params.id);
         },
 
-        /*  determine registrations  */
-        registrations: function () {
-            /*  determine parameters  */
-            var params = $cs.params("registrations", arguments, {
-                name: { pos: 0, def: null, req: true }
-            });
-
-            /*  determine whether registration exists  */
-            return this.subscriptions("ComponentJS:service:" + params.name);
-        },
-
         /*  unregister a service  */
         unregister: function () {
             /*  determine parameters  */
@@ -118,7 +107,7 @@ $cs.pattern.service = $cs.trait({
             });
 
             /*  find service command  */
-            var subscriptions = this.subscriptions(params.name);
+            var subscriptions = this._subscriptions(params.name);
             if (subscriptions.length !== 1)
                 return undefined;
             var cmd = subscriptions[0].func().command;

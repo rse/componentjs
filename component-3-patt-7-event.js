@@ -83,7 +83,7 @@ $cs.pattern.eventing = $cs.trait({
             });
 
             /*  honor exclusive request  */
-            var subscriptions = this.subscriptions(params.name, params.spec);
+            var subscriptions = this._subscriptions(params.name, params.spec);
             if (subscriptions.length === 1 && subscriptions[0].exclusive)
                 throw _cs.exception("subscribe", "existing exclusive subscription prevents additional one");
             if (params.exclusive && subscriptions.length > 0)
@@ -125,8 +125,8 @@ $cs.pattern.eventing = $cs.trait({
             return (typeof this.__subscription[params.id] !== "undefined");
         },
 
-        /*  determine subscriptions  */
-        subscriptions: function () {
+        /*  determine subscriptions (internal)  */
+        _subscriptions: function () {
             /*  determine parameters  */
             var params = $cs.params("subscriptions", arguments, {
                 name:  { pos: 0, def: null, req: true },
