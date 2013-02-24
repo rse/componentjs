@@ -967,16 +967,106 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
 
   | cs(this).unsubscribe(id)
 
+- O<component>.M<subscription>({ F<id>: T<String> }): T<Boolean>;
+  O<component>.M<subscription>(P<id>: T<String>): T<Boolean>
+
+  Checks whether the subscription identified by F<id> exists on O<component>.
+
+  | cs(this).subscription(id)
+
+- O<component>.M<publish>({
+      F<name>: T<String>,
+      [F<spec>: T<Object> = C<{}>,]
+      [F<async>: T<Boolean> = C<false>,]
+      [F<capturing>: T<Boolean> = C<true>,]
+      [F<spreading>: T<Boolean> = C<true>,]
+      [F<bubbling>: T<Boolean> = C<true>,]
+      [F<completed>: T<Function>,]
+      [F<resultinit>: T<Object> = C<undefined>,]
+      [F<resultstep>: T<Function>,]
+      [F<directresult>: T<Boolean> = C<false>,]
+      [F<noresult>: T<Boolean> = C<false>,]
+      [F<firstonly>: T<Boolean> = C<false>,]
+      [F<silent>: T<Boolean> = C<false>,]
+      F<args>: T<Object[]> = C<[]>]
+  }): T<Object>;
+  O<component>.M<publish>(
+      P<name>: T<String>,
+      P<args>...: T<Object>
+  ): T<Object>
+
+  FIXME
+
+  FIXME
+
 Services
 --------
 
-FIXME
+Services are loosly coupled method calls across components.
+The functionality provider M<register>s the service and
+the functionality consumer M<call>s the service.
 
-- FIXME
+- O<component>.M<register>({
+      F<name>: T<String>,
+      [F<ctx>: T<Object> = C<this>,]
+      F<func>: T<Function>,
+      [F<args>: T<Object[]> = C<[]>,]
+      [F<async>: T<Boolean> = C<false>,]
+      [F<spool>: T<String>,]
+      [F<capturing>: T<Boolean> = C<false>,]
+      [F<spreading>: T<Boolean> = C<false>,]
+      [F<bubbling>: T<Boolean> = C<true>]
+  }): T<Number>;
+  O<component>.M<register>(
+      P<name>: T<String>,
+      P<func>: T<Function>
+  ): T<Number>
 
   FIXME
 
   FIXME
+
+- O<component>.M<unregister>({ F<id>: T<String> }): T<Void>;
+  O<component>.M<unregister>(P<id>: T<String>): T<Void>
+
+  Release the registration identified by F<id>, previously acquired by a call to M<register>().
+  This is usually done implicitly through the spooling mechanism.
+
+  | cs(this).unregister(id)
+
+- O<component>.M<registration>({ F<id>: T<String> }): T<Boolean>;
+  O<component>.M<registration>(P<id>: T<String>): T<Boolean>
+
+  Checks whether the registration identified by F<id> exists on O<component>.
+
+  | cs(this).registration(id)
+
+- O<component>.M<callable>({ F<name>: T<String>[, F<value>: T<Boolean>] }): T<Boolean>;
+  O<component>.M<callable>(P<name>: T<String>[, P<value>: T<Boolean>]): T<Boolean>
+
+  Checks whether a registered service is callable/enabled or enable/disable
+  a registered service.
+
+  | cs(this).registration(id)
+
+- O<component>.M<call>({
+      F<name>: T<String>,
+      [F<args>: T<Object[]> = C<[]>,]
+      F<capturing>: T<Boolean> = C<false>,]
+      F<spreading>: T<Boolean> = C<false>,]
+      F<bubbling>: T<Boolean> = C<true>]
+  }): T<Object>;
+  O<component>.M<call>(
+      P<name>: T<String>
+      [, P<args>...: T<Object>]
+  ): T<Object>
+
+  Call service named F<name> on component O<component>, optionally passing it the arguments F<args>.
+  Option F<capturing> can be set to C<true> to deliver the underlying service event also in the "capturing" phase.
+  Option F<spreading> can be set to C<true> to deliver the underlying service event also in the "spreading" phase.
+  Option F<bubbling> can be set to C<false> to not deliver the underlying service event in the "bubbling" phase.
+
+  | var person = cs("/sv").call("load-person", "http://example.com/rest/person/1234")
 
 Hooks
 -----
