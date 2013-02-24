@@ -1,0 +1,26 @@
+{
+    "name":        "ComponentJS",
+    "homepage":    "http://componentjs.com/",
+    "description": "Powerful run-time Component System for structuring HTML5-based Rich Clients",
+    "version":     "0.9.5",
+    "license":     "MPL/2.0",
+    "author": {
+        "name":    "Ralf S. Engelschall",
+        "email":   "rse@engelschall.com",
+        "url":     "http://engelschall.com"
+    },
+    "keywords": [
+        "component system", "rich client", "html5", "single page app",
+        "model", "view", "controller", "event", "service", "socket"
+    ],
+    "repository": {
+        "type": "git",
+        "url":  "git://github.com/rse/componentjs.git"
+    },
+    "bugs": {
+        "url":  "http://github.com/rse/componentjs/issues"
+    },
+    "files": [
+        "build"
+    ]
+}
