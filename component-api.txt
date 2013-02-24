@@ -876,7 +876,7 @@ displaying the Model information and storing events into it.
   | })
 
 - O<component>.M<unobserve>({ F<id>: T<String> }): T<Void>;
-  O<component>.M<unobserve>(P<id>: T<String>): T<Void>;
+  O<component>.M<unobserve>(P<id>: T<String>): T<Void>
 
   Release the observation identified by F<id>, previously acquired by a call to M<observe>().
   This is usually done implicitly through the spooling mechanism.
@@ -927,7 +927,8 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
       [P<arg>: T<Object>, ...]
   ): T<Number>
 
-  Subscribe to event F<name> on component O<component> and
+  Subscribe to event F<name> (optionally sub-specifified via F<spec>)
+  on component O<component> and
   execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>
   C<, >P<args>C<: >T<Object>C<, ...,>P<sargs>C<: >T<Object>C<, ...)>
   once the event is dispatched to O<component> after it was published.
@@ -957,6 +958,14 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
   |         ...
   |     }
   | })
+
+- O<component>.M<unsubscribe>({ F<id>: T<String> }): T<Void>;
+  O<component>.M<unsubscribe>(P<id>: T<String>): T<Void>
+
+  Release the subscription identified by F<id>, previously acquired by a call to M<subscribe>().
+  This is usually done implicitly through the spooling mechanism.
+
+  | cs(this).unsubscribe(id)
 
 Services
 --------
