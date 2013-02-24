@@ -291,7 +291,14 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                 ".dbg .header {" +
                                     "width: 100%;" +
                                     "height: 30px;" +
-                                    "background-color: #000000;" +
+                                    "background: #666666;" +
+                                    "background: -moz-linear-gradient(top,  #666666 0%, #333333 49%, #222222 51%, #000000 100%);" +
+                                    "background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#666666), color-stop(49%,#333333), color-stop(51%,#222222), color-stop(100%,#000000));" +
+                                    "background: -webkit-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: -o-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: -ms-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: linear-gradient(to bottom,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#000000',GradientType=0 );" +
                                     "text-align: center;" +
                                     "position: relative;" +
                                 "}" +
@@ -305,7 +312,14 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                 ".dbg .viewer {" +
                                     "width: 100%;" +
                                     "height: 50%;" +
-                                    "background-color: #d0d0d0;" +
+                                    "background: #d0d0d0;" +
+                                    "background: -moz-linear-gradient(top,  #d0d0d0 0%, #e8e8e8 50%, #d0d0d0 100%);" +
+                                    "background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#d0d0d0), color-stop(50%,#e8e8e8), color-stop(100%,#d0d0d0));" +
+                                    "background: -webkit-linear-gradient(top,  #d0d0d0 0%,#e8e8e8 50%,#d0d0d0 100%);" +
+                                    "background: -o-linear-gradient(top,  #d0d0d0 0%,#e8e8e8 50%,#d0d0d0 100%);" +
+                                    "background: -ms-linear-gradient(top,  #d0d0d0 0%,#e8e8e8 50%,#d0d0d0 100%);" +
+                                    "background: linear-gradient(to bottom,  #d0d0d0 0%,#e8e8e8 50%,#d0d0d0 100%);" +
+                                    "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d0d0d0', endColorstr='#d0d0d0',GradientType=0 );" +
                                     "overflow: hidden;" +
                                 "}" +
                                 ".dbg .viewer canvas {" +
@@ -318,7 +332,14 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                 ".dbg .status {" +
                                     "width: 100%;" +
                                     "height: 20px;" +
-                                    "background-color: #000000;" +
+                                    "background: #666666;" +
+                                    "background: -moz-linear-gradient(top,  #666666 0%, #333333 49%, #222222 51%, #000000 100%);" +
+                                    "background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#666666), color-stop(49%,#333333), color-stop(51%,#222222), color-stop(100%,#000000));" +
+                                    "background: -webkit-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: -o-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: -ms-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: linear-gradient(to bottom,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#000000',GradientType=0 );" +
                                     "color: #f0f0f0;" +
                                     "text-align: center;" +
                                 "}" +
@@ -343,7 +364,7 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                 ".dbg .console .text .line {" +
                                     "border-collapse: collapse;" +
                                     "width: 100%;" +
-                                    "border-bottom: 1px solid #d0d0d0;" +
+                                    "border-bottom: 1px solid #e0e0e0;" +
                                     "font-size: 9pt;" +
                                 "}" +
                                 ".dbg .console .text .num {" +
