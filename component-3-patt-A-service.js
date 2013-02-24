@@ -96,8 +96,8 @@ $cs.pattern.service = $cs.trait({
             return;
         },
 
-        /*  enable/disable a service  */
-        service_enabled: function () {
+        /*  make a service callable (enable/disable it)  */
+        callable: function () {
             /*  determine parameters  */
             var params = $cs.params("service_enabled", arguments, {
                 name:  { pos: 0, def: null,      req: true },
