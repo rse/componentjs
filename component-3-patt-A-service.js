@@ -37,13 +37,13 @@ $cs.pattern.service = $cs.trait({
                 wrap:  true
             });
 
-            /*  publish changes to command's "enabled" attribute  */
+            /*  publish changes to command's callable status  */
             cmd.command.listen({
                 name: "attribute:set:enabled",
                 args: [ this, params.name ],
                 func: function (comp, name, value_new, value_old) {
                     comp.publish({
-                        name:      "ComponentJS:service:" + name + ":enabled",
+                        name:      "ComponentJS:service:" + name + ":callable",
                         args:      [ value_new, value_old ],
                         capturing: false,
                         spreading: false,
