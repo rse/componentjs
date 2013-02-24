@@ -19,9 +19,6 @@ var $cs = function () {
 /*  pattern sub-namespace  */
 $cs.pattern = {};
 
-/*  marker sub-namespace  */
-$cs.marker = {};
-
 /*  top-level API method: change symbol of external API  */
 $cs.symbol = (function () {
     /*  internal state  */

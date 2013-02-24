@@ -24,31 +24,10 @@ $cs.marked = function (obj, name) {
     return (marker[name] === true);
 };
 
-/*  marker trait: service-style component */
-$cs.marker.service = $cs.trait({
-    cons: function () {
-        $cs.mark(this, "service");
-    }
-});
-
-/*  marker trait: controller-style component */
-$cs.marker.controller = $cs.trait({
-    cons: function () {
-        $cs.mark(this, "controller");
-    }
-});
-
-/*  marker trait: model-style component */
-$cs.marker.model = $cs.trait({
-    cons: function () {
-        $cs.mark(this, "model");
-    }
-});
-
-/*  marker trait: view-style component */
-$cs.marker.view = $cs.trait({
-    cons: function () {
-        $cs.mark(this, "view");
-    }
-});
-
+/*  marker traits  */
+$cs.marker = {
+    service:    $cs.trait({ cons: function () { $cs.mark(this, "service");    } }),
+    controller: $cs.trait({ cons: function () { $cs.mark(this, "controller"); } }),
+    model:      $cs.trait({ cons: function () { $cs.mark(this, "model");      } }),
+    view:       $cs.trait({ cons: function () { $cs.mark(this, "view");       } })
+};
