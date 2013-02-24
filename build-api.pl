@@ -145,7 +145,6 @@ sub parse2 {
                     $txt = conv(0, $txt);
                     $txt =~ s/\n+$//s;
                     $txt =~ s/^\s+//s;
-                    $txt =~ s/^\s\s//mg;
                     $html_spec .= "<div class=\"example\">";
                     $html_spec .= "$txt\n";
                     $html_spec .= "</div>";
