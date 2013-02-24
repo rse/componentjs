@@ -207,9 +207,9 @@ that component shadow objects are defined by C<cs.clazz>!
   of positional usage, P<def> for the default value (of not required
   and hence optional parameters), P<req> to indicate whether the
   parameter is required and P<valid> for type validation (either
-  the string returned by JavaScript C<typeof> operator, or the string
-  C<"array(...)"> for arrays or a valid regular expression C</.../>
-  for validating a T<String> against it.
+  a string accepted by the M<validate>() method,
+  or a valid regular expression C</.../>
+  for validating a T<String> against it or an arbitrary callback function.
 
   | function config () {
   |     var params = $cs.params("config", arguments, {
@@ -322,15 +322,23 @@ looked up, state transitioned, communicated on and be destroyed.
   Create one or more components. Their structure is specified by the
   absolute (P<abs-tree-spec>) or relative (P<rel-tree-spec>) tree specification
   which is string containing a set (C<{...}>) of slash-separated (C<.../...>) paths
-  of component names. For instance, the specification C<foo/{bar/baz,quux}> is the
+  of component names. In other words, the specification has to follow the
+  following grammar:
+
+  + abs-tree-spec + ::= + "/" rel-tree-spec
+  + rel-tree-spec + ::= + path | "C<{>" path ("C<,>" path)* "C<}>"
+  + path          + ::= + rel-tree-spec | name ("/" name)*
+  + name          + ::= + /C<^[^\/]+$>/
+
+  For instance, the specification C<foo/{bar/baz,quux}> is the
   tree consisting of the two maximum length paths: C<foo/bar/baz> and C<foo/quux>.
   For each name from left-to-right in the tree specification you have to give
   either a to be instanciated class constructor (T<Function>) or an already
   instanciated object (T<Object>).
 
   | cs.create("/{sv,ui/{one,two}}", my.sv, {}, my.ui.one, my.ui.two);
-  | cs.create(this, "/model/view", model, view);
-  | cs(this).create("/model/view", model, view);
+  | cs.create(this, "model/view", model, view);
+  | cs(this).create("model/view", model, view);
 
 - ComponentJS.M<destroy>(P<abs-path>: T<String>): T<Void>
   O<component>.M<destroy>(): T<Void>
@@ -375,7 +383,7 @@ accessed via the following getter/setter-style methods.
 
 - O<component>.M<cfg>(): T<Array(String)>;
   O<component>.M<cfg>(P<key>: T<String>): T<Object>;
-  O<component>.M<cfg>(P<key>: T<String>, P<value>: T<Object>): T<Object>
+  O<component>.M<cfg>(P<key>: T<String>, P<value>: T<Object>): T<Object>;
   O<component>.M<cfg>(P<key>: T<String>, C<undefined>): T<Object>
 
   Components can have key/value pairs attached for application configuration purposes.
@@ -415,6 +423,11 @@ global API symbol.
   to T<Object> P<object>.
   4. Lookup T<Component> object via shadow object P<object>.
   5. Lookup T<Component> object via the P<component> itself (no-operation).
+  The paths have to follow the following grammar:
+
+  + abs-path + ::= + "/" rel-path
+  + rel-path + ::= + name ("/" name)*
+  + name     + ::= + "" | "C<*>" | /C<^[^\/]+$>/
 
   | cs("/foo/bar")           /* absolute */
   | cs(comp, "model/view")   /* relative to component */
@@ -524,10 +537,11 @@ transitions, enter and leave methods are called accordingly.
   state transition definitions are given as an example.
 
   | cs.transition(null);
-  | cs.transition("created",      "create",  "destroy", "#cc3333");
-  | cs.transition("prepared",     "prepare", "cleanup", "#eabc43");
-  | cs.transition("materialized", "render",  "release", "#6699cc");
-  | cs.transition("visible",      "show",    "hide",    "#669933");
+  | cs.transition("created",      "create",  "destroy",  "#cc3333");
+  | cs.transition("configured",   "setup",   "teardown", "#eabc43");
+  | cs.transition("prepared",     "prepare", "cleanup",  "#f2ec00");
+  | cs.transition("materialized", "render",  "release",  "#6699cc");
+  | cs.transition("visible",      "show",    "hide",     "#669933");
 
 - O<component>.M<state>(): T<String>;
   O<component>.M<state>(P<state>: T<String>[, P<callback>: T<Function>]): T<String>;
@@ -905,24 +919,44 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
       [F<bubbling>: T<Boolean> = C<true>],
       [F<noevent>: T<Boolean> = C<false>],
       [F<exclusive>: T<Boolean> = C<false>],
-      [F<origin>: T<Boolean> = C<false>],
       [F<spool>: T<String> = C<null>]
-  });
+  }): T<Number>;
   O<component>.M<subscribe>(
       P<name>: T<String>,
       P<func>: T<Function>,
       [P<arg>: T<Object>, ...]
-  )
+  ): T<Number>
 
   Subscribe to event F<name> on component O<component> and
-  execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>C<, >P<args>C<: >T<Object[]>C<)>
+  execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>
+  C<, >P<args>C<: >T<Object>C<, ...,>P<sargs>C<: >T<Object>C<, ...)>
   once the event is dispatched to O<component> after it was published.
-  Option F<ctx> allows FIXME.
-  By default an event is dispatched in the targeting and bubbling phases.
+  Option F<ctx> allows you to give C<this> a particular value for the
+  callback F<func>. Option F<args> allows you to pass additional
+  parameters to F<func> (before those passed by M<publish>()).
+  Option F<noevent> does not pass the P<ev>: T<Event> parameter to F<func>.
+  By default an event is dispatched in the (mandatory) targeting and (optional) bubbling phases.
+  Setting option F<bubbling> to C<false> indicates that the event should
+  not be dispatched in the bubbling phase, too.
   Setting option F<capture> to C<true> indicates that the event should
-  be dispatched in the capturing phase.
+  be dispatched in the capturing phase, too.
+  Setting option F<spreading> to C<true> indicates that the event should
+  be dispatched in the spreading phase, too.
+  Option F<exclusive> can be set to C<true> for an exclusive subscription, i.e.,
+  a subscription which prevents any subsequent subscriptions.
+  Option F<spool> can be set to C<true> to pass the origin component as the first
+  argument to F<func>.
+  The M<subscribe> method returns an id which uniquely identifies the subscription.
+  Instead of having to manually release the subscription later via M<unsubscribe>()
+  you can use the spool mechanism and spool the corresponding M<unsubscribe>()
+  operation via option F<spool>.
 
-  FIXME
+  | cs(self).subscribe({
+  |     name: "data-loaded",
+  |     func: function (ev, data) {
+  |         ...
+  |     }
+  | })
 
 Services
 --------
