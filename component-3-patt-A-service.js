@@ -118,10 +118,10 @@ $cs.pattern.service = $cs.trait({
             });
 
             /*  find service command  */
-            var subscribers = this.subscribers(params.name);
-            if (subscribers.length !== 1)
+            var subscriptions = this.subscriptions(params.name);
+            if (subscriptions.length !== 1)
                 return undefined;
-            var cmd = subscribers[0].func().command;
+            var cmd = subscriptions[0].func().command;
 
             /*  get or set "enabled" attribute  */
             return cmd.enabled(params.value);

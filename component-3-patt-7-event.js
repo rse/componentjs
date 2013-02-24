@@ -83,10 +83,10 @@ $cs.pattern.eventing = $cs.trait({
             });
 
             /*  honor exclusive request  */
-            var subscribers = this.subscribers(params.name, params.spec);
-            if (subscribers.length === 1 && subscribers[0].exclusive)
+            var subscriptions = this.subscriptions(params.name, params.spec);
+            if (subscriptions.length === 1 && subscriptions[0].exclusive)
                 throw _cs.exception("subscribe", "existing exclusive subscription prevents additional one");
-            if (params.exclusive && subscribers.length > 0)
+            if (params.exclusive && subscriptions.length > 0)
                 throw _cs.exception("subscribe", "non-exclusive subscription(s) prevent exclusive one");
 
             /*  attach parameters to component  */
@@ -125,10 +125,10 @@ $cs.pattern.eventing = $cs.trait({
             return (typeof this.__subscription[params.id] !== "undefined");
         },
 
-        /*  determine subscribers  */
-        subscribers: function () {
+        /*  determine subscriptions  */
+        subscriptions: function () {
             /*  determine parameters  */
-            var params = $cs.params("subscribers", arguments, {
+            var params = $cs.params("subscriptions", arguments, {
                 name:  { pos: 0, def: null, req: true },
                 spec:  { pos: 1, def: {}              }
             });
@@ -139,16 +139,16 @@ $cs.pattern.eventing = $cs.trait({
                 spec: params.spec
             });
 
-            /*  find and return all matching subscribers  */
-            var subscribers = [];
+            /*  find and return all matching subscriptions  */
+            var subscriptions = [];
             for (var id in this.__subscription) {
                 if (!_cs.isown(this.__subscription, id))
                     continue;
                 var s = this.__subscription[id];
                 if (ev.matches(s.name, s.spec))
-                    subscribers.push(s);
+                    subscriptions.push(s);
             }
-            return subscribers;
+            return subscriptions;
         },
 
         /*  publish an event */
