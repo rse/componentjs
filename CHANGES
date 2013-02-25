@@ -13,6 +13,13 @@
     Major changes between ComponentJS 0.9.5 and 0.9.6
     -------------------------------------------------
 
+    o Improved Debugger plugin: the status bar is now grabbable
+      to allow you to more precisely control the size of the component
+      tree visual display. The background of the visual display, header
+      and status bar are now gradient based. Active state transition
+      guards are now indicated by partially-overlayed red light bulps
+      (rendered only if guards are not at level 0).
+
     o <component>.subscribe({ origin: true, ... }) functionality was
       removed as the Event object on callbacks has the origin via its
       <ev>.target() method.
