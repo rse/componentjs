@@ -755,8 +755,8 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                         /*  draw optional state guard indicator bulp  */
                         var guarded = false;
                         for (var method in comp.__state_guards) {
-                            if (   typeof comp.__state_guards[method] === "number"
-                                && comp.__state_guards[method] !== 0              ) {
+                            if (typeof comp.__state_guards[method] === "number" &&
+                                comp.__state_guards[method] !== 0                 ) {
                                 guarded = true;
                                 break;
                             }
@@ -770,7 +770,7 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                             ctx.shadowOffsetY = 0;
                             ctx.beginPath();
                             ctx.arc(
-                                my_x + my_w - 2*(my_h / 4) - 1,
+                                my_x + my_w - 2 * (my_h / 4) - 1,
                                 my_y + 3 * (my_h / 4),
                                 (my_h / 4) - 3,
                                 0, 2 * Math.PI, true
