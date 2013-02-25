@@ -420,11 +420,32 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                     "opacity: 0.5;" +
                                     "z-index: 100;" +
                                 "}" +
+                                ".dbg .exporter {" +
+                                    "position: absolute; " +
+                                    "top: 4px; " +
+                                    "right: 20px; " +
+                                    "padding: 2px 8px 2px 8px; " +
+                                    "border-top: 1px solid #777777;" +
+                                    "border-left: 1px solid #777777;" +
+                                    "border-right: 1px solid #555555;" +
+                                    "border-bottom: 1px solid #555555;" +
+                                    "background: #666666;" +
+                                    "background: -moz-linear-gradient(top,  #666666 0%, #333333 49%, #222222 51%, #000000 100%);" +
+                                    "background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#666666), color-stop(49%,#333333), color-stop(51%,#222222), color-stop(100%,#000000));" +
+                                    "background: -webkit-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: -o-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: -ms-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "background: linear-gradient(to bottom,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                                    "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#000000',GradientType=0 );" +
+                                    "color: #c0c0c0;" +
+                                    "z-index: 100;" +
+                                "}" +
                             "</style>" +
                             "<div class=\"dbg\">" +
                                 "<div class=\"header\"><div class=\"text\">" + title + "</div></div>" +
                                 "<div class=\"viewer\"><canvas></canvas></div>" +
                                 "<div class=\"grabber\"></div>" +
+                                "<div class=\"exporter\">Export</div>" +
                                 "<div class=\"status\"><div class=\"text\"></div></div>" +
                                 "<div class=\"console\"><div class=\"text\"></div></div>" +
                             "</div>"
@@ -469,6 +490,17 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                 grabbing = false;
                                 ev.preventDefault();
                             }
+                        });
+
+                        /*  canvas export functionality  */
+                        _cs.jq(".dbg .exporter", _cs.dbg.document).bind("click", function (ev) {
+                            var ctx = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0);
+                            if (typeof ctx !== "undefined") {
+                                var dataurl = ctx.toDataURL("image/png");
+                                GLOBAL.open(dataurl);
+                            }
+                            ev.preventDefault();
+                            return false;
                         });
                     });
                 }, 500);
