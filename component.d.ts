@@ -100,7 +100,7 @@ interface ComponentJS_comp {
 
     unspool(name: string): void;
 
-    guard(name: string, enable: bool): void;
+    guard(name: string, level: number): void;
 
     plug(params: {
         name?: string;
