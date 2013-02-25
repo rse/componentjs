@@ -647,7 +647,7 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                 var gw = Math.floor(cw / W);
                 var gh = Math.floor(ch / (D + 1));
                 var ow = Math.floor(gw / 8);
-                var oh = Math.floor(gh / 3);
+                var oh = Math.floor(gh / 4);
 
                 /*  clear the canvas as we redraw everything  */
                 ctx.clearRect(0, 0, cw, ch);
@@ -751,6 +751,34 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                         ctx.closePath();
                         ctx.fill();
                         ctx.restore();
+
+                        /*  draw optional state guard indicator bulp  */
+                        var guarded = false;
+                        for (var method in comp.__state_guards) {
+                            if (   typeof comp.__state_guards[method] === "number"
+                                && comp.__state_guards[method] !== 0              ) {
+                                guarded = true;
+                                break;
+                            }
+                        }
+                        if (guarded) {
+                            ctx.save();
+                            ctx.fillStyle = "#ff0000";
+                            ctx.shadowColor = "#000000";
+                            ctx.shadowBlur = 2;
+                            ctx.shadowOffsetX = 0;
+                            ctx.shadowOffsetY = 0;
+                            ctx.beginPath();
+                            ctx.arc(
+                                my_x + my_w - 2*(my_h / 4) - 1,
+                                my_y + 3 * (my_h / 4),
+                                (my_h / 4) - 3,
+                                0, 2 * Math.PI, true
+                            );
+                            ctx.closePath();
+                            ctx.fill();
+                            ctx.restore();
+                        }
 
                         /*  common text rendering  */
                         var renderText = function (text, color, x, y, width) {
