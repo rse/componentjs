@@ -145,7 +145,6 @@ interface ComponentJS_comp {
         capture?: bool;
         noevent?: bool;
         exclusive?: bool;
-        origin?: bool;
         spool?: string;
     }): number;
     subscribe(
