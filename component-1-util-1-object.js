@@ -161,7 +161,7 @@ _cs.clone = function (source, continue_recursion) {
     /*  helper functions  */
     var myself = arguments.callee;
     var clone_func = function (f, continue_recursion) {
-        var g = function () {
+        var g = function ComponentJS_function_clone () {
             return f.apply(this, arguments);
         };
         g.prototype = f.prototype;
