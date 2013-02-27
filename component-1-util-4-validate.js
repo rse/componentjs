@@ -82,7 +82,7 @@ _cs.validate_parser = {
             tree = this.parse_array(token);
         else if (symbol.match(/^(?:undefined|boolean|number|string|function|object)$/))
             tree = this.parse_primary(token);
-        else if (symbol.match(/^(?:class|trait|component)$/))
+        else if (symbol.match(/^(?:clazz|trait|component)$/))
             tree = this.parse_special(token);
         else if (symbol === "any")
             tree = this.parse_any(token);
@@ -164,7 +164,7 @@ _cs.validate_parser = {
     /*  parse special ComponentJS type specification  */
     parse_special: function (token) {
         var special = token.peek();
-        if (!special.match(/^(?:class|trait|component)$/))
+        if (!special.match(/^(?:clazz|trait|component)$/))
             throw new Error("parse error: invalid special type \"" + special + "\"");
         token.skip();
         return { type: "special", name: special };
