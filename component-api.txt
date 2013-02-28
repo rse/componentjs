@@ -604,11 +604,12 @@ transitions, enter and leave methods are called accordingly.
   a positive number to activate the guard. Then it should be set to
   a negative number to (potentially) deactivate the guard. A usage with
   an initial call of C<+1> and then followed by a C<-1> is a boolean guard.
-  An initial call of C<+N> and then followed by N times a C<-1> call is a semaphore-like
+  An initial call of C<+N> and then followed by N times a C<-1> call is a Semaphore-like
   guard which ensures that only after the Nth C<-1> call the guard is finally deactivated
-  again. This is useful if activate the guard in order to await N asynchronous operations.
+  again. This is useful if you activate the guard in order to await N asynchronous operations.
   Then the guard should be deactivated once the last asynchronous operation is finished
-  (independent which one of the N operations this is).
+  (independent which one of the N operations this is). A guard P<level> of C<0> 
+  resets the guard, independent what its current level is.
 
   | var self = this;
   | cs(self).guard("render", +2)
