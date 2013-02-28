@@ -9,18 +9,18 @@
 
 /*  API function: validate an arbitrary value against a type specification  */
 $cs.validate = function (value, spec, non_cache) {
-    /*  compile validation tree from specification
-        or reuse cached pre-compiled validation tree  */
-    var tree;
+    /*  compile validation AST from specification
+        or reuse cached pre-compiled validation AST  */
+    var ast;
     if (!non_cache)
-        tree = _cs.validate_cache[spec];
-    if (typeof tree === "undefined")
-        tree = _cs.validate_compile(spec);
+        ast = _cs.validate_cache[spec];
+    if (typeof ast === "undefined")
+        ast = _cs.validate_compile(spec);
     if (!non_cache)
-        _cs.validate_cache[spec] = tree;
+        _cs.validate_cache[spec] = ast;
 
-    /*  execute validation tree against the value  */
-    return _cs.validate_executor.exec_spec(value, tree);
+    /*  execute validation AST against the value  */
+    return _cs.validate_executor.exec_spec(value, ast);
 };
 
 /*  the internal compile cache  */
@@ -30,12 +30,12 @@ _cs.validate_cache = {};
  *  VALIDATION SPECIFICATION COMPILER
  */
 
-/*  compile validation specification into validation tree  */
+/*  compile validation specification into validation AST  */
 _cs.validate_compile = function (spec) {
     /*  tokenize the specification string into a token stream */
     var token = _cs.validate_tokenize(spec);
 
-    /*  parse the token stream into a tree  */
+    /*  parse the token stream into an AST  */
     return _cs.validate_parser.parse_spec(token);
 };
 
@@ -70,48 +70,48 @@ _cs.validate_parser = {
     parse_spec: function (token) {
         if (token.len <= 0)
             return null;
-        var tree;
+        var ast;
         var symbol = token.peek();
         if (symbol === "!")
-            tree = this.parse_not(token);
+            ast = this.parse_not(token);
         else if (symbol === "(")
-            tree = this.parse_group(token);
+            ast = this.parse_group(token);
         else if (symbol === "{")
-            tree = this.parse_hash(token);
+            ast = this.parse_hash(token);
         else if (symbol === "[")
-            tree = this.parse_array(token);
+            ast = this.parse_array(token);
         else if (symbol.match(/^(?:undefined|boolean|number|string|function|object)$/))
-            tree = this.parse_primary(token);
+            ast = this.parse_primary(token);
         else if (symbol.match(/^(?:clazz|trait|component)$/))
-            tree = this.parse_special(token);
+            ast = this.parse_special(token);
         else if (symbol === "any")
-            tree = this.parse_any(token);
+            ast = this.parse_any(token);
         else if (symbol.match(/^[A-Z][_a-zA-Z$0-9]*$/))
-            tree = this.parse_class(token);
+            ast = this.parse_class(token);
         else
             throw new Error("parse error: invalid token symbol: \"" + token.ctx() + "\"");
-        return tree;
+        return ast;
     },
 
     /*  parse boolean "not" operation  */
     parse_not: function (token) {
         token.consume("!");
-        var tree = this.parse_spec(token); /*  RECURSION  */
-        tree = { type: "not", op: tree };
-        return tree;
+        var ast = this.parse_spec(token); /*  RECURSION  */
+        ast = { type: "not", op: ast };
+        return ast;
     },
 
     /*  parse group (for boolean "or" operation)  */
     parse_group: function (token) {
         token.consume("(");
-        var tree = this.parse_spec(token);
+        var ast = this.parse_spec(token);
         while (token.peek() === "|") {
             token.consume("|");
             var child = this.parse_spec(token); /*  RECURSION  */
-            tree = { type: "or", op1: tree, op2: child };
+            ast = { type: "or", op1: ast, op2: child };
         }
         token.consume(")");
-        return tree;
+        return ast;
     },
 
     /*  parse hash type specification  */
@@ -129,9 +129,9 @@ _cs.validate_parser = {
             else
                 break;
         }
-        var tree = { type: "hash", elements: elements };
+        var ast = { type: "hash", elements: elements };
         token.consume("}");
-        return tree;
+        return ast;
     },
 
     /*  parse array type specification  */
@@ -147,9 +147,9 @@ _cs.validate_parser = {
             else
                 break;
         }
-        var tree = { type: "array", elements: elements };
+        var ast = { type: "array", elements: elements };
         token.consume("]");
-        return tree;
+        return ast;
     },
 
     /*  parse primary type specification  */
@@ -231,7 +231,7 @@ _cs.validate_parser = {
 };
 
 /*
- *  VALIDATION TREE EXECUTOR
+ *  VALIDATION AST EXECUTOR
  */
 
 _cs.validate_executor = {
@@ -249,7 +249,7 @@ _cs.validate_executor = {
                 case "class":   valid = this.exec_class  (value, node); break;
                 case "any":     valid = true;                           break;
                 default:
-                    throw new Error("validation error: invalid validation tree: " +
+                    throw new Error("validation error: invalid validation AST: " +
                         "node has unknown type \"" + node.type + "\"");
             }
         }
