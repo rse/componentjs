@@ -10,6 +10,11 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
     
+    Major changes between ComponentJS 0.9.6 and 0.9.7
+    -------------------------------------------------
+
+    o Fixed internal "clazz" parameter validation.
+
     Major changes between ComponentJS 0.9.5 and 0.9.6
     -------------------------------------------------
 
