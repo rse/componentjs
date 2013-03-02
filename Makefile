@@ -112,6 +112,7 @@ PLG_SRC         = component.plugin.debugger.js \
 PLG_BLD         = build/component.plugin.debugger.js \
                   build/component.plugin.jquery.js \
                   build/component.plugin.extjs.js \
+                  build/component.plugin.localstorage.js \
                   build/component.plugin.values.js
 
 #   list of all linting files
@@ -197,6 +198,8 @@ build/component.plugin.jquery.js: component.plugin.jquery.js
 	@NAME="jquery"; $(MAKE_PLUGIN)
 build/component.plugin.extjs.js: component.plugin.extjs.js
 	@NAME="extjs"; $(MAKE_PLUGIN)
+build/component.plugin.localstorage.js: component.plugin.localstorage.js
+	@NAME="localstorage"; $(MAKE_PLUGIN)
 build/component.plugin.values.js: component.plugin.values.js
 	@NAME="values"; $(MAKE_PLUGIN)
 

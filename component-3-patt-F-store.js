@@ -7,48 +7,20 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  determine unique store id  */
-_cs.store_id = function (comp) {
-    var id = "ComponentJS:store:";
-    if (   typeof GLOBAL.document !== "undefined"
-        && typeof GLOBAL.document.location !== "undefined"
-        && typeof GLOBAL.document.location.pathname === "string")
-        id += GLOBAL.document.location.pathname;
-    else
-        id += "unknown-path";
-    id += ":" + comp.path("/");
-    return id;
-};
-
-/*  load store via optionally available Web Storage API  */
+/*  load store via optional plugin  */
 _cs.store_load = function (comp) {
     if (comp.__store === null) {
-        if (   typeof GLOBAL.localStorage !== "undefined"
-            && typeof GLOBAL.JSON !== "undefined") {
-            var id = _cs.store_id(comp);
-            var obj = GLOBAL.localStorage.getItem(id);
-            if (typeof obj === "string")
-                comp.__store = GLOBAL.JSON.parse(obj);
-        }
+        _cs.hook("ComponentJS:store-load", "none", comp);
         if (   comp.__store === null
             || typeof comp.__store !== "object")
             comp.__store = {};
     }
 };
 
-/*  save store via optionally available Web Storage API  */
+/*  save store via optional plugin  */
 _cs.store_save = function (comp) {
-    if (comp.__store !== null) {
-        if (   typeof GLOBAL.localStorage !== "undefined"
-            && typeof GLOBAL.JSON !== "undefined") {
-            var id = _cs.store_id(comp);
-            var obj = GLOBAL.JSON.stringify(comp.__store);
-            if (obj === "{}")
-                GLOBAL.localStorage.removeItem(id);
-            else
-                GLOBAL.localStorage.setItem(id, obj);
-        }
-    }
+    if (comp.__store !== null)
+        _cs.hook("ComponentJS:store-save", "none", comp);
 };
 
 /*  generic pattern for store management  */
