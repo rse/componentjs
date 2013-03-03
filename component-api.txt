@@ -1139,7 +1139,7 @@ the multiple consumers have M<latch>ed into this hook beforehand.
 
   Latch into the hook identified by name F<name> on component
   O<component> and execute the callback function F<func> on every hook
-  execution. The callback function is executed as F<func>C<(P<args>C<:
+  execution. The callback function is executed as F<func>C<(>P<args>C<:
   >T<Object>C<, ...,>P<sargs>C<: >T<Object>C<, ...)>. Option F<ctx>
   allows you to give C<this> a particular value for the callback
   F<func>. Option F<args> allows you to pass additional parameters to
