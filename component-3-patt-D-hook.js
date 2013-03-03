@@ -47,7 +47,7 @@ $cs.pattern.hook = $cs.trait({
                 id: { pos: 0, req: true }
             });
 
-            /*  unsubsribe from hook event  */
+            /*  unsubscribe from hook event  */
             this.unsubscribe(params.id);
         },
 
