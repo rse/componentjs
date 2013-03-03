@@ -9,6 +9,15 @@
     more fine-granular commit-based change information,
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
+
+    Major changes between ComponentJS 0.9.7 and 0.9.8
+    -------------------------------------------------
+
+    o Improved Debugger plugin: the components in the component tree
+      view are now clickable. Once clicked details about the component are
+      displayed in the new infobox view which overlays the console view.
+
+    o Modularized the debugger plugin sources.
     
     Major changes between ComponentJS 0.9.6 and 0.9.7
     -------------------------------------------------
