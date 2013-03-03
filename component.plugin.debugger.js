@@ -420,6 +420,41 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                     "opacity: 0.5;" +
                                     "z-index: 100;" +
                                 "}" +
+                                ".dbg .infobox {" +
+                                    "position: absolute;" +
+                                    "top: 0px;" +
+                                    "left: 0px;" +
+                                    "width: 100%;" +
+                                    "background-color: #ffffff;" +
+                                    "color: #000000;" +
+                                    "z-index: 200;" +
+                                    "display: none;" +
+                                "}" +
+                                ".dbg .infobox table {" +
+                                    "border-collapse: collapse;" +
+                                    "width: 100%;" +
+                                "}" +
+                                ".dbg .infobox table tr td {" +
+                                    "border-bottom: 1px solid #e0e0e0;" +
+                                "}" +
+                                ".dbg .infobox table tr td {" +
+                                    "font-size: 11pt;" +
+                                "}" +
+                                ".dbg .infobox table tr td.label {" +
+                                    "padding-left: 10px;" +
+                                    "background-color: #f0f0f0;" +
+                                    "color: #909090;" +
+                                    "vertical-align: top;" +
+                                    "width: 160px;" +
+                                "}" +
+                                ".dbg .infobox table tr td.value {" +
+                                    "padding-left: 10px;" +
+                                    "vertical-align: top;" +
+                                "}" +
+                                ".dbg .infobox table tr td.value span.none {" +
+                                    "color: #909090;" +
+                                    "font-style: italic;" +
+                                "}" +
                                 ".dbg .exporter {" +
                                     "position: absolute; " +
                                     "top: 4px; " +
@@ -448,6 +483,7 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                                 "<div class=\"exporter\">Export</div>" +
                                 "<div class=\"status\"><div class=\"text\"></div></div>" +
                                 "<div class=\"console\"><div class=\"text\"></div></div>" +
+                                "<div class=\"infobox\"></div>" +
                             "</div>"
                         );
 
@@ -540,6 +576,9 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
         var h2 = vh - _cs.dbg_grabber_offset + _cs.jq(".dbg .status", _cs.dbg.document).height();
         _cs.jq(".dbg .viewer",  _cs.dbg.document).height(h1);
         _cs.jq(".dbg .console", _cs.dbg.document).height(h2);
+        _cs.jq(".dbg .infobox", _cs.dbg.document).height(h2);
+        _cs.jq(".dbg .infobox", _cs.dbg.document).css("top",
+            _cs.dbg_grabber_offset + _cs.jq(".dbg .status", _cs.dbg.document).height());
         _cs.jq(".dbg .grabber", _cs.dbg.document).css("top", _cs.dbg_grabber_offset);
 
         /*  explicitly set the canvas size of the viewer  */
@@ -634,7 +673,6 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
 
             /*  viewer update  */
             if (_cs.dbg_state_invalid.components || _cs.dbg_state_invalid.states) {
-
                 /*  ensure the canvas (already) exists  */
                 var ctx = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0);
                 if (typeof ctx === "undefined")
@@ -817,12 +855,205 @@ ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
                         _cs.annotation(comp, "debugger_x", my_x);
                         _cs.annotation(comp, "debugger_y", my_y);
                         _cs.annotation(comp, "debugger_w", my_w);
-                        /* _cs.annotation(comp, "debugger_h", my_h); */
+                        _cs.annotation(comp, "debugger_h", my_h);
                     }
 
                     /*  pass-through the global X position  */
                     return X;
                 }, 0);
+
+                /*  component information on mouse click  */
+                var infoboxed = false;
+                _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mousedown", function (ev) {
+                    if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
+                        return;
+                    infobox_event(ev);
+                    infoboxed = true;
+                });
+                _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mousemove", function (ev) {
+                    if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
+                        return;
+                    if (infoboxed)
+                        infobox_event(ev);
+                });
+                _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mouseup", function (ev) {
+                    if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
+                        return;
+                    _cs.jq(".dbg .infobox", _cs.dbg.document).css("display", "none");
+                    infoboxed = false;
+                });
+
+                /*  determine component on infobox event  */
+                var infobox_event = function (ev) {
+                    var mx = ev.offsetX;
+                    var my = ev.offsetY;
+                    var comp = null;
+                    _cs.root.walk_down(function (level, comp_this, X, depth_first) {
+                        if (depth_first) {
+                            var x = _cs.annotation(comp_this, "debugger_x");
+                            var y = _cs.annotation(comp_this, "debugger_y");
+                            var w = _cs.annotation(comp_this, "debugger_w");
+                            var h = _cs.annotation(comp_this, "debugger_h");
+                            if (x <= mx && mx <= x + w &&
+                                y <= my && my <= y + h)
+                                comp = comp_this;
+                        }
+                    }, 0);
+                    if (comp !== null) {
+                        var html = infobox_content(comp);
+                        _cs.jq(".dbg .infobox", _cs.dbg.document).html(html);
+                        _cs.jq(".dbg .infobox", _cs.dbg.document).css("display", "block");
+                    }
+                };
+
+                /*  determine component information for infobox  */
+                var infobox_content = function (comp) {
+                    var name, method, id;
+                    var html = "";
+
+                    /*  name and path  */
+                    name = comp.name().replace(/</, "&lt;").replace(/>/, "&gt;");
+                    html += "<tr>" +
+                        "<td class=\"label\">Name:</td>" +
+                        "<td class=\"value\"><b>" + name + "</b></td>" +
+                        "</tr>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Path:</td>" +
+                        "<td class=\"value\"><code>" + comp.path("/") + "</code></td>" +
+                        "</tr>";
+
+                    /*  role markers  */
+                    var markers = "";
+                    if ($cs.marked(comp.obj(), "view"))       markers += "view, ";
+                    if ($cs.marked(comp.obj(), "model"))      markers += "model, ";
+                    if ($cs.marked(comp.obj(), "controller")) markers += "controller, ";
+                    if ($cs.marked(comp.obj(), "service"))    markers += "service, ";
+                    markers = markers.replace(/, $/, "");
+                    if (markers === "")
+                        markers = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Markers:</td>" +
+                        "<td class=\"value\">" + markers + "</td>" +
+                        "</tr>";
+
+                    /*  state and guards  */
+                    html += "<tr>" +
+                        "<td class=\"label\">State:</td>" +
+                        "<td class=\"value\"><code>" + comp.state() + "</code></td>" +
+                        "</tr>";
+                    var guards = "";
+                    for (method in comp.__state_guards)
+                        if (_cs.isown(comp.__state_guards, method))
+                            if (typeof comp.__state_guards[method] === "number" &&
+                                comp.__state_guards[method] !== 0                 )
+                                guards += "<code>" + method + "</code> (" + comp.__state_guards[method] + "), ";
+                    guards = guards.replace(/, $/, "");
+                    if (guards === "")
+                        guards = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Guards:</td>" +
+                        "<td class=\"value\">" + guards + "</td>" +
+                        "</tr>";
+
+                    /*  spools  */
+                    var spools = "";
+                    for (name in comp.__spool)
+                        if (_cs.isown(comp.__spool, name))
+                            if (typeof comp.__spool[name] !== "undefined" &&
+                                comp.__spool[name].length > 0            )
+                                spools += "<code>" + name + "</code> (" + comp.__spool[name].length + "), ";
+                    spools = spools.replace(/, $/, "");
+                    if (spools === "")
+                        spools = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Spools:</td>" +
+                        "<td class=\"value\">" + spools + "</td>" +
+                        "</tr>";
+
+                    /*  model values  */
+                    var values = "";
+                    for (id in comp.__config)
+                        if (_cs.isown(comp.__config, id))
+                            if (id.match(/^ComponentJS:property:ComponentJS:model/))
+                                if (typeof comp.__config[id] === "object")
+                                    for (name in comp.__config[id])
+                                        if (_cs.isown(comp.__config[id], name))
+                                            values += "<code>" + name + "</code>, ";
+                    values = values.replace(/, $/, "");
+                    if (values === "")
+                        values = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Model Values:</td>" +
+                        "<td class=\"value\">" + values + "</td>" +
+                        "</tr>";
+
+                    /*  sockets  */
+                    var sockets = "";
+                    for (id in comp.__config)
+                        if (_cs.isown(comp.__config, id))
+                            if (id.match(/^ComponentJS:property:ComponentJS:socket:/))
+                                if (typeof comp.__config[id] === "object")
+                                    sockets += "<code>" + id
+                                        .replace(/^ComponentJS:property:ComponentJS:socket:/, "") + "</code>, ";
+                    sockets = sockets.replace(/, $/, "");
+                    if (sockets === "")
+                        sockets = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Sockets:</td>" +
+                        "<td class=\"value\">" + sockets + "</td>" +
+                        "</tr>";
+
+                    /*  event subscriptions  */
+                    var subscriptions = "";
+                    for (id in comp.__subscription)
+                        if (_cs.isown(comp.__subscription, id))
+                            if (typeof comp.__subscription[id] === "object")
+                                if (!comp.__subscription[id].name.match(/^ComponentJS:/))
+                                    subscriptions += "<code>" + comp.__subscription[id].name + "</code>, ";
+                    subscriptions = subscriptions.replace(/, $/, "");
+                    if (subscriptions === "")
+                        subscriptions = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Event Subscriptions:</td>" +
+                        "<td class=\"value\">" + subscriptions + "</td>" +
+                        "</tr>";
+
+                    /*  service registrations  */
+                    var registrations = "";
+                    for (id in comp.__subscription)
+                        if (_cs.isown(comp.__subscription, id))
+                            if (typeof comp.__subscription[id] === "object")
+                                if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
+                                    registrations += "<code>" + comp.__subscription[id].name
+                                        .replace(/^ComponentJS:service:/, "") + "</code>, ";
+                    registrations = registrations.replace(/, $/, "");
+                    if (registrations === "")
+                        registrations = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Service Registrations:</td>" +
+                        "<td class=\"value\">" + registrations + "</td>" +
+                        "</tr>";
+
+                    /*  hooks  */
+                    var hooks = "";
+                    for (id in comp.__subscription)
+                        if (_cs.isown(comp.__subscription, id))
+                            if (typeof comp.__subscription[id] === "object")
+                                if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
+                                    hooks += "<code>" + comp.__subscription[id].name
+                                        .replace(/^ComponentJS:hook:/, "") + "</code>, ";
+                    hooks = hooks.replace(/, $/, "");
+                    if (hooks === "")
+                        hooks = "<span class=\"none\">none</span>";
+                    html += "<tr>" +
+                        "<td class=\"label\">Hook Points:</td>" +
+                        "<td class=\"value\">" + hooks + "</td>" +
+                        "</tr>";
+
+                    /*  finish and return table  */
+                    html = "<table>" + html + "</table>";
+                    return html;
+                };
             }
 
             _cs.dbg_state_invalid.components = true;
