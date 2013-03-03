@@ -46,14 +46,15 @@ VERSION_DATE    = 20130302
 VERSION         = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
 #   make plugin
-MAKE_PLUGIN     = echo "++ linting component.plugin.$$NAME.js (Google Closure Linter)"; \
-                  $(GJSLINT) component.plugin.$$NAME.js | \
-                  egrep -v "E:(0001|0131|0110)" | grep -v "FILE  :" | sed -e '/^Found/,$$d'; \
-                  echo "++ linting component.plugin.$$NAME.js (JSHint)"; \
-                  $(JSHINT) component.plugin.$$NAME.js; \
-                  echo "++ copying build/component.plugin.$$NAME.js <- component.plugin.$$NAME.js"; \
+MAKE_PLUGIN     = echo "++ assembling build/component.plugin.$$NAME.js <- component.plugin.$$NAME.js (Custom Build Tool)"; \
                   $(SHTOOL) mkdir -f -p -m 755 build; \
-                  cp component.plugin.$$NAME.js build/component.plugin.$$NAME.js; \
+                  $(PERL) build-src.pl build/component.plugin.$$NAME.js component.plugin.$$NAME.js \
+                      "$(VERSION_MAJOR)" "$(VERSION_MINOR)" "$(VERSION_MICRO)" "$(VERSION_DATE)"; \
+                  echo "++ linting build/component.plugin.$$NAME.js (Google Closure Linter)"; \
+                  $(GJSLINT) build/component.plugin.$$NAME.js | \
+                  egrep -v "E:(0001|0131|0110)" | grep -v "FILE  :" | sed -e '/^Found/,$$d'; \
+                  echo "++ linting build/component.plugin.$$NAME.js (JSHint)"; \
+                  $(JSHINT) build/component.plugin.$$NAME.js; \
                   echo "++ compressing build/component.plugin.$$NAME.min.js <- build/component.plugin.$$NAME.js (Google Closure Compiler)"; \
                   $(CLOSURECOMPILER) \
                   --js_output_file build/component.plugin.$$NAME.min.js \
@@ -192,7 +193,9 @@ build/.linted.jshint: build/component.js
 	touch build/.linted.jshint
 
 #   plugins
-build/component.plugin.debugger.js: component.plugin.debugger.js
+build/component.plugin.debugger.js: component.plugin.debugger.js \
+    component.plugin.debugger-hooks.js component.plugin.debugger-infobox.js component.plugin.debugger-jquery.js \
+    component.plugin.debugger-view.js component.plugin.debugger-window.js
 	@NAME="debugger"; $(MAKE_PLUGIN)
 build/component.plugin.jquery.js: component.plugin.jquery.js
 	@NAME="jquery"; $(MAKE_PLUGIN)

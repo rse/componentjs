@@ -27,9 +27,9 @@ ComponentJS.plugin("localstorage", function (_cs, $cs, GLOBAL) {
     if (_cs.istypeof(GLOBAL.JSON) === "undefined")
         throw _cs.exception("plugin:localstorage", "sorry, mandatory JavaScript " +
             "\"JSON\" encoding/decoding not supported by run-time environment");
-    if (typeof GLOBAL.document === "undefined" ||
-        typeof GLOBAL.document.location === "undefined" ||
-        typeof GLOBAL.document.location.pathname === "undefined")
+    if (   typeof GLOBAL.document === "undefined"
+        || typeof GLOBAL.document.location === "undefined"
+        || typeof GLOBAL.document.location.pathname === "undefined")
         throw _cs.exception("plugin:localstorage", "sorry, mandatory DOM " +
             "\"document location\" facility not supported by run-time environment");
 
