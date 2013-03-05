@@ -194,8 +194,10 @@ build/.linted.jshint: build/component.js
 
 #   plugins
 build/component.plugin.debugger.js: component.plugin.debugger.js \
-    component.plugin.debugger-hooks.js component.plugin.debugger-infobox.js component.plugin.debugger-jquery.js \
-    component.plugin.debugger-view.js component.plugin.debugger-window.js
+    component.plugin.debugger-hooks.js component.plugin.debugger-logbook.js \
+	component.plugin.debugger-infobox.js component.plugin.debugger-jquery.js \
+    component.plugin.debugger-view.js component.plugin.debugger-window.js \
+    component.plugin.debugger-render.js
 	@NAME="debugger"; $(MAKE_PLUGIN)
 build/component.plugin.jquery.js: component.plugin.jquery.js
 	@NAME="jquery"; $(MAKE_PLUGIN)
