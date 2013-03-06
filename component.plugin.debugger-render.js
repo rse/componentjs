@@ -14,6 +14,9 @@
 /*  the grabber offset  */
 _cs.dbg_grabber_offset = -1;
 
+/*  the canvas size and position  */
+_cs.dbg_canvas_info = { x: 0, y: 0, w: -1, h: -1, wmin: -1, hmin: -1 };
+
 /*  refresh the browser rendering  */
 _cs.dbg_refresh = function () {
     /*  expand to viewport width/height  */
@@ -40,12 +43,34 @@ _cs.dbg_refresh = function () {
     _cs.jq(".dbg .grabber", _cs.dbg.document).css("top", _cs.dbg_grabber_offset);
 
     /*  explicitly set the canvas size of the viewer  */
+    _cs.dbg_canvas_info.wmin = vw;
+    _cs.dbg_canvas_info.hmin = h1;
+    if (_cs.dbg_canvas_info.w < _cs.dbg_canvas_info.wmin)
+        _cs.dbg_canvas_info.w = _cs.dbg_canvas_info.wmin;
+    if (_cs.dbg_canvas_info.h < _cs.dbg_canvas_info.hmin)
+        _cs.dbg_canvas_info.h = _cs.dbg_canvas_info.hmin;
     _cs.jq(".dbg .viewer canvas", _cs.dbg.document)
-        .height(h1 - 20).attr("height", h1 - 20)
-        .width(vw - 20) .attr("width", vw - 20);
-
+        .height(_cs.dbg_canvas_info.h).attr("height", _cs.dbg_canvas_info.h)
+        .width (_cs.dbg_canvas_info.w).attr("width",  _cs.dbg_canvas_info.w);
+    _cs.dbg_reposition();
+ 
     /*  trigger an initial update  */
     _cs.dbg_update();
+};
+
+/*  refresh the canvas positioning  */
+_cs.dbg_reposition = function () {
+    if (_cs.dbg_canvas_info.x < 0)
+        _cs.dbg_canvas_info.x = 0;
+    if (_cs.dbg_canvas_info.x > _cs.dbg_canvas_info.w - _cs.dbg_canvas_info.wmin)
+        _cs.dbg_canvas_info.x = _cs.dbg_canvas_info.w - _cs.dbg_canvas_info.wmin;
+    if (_cs.dbg_canvas_info.y < 0)
+        _cs.dbg_canvas_info.y = 0;
+    if (_cs.dbg_canvas_info.y > _cs.dbg_canvas_info.h - _cs.dbg_canvas_info.hmin)
+        _cs.dbg_canvas_info.y = _cs.dbg_canvas_info.h - _cs.dbg_canvas_info.hmin;
+    _cs.jq(".dbg .viewer canvas", _cs.dbg.document)
+        .css("top",  -_cs.dbg_canvas_info.y)
+        .css("left", -_cs.dbg_canvas_info.x);
 };
 
 /*  update the debugger rendering  */
@@ -138,8 +163,8 @@ _cs.dbg_update_once = function () {
             ctx = ctx.getContext("2d");
 
             /*  determine canvas width/height and calculate grid width/height and offset width/height  */
-            var ch = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height();
-            var cw = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width();
+            var ch = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).height() - 20;
+            var cw = _cs.jq(".dbg .viewer canvas", _cs.dbg.document).width()  - 20;
             var gw = Math.floor(cw / W);
             var gh = Math.floor(ch / (D + 1));
             var ow = Math.floor(gw / 8);
@@ -160,8 +185,8 @@ _cs.dbg_update_once = function () {
 
                     if (t === 1) {
                         /*  CASE 1: leaf node  */
-                        my_x = gw * X++;
-                        my_y = natural ? (ch - gh * d - gh) : (gh * d);
+                        my_x = 10 + gw * X++;
+                        my_y = natural ? (ch - gh * d - gh + 10) : (gh * d - 10);
                         my_w = gw - ow;
                         my_h = gh - oh;
                     }
@@ -181,7 +206,7 @@ _cs.dbg_update_once = function () {
 
                         /*  calculate our information  */
                         my_x = minx + Math.ceil((maxx - minx) / 2);
-                        my_y = natural ? (ch - gh * d - gh) : (gh * d);
+                        my_y = natural ? (ch - gh * d - gh + 10) : (gh * d - 10);
                         my_w = gw - ow;
                         my_h = gh - oh;
 

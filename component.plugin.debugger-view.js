@@ -48,6 +48,7 @@ _cs.dbg_view_mask = function (title) {
                 "font-weight: bold;" +
             "}" +
             ".dbg .viewer {" +
+                "position: relative;" +
                 "width: 100%;" +
                 "height: 50%;" +
                 "background: #d0d0d0;" +
@@ -61,11 +62,9 @@ _cs.dbg_view_mask = function (title) {
                 "overflow: hidden;" +
             "}" +
             ".dbg .viewer canvas {" +
-                "position: relative;" +
-                "top: 10px;" +
-                "left: 10px;" +
-                "width: 100%;" +
-                "height: 100%;" +
+                "position: absolute;" +
+                "top: 0px;" +
+                "left: 0px;" +
             "}" +
             ".dbg .status {" +
                 "width: 100%;" +
@@ -175,6 +174,37 @@ _cs.dbg_view_mask = function (title) {
                 "color: #909090;" +
                 "font-style: italic;" +
             "}" +
+            ".dbg .plus, .dbg .reset, .dbg .minus {" +
+                "position: absolute; " +
+                "top: 4px; " +
+                "width: 10px; " +
+                "text-align: center; " +
+                "font-weight: bold; " +
+                "padding: 2px 8px 2px 8px; " +
+                "border-top: 1px solid #777777;" +
+                "border-left: 1px solid #777777;" +
+                "border-right: 1px solid #555555;" +
+                "border-bottom: 1px solid #555555;" +
+                "background: #666666;" +
+                "background: -moz-linear-gradient(top,  #666666 0%, #333333 49%, #222222 51%, #000000 100%);" +
+                "background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#666666), color-stop(49%,#333333), color-stop(51%,#222222), color-stop(100%,#000000));" +
+                "background: -webkit-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                "background: -o-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                "background: -ms-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                "background: linear-gradient(to bottom,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
+                "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#000000',GradientType=0 );" +
+                "color: #c0c0c0;" +
+                "z-index: 100;" +
+            "}" +
+            ".dbg .plus {" +
+                "right: 80px; " +
+            "}" +
+            ".dbg .reset {" +
+                "right: 110px; " +
+            "}" +
+            ".dbg .minus {" +
+                "right: 140px; " +
+            "}" +
             ".dbg .exporter {" +
                 "position: absolute; " +
                 "top: 4px; " +
@@ -200,6 +230,9 @@ _cs.dbg_view_mask = function (title) {
             "<div class=\"header\"><div class=\"text\">" + title + "</div></div>" +
             "<div class=\"viewer\"><canvas></canvas></div>" +
             "<div class=\"grabber\"></div>" +
+            "<div class=\"plus\">+</div>" +
+            "<div class=\"reset\">0</div>" +
+            "<div class=\"minus\">-</div>" +
             "<div class=\"exporter\">Export</div>" +
             "<div class=\"status\"><div class=\"text\"></div></div>" +
             "<div class=\"console\"><div class=\"text\"></div></div>" +

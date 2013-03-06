@@ -120,6 +120,9 @@ $cs.debug_window = function () {
 
                     /*  grabbing-based resize support  */
                     var grabbing = false;
+                    var positioning = false;
+                    var positioning_x = -1;
+                    var positioning_y = -1;
                     _cs.jq(".dbg .grabber", _cs.dbg.document).bind("mousedown", function (ev) {
                         grabbing = true;
                         _cs.jq(".dbg .grabber", _cs.dbg.document).css("background-color", "red");
@@ -136,6 +139,19 @@ $cs.debug_window = function () {
                             _cs.jq(".dbg .grabber", _cs.dbg.document).css("top", offset);
                             _cs.dbg_grabber_offset = offset;
                             ev.preventDefault();
+                        }
+                        else if (positioning) {
+                            if (positioning_x === -1)
+                                positioning_x = ev.pageX;
+                            if (positioning_y === -1)
+                                positioning_y = ev.pageY;
+                            var offsetX = positioning_x - ev.pageX;
+                            var offsetY = positioning_y - ev.pageY;
+                            positioning_x = ev.pageX;
+                            positioning_y = ev.pageY;
+                            _cs.dbg_canvas_info.x += offsetX;
+                            _cs.dbg_canvas_info.y += offsetY;
+                            _cs.dbg_reposition();
                         }
                     });
                     _cs.jq(".dbg", _cs.dbg.document).bind("mouseup", function (ev) {
@@ -156,6 +172,73 @@ $cs.debug_window = function () {
                         }
                         ev.preventDefault();
                         return false;
+                    });
+
+                    /*  canvas scroll and zoom functionality  */
+                    var zoom_step   = 100;
+                    var scroll_step = 10;
+                    _cs.jq(".dbg .plus", _cs.dbg.document).bind("click", function (/* ev */) {
+                        _cs.dbg_canvas_info.w += zoom_step;
+                        _cs.dbg_canvas_info.h += zoom_step;
+                        _cs.dbg_refresh();
+                    });
+                    _cs.jq(".dbg .minus", _cs.dbg.document).bind("click", function (/* ev */) {
+                        _cs.dbg_canvas_info.w -= zoom_step;
+                        _cs.dbg_canvas_info.h -= zoom_step;
+                        _cs.dbg_refresh();
+                    });
+                    _cs.jq(".dbg .reset", _cs.dbg.document).bind("click", function (/* ev */) {
+                        _cs.dbg_canvas_info.w = _cs.dbg_canvas_info.wmin;
+                        _cs.dbg_canvas_info.h = _cs.dbg_canvas_info.hmin;
+                        _cs.dbg_refresh();
+                    });
+                    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mousedown", function (/* ev */) {
+                        positioning = true;
+                        positioning_x = -1;
+                        positioning_y = -1;
+                    });
+                    _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mouseup", function (/* ev */) {
+                        positioning = false;
+                    });
+                    _cs.jq(_cs.dbg.document).bind("keydown", function (ev) {
+                        if (ev.keyCode === 43 || ev.keyCode === 107 || ev.keyCode === 187) {
+                            /*  key "+" pressed  */
+                            _cs.dbg_canvas_info.w += zoom_step;
+                            _cs.dbg_canvas_info.h += zoom_step;
+                            _cs.dbg_refresh();
+                        }
+                        else if (ev.keyCode === 45 || ev.keyCode === 109 || ev.keyCode === 189) {
+                            /*  key "-" pressed  */
+                            _cs.dbg_canvas_info.w -= zoom_step;
+                            _cs.dbg_canvas_info.h -= zoom_step;
+                            _cs.dbg_refresh();
+                        }
+                        else if (ev.keyCode === 48) {
+                            /*  key "0" pressed  */
+                            _cs.dbg_canvas_info.w = _cs.dbg_canvas_info.wmin;
+                            _cs.dbg_canvas_info.h = _cs.dbg_canvas_info.hmin;
+                            _cs.dbg_refresh();
+                        }
+                        else if (ev.keyCode === 37) {
+                            /*  key LEFT pressed  */
+                            _cs.dbg_canvas_info.x += scroll_step;
+                            _cs.dbg_reposition();
+                        }
+                        else if (ev.keyCode === 38) {
+                            /*  key UP pressed  */
+                            _cs.dbg_canvas_info.y += scroll_step;
+                            _cs.dbg_reposition();
+                        }
+                        else if (ev.keyCode === 39) {
+                            /*  key RIGHT pressed  */
+                            _cs.dbg_canvas_info.x -= scroll_step;
+                            _cs.dbg_reposition();
+                        }
+                        else if (ev.keyCode === 40) {
+                            /*  key DOWN pressed  */
+                            _cs.dbg_canvas_info.y -= scroll_step;
+                            _cs.dbg_reposition();
+                        }
                     });
                 });
             }, 500);
