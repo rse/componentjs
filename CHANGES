@@ -21,6 +21,11 @@
       component trees in a reasonable way, too.
 
     o Modularized the debugger plugin sources.
+
+    o The localStorage persistence functionality of models is now
+      in a dedicated plugin (component.plugin.localstorage.js) because
+      the localStorage functionality is not available everywhere
+      (e.g. not in NodeJS head-less testing situations, etc).
     
     Major changes between ComponentJS 0.9.6 and 0.9.7
     -------------------------------------------------
