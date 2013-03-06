@@ -187,7 +187,6 @@ interface ComponentJS_comp {
 
 /*  official global API  */
 interface ComponentJS_api {
-    /*  API symbol is both namespace and function  */
     (object: any):                   ComponentJS_comp;
     (selector: string):              ComponentJS_comp;
     (object: any, selector: string): ComponentJS_comp;
@@ -199,16 +198,14 @@ interface ComponentJS_api {
     bootstrap(): void;
     shutdown(): void;
 
-    /* create(selector: string, object: any): void; */
     create(spec: string, ...rest: any[]);
     create(base: any, spec: string, ...rest: any[]);
 
     mark(obj: any, name: string): void;
-
     marked(obj: any, name: string): bool;
 
     debug(level: number): void;
-
+    debug_instrumented(): bool;
     debug_window(): bool;
     debug_window(enable: bool, name: string): void;
     debug_window(params: {
@@ -220,10 +217,14 @@ interface ComponentJS_api {
         height?: number;
     }): void;
 
-    debug_instrumented(): bool;
-
     symbol(name: string): void;
     symbol(): string;
+
+    ns(name: string, value?: any): any;
+
+    version: { major: number; minor: number; micro: number; date: number; };
+
+    pattern: any;
 }
 
 declare var ComponentJS_export: String
