@@ -41,7 +41,7 @@ $cs.debug_instrumented = function () {
 
 /*  try to determine whether Internet Explorer is used  */
 _cs.isIE = function () {
-    /*global navigator:false */
+    /* global navigator:false */
     return (
         typeof navigator !== "undefined" &&
         navigator.appName === "Microsoft Internet Explorer" &&
@@ -92,7 +92,7 @@ $cs.debug_window = function () {
             }
 
             /*  initialize the window content (deferred to avoid problems)  */
-            /*global setTimeout:false */
+            /* global setTimeout:false */
             setTimeout(function () {
                 _cs.jq(_cs.dbg.document).ready(function () {
                     /*  optionally automatically close debugger window with application window  */

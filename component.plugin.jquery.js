@@ -13,9 +13,9 @@
  *  core framework.
  */
 
-/*global ComponentJS:false */
-/*global jQuery:false */
-/*jshint unused:false */
+/* global ComponentJS:false */
+/* global jQuery:false */
+/* jshint unused:false */
 
 ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL) {
     /*

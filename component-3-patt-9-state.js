@@ -77,7 +77,7 @@ _cs.state_requests = {};
 
 /*  spawn all progression runs (asynchronously)  */
 _cs.state_progression = function () {
-    /*global setTimeout:false */
+    /* global setTimeout:false */
     setTimeout(function () {
         /*  try to process the transition requests  */
         var remove = [];

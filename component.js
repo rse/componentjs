@@ -79,10 +79,10 @@
     $include("component-5-glob-1-plugin.js");
 
 })(
-    /*global window:false */
-    /*global global:false */
-    /*global exports:false */
-    /*global define:false */
+    /* global window:false */
+    /* global global:false */
+    /* global exports:false */
+    /* global define:false */
     ( typeof window   !== "undefined"
         ? window
         : ( typeof global !== "undefined"

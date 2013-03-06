@@ -19,11 +19,7 @@ CLOSURECOMPILER = closure-compiler \
 #   tools mandatory for stage2
 GJSLINT         = gjslint
 JSHINT          = jshint \
-                  +maxerr=200 +bitwise -camelcase -curly +eqeqeq \
-                  -forin +immed +latedef -newcap -noarg -noempty +nonew -plusplus \
-                  +quotmark=double -regexp +undef +unused -strict +trailing \
-                  +maxparams=9 +maxdepth=4 +maxstatements=150 +maxlen=200 \
-                  +loopfunc 
+                  --config jshint.json
 
 #   tools optional for stage2
 UGLIFYJS        = uglifyjs \

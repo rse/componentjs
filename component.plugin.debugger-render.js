@@ -53,7 +53,7 @@ _cs.dbg_refresh = function () {
         .height(_cs.dbg_canvas_info.h).attr("height", _cs.dbg_canvas_info.h)
         .width (_cs.dbg_canvas_info.w).attr("width",  _cs.dbg_canvas_info.w);
     _cs.dbg_reposition();
- 
+
     /*  trigger an initial update  */
     _cs.dbg_update();
 };
@@ -79,7 +79,7 @@ _cs.dbg_update = function () {
     if (_cs.dbg === null)
         return;
     if (_cs.dbg_timer === null) {
-        /*global setTimeout:false */
+        /* global setTimeout:false */
         _cs.dbg_timer = setTimeout(function () {
             _cs.dbg_update_once();
             _cs.dbg_timer = null;

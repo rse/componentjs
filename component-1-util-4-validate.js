@@ -335,7 +335,7 @@ _cs.validate_executor = {
 
     /*  validate custom JavaScript type  */
     exec_class: function (value, node) {
-        /*jshint evil:true */
+        /* jshint evil:true */
         return (   typeof value === "object"
                && (   Object.prototype.toString.call(value) === "[object " + node.name + "]")
                    || eval("value instanceof " + node.name)                                  );

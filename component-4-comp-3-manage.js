@@ -12,7 +12,7 @@ $cs.create = function () {
     /*  sanity check environment  */
     if (!_cs.bootstrapped) {
         /*  give warning but still be backward compatible  */
-        /*global alert:false */
+        /* global alert:false */
         alert("WARNING: ComponentJS still not bootstrapped " +
             "(please call \"bootstrap\" method before first \"create\" method call!)");
         $cs.bootstrap();

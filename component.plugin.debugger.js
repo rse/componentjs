@@ -15,7 +15,7 @@
  *  stay in a separate optional plugin, of course.
  */
 
-/*global ComponentJS:false */
+/* global ComponentJS:false */
 
 ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
     $include("component.plugin.debugger-jquery.js");
