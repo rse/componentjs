@@ -7,14 +7,21 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  FIXME: just a quick and dirty, incomplete and unclean TypeScript
-    type definition for ComponentJS. Needs more time...  */
-
 interface ComponentJS_event {
+    target     (val?: any   ): any;
+    propagation(val?: bool  ): bool;
+    processing (val?: bool  ): bool;
+    dispatched (val?: bool  ): bool;
+    decline    (val?: bool  ): bool;
+    state      (val?: string): string;
+    result     (val?: any   ): any;
+    async      (val?: bool  ): bool;
 }
+
 interface ComponentJS_event_cb {
     (ev: ComponentJS_event, ...rest: any[]): void;
 }
+
 interface ComponentJS_event_cb_directresult {
     (...rest: any[]): any;
 }
@@ -219,12 +226,7 @@ interface ComponentJS_api {
     symbol(): string;
 }
 
-/*  the official export method  */
 declare var ComponentJS_export: String
-
-/*  the official/default global symbol  */
-declare var ComponentJS: ComponentJS_api
-
-/*  the inofficial/de-facto global symbol  */
-declare var cs: ComponentJS_api
+declare var ComponentJS:        ComponentJS_api
+declare var cs:                 ComponentJS_api
 
