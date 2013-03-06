@@ -185,7 +185,6 @@ interface ComponentJS_comp {
     store(key: string, val: any): any;
 }
 
-/*  official global API  */
 interface ComponentJS_api {
     (object: any):                   ComponentJS_comp;
     (selector: string):              ComponentJS_comp;
