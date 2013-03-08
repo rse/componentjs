@@ -888,6 +888,20 @@ displaying the Model information and storing events into it.
   | var val = cs(this).value("foo")
   | cs(this).value("foo", "bar")
 
+- O<component>.M<touch>({
+      F<name>: T<String>,
+  });
+  O<component>.M<touch>(
+      P<name>: T<String>
+  )
+
+  Touches the value of O<component>'s model element named F<name>,
+  without changing the value but with triggering all its "get" observers
+  (its "change" observers are not triggered). This can be useful for
+  firing "set" observers manually.
+
+  | cs(this).touch("foo")
+
 - O<component>.M<observe>({
       F<name>: T<String>,
       F<func>: T<Function>,
