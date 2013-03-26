@@ -191,7 +191,7 @@ $cs.pattern.model = $cs.trait({
                             capturing: false,
                             spreading: false,
                             bubbling:  false,
-                            async:     false
+                            async:     true
                         });
                     }
                 }
