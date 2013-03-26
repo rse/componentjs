@@ -336,12 +336,15 @@ looked up, state transitioned, communicated on and be destroyed.
   either a to be instanciated class constructor (T<Function>) or an already
   instanciated object (T<Object>).
 
+  The M<create> method returns the last created component, i.e., the
+  right-most component in the tree specification.
+
   | cs.create("/{sv,ui/{one,two}}", my.sv, {}, my.ui.one, my.ui.two);
   | cs.create(this, "model/view", model, view);
   | cs(this).create("model/view", model, view);
 
-- ComponentJS.M<destroy>(P<abs-path>: T<String>): T<Void>
-  O<component>.M<destroy>(): T<Void>
+- ComponentJS.M<destroy>(P<abs-path>: T<String>): T<Void>;
+  O<component>.M<destroy>(): T<Void>;
   O<component>.M<destroy>(): T<Void>
 
   Destroy the component uniquely identified by P<abs-path> or
