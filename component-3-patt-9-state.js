@@ -136,7 +136,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             /*  mandatory transition parent component to higher state first  */
             if (comp.parent() !== null) {
                 if (comp.parent().state_compare(state) < 0) {
-                    _cs.state_progression_run(comp.parent(), state, "upward");
+                    _cs.state_progression_run(comp.parent(), state, "upward"); /*  RECURSION  */
                     if (comp.parent().state_compare(state) < 0) {
                         $cs.debug(1,
                             "state: " + comp.path("/") + ": transition (increase) " +
@@ -203,7 +203,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                     if (children[i].state_compare(state) < 0) {
                         if (   children[i].state_auto_increase()
                             || children[i].property("ComponentJS:state-auto-increase") === true) {
-                            _cs.state_progression_run(children[i], state, "downward");
+                            _cs.state_progression_run(children[i], state, "downward"); /*  RECURSION  */
                             if (children[i].state_compare(state) < 0) {
                                 /*  enqueue state transition for child  */
                                 _cs.state_requests[children[i].id()] =
@@ -229,7 +229,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             children = comp.children();
             for (i = 0; i < children.length; i++) {
                 if (children[i].state_compare(state_lower) > 0) {
-                    _cs.state_progression_run(children[i], state_lower, "downward");
+                    _cs.state_progression_run(children[i], state_lower, "downward"); /*  RECURSION  */
                     if (children[i].state_compare(state_lower) > 0) {
                         $cs.debug(1,
                             "state: " + comp.path("/") + ": transition (decrease) " +
@@ -295,7 +295,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                     if (comp.parent().state_compare(state_lower) > 0) {
                         if (   comp.parent().state_auto_decrease()
                             || comp.parent().property("ComponentJS:state-auto-decrease") === true) {
-                            _cs.state_progression_run(comp.parent(), state_lower, "upward");
+                            _cs.state_progression_run(comp.parent(), state_lower, "upward"); /*  RECURSION  */
                             if (comp.parent().state_compare(state_lower) > 0) {
                                 /*  enqueue state transition for parent  */
                                 _cs.state_requests[comp.parent().id()] =
