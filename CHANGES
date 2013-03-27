@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 0.9.8 and 0.9.9
+    -------------------------------------------------
+
+    o Switch code-base to latest JSHint.
+
+    o Improve API documentation.
+
     Major changes between ComponentJS 0.9.7 and 0.9.8
     -------------------------------------------------
 
