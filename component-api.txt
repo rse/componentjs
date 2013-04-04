@@ -814,8 +814,8 @@ target component itself.
       [F<name>: T<String> = "default",]
       F<object>: T<Object>,
       [F<spool>: T<String>]
-  }): T<String>;
-  O<component>.M<plug>(P<object>: T<Object>): T<String>
+  }): T<Number>;
+  O<component>.M<plug>(P<object>: T<Object>): T<Number>
 
   Plugs F<object> into the socket named F<name> provided by any
   parent/ancestor component of O<component>. Optionally spool the
@@ -824,8 +824,8 @@ target component itself.
 
   | cs(this).plug({ object: ui, spool: "materialized" })
 
-- O<component>.M<unplug>({ F<id>: T<String> }): T<Void>;
-  O<component>.M<unplug>(P<id>: T<String>): T<Void>
+- O<component>.M<unplug>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unplug>(P<id>: T<Number>): T<Void>
 
   Unplugs the object previously plugged under F<id>.
   This is usually performed indirectly through the Spool mechanism.
@@ -911,11 +911,11 @@ displaying the Model information and storing events into it.
       [F<touch>: T<Boolean> = false,]
       [F<operation>: T<String> = "set",]
       [F<spool>: T<String> = null]
-  }): T<String>;
+  }): T<Number>;
   O<component>.M<observe>(
       F<name>: T<String>,
       F<func>: T<Function>
-  ): T<String>
+  ): T<Number>
 
   Observe the value of O<component>'s model element named F<name>
   for F<operation> operations (by default set/change operations).
@@ -933,8 +933,8 @@ displaying the Model information and storing events into it.
   |     ...
   | })
 
-- O<component>.M<unobserve>({ F<id>: T<String> }): T<Void>;
-  O<component>.M<unobserve>(P<id>: T<String>): T<Void>
+- O<component>.M<unobserve>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unobserve>(P<id>: T<Number>): T<Void>
 
   Release the observation identified by F<id>, previously acquired by a call to M<observe>().
   This is usually done implicitly through the spooling mechanism.
@@ -982,7 +982,7 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
   O<component>.M<subscribe>(
       P<name>: T<String>,
       P<func>: T<Function>,
-      [P<arg>: T<Object>, ...]
+      [P<args>: T<Object>, ...]
   ): T<Number>
 
   Subscribe to event F<name> (optionally sub-specifified via F<spec>)
@@ -1017,16 +1017,16 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
   |     }
   | })
 
-- O<component>.M<unsubscribe>({ F<id>: T<String> }): T<Void>;
-  O<component>.M<unsubscribe>(P<id>: T<String>): T<Void>
+- O<component>.M<unsubscribe>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unsubscribe>(P<id>: T<Number>): T<Void>
 
   Release the subscription identified by F<id>, previously acquired by a call to M<subscribe>().
   This is usually done implicitly through the spooling mechanism.
 
   | cs(this).unsubscribe(id)
 
-- O<component>.M<subscription>({ F<id>: T<String> }): T<Boolean>;
-  O<component>.M<subscription>(P<id>: T<String>): T<Boolean>
+- O<component>.M<subscription>({ F<id>: T<Number> }): T<Boolean>;
+  O<component>.M<subscription>(P<id>: T<Number>): T<Boolean>
 
   Checks whether the subscription identified by F<id> exists on O<component>.
 
@@ -1084,16 +1084,16 @@ the functionality consumer M<call>s the service.
 
   FIXME
 
-- O<component>.M<unregister>({ F<id>: T<String> }): T<Void>;
-  O<component>.M<unregister>(P<id>: T<String>): T<Void>
+- O<component>.M<unregister>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unregister>(P<id>: T<Number>): T<Void>
 
   Release the registration identified by F<id>, previously acquired by a call to M<register>().
   This is usually done implicitly through the spooling mechanism.
 
   | cs(this).unregister(id)
 
-- O<component>.M<registration>({ F<id>: T<String> }): T<Boolean>;
-  O<component>.M<registration>(P<id>: T<String>): T<Boolean>
+- O<component>.M<registration>({ F<id>: T<Number> }): T<Boolean>;
+  O<component>.M<registration>(P<id>: T<Number>): T<Boolean>
 
   Checks whether the registration identified by F<id> exists on O<component>.
 
@@ -1166,8 +1166,8 @@ the multiple consumers have M<latch>ed into this hook beforehand.
   |     return (entity.type() === "Person");
   | });
 
-- O<component>.M<unlatch>({ F<id>: T<String> }): T<Void>;
-  O<component>.M<unlatch>(P<id>: T<String>): T<Void>
+- O<component>.M<unlatch>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unlatch>(P<id>: T<Number>): T<Void>
 
   Unlatch from the hook identified by F<id>, previously acquired by a call to M<latch>().
   This is usually done implicitly through the spooling mechanism.
