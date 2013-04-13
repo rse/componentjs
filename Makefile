@@ -23,9 +23,8 @@ JSHINT          = jshint \
 
 #   tools optional for stage2
 UGLIFYJS        = uglifyjs \
-                  --no-dead-code \
-                  --no-copyright \
-                  --max-line-len 512
+                  --mangle \
+                  --compress
 YUICOMPRESSOR   = yuicompressor \
                   --type js \
                   --line-break 512
