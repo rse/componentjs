@@ -135,8 +135,9 @@ $cs.pattern.eventing = $cs.trait({
 
             /*  make an event for matching only  */
             var ev = $cs.event({
-                name: params.name,
-                spec: params.spec
+                name:   params.name,
+                spec:   params.spec,
+                target: $cs.nop
             });
 
             /*  find and return all matching subscriptions  */

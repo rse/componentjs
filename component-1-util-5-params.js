@@ -92,7 +92,7 @@ $cs.params = function (func_name, func_args, spec) {
             if (_cs.isown(spec, name)) {
                 if (   typeof spec[name].req !== "undefined"
                     && spec[name].req
-                    && args[name] === "undefined")
+                    && typeof args[name] === "undefined")
                     throw _cs.exception(func_name, "required parameter \"" + name + "\" missing");
             }
         }
