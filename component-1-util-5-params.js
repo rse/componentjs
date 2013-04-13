@@ -15,8 +15,8 @@ $cs.params = function (func_name, func_args, spec) {
     /*  start with a fresh parameter object  */
     var params = {};
 
-    /*  1. determine number of positional parameters,
-        2. determine number of required parameters,
+    /*  1. determine number of total    positional parameters,
+        2. determine number of required positional parameters,
         3. set default values  */
     var positional = 0;
     var required   = 0;
