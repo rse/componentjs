@@ -17,11 +17,11 @@ $cs.pattern.hook = $cs.trait({
         latch: function () {
             /*  determine parameters  */
             var params = $cs.params("latch", arguments, {
-                name:    { pos: 0,     def: null,    req: true },
-                ctx:     {             def: this               },
-                func:    { pos: 1,     def: $cs.nop, req: true },
-                args:    { pos: "...", def: []                 },
-                spool:   {             def: null               }
+                name:    { pos: 0,     req: true },
+                ctx:     {             def: this },
+                func:    { pos: 1,     req: true },
+                args:    { pos: "...", def: []   },
+                spool:   {             def: null }
             });
 
             /*  subscribe to hook event  */
@@ -55,11 +55,11 @@ $cs.pattern.hook = $cs.trait({
         hook: function () {
             /*  determine parameters  */
             var params = $cs.params("hook", arguments, {
-                name:   { pos: 0,     def: null,    req: true },
-                proc:   { pos: 1,     def: "none",
+                name:   { pos: 0, req: true },
+                proc:   { pos: 1, def: "none",
                           valid: function (x) {
                               return _cs.isdefined(_cs.hook_proc[x]); } },
-                args:   { pos: "...", def: []                 }
+                args:   { pos: "...", def: [] }
             });
 
             /*  dispatch hook event onto target component  */

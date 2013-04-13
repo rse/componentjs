@@ -18,11 +18,11 @@ $cs.pattern.property = $cs.trait({
         property: function () {
             /*  determine parameters  */
             var params = $cs.params("property", arguments, {
-                name:        { pos: 0, def: null,     req: true },
-                value:       { pos: 1, def: undefined           },
-                bubbling:    {         def: true                },
-                targeting:   {         def: true                },
-                returnowner: {         def: false               }
+                name:        { pos: 0, req: true      },
+                value:       { pos: 1, def: undefined },
+                bubbling:    {         def: true      },
+                targeting:   {         def: true      },
+                returnowner: {         def: false     }
             });
 
             /*  sanity check usage  */

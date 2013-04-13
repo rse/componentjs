@@ -17,15 +17,15 @@ $cs.pattern.service = $cs.trait({
         register: function () {
             /*  determine parameters  */
             var params = $cs.params("register", arguments, {
-                name:      { pos: 0,     def: null,    req: true },
-                ctx:       {             def: this               },
-                func:      { pos: 1,     def: $cs.nop, req: true },
-                args:      { pos: "...", def: []                 },
-                async:     {             def: false              },
-                spool:     {             def: null               },
-                capturing: {             def: false              },
-                spreading: {             def: false              },
-                bubbling:  {             def: true               }
+                name:      { pos: 0,     req: true  },
+                ctx:       {             def: this  },
+                func:      { pos: 1,     req: true  },
+                args:      { pos: "...", def: []    },
+                async:     {             def: false },
+                spool:     {             def: null  },
+                capturing: {             def: false },
+                spreading: {             def: false },
+                bubbling:  {             def: true  }
             });
 
             /*  create command object to wrap service  */
@@ -100,8 +100,8 @@ $cs.pattern.service = $cs.trait({
         callable: function () {
             /*  determine parameters  */
             var params = $cs.params("callable", arguments, {
-                name:  { pos: 0, def: null,      req: true },
-                value: { pos: 1, def: undefined            }
+                name:  { pos: 0, req: true      },
+                value: { pos: 1, def: undefined }
             });
 
             /*  find service command  */
@@ -118,11 +118,11 @@ $cs.pattern.service = $cs.trait({
         call: function () {
             /*  determine parameters  */
             var params = $cs.params("call", arguments, {
-                name:      { pos: 0,     def: null,  req: true },
-                args:      { pos: "...", def: []               },
-                capturing: {             def: false            },
-                spreading: {             def: false            },
-                bubbling:  {             def: true             }
+                name:      { pos: 0,     req: true   },
+                args:      { pos: "...", def: []     },
+                capturing: {             def: false  },
+                spreading: {             def: false  },
+                bubbling:  {             def: true   }
             });
 
             /*  dispatch service event onto target component  */

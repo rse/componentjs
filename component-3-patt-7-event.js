@@ -29,16 +29,16 @@ $cs.pattern.event = $cs.clazz({
 $cs.event = function () {
     /*  determine parameters  */
     var params = $cs.params("event", arguments, {
-        name:        { pos: 0,     def: null, req: true  },
-        spec:        {             def: {}               },
-        target:      { pos: 1,     def: null, req: true  },
-        propagation: { pos: 2,     def: true             },
-        processing:  { pos: 3,     def: true             },
-        dispatched:  { pos: 4,     def: false            },
-        decline:     { pos: 5,     def: false            },
-        state:       { pos: 6,     def: "targeting"      },
-        result:      { pos: 7,     def: undefined        },
-        async:       { pos: 8,     def: false            }
+        name:        { pos: 0,     req: true        },
+        spec:        {             def: {}          },
+        target:      { pos: 1,     req: true        },
+        propagation: { pos: 2,     def: true        },
+        processing:  { pos: 3,     def: true        },
+        dispatched:  { pos: 4,     def: false       },
+        decline:     { pos: 5,     def: false       },
+        state:       { pos: 6,     def: "targeting" },
+        result:      { pos: 7,     def: undefined   },
+        async:       { pos: 8,     def: false       }
     });
 
     /*  create new event  */
@@ -69,17 +69,17 @@ $cs.pattern.eventing = $cs.trait({
         subscribe: function () {
             /*  determine parameters  */
             var params = $cs.params("subscribe", arguments, {
-                name:      { pos: 0,     def: null,    req: true },
-                spec:      {             def: {}                 },
-                ctx:       {             def: this               },
-                func:      { pos: 1,     def: $cs.nop, req: true },
-                args:      { pos: "...", def: []                 },
-                capturing: {             def: false              },
-                spreading: {             def: false              },
-                bubbling:  {             def: true               },
-                noevent:   {             def: false              },
-                exclusive: {             def: false              },
-                spool:     {             def: null               }
+                name:      { pos: 0,     req: true  },
+                spec:      {             def: {}    },
+                ctx:       {             def: this  },
+                func:      { pos: 1,     req: true  },
+                args:      { pos: "...", def: []    },
+                capturing: {             def: false },
+                spreading: {             def: false },
+                bubbling:  {             def: true  },
+                noevent:   {             def: false },
+                exclusive: {             def: false },
+                spool:     {             def: null  }
             });
 
             /*  honor exclusive request  */
@@ -129,8 +129,8 @@ $cs.pattern.eventing = $cs.trait({
         _subscriptions: function () {
             /*  determine parameters  */
             var params = $cs.params("subscriptions", arguments, {
-                name:  { pos: 0, def: null, req: true },
-                spec:  { pos: 1, def: {}              }
+                name:  { pos: 0, req: true },
+                spec:  { pos: 1, def: {}   }
             });
 
             /*  make an event for matching only  */
@@ -158,7 +158,7 @@ $cs.pattern.eventing = $cs.trait({
 
             /*  determine parameters  */
             var params = $cs.params("publish", arguments, {
-                name:         { pos: 0,     def: null, req: true },
+                name:         { pos: 0,     req: true            },
                 spec:         {             def: {}              },
                 async:        {             def: false           },
                 capturing:    {             def: true            },

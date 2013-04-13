@@ -18,10 +18,10 @@ $cs.pattern.spool = $cs.trait({
         spool: function () {
             /*  determine parameters  */
             var params = $cs.params("spool", arguments, {
-                name:  { pos: 0,                   req: true },
-                ctx:   { pos: 1,     def: this               },
-                func:  { pos: 2,     def: $cs.nop, req: true },
-                args:  { pos: "...", def: []                 }
+                name:  { pos: 0,     req: true },
+                ctx:   { pos: 1,     def: this },
+                func:  { pos: 2,     req: true },
+                args:  { pos: "...", def: []   }
             });
 
             /*  sanity check parameters  */

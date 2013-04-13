@@ -87,10 +87,10 @@ $cs.pattern.model = $cs.trait({
         value: function () {
             /*  determine parameters  */
             var params = $cs.params("value", arguments, {
-                name:        { pos: 0, def: null,     req: true },
-                value:       { pos: 1, def: undefined           },
-                force:       { pos: 2, def: false               },
-                returnowner: {         def: false               }
+                name:        { pos: 0, req: true      },
+                value:       { pos: 1, def: undefined },
+                force:       { pos: 2, def: false     },
+                returnowner: {         def: false     }
             });
 
             /*  determine component owning model with requested value  */

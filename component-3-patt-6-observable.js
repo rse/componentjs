@@ -18,11 +18,11 @@ $cs.pattern.observable = $cs.trait({
         listen: function () {
             /*  determine parameters  */
             var params = $cs.params("listen", arguments, {
-                name:    { pos: 0,     def: null,    req: true },
-                ctx:     { pos: 1,     def: this               },
-                func:    { pos: 2,     def: $cs.nop, req: true },
-                args:    { pos: "...", def: []                 },
-                spec:    {             def: null               } /* customized matching */
+                name:    { pos: 0,     req: true },
+                ctx:     { pos: 1,     def: this },
+                func:    { pos: 2,     req: true },
+                args:    { pos: "...", def: []   },
+                spec:    {             def: null } /* customized matching */
             });
 
             /*  attach listener information  */
@@ -35,7 +35,7 @@ $cs.pattern.observable = $cs.trait({
         listening: function () {
             /*  determine parameters  */
             var params = $cs.params("listening", arguments, {
-                id: { pos: 0, def: null, req: true }
+                id: { pos: 0, req: true }
             });
 
             /*  check whether listener is attached  */
@@ -46,7 +46,7 @@ $cs.pattern.observable = $cs.trait({
         unlisten: function () {
             /*  determine parameters  */
             var params = $cs.params("unlisten", arguments, {
-                id: { pos: 0, def: null, req: true }
+                id: { pos: 0, req: true }
             });
 
             /*  detach parameters from component  */
@@ -61,7 +61,7 @@ $cs.pattern.observable = $cs.trait({
         notify: function () {
             /*  determine parameters  */
             var params = $cs.params("notify", arguments, {
-                name:    { pos: 0,     def: null, req: true                               },
+                name:    { pos: 0,     req: true                                          },
                 args:    { pos: "...", def: []                                            },
                 matches: {             def: function (p, l) { return p.name === l.name; } } /* customized matching */
             });

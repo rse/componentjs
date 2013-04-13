@@ -48,12 +48,12 @@ $cs.pattern.command = $cs.clazz({
 $cs.command = function () {
     /*  determine parameters  */
     var params = $cs.params("command", arguments, {
-        ctx:      {             def: null             },
-        func:     { pos: 0,     def: null, req: true  },
-        args:     { pos: "...", def: []               },
-        async:    {             def: false            },
-        enabled:  {             def: true             },
-        wrap:     {             def: false            }
+        ctx:      {             def: null  },
+        func:     { pos: 0,     req: true  },
+        args:     { pos: "...", def: []    },
+        async:    {             def: false },
+        enabled:  {             def: true  },
+        wrap:     {             def: false }
     });
 
     /*  create new command  */

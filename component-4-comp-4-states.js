@@ -18,11 +18,11 @@ $cs.transition = function () {
 
     /*  determine parameters  */
     var params = $cs.params("transition", arguments, {
-        target: { pos: 0, def: null, req: true },
-        enter:  { pos: 1, def: null, req: true },
-        leave:  { pos: 2, def: null, req: true },
-        color:  { pos: 3, def: null, req: true },
-        source: {         def: null            }
+        target: { pos: 0, req: true      },
+        enter:  { pos: 1, req: true      },
+        leave:  { pos: 2, req: true      },
+        color:  { pos: 3, def: "#000000" },
+        source: {         def: null      }
     });
 
     /*  add new state  */

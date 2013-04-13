@@ -21,11 +21,11 @@ $cs.pattern.socket = $cs.trait({
         socket: function () {
             /*  determine parameters  */
             var params = $cs.params("socket", arguments, {
-                name:   {         def: "default"       },
-                scope:  {         def: null            },
-                ctx:    { pos: 0, def: null, req: true },
-                plug:   { pos: 1, def: null, req: true },
-                unplug: { pos: 2, def: null, req: true }
+                name:   {         def: "default" },
+                scope:  {         def: null      },
+                ctx:    { pos: 0, req: true      },
+                plug:   { pos: 1, req: true      },
+                unplug: { pos: 2, req: true      }
             });
 
             /*  sanity check parameters  */
@@ -89,9 +89,9 @@ $cs.pattern.socket = $cs.trait({
         plug: function () {
             /*  determine parameters  */
             var params = $cs.params("plug", arguments, {
-                name:     {         def: "default"           },
-                object:   { pos: 0,                req: true },
-                spool:    {         def: null                }
+                name:     {         def: "default" },
+                object:   { pos: 0, req: true      },
+                spool:    {         def: null      }
             });
 
             /*  remember plug operation  */

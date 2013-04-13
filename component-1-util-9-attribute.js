@@ -11,9 +11,9 @@
 $cs.attribute = function () {
     /*  determine parameters  */
     var params = $cs.params("attribute", arguments, {
-        name:     { pos: 0, def: null, req: true  },
-        def:      { pos: 1, def: null, req: true  },
-        validate: { pos: 2, def: null             }
+        name:     { pos: 0, req: true  },
+        def:      { pos: 1, req: true  },
+        validate: { pos: 2, def: null  }
     });
 
     /*  return closure-based getter/setter method  */
