@@ -123,24 +123,23 @@ _cs.clazz_or_trait = function (params, is_clazz) {
 
     /*  remember user-supplied constructor function
         (and provide fallback implementation)  */
+    var cons = $cs.nop;
     if (_cs.isdefined(params.cons))
-        _cs.annotation(clazz, "cons", params.cons);
+        cons = params.cons;
     else if (_cs.isdefined(params.extend))
-        _cs.annotation(clazz, "cons", function () { this.base(); });
-    else
-        _cs.annotation(clazz, "cons", $cs.nop);
+        cons = function () { this.base(); };
+    _cs.annotation(clazz, "cons", cons);
 
-    /*  provide name for underlying implementation of "base()"  */
-    _cs.annotation(_cs.annotation(clazz, "cons"), "name", "cons");
+    /*  provide name for underlying implementation of "base()" for constructor  */
+    _cs.annotation(cons, "name", "cons");
     if (_cs.isdefined(params.extend))
-        _cs.annotation(_cs.annotation(clazz, "cons"), "base",
-            _cs.annotation(params.extend, "cons"));
+        _cs.annotation(cons, "base", _cs.annotation(params.extend, "cons"));
 
     /*  remember user-supplied setup function  */
     if (_cs.isdefined(params.setup))
         _cs.annotation(clazz, "setup", params.setup);
 
-    /*  extend class with own poperties and methods  */
+    /*  extend class with own properties and methods  */
     if (_cs.isdefined(params.statics))
         _cs.extend(clazz, params.statics);
     if (_cs.isdefined(params.protos))
@@ -151,7 +150,9 @@ _cs.clazz_or_trait = function (params, is_clazz) {
         _cs.annotation(clazz, "dynamics", params.dynamics);
 
     /*  internal utility method for resolving an annotation on a
-        possibly cloned function (just for the following "base" method)  */
+        possibly cloned function (just for the following "base" method).
+        Notice: for a cloned function the clone is a wrapper annotated
+        with the annoation "clone" set to "true"!  */
     var resolve = function (func, name) {
         var result = _cs.annotation(func, name);
         while (result === null && _cs.annotation(func.caller, "clone") === true) {
