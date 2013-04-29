@@ -238,18 +238,28 @@ $cs.pattern.eventing = $cs.trait({
                             || (state === "spreading" && s.spreading)
                             || (state === "bubbling"  && s.bubbling ))
                         && ev.matches(s.name, s.spec)                 ) {
+
+                        /*  verbosity  */
                         if (!params.silent)
                             $cs.debug(1, "event: " + comp.path("/") + ": dispatch on " + state);
+
+                        /*  further annotate event object  */
                         ev.state(state);
                         ev.decline(false);
+
+                        /*  call subscription method  */
                         var args = _cs.concat(
                             s.noevent ? [] : [ ev ],
                             s.args,
                             params.args
                         );
                         var result = s.func.apply(s.ctx, args);
+
+                        /*  process return value  */
                         if (s.noevent && _cs.isdefined(result))
                             ev.result(params.resultstep(ev.result(), result));
+
+                        /*  control the further dispatching  */
                         if (!ev.decline()) {
                             ev.dispatched(true);
                             if (params.firstonly)
