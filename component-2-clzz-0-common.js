@@ -27,19 +27,19 @@ _cs.clazz_or_trait = function (params, is_clazz) {
         /*  initialize all mixin traits and this class (or trait)  */
         var init = function (obj, clz, arg, exec_cons) {
             /*  depth-first visit of parent class  */
-            if (_cs.annotation(clz, "extend") !== null)
-                arguments.callee(obj, _cs.annotation(clz, "extend"), arg, false); /* RECURSION */
+            var extend = _cs.annotation(clz, "extend");
+            if (extend !== null)
+                arguments.callee(obj, extend, arg, false); /* RECURSION */
 
             /*  depth-first visit of mixin traits  */
-            if (_cs.annotation(clz, "mixin") !== null) {
-                var mixin = _cs.annotation(clz, "mixin");
+            var mixin = _cs.annotation(clz, "mixin");
+            if (mixin !== null)
                 for (var i = 0; i < mixin.length; i++)
                     arguments.callee(obj, mixin[i], arg, true); /* RECURSION */
-            }
 
             /*  establish clones of all own dynamic fields  */
-            if (_cs.annotation(clz, "dynamics") !== null) {
-                var dynamics = _cs.annotation(clz, "dynamics");
+            var dynamics = _cs.annotation(clz, "dynamics");
+            if (dynamics !== null) {
                 for (var field in dynamics) {
                     if (_cs.isown(dynamics, field)) {
                         if (   _cs.istypeof(dynamics[field]) !== "null"
@@ -60,12 +60,14 @@ _cs.clazz_or_trait = function (params, is_clazz) {
                 but a trait intentionally gets no constructor parameters
                 passed-through (as it cannot know where it gets mixed
                 into, so it cannot know what to do with the parameters)  */
-            if (exec_cons && _cs.annotation(clz, "cons") !== null) {
+            if (exec_cons) {
                 var cons = _cs.annotation(clz, "cons");
-                if (_cs.istypeof(clz) === "clazz")
-                    cons.apply(obj, arg);
-                else
-                    cons.call(obj);
+                if (cons !== null) {
+                    if (_cs.istypeof(clz) === "clazz")
+                        cons.apply(obj, arg);
+                    else
+                        cons.call(obj);
+                }
             }
         };
         init(obj, clz, arg, true);
