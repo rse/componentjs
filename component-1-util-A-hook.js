@@ -87,8 +87,17 @@ _cs.hook = function (name, proc) {
     if (typeof _cs.hooks[name] !== "undefined") {
         if (args === null)
             args = _cs.slice(arguments, 2);
-        _cs.foreach(_cs.hooks[name], function (s) {
-            var r = s.cb.apply({ args: s.args, _cs: _cs, $cs: $cs }, args);
+        _cs.foreach(_cs.hooks[name], function (l) {
+            /*  call latched callback  */
+            var r = l.cb.apply({
+                args:   l.args,                 /*  latch arguments  */
+                result: result,                 /*  current result   */
+                hooks:  _cs.hooks[name].length, /*  total number of hooks latched  */
+                _cs:    _cs,                    /*  internal ComponentJS API  */
+                $cs:    $cs                     /*  external ComponentJS API  */
+            },  args);                          /*  hook arguments  */
+
+            /*  process/merge results  */
             result = _cs.hook_proc[proc].step.call(null, result, r);
         });
     }
