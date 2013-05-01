@@ -103,7 +103,7 @@ _cs.state_progression = function () {
 _cs.state_progression_single = function (req) {
     var done = false;
     _cs.state_progression_run(req.comp, req.state);
-    if (req.comp.state() === req.state) {
+    if (_cs.states[req.comp.__state].state === req.state) {
         if (typeof req.callback === "function")
             req.callback.call(req.comp, req.state);
         done = true;
