@@ -918,7 +918,7 @@ displaying the Model information and storing events into it.
   ): T<Number>
 
   Observe the value of O<component>'s model element named F<name>
-  for F<operation> operations (by default set/change operations).
+  for F<operation> operations (by default "set" operations).
   For "get" operations, the callback function F<func> has to be of
   signature F<func>(P<ev>: T<Event>, P<value>: T<Object>): T<Void>.
   For "set" operations, the callback function F<func> has to be of signature
