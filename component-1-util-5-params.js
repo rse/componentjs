@@ -10,7 +10,7 @@
 /*  utility function: flexible parameter handling  */
 $cs.params = function (func_name, func_args, spec) {
     /*  provide parameter processing hook  */
-    _cs.hook("ComponentJS:params:" + func_name, "none", { args: func_args, spec: spec });
+    _cs.hook("ComponentJS:params:" + func_name + ":enter", "none", { args: func_args, spec: spec });
 
     /*  start with a fresh parameter object  */
     var params = {};
@@ -117,6 +117,9 @@ $cs.params = function (func_name, func_args, spec) {
             params[pos2name["..."]] = args;
         }
     }
+
+    /*  provide parameter processing hook  */
+    _cs.hook("ComponentJS:params:" + func_name + ":leave", "none", { args: func_args, spec: spec, params: params });
 
     /*  return prepared parameter object  */
     return params;
