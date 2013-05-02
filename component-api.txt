@@ -900,7 +900,7 @@ displaying the Model information and storing events into it.
 
   Touches the value of O<component>'s model element named F<name>,
   without changing the value but with triggering all its "get" observers
-  (its "change" observers are not triggered). This can be useful for
+  (its "changed" observers are not triggered). This can be useful for
   firing "set" observers manually.
 
   | cs(this).touch("foo")
@@ -921,7 +921,7 @@ displaying the Model information and storing events into it.
   for F<operation> operations (by default "set" operations).
   For "get" operations, the callback function F<func> has to be of
   signature F<func>(P<ev>: T<Event>, P<value>: T<Object>): T<Void>.
-  For "set" operations, the callback function F<func> has to be of signature
+  For "set" and "changed" operations, the callback function F<func> has to be of signature
   F<func>(P<ev>: T<Event>, P<value-new>: T<Object>, P<value-old>: T<Object>): T<Void>.
   Both types of callbacks can override the value by using P<ev>.M<result>(P<value>).
   The M<observe> method returns an id which uniquely identifies the observation.
