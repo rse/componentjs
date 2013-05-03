@@ -87,5 +87,5 @@ _cs.spool_spec_parse = function (comp, spec) {
         info.name = m[2];
     }
     return info;
-}
+};
 
