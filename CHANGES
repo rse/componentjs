@@ -17,6 +17,27 @@
 
     o Improve API documentation.
 
+    o Reduced the external build-time dependencies.
+
+    o Bugfix cs.params() function and add additional hook
+      for plugins to cs.params().
+
+    o Provide "this.result" (the current aggregated result)
+      and "this.hooks" (the total number of registered hooks)
+      to the internal hooking mechanism to allow plugins to
+      leverage from more information.
+
+    o Reduce the number of redundant internal annotation calls
+      in the central clazz/trait mechanism.
+
+    o Cleanup all internal "cs.params()" usages by using either
+      "req" or "def" but never both in parallel (as it makes no sense).
+
+    o Allow all "spool" parameters to use the syntax
+      "<comp-path>:<spool-name>" in addition to the standard
+      "<spool-name>" in order to use the spool of component, addressed
+      via the relative path "<comp-path>".
+
     Major changes between ComponentJS 0.9.7 and 0.9.8
     -------------------------------------------------
 
