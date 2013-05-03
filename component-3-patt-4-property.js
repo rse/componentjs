@@ -50,7 +50,7 @@ $cs.pattern.property = $cs.trait({
                 /*  first try: child-scoped property  */
                 if (scope.length > 0) {
                     for (var i = scope.length - 1; i >= 0; i--) {
-                        var probePath = scope.slice(0, i + 1).join('/');
+                        var probePath = scope.slice(0, i + 1).join("/");
                         v = node.cfg("ComponentJS:property:" + params.name + "@" + probePath);
                         if (typeof v !== "undefined")
                             break;
