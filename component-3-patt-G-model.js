@@ -11,10 +11,19 @@
 $cs.pattern.model = $cs.trait({
     protos: {
         /*  define model  */
-        model: function (model) {
-            var name;
+        model: function () {
+            /*  determine parameters  */
+            var params = $cs.params("model", arguments, {
+                model: { pos: 0, def: null }
+            });
+
+            /*  simplify further processing  */
+            var model = params.model;
+            if (model === null)
+                model = undefined;
 
             /*  sanity check model  */
+            var name;
             if (_cs.isdefined(model)) {
                 for (name in model) {
                     if (typeof model[name].value === "undefined")
@@ -40,10 +49,12 @@ $cs.pattern.model = $cs.trait({
             /*  try to load stored model values  */
             var store = this.store("model");
             if (store !== null) {
-                for (name in model) {
-                    if (model[name].store) {
-                        if (_cs.isdefined(store[name]))
-                            model[name].value = store[name];
+                if (_cs.isdefined(model)) {
+                    for (name in model) {
+                        if (model[name].store) {
+                            if (_cs.isdefined(store[name]))
+                                model[name].value = store[name];
+                        }
                     }
                 }
             }
