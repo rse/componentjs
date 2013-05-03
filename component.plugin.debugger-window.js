@@ -93,7 +93,7 @@ $cs.debug_window = function () {
 
             /*  initialize the window content (deferred to avoid problems)  */
             /* global setTimeout:false */
-            setTimeout(function () {
+            setTimeout(_cs.hook("ComponentJS:plugin:debugger:settimeout:func", "pass", function () {
                 _cs.jq(_cs.dbg.document).ready(function () {
                     /*  optionally automatically close debugger window with application window  */
                     if (params.autoclose) {
@@ -241,7 +241,7 @@ $cs.debug_window = function () {
                         }
                     });
                 });
-            }, 500);
+            }), 500);
         }
         $cs.debug(3, "debugger enabled");
     }

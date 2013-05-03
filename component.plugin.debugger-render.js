@@ -80,10 +80,10 @@ _cs.dbg_update = function () {
         return;
     if (_cs.dbg_timer === null) {
         /* global setTimeout:false */
-        _cs.dbg_timer = setTimeout(function () {
+        _cs.dbg_timer = setTimeout(_cs.hook("ComponentJS:plugin:debugger:settimeout:func", "pass", function () {
             _cs.dbg_update_once();
             _cs.dbg_timer = null;
-        }, 250);
+        }), 250);
     }
 };
 

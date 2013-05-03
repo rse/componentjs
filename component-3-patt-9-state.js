@@ -78,7 +78,7 @@ _cs.state_requests = {};
 /*  spawn all progression runs (asynchronously)  */
 _cs.state_progression = function () {
     /* global setTimeout:false */
-    setTimeout(function () {
+    setTimeout(_cs.hook("ComponentJS:settimeout:func", "pass", function () {
         /*  try to process the transition requests  */
         var remove = [];
         for (var cid in _cs.state_requests) {
@@ -96,7 +96,7 @@ _cs.state_progression = function () {
 
         /*  give plugins a chance to react  */
         _cs.hook("ComponentJS:state-change", "none");
-    }, 0);
+    }), 0);
 };
 
 /*  execute single progression run  */

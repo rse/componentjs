@@ -340,7 +340,9 @@ $cs.pattern.eventing = $cs.trait({
                 either asynchronous or synchronous  */
             if (ev.async())
                 /* global setTimeout:false */
-                setTimeout(function () { event_dispatch_all(ev, self, params); }, 0);
+                setTimeout(_cs.hook("ComponentJS:settimeout:func", "pass", function () {
+                    event_dispatch_all(ev, self, params);
+                }), 0);
             else
                 event_dispatch_all(ev, self, params);
 
