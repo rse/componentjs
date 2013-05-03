@@ -102,8 +102,10 @@ $cs.pattern.socket = $cs.trait({
             _cs.plugger("plug", this, params.name, params.object);
 
             /*  optionally spool reverse operation  */
-            if (params.spool !== null)
-                this.spool(params.spool, this, "unplug", id);
+            if (params.spool !== null) {
+                var info = _cs.spoolParse(this, params.spool);
+                info.comp.spool(info.name, this, "unplug", id);
+            }
 
             return id;
         },
