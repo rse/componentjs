@@ -7,15 +7,17 @@
 ##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ##
 
-use IO::All;
+use IO::File;
 
 my ($target, $source, $major, $minor, $micro, $date) = @ARGV;
 
 #   assemble all input files
 sub assemble ($$$) {
     my ($noheader, $prefix, $source) = @_;
-    my $txt < io($source)
+    my $fp = new IO::File "<$source"
         or die "failed to load $source";
+    my $txt = ""; $txt .= $_ while (<$fp>);
+    $fp->close();
     $txt =~ s/\r\n/\n/sg;
     $txt =~ s/^\s*\/\*[ \t]*\n(\*\*[^\n]*\n)+\*\/[ \t]*\n//s if ($noheader);
     $txt =~ s/^[ \t]*\/\/.*$//mg;
@@ -52,5 +54,7 @@ $js =~ s/(micro:\s+)0/$1$micro/s;
 $js =~ s/(date:\s+)\d+/$1$date/s;
 
 #   generate assembled output file
-$js > io($target);
+my $fp = new IO::File ">$target";
+$fp->print($js);
+$fp->close();
 

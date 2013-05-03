@@ -7,14 +7,14 @@
 ##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ##
 
-use IO::All;
+use IO::File;
 
 #   command-line arguments
 my ($filename_txt, $filename_tmpl, $filename_html, $version) = @ARGV;
 
 #   read textual description and template
-my $txt  < io($filename_txt);
-my $tmpl < io($filename_tmpl);
+my $fp = new IO::File "<$filename_txt"; $txt = ""; $txt .= $_ while (<$fp>); $fp->close();
+$fp = new IO::File "<$filename_tmpl"; $tmpl = ""; $tmpl .= $_ while (<$fp>); $fp->close();
 
 #   replace version information
 $tmpl =~ s/0\.0\.0/$version/s;
@@ -232,5 +232,7 @@ $tmpl =~ s/\@SPEC\@/$html_spec/s;
 $tmpl =~ s/\@NAVI\@/$html_navi/s;
 
 #   write result document
-$tmpl > io($filename_html);
+$fp = new IO::File ">$filename_html";
+$fp->print($tmpl);
+$fp->close();
 
