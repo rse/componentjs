@@ -649,6 +649,10 @@ application itself.
   ): T<Void>
 
   Remember action "F<ctx>.F<func>(F<args>)" on spool named F<name>.
+  The F<name> parameter can be either just a plain spool-name "C<name>"
+  or a combination of (relative) component-path and spool-name "C<path>:C<name>".
+  This allows one to spool on a component different from O<component> (usually
+  a relative path back to the component of the caller of the M<spool> operation).
 
   | cs(this).spool({
   |     name: "foo",
@@ -744,13 +748,20 @@ component-local information and to communicate information to foreign components
   on the target component O<component> (resolving starts on parent component).
   If F<returnowner> is set to F<true> instead of the property value, the
   owning component is returned.
-  Finally, properties can be scoped with a child component name: on each attempt
-  to resolve the property, first the scoped variant is tried. This means,
-  if a property was set with name "C<bar@prop>" on component C< /foo>,
-  if you resolve the property with C<cs("/foo/bar/baz", "prop")> you
-  the value, but if you resolve the property with C<cs("/foo/quux", "prop")> you
+  Finally, properties can be scoped with a child component name or even
+  a descendant component name path: on each attempt
+  to resolve the property, first the scoped variants are tried. This means,
+  if a property was set with name "C<quux@bar>" on component C< /foo>,
+  if you resolve the property with C<cs("/foo/bar", "quux")> you
+  get the value, but if you resolve the property with C<cs("/foo/baz", "quux")> you
   do not get the value. This allows you to set the same property with different
   values for different child components.
+  Additionally the scope can be a partial component path, too. 
+  If a property was set with name "C<quux@bar/baz>" on component C< /foo>,
+  if you resolve the property with C<cs("/foo/bar/baz", "quux")> you
+  get the value, but if you resolve the property with C<cs("/foo/bar/baz2", "quux")> you
+  do not get the value. This allows you for instance to skip so-called intermediate namespace-only
+  components.
 
   | cs(this).property("foo")
 
