@@ -258,8 +258,10 @@ $cs.pattern.model = $cs.trait({
             owner.property("ComponentJS:model:subscribers:" + params.operation, true);
 
             /*  optionally spool reverse operation  */
-            if (params.spool !== null)
-                this.spool(params.spool, this, "unobserve", id);
+            if (params.spool !== null) {
+                var info = _cs.spoolParse(this, params.spool);
+                info.comp.spool(info.name, this, "unobserve", id);
+            }
 
             /*  if requested, touch the model value once (for an initial observer run)  */
             if (params.touch)

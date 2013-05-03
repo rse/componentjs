@@ -34,8 +34,10 @@ $cs.pattern.hook = $cs.trait({
             });
 
             /*  optionally spool reverse operation  */
-            if (params.spool !== null)
-                this.spool(params.spool, this, "unlatch", id);
+            if (params.spool !== null) {
+                var info = _cs.spoolParse(this, params.spool);
+                info.comp.spool(info.name, this, "unlatch", id);
+            }
 
             return id;
         },

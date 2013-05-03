@@ -75,3 +75,19 @@ $cs.pattern.spool = $cs.trait({
     }
 });
 
+/*  split "[path:]name" into a component object and a spool name  */
+_cs.spoolParse = function (comp, spec) {
+    var info = {};
+
+    info.comp = comp;
+    info.name = spec;
+
+    var m = info.name.match(/^([^:]+):(.+)$/);
+    if (m !== null) {
+        info.comp = $cs(comp, m[1]);
+        info.name = m[2];
+    }
+
+    return info;
+}
+

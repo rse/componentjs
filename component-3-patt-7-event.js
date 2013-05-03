@@ -94,8 +94,10 @@ $cs.pattern.eventing = $cs.trait({
             this.__subscription[id] = params;
 
             /*  optionally spool reverse operation  */
-            if (params.spool !== null)
-                this.spool(params.spool, this, "unsubscribe", id);
+            if (params.spool !== null) {
+                var info = _cs.spoolParse(this, params.spool);
+                info.comp.spool(info.name, this, "unsubscribe", id);
+            }
 
             return id;
         },
