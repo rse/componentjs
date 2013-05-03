@@ -58,7 +58,7 @@
       (OpenPKG "closurecompiler")
 
     Stage 1 (optional)
-    -------------------
+    ------------------
 
     - UglifyJS [uglifyjs]
       https://github.com/mishoo/UglifyJS
