@@ -35,21 +35,26 @@ $cs.pattern.property = $cs.trait({
             /*  get old configuration value
                 (on current node or on any parent node)  */
             var v;
-            for (var scope = null, node = this;
+            for (var scope = [], node = this;
                  node !== null;
-                 scope = node.name(), node = node.parent()) {
+                 scope.unshift(node.name()), node = node.parent()) {
 
                 /*  optionally skip the target component
                     (usually if a property on the parent components
                     should be resolved only, but the scoping for the
                     target component should be still taken into account
                     on the parent) */
-                if (scope === null && !params.targeting)
+                if (scope.length === 0 && !params.targeting)
                     continue;
 
                 /*  first try: child-scoped property  */
-                if (scope !== null) {
-                    v = node.cfg("ComponentJS:property:" + params.name + "@" + scope);
+                if (scope.length > 0) {
+                    for (var i = scope.length - 1; i >= 0; i--) {
+                        var probePath = scope.slice(0, i + 1).join('/');
+                        v = node.cfg("ComponentJS:property:" + params.name + "@" + probePath);
+                        if (typeof v !== "undefined")
+                            break;
+                    }
                     if (typeof v !== "undefined") {
                         result = (params.returnowner ? node : v);
                         break;
