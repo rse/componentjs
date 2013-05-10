@@ -14,6 +14,7 @@ $cs.pattern.socket = $cs.trait({
         $cs.pattern.property
     ],
     dynamics: {
+        __sockets: {},
         __plugs: {}
     },
     protos: {
@@ -25,7 +26,8 @@ $cs.pattern.socket = $cs.trait({
                 scope:  {         def: null      },
                 ctx:    { pos: 0, req: true      },
                 plug:   { pos: 1, req: true      },
-                unplug: { pos: 2, req: true      }
+                unplug: { pos: 2, req: true      },
+                spool:  {         def: null      }
             });
 
             /*  sanity check parameters  */
@@ -47,6 +49,38 @@ $cs.pattern.socket = $cs.trait({
             if (params.scope !== null)
                 name += "@" + params.scope;
             $cs(this).property(name, params);
+
+            /*  remember socket under an id  */
+            var id = _cs.cid();
+            this.__sockets[id] = name;
+
+            /*  optionally spool reverse operation  */
+            if (params.spool !== null) {
+                var info = _cs.spool_spec_parse(this, params.spool);
+                info.comp.spool(info.name, this, "unsocket", id);
+            }
+
+            return id;
+        },
+
+        /*  destroy a socket  */
+        unsocket: function () {
+            /*  determine parameters  */
+            var params = $cs.params("unsocket", arguments, {
+                id: { pos: 0, req: true }
+            });
+
+            /*  remove  parameters from component  */
+            if (typeof this.__sockets[params.id] === "undefined")
+                throw _cs.exception("unsocket", "socket not found");
+
+            /*  remove corresponding property  */
+            var name = this.__sockets[params.id];
+            $cs(this).property(name, null);
+
+            /*  remove socket information  */
+            delete this.__sockets[params.id];
+            return;
         },
 
         /*  create a linking/pass-through socket  */
@@ -56,14 +90,16 @@ $cs.pattern.socket = $cs.trait({
                 name:   {         def: "default" },
                 scope:  {         def: null      },
                 target: { pos: 0, req: true      },
-                socket: { pos: 1, req: true      }
+                socket: { pos: 1, req: true      },
+                spool:  {         def: null      }
             });
 
             /*  create a socket and pass-through the
                 plug/unplug operations to the target  */
-            this.socket({
+            return this.socket({
                 name:   params.name,
                 scope:  params.scope,
+                spool:  params.spool,
                 ctx:    {},
                 plug:   function (obj) {
                     var id = _cs.annotation(obj, "link");
@@ -83,6 +119,16 @@ $cs.pattern.socket = $cs.trait({
                     _cs.annotation(obj, "link", null);
                 }
             });
+        },
+
+        /*  destroy a link  */
+        unlink: function () {
+            /*  determine parameters  */
+            var params = $cs.params("unlink", arguments, {
+                id: { pos: 0, req: true }
+            });
+
+            return this.unsocket(params.id);
         },
 
         /*  plug into a defined socket  */

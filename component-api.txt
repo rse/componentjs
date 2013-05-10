@@ -733,10 +733,10 @@ component-local information and to communicate information to foreign components
 
 - O<component>.M<property>({
       F<name>: T<String>,
-      [F<value>: T<Object> = "undefined",]
-      [F<bubbling>: T<Boolean> = true,]
-      [F<targeting>: T<Boolean> = true,]
-      [F<returnowner>: T<Boolean> = false]
+      [F<value>: T<Object> = C<undefined>,]
+      [F<bubbling>: T<Boolean> = C<true>,]
+      [F<targeting>: T<Boolean> = C<true>,]
+      [F<returnowner>: T<Boolean> = C<false>]
   }): T<Object>;
   O<component>.M<property>(P<name>: T<String>, P<value>: T<Object>): T<Object>;
   O<component>.M<property>(P<name>: T<String>): T<Object>
@@ -762,6 +762,7 @@ component-local information and to communicate information to foreign components
   get the value, but if you resolve the property with C<cs("/foo/bar/baz2", "quux")> you
   do not get the value. This allows you for instance to skip so-called intermediate namespace-only
   components.
+  Setting F<value> to "C<null>" removes the property.
 
   | cs(this).property("foo")
 
@@ -772,7 +773,7 @@ Sockets are a special form of component Properties with callback functions as th
 Views of child/descendant components into the View of a parent/ancestor component. In contrast to regular Properties,
 Sockets are never resolved directly on the target component. Instead they always start to resolve on the parent
 component because the sockets on the target component are intended for its child/ancestor components and not for the
-target component itself.
+target component itself. So, please remember to never plug a socket directly onto the target component!
 
 - O<component>.M<socket>({
       [F<name>: T<String> = "default",]
@@ -780,18 +781,23 @@ target component itself.
       F<ctx>: T<Object>,
       F<plug>: T<Function>,
       F<unplug>: T<Function>
-  });
+      [, F<spool>: T<String>]
+  }): T<Number>;
   O<component>.M<socket>(
       P<ctx>: T<Object>,
       P<plug>: T<Function>,
       P<unplug>: T<Function>
-  )
+  ): T<Number>
 
   Create a socket on O<component>, named F<name> and optionally
   scoped for the child component named F<scope>, where M<plug>()
   and M<unplug>() calls on child/ancestor components execute
   the supplied F<plug>/F<unplug> functions with F<ctx> supplied as
   C<this>.
+  The M<socket> method returns an id which uniquely identifies the socket.
+  Instead of having to manually release the socket later via M<unsocket>()
+  you can use the spool mechanism and spool the corresponding M<unsocket>()
+  operation via option F<spool>.
 
   | var ui = $(...);
   | cs(this).socket({
@@ -800,11 +806,20 @@ target component itself.
   |     unplug: function (el) { $(el).remove(); }
   | })
 
+- O<component>.M<unsocket>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unsocket>(P<id>: T<Number>): T<Void>
+
+  Destroy the socket identified by F<id>, previously created by a call to M<socket>().
+  This is usually done implicitly through the spooling mechanism.
+
+  | cs(this).unsocket(id)
+
 - O<component>.M<link>({
       [F<name>: T<String> = "default",]
       [F<scope>: T<Object> = null,]
       F<target>: T<Object>,
       F<socket>: T<String>
+      [, F<spool>: T<String>]
   });
   O<component>.M<link>(
       P<target>: T<Object>,
@@ -818,8 +833,20 @@ target component itself.
   components to link their default socket (for the View below itself) to a
   particular socket of a parent component (because a View should be reusable
   and hence is not allowed to know the particular socket intended for it).
+  The M<link> method returns an id which uniquely identifies the linked socket.
+  Instead of having to manually release the socket later via M<unlink>()
+  you can use the spool mechanism and spool the corresponding M<unlink>()
+  operation via option F<spool>.
 
   | cs(this).link({ name: "default", target: this, socket: "menu1" })
+
+- O<component>.M<unlink>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unlink>(P<id>: T<Number>): T<Void>
+
+  Destroy the linked socket identified by F<id>, previously created by a call to M<link>().
+  This is usually done implicitly through the spooling mechanism.
+
+  | cs(this).unlink(id)
 
 - O<component>.M<plug>({
       [F<name>: T<String> = "default",]
@@ -999,23 +1026,21 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
   Subscribe to event F<name> (optionally sub-specifified via F<spec>)
   on component O<component> and
   execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>
-  C<, >P<args>C<: >T<Object>C<, ...,>P<sargs>C<: >T<Object>C<, ...)>
+  C<, >P<args>C<: >T<Object>C<, ..., >P<sargs>C<: >T<Object>C<, ...)>
   once the event is dispatched to O<component> after it was published.
-  Option F<ctx> allows you to give C<this> a particular value for the
+  Option F<ctx> allows you to give "C<this>" a particular value for the
   callback F<func>. Option F<args> allows you to pass additional
   parameters to F<func> (before those passed by M<publish>()).
   Option F<noevent> does not pass the P<ev>: T<Event> parameter to F<func>.
   By default an event is dispatched in the (mandatory) targeting and (optional) bubbling phases.
-  Setting option F<bubbling> to C<false> indicates that the event should
+  Setting option F<bubbling> to "C<false>" indicates that the event should
   not be dispatched in the bubbling phase, too.
-  Setting option F<capture> to C<true> indicates that the event should
+  Setting option F<capture> to "C<true>" indicates that the event should
   be dispatched in the capturing phase, too.
-  Setting option F<spreading> to C<true> indicates that the event should
+  Setting option F<spreading> to "C<true>" indicates that the event should
   be dispatched in the spreading phase, too.
-  Option F<exclusive> can be set to C<true> for an exclusive subscription, i.e.,
+  Option F<exclusive> can be set to "C<true>" for an exclusive subscription, i.e.,
   a subscription which prevents any subsequent subscriptions.
-  Option F<spool> can be set to C<true> to pass the origin component as the first
-  argument to F<func>.
   The M<subscribe> method returns an id which uniquely identifies the subscription.
   Instead of having to manually release the subscription later via M<unsubscribe>()
   you can use the spool mechanism and spool the corresponding M<unsubscribe>()
@@ -1023,6 +1048,7 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
 
   | cs(self).subscribe({
   |     name: "data-loaded",
+  |     spool: "prepared",
   |     func: function (ev, data) {
   |         ...
   |     }
