@@ -19,8 +19,8 @@ $cs.pattern.observable = $cs.trait({
             /*  determine parameters  */
             var params = $cs.params("listen", arguments, {
                 name:    { pos: 0,     req: true },
-                ctx:     { pos: 1,     def: this },
-                func:    { pos: 2,     req: true },
+                ctx:     {             def: this },
+                func:    { pos: 1,     req: true },
                 args:    { pos: "...", def: []   },
                 spec:    {             def: null } /* customized matching */
             });
