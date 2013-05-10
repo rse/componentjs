@@ -33,6 +33,7 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL) {
                     ctx:    { pos: 0, req: true       },
                     plug:   { pos: 1, def: null       }, /*  removed "req: true"  */
                     unplug: { pos: 2, def: null       }, /*  removed "req: true"  */
+                    spool:  {         def: null       },
                     type:   {         def: "standard" }  /*  added  */
                 });
 
