@@ -28,7 +28,7 @@ $cs.pattern.config = $cs.trait({
                 /*  retrieve value  */
                 result = this.__config[name];
             }
-            else if (arguments.length === 2 && typeof value !== "undefined") {
+            else if (arguments.length === 2 && value !== null) {
                 /*  set value  */
                 result = this.__config[name];
                 this.__config[name] = value;
