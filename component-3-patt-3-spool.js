@@ -26,10 +26,10 @@ $cs.pattern.spool = $cs.trait({
 
             /*  sanity check parameters  */
             if (!_cs.istypeof(params.func).match(/^(string|function)$/))
-                throw _cs.exception("cleaner", "invalid function (either function object or method name required)");
+                throw _cs.exception("spool", "invalid function parameter (neither function object nor method name)");
             if (_cs.istypeof(params.func) === "string") {
                 if (_cs.istypeof(params.ctx[params.func]) !== "function")
-                    throw _cs.exception("cleaner", "invalid method name: \"" + params.func + "\"");
+                    throw _cs.exception("spool", "invalid method name: \"" + params.func + "\"");
                 params.func = params.ctx[params.func];
             }
 
