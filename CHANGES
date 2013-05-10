@@ -38,6 +38,9 @@
       "<spool-name>" in order to use the spool of component, addressed
       via the relative path "<comp-path>".
 
+    o Sockets created with socket()/link() can be no destroyed
+      with unsocket()/unlink()
+
     Major changes between ComponentJS 0.9.7 and 0.9.8
     -------------------------------------------------
 
