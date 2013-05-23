@@ -41,7 +41,7 @@ $cs.pattern.model = $cs.trait({
                     }
                     if (!$cs.validate(model[name].value, model[name].valid))
                         throw _cs.exception("model", "model field \"" + name + "\" has " +
-                            "default value \"" + model[name].value + "\", which does not validate " +
+                            "default value " + _cs.json(model[name].value) + ", which does not validate " +
                             "against validation \"" + model[name].valid + "\"");
                 }
             }
