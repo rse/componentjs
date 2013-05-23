@@ -158,8 +158,9 @@ $cs.pattern.model = $cs.trait({
 
                 /*  check validity of new value  */
                 if (!$cs.validate(value_new, model[params.name].valid))
-                    throw _cs.exception("value", "invalid value \"" + value_new +
-                        "\" for model field \"" + params.name + "\"");
+                    throw _cs.exception("value", "model field \"" + params.name + "\" receives " +
+                        "new value " + _cs.json(value_new) + ", which does not validate " +
+                        "against validation \"" + model[params.name].valid + "\"");
 
                 /*  send event to observers for value set operation and allow observers
                     to reject value set operation and/or change new value to set  */
