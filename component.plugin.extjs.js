@@ -33,7 +33,7 @@ ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL) {
                     plug:   { pos: 1, def: null       }, /*  removed "req: true"  */
                     unplug: { pos: 2, def: null       }, /*  removed "req: true"  */
                     spool:  {         def: null       },
-                    type:   {         def: "standard" }  /*  added  */
+                    type:   {         def: "default"  }  /*  added  */
                 });
 
                 /*  create pass-through information  */

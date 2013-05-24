@@ -34,7 +34,7 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL) {
                     plug:   { pos: 1, def: null       }, /*  removed "req: true"  */
                     unplug: { pos: 2, def: null       }, /*  removed "req: true"  */
                     spool:  {         def: null       },
-                    type:   {         def: "standard" }  /*  added  */
+                    type:   {         def: "default"  }  /*  added  */
                 });
 
                 /*  create pass-through information  */
@@ -45,7 +45,8 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL) {
                 if ( /*  explicitly requested  */
                      params.type === "jquery" ||
                      /*  implicitly detected  */
-                     ( typeof params.ctx.jquery === "string" &&
+                     ( param.type === "default" &&
+                       typeof params.ctx.jquery === "string" &&
                        params.ctx.jquery.match(/^[0-9]+(?:\.[0-9]+)+$/) ) ) {
                     /*  provide specialized jQuery socket functionality  */
                     arg.plug   = function (el) { jQuery(this).append(el); };
