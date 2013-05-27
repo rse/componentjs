@@ -45,7 +45,7 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL) {
                 if ( /*  explicitly requested  */
                      params.type === "jquery" ||
                      /*  implicitly detected  */
-                     ( param.type === "default" &&
+                     ( params.type === "default" &&
                        typeof params.ctx.jquery === "string" &&
                        params.ctx.jquery.match(/^[0-9]+(?:\.[0-9]+)+$/) ) ) {
                     /*  provide specialized jQuery socket functionality  */
