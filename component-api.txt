@@ -886,7 +886,8 @@ displaying the Model information and storing events into it.
   Define a model through the specification in P<spec>. Each key
   is the name of a model element and the value has to be an T<Object> with
   the following possible fields: F<value> (T<Object>) for the default
-  value, F<valid> (T<String>/T<RegExp>) for validating the values, F<autoreset> (T<Boolean>) for
+  value, F<valid> (T<String>/T<RegExp>) for validating the values (based
+  on the underlying validation language of the M<validate>() method), F<autoreset> (T<Boolean>) for
   indicating that on each value write, the value should be
   automatically reset to the initial F<value>, and F<store> (T<Boolean>) for
   indicating that the value should be persistently stored in the browser's C<localStorage>.
@@ -894,7 +895,7 @@ displaying the Model information and storing events into it.
   add model elements.
 
   | cs(this).model({
-  |     "param:realms":         { value: [],      valid: "array(string)" },
+  |     "param:realms":         { value: [],      valid: "[string*]" },
   |     "data:realm":           { value: "",      valid: "string", store: true },
   |     "data:username":        { value: "",      valid: "string", store: true },
   |     "data:password":        { value: "",      valid: "string" },
