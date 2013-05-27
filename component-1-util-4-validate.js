@@ -80,7 +80,7 @@ _cs.validate_parser = {
             ast = this.parse_hash(token);
         else if (symbol === "[")
             ast = this.parse_array(token);
-        else if (symbol.match(/^(?:undefined|boolean|number|string|function|object)$/))
+        else if (symbol.match(/^(?:null|undefined|boolean|number|string|function|object)$/))
             ast = this.parse_primary(token);
         else if (symbol.match(/^(?:clazz|trait|component)$/))
             ast = this.parse_special(token);
@@ -155,7 +155,7 @@ _cs.validate_parser = {
     /*  parse primary type specification  */
     parse_primary: function (token) {
         var primary = token.peek();
-        if (!primary.match(/^(?:undefined|boolean|number|string|function|object)$/))
+        if (!primary.match(/^(?:null|undefined|boolean|number|string|function|object)$/))
             throw new Error("parse error: invalid primary type \"" + primary + "\"");
         token.skip();
         return { type: "primary", name: primary };
@@ -330,7 +330,7 @@ _cs.validate_executor = {
 
     /*  validate standard JavaScript type  */
     exec_primary: function (value, node) {
-        return (typeof value === node.name);
+        return (node.name === "null" && value === null) || (typeof value === node.name);
     },
 
     /*  validate custom JavaScript type  */
