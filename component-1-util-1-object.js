@@ -109,14 +109,15 @@ _cs.json = (function () {
         );
     };
     var encode = function (value, seen) {
-        if (typeof seen[value] !== "undefined")
-            return "null /* [...] */";
-        else
-            seen[value] = true;
+        if (typeof value !== "boolean" && typeof value !== "number" && typeof value !== "string") {
+            if (typeof seen[value] !== "undefined")
+                return "null /* CYCLE! */";
+            else
+                seen[value] = true;
+        }
         switch (typeof value) {
-            case "null":     value = "null"; break;
             case "boolean":  value = String(value); break;
-            case "number":   value = (isFinite(value) ? String(value) : "null"); break;
+            case "number":   value = (isFinite(value) ? String(value) : "NaN"); break;
             case "string":   value = quote(value); break;
             case "function":
                 if (_cs.annotation(value, "type") !== null)
@@ -126,7 +127,7 @@ _cs.json = (function () {
                 break;
             case "object":
                 var a = [];
-                if (!value)
+                if (value === null)
                     value = "null";
                 else if (_cs.annotation(value, "type") !== null)
                     value = "<" + _cs.annotation(value, "type") + ">";
