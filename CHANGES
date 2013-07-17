@@ -10,6 +10,19 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 0.9.9 and 0.9.10
+    --------------------------------------------------
+
+    o Fixed internal cloning of Array objects (which is
+      used for the "dynamics" part of cs.clazz!).
+
+    o improve the internal JSON encoder to more correctly detect cycles
+
+    o allow also "null" as an identifier to validate against the special Object null
+
+    o allow application to still enforce standard sockets by skipping
+      the jQuery/ExtJS inference if no 'type' parameter is given
+
     Major changes between ComponentJS 0.9.8 and 0.9.9
     -------------------------------------------------
 
