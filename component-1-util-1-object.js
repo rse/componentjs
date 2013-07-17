@@ -217,7 +217,7 @@ _cs.clone = function (source, continue_recursion) {
         else if (Object.prototype.toString.call(source) === "[object Array]") {
             /*  special case: array object  */
             var len = source.length;
-            target = new Array(len);
+            target = [];
             for (var i = 0; i < len; i++)
                 target.push(myself(source[i], continue_recursion)); /* RECURSION */
         }
