@@ -74,7 +74,7 @@ $cs.shutdown = function () {
     _cs.none = null;
 
     /*  destroy singleton "<root>" component
-        (its "destroy" method will destroy while component tree!)  */
+        (its "destroy" method will destroy whole component tree!)  */
     _cs.root.destroy();
     _cs.root = null;
 
