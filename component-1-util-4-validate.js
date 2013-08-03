@@ -290,7 +290,9 @@ _cs.validate_executor = {
             /*  pass 2: ensure that no unknown fields exist
                 and that all existing fields are valid  */
             for (var field in value) {
-                if (!Object.hasOwnProperty.call(value, field))
+                if (   !Object.hasOwnProperty.call(value, field)
+                    || !Object.propertyIsEnumerable.call(value, field)
+                    || (field === "constructor" || field === "prototype"))
                     continue;
                 if (   typeof fields[field] === "undefined"
                     || !this.exec_spec(value[field], fields[field])) {  /*  RECURSION  */
