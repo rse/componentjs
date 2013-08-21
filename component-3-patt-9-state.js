@@ -73,6 +73,7 @@ _cs.state_method_call = function (type, comp, method) {
             if (_cs.states[i].leave === method) {
                 var state = _cs.states[i].state;
                 if (comp.spooled(state)) {
+                    $cs.debug(1, "unspool: " + comp.path("/") + ": automatically unspooled " + comp.__spool[state].length + " operations on " + method);
                     comp.unspool(state);
                     break;
                 }
