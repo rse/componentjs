@@ -32,13 +32,13 @@ _cs.dbg_log = function (msg) {
         "<span class=\"method\">$2</span>" +
         "<span class=\"arrow\">$3</span>"
     );
-    _cs.dbg_logbook +=
+    _cs.dbg_logbook =
         "<table class=\"line\">" +
             "<tr>" +
                 "<td class=\"num\">" + _cs.dbg_logline + ".</td>" +
                 "<td class=\"msg\">" + msg + "</td>" +
             "</tr>" +
-        "</table>";
+        "</table>" + _cs.dbg_logbook;
     _cs.dbg_state_invalidate("console");
     _cs.dbg_update();
 };
