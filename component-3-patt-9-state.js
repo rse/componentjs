@@ -68,6 +68,18 @@ _cs.state_method_call = function (type, comp, method) {
         _cs.hook("ComponentJS:state-method-call", "none", info);
         result = info.func.call(info.ctx);
     }
+    if (type === "leave") {
+        for (var i = 0; i < _cs.states.length; i++) {
+            if (_cs.states[i].leave === method) {
+                var state = _cs.states[i].state;
+                if (comp.spooled(state)) {
+                    $cs.debug(1, "unspool: " + comp.path("/") + ": automatically unspooled " + comp.__spool[state].length + " operations on " + method);
+                    comp.unspool(state);
+                    break;
+                }
+            }
+        }
+    }
     return result;
 };
 
