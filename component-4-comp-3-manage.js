@@ -180,12 +180,15 @@ _cs.create_single = function (base, path, clazz) {
     /*  debug hint  */
     $cs.debug(1, "component: " + comp.path("/") + ": created component [" + comp.id() + "]");
 
+    /*  give plugins a chance to react (before creation of a component)  */
+    _cs.hook("ComponentJS:comp-created", "none", comp);
+
     /*  switch state from "dead" to "created"
         (here synchronously as one expects that after a creation of a
         component, the state is really already "created", of course)  */
     comp.state({ state: "created", sync: true });
 
-    /*  give plugins a chance to react  */
+    /*  give plugins a chance to react (after creation of a component)  */
     _cs.hook("ComponentJS:state-invalidate", "none", "components");
     _cs.hook("ComponentJS:state-change", "none");
 
@@ -211,6 +214,9 @@ $cs.destroy = function () {
         component, the state is really already "dead", of course)  */
     comp.state({ state: "dead", sync: true });
 
+    /*  give plugins a chance to react (before final destruction of a component)  */
+    _cs.hook("ComponentJS:comp-destroyed", "none", comp);
+
     /*  detach component from component tree  */
     comp._detach();
 
@@ -220,7 +226,7 @@ $cs.destroy = function () {
     /*  debug hint  */
     $cs.debug(1, "component: " + comp.path("/") + ": destroyed component [" + comp.id() + "]");
 
-    /*  give plugins a chance to react  */
+    /*  give plugins a chance to react (after final destruction of a component)  */
     _cs.hook("ComponentJS:state-invalidate", "none", "components");
     _cs.hook("ComponentJS:state-change", "none");
 
