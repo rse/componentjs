@@ -42,9 +42,10 @@ interface ComponentJS_comp {
            name2: string, clazz2: any,
            name3: string, clazz3: any,
            name4: string, clazz4: any,
-           ...rest: any[]);
+           ...rest: any[]): ComponentJS_comp;
            */
-    create(spec: string, ...rest: any[]);
+    create(spec: string, ...rest: any[]): ComponentJS_comp;
+    destroy(): void;
 
     model(params: Object): Object;
 
@@ -197,8 +198,10 @@ interface ComponentJS_api {
     bootstrap(): void;
     shutdown(): void;
 
-    create(spec: string, ...rest: any[]);
-    create(base: any, spec: string, ...rest: any[]);
+    create(spec: string, ...rest: any[]): ComponentJS_comp;
+    create(base: any, spec: string, ...rest: any[]): ComponentJS_comp;
+    destroy(spec: string, ...rest: any[]);
+    destroy(base: any, spec: string, ...rest: any[]);
 
     mark(obj: any, name: string): void;
     marked(obj: any, name: string): bool;
