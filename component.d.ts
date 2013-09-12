@@ -8,14 +8,14 @@
 */
 
 interface ComponentJS_event {
-    target     (val?: any   ): any;
-    propagation(val?: bool  ): bool;
-    processing (val?: bool  ): bool;
-    dispatched (val?: bool  ): bool;
-    decline    (val?: bool  ): bool;
-    state      (val?: string): string;
-    result     (val?: any   ): any;
-    async      (val?: bool  ): bool;
+    target     (val?: any    ): any;
+    propagation(val?: boolean): boolean;
+    processing (val?: boolean): boolean;
+    dispatched (val?: boolean): boolean;
+    decline    (val?: boolean): boolean;
+    state      (val?: string ): string;
+    result     (val?: any    ): any;
+    async      (val?: boolean): boolean;
 }
 
 interface ComponentJS_event_cb {
@@ -54,7 +54,7 @@ interface ComponentJS_comp {
     value(params: {
         name: string;
         value: any;
-        force: bool;
+        force: boolean;
     }): any;
 
     register(params: {
@@ -71,7 +71,7 @@ interface ComponentJS_comp {
         name: string;
         func: ComponentJS_event_cb;
         spool?: string;
-        touch?: bool;
+        touch?: boolean;
     }): number;
     observe(
         name: string,
@@ -90,15 +90,15 @@ interface ComponentJS_comp {
     publish(params: {
         name: string;
         spec?: {};
-        async?: bool;
-        capturing?: bool;
-        bubbling?: bool;
+        async?: boolean;
+        capturing?: boolean;
+        bubbling?: boolean;
         completed?: () => void;
         resultinit?: any;
         resultstep?: (a: any, b: any) => any;
-        directresult?: bool;
-        firstonly?: bool;
-        silent?: bool;
+        directresult?: boolean;
+        firstonly?: boolean;
+        silent?: boolean;
         args?: any[];
     }): any;
     publish(
@@ -130,7 +130,7 @@ interface ComponentJS_comp {
     property(name: string): any;
     property(name: string, value: any): any;
 
-    state_auto_increase(enable: bool): void;
+    state_auto_increase(enable: boolean): void;
     socket(params: {
         name?: string;
         scope?: any;
@@ -150,9 +150,9 @@ interface ComponentJS_comp {
         ctx?: any;
         func: ComponentJS_event_cb_directresult;
         args?: any[];
-        capture?: bool;
-        noevent?: bool;
-        exclusive?: bool;
+        capture?: boolean;
+        noevent?: boolean;
+        exclusive?: boolean;
         spool?: string;
     }): number;
     subscribe(
@@ -164,7 +164,7 @@ interface ComponentJS_comp {
     state(state: string): void;
     state(params: {
         state: string;
-        sync?: bool;
+        sync?: boolean;
         callback?: () => any;
     }): void;
 
@@ -192,7 +192,7 @@ interface ComponentJS_api {
     (object: any, selector: string): ComponentJS_comp;
 
     plugin(): string[];
-    plugin(name: string): bool;
+    plugin(name: string): boolean;
     plugin(name: string, callback: (_cs: any, $cs: any, GLOBAL: any) => void): void;
 
     bootstrap(): void;
@@ -204,17 +204,17 @@ interface ComponentJS_api {
     destroy(base: any, spec: string, ...rest: any[]);
 
     mark(obj: any, name: string): void;
-    marked(obj: any, name: string): bool;
+    marked(obj: any, name: string): boolean;
 
     debug(level: number): void;
-    debug_instrumented(): bool;
-    debug_window(): bool;
-    debug_window(enable: bool, name: string): void;
+    debug_instrumented(): boolean;
+    debug_window(): boolean;
+    debug_window(enable: boolean, name: string): void;
     debug_window(params: {
-        enable: bool;
-        autoclose: bool;
+        enable: boolean;
+        autoclose: boolean;
         name: string;
-        natural?: bool;
+        natural?: boolean;
         width?: number;
         height?: number;
     }): void;
