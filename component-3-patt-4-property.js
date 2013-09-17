@@ -20,6 +20,7 @@ $cs.pattern.property = $cs.trait({
             var params = $cs.params("property", arguments, {
                 name:        { pos: 0, req: true      },
                 value:       { pos: 1, def: undefined },
+                scope:       {         def: undefined },
                 bubbling:    {         def: true      },
                 targeting:   {         def: true      },
                 returnowner: {         def: false     }
@@ -76,7 +77,10 @@ $cs.pattern.property = $cs.trait({
             /*  optionally set new configuration value
                 (on current node only)  */
             if (typeof params.value !== "undefined")
-                this.cfg("ComponentJS:property:" + params.name, params.value);
+                if (typeof params.scope !== "undefined")
+                    this.cfg("ComponentJS:property:" + params.name + "@" + params.scope, params.value);
+                else
+                    this.cfg("ComponentJS:property:" + params.name, params.value);
 
             /*  return result (either the old configuration
                 value or the owning component)  */
