@@ -92,9 +92,7 @@ _cs.dbg_update_once = function () {
     /*  update console information  */
     if (_cs.dbg_state_invalid.console) {
         _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
-        _cs.jq(".dbg .console", _cs.dbg.document).scrollTop(
-            _cs.jq(".dbg .console .text", _cs.dbg.document).height()
-        );
+        _cs.jq(".dbg .console", _cs.dbg.document).scrollTop(0);
         _cs.dbg_state_invalid.console = true;
     }
 
