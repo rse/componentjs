@@ -106,8 +106,9 @@ $cs.pattern.socket = $cs.trait({
                     if (id !== null)
                         throw _cs.exception("link:plug: cannot plug, you have to unplug first");
                     id = $cs(params.target).plug({
-                        name:   params.socket,
-                        object: obj
+                        name:      params.socket,
+                        object:    obj,
+                        targeting: true
                     });
                     _cs.annotation(obj, "link", id);
                 },
@@ -115,7 +116,10 @@ $cs.pattern.socket = $cs.trait({
                     var id = _cs.annotation(obj, "link");
                     if (id === null)
                         throw _cs.exception("link:unplug: cannot unplug, you have to plug first");
-                    $cs(params.target).unplug(id);
+                    $cs(params.target).unplug({
+                        id: id,
+                        targeting: true
+                    });
                     _cs.annotation(obj, "link", null);
                 }
             });
@@ -135,9 +139,10 @@ $cs.pattern.socket = $cs.trait({
         plug: function () {
             /*  determine parameters  */
             var params = $cs.params("plug", arguments, {
-                name:     {         def: "default" },
-                object:   { pos: 0, req: true      },
-                spool:    {         def: null      }
+                name:      {         def: "default" },
+                object:    { pos: 0, req: true      },
+                spool:     {         def: null      },
+                targeting: {         def: false     }
             });
 
             /*  remember plug operation  */
@@ -145,7 +150,7 @@ $cs.pattern.socket = $cs.trait({
             this.__plugs[id] = params;
 
             /*  pass-though operation to common helper function  */
-            _cs.plugger("plug", this, params.name, params.object);
+            _cs.plugger("plug", this, params.name, params.object, params.targeting);
 
             /*  optionally spool reverse operation  */
             if (params.spool !== null) {
@@ -160,7 +165,8 @@ $cs.pattern.socket = $cs.trait({
         unplug: function () {
             /*  determine parameters  */
             var params = $cs.params("unplug", arguments, {
-                id: { pos: 0, req: true }
+                id:        { pos: 0, req: true  },
+                targeting: {         def: false }
             });
 
             /*  determine plugging information  */
@@ -170,7 +176,7 @@ $cs.pattern.socket = $cs.trait({
             var object = this.__plugs[params.id].object;
 
             /*  pass-though operation to common helper function  */
-            _cs.plugger("unplug", this, name, object);
+            _cs.plugger("unplug", this, name, object, params.targeting);
 
             /*  remove plugging  */
             delete this.__plugs[params.id];
@@ -180,7 +186,7 @@ $cs.pattern.socket = $cs.trait({
 });
 
 /*  internal "plug/unplug to socket" helper functionality  */
-_cs.plugger = function (op, origin, name, object) {
+_cs.plugger = function (op, origin, name, object, targeting) {
     /*  resolve the socket property on the parents components
         NOTICE 1: we explicitly skip the origin component here as
                   resolving the socket property also on the origin
@@ -190,7 +196,7 @@ _cs.plugger = function (op, origin, name, object) {
                   resolve on the parent component as we want to take
                   scoped sockets (on the parent component) into account!  */
     var property = "ComponentJS:socket:" + name;
-    var socket = origin.property({ name: property, targeting: false });
+    var socket = origin.property({ name: property, targeting: targeting });
     if (!_cs.isdefined(socket))
         throw _cs.exception(op, "no socket found on parent component(s)");
 
