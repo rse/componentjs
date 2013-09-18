@@ -95,7 +95,7 @@ _cs.hook = function (name, proc) {
                 hooks:  _cs.hooks[name].length, /*  total number of hooks latched  */
                 _cs:    _cs,                    /*  internal ComponentJS API  */
                 $cs:    $cs                     /*  external ComponentJS API  */
-            },  args);                          /*  hook arguments  */
+            }, args);                           /*  hook arguments  */
 
             /*  process/merge results  */
             result = _cs.hook_proc[proc].step.call(null, result, r);
