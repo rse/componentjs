@@ -389,10 +389,12 @@ accessed via the following getter/setter-style methods.
   O<component>.M<cfg>(P<key>: T<String>, P<value>: T<Object>): T<Object>;
   O<component>.M<cfg>(P<key>: T<String>, C<undefined>): T<Object>
 
-  Components can have key/value pairs attached for application configuration purposes.
-  Four use cases exists for this method: 1. get array of all key strings, 2. get current configuration property identified by P<key>, 3. set
-  configuration property identified by P<key> to new value P<value> and return the old value, and 4. delete the
-  configuration property identified by P<key>.
+  Components can have key/value pairs attached for application
+  configuration purposes. Four use cases exists for this method: 1.
+  get array of all key strings, 2. get current configuration property
+  identified by P<key>, 3. set configuration property identified by
+  P<key> to new value P<value> and return the old value, and 4. delete
+  the configuration property identified by P<key>.
 
   | var value = cs("/foo/bar").cfg("quux")
   | cs("/foo/bar").cfg("quux", value)
@@ -734,6 +736,7 @@ component-local information and to communicate information to foreign components
 - O<component>.M<property>({
       F<name>: T<String>,
       [F<value>: T<Object> = C<undefined>,]
+      [F<scope>: T<String> = C<undefined>,]
       [F<bubbling>: T<Boolean> = C<true>,]
       [F<targeting>: T<Boolean> = C<true>,]
       [F<returnowner>: T<Boolean> = C<false>]
@@ -751,7 +754,8 @@ component-local information and to communicate information to foreign components
   Finally, properties can be scoped with a child component name or even
   a descendant component name path: on each attempt
   to resolve the property, first the scoped variants are tried. This means,
-  if a property was set with name "C<quux@bar>" on component C< /foo>,
+  if a property was set with F<name> "C<quux@bar>" (or with F<name> "C<quux>" and an
+  explicitly F<scope> set to "C<bar>") on component C< /foo>,
   if you resolve the property with C<cs("/foo/bar", "quux")> you
   get the value, but if you resolve the property with C<cs("/foo/baz", "quux")> you
   do not get the value. This allows you to set the same property with different
