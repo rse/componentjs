@@ -245,7 +245,7 @@ that component shadow objects are defined by C<cs.clazz>!
         [F<dynamics>:    T<Object>,]
         [F<protos>:      T<Object>,]
         [F<statics>:     T<Object>]
-  })
+  }): T<Clazz>
 
   Define a JavaScript Class, optionally stored under the absolute dot-separated
   object path F<name>, optionally extending the base/super/parent Class F<extend>
@@ -281,13 +281,13 @@ that component shadow objects are defined by C<cs.clazz>!
 
 - ComponentJS.M<trait>({
         [F<name>:        T<String>,]
-        [F<mixin>:       T<Array(trait)>,]
+        [F<mixin>:       T<Array(Trait)>,]
         [F<cons>:        T<Function>,]
         [F<setup>:       T<Function>,]
         [F<dynamics>:    T<Object>,]
         [F<protos>:      T<Object>,]
         [F<statics>:     T<Object>]
-  })
+  }): T<Trait>
 
   Define a JavaScript Trait (a Class which can be mixed in), optionally stored under the absolute dot-separated
   object path F<name> and
