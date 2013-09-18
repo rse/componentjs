@@ -27,23 +27,6 @@ interface ComponentJS_event_cb_directresult {
 }
 
 interface ComponentJS_comp {
-    /*
-    create(name1: string, clazz1: any);
-    create(name1: string, clazz1: any,
-           name2: string, clazz2: any);
-    create(name1: string, clazz1: any,
-           name2: string, clazz2: any,
-           name3: string, clazz3: any);
-    create(name1: string, clazz1: any,
-           name2: string, clazz2: any,
-           name3: string, clazz3: any,
-           name4: string, clazz4: any);
-    create(name1: string, clazz1: any,
-           name2: string, clazz2: any,
-           name3: string, clazz3: any,
-           name4: string, clazz4: any,
-           ...rest: any[]): ComponentJS_comp;
-           */
     create(spec: string, ...rest: any[]): ComponentJS_comp;
     destroy(): void;
 
@@ -186,45 +169,144 @@ interface ComponentJS_comp {
     store(key: string, val: any): any;
 }
 
-interface ComponentJS_api {
-    (object: any):                   ComponentJS_comp;
-    (selector: string):              ComponentJS_comp;
-    (object: any, selector: string): ComponentJS_comp;
+interface ComponentJS_api_internal {
+    extend(input: Object, mixin: Object): Object;
+    latch(name: string, cb: (...args: any[]) => any): number;
+    unlatch(name: string, id: number): void;
+    hook(name: string, proc: string, ...args: any[]): any;
+}
 
-    plugin(): string[];
-    plugin(name: string): boolean;
-    plugin(name: string, callback: (_cs: any, $cs: any, GLOBAL: any) => void): void;
+interface ComponentJS_api {
+    /*
+     *  Convenience Call Wrapping
+     */
+
+    (object: any):                   ComponentJS_comp;
+    (object: any, selector: string): ComponentJS_comp;
+    (selector: string):              ComponentJS_comp;
+
+    /*
+     *  API Management
+     */
+
+    symbol(name?: string): ComponentJS_api;
+
+    version: {
+        major: number;
+        minor: number;
+        micro: number;
+        date: number;
+    };
+
+    /*
+     *  Library Management
+     */
 
     bootstrap(): void;
+
     shutdown(): void;
 
-    create(spec: string, ...rest: any[]): ComponentJS_comp;
-    create(base: any, spec: string, ...rest: any[]): ComponentJS_comp;
-    destroy(spec: string, ...rest: any[]);
-    destroy(base: any, spec: string, ...rest: any[]);
+    plugin(): string[];
+    plugin(
+        name: string
+    ): boolean;
+    plugin(
+        name: string,
+        callback: (
+            _cs: ComponentJS_api_internal,
+            $cs: ComponentJS_api,
+            GLOBAL: any
+        ) => void
+    ): void;
 
-    mark(obj: any, name: string): void;
-    marked(obj: any, name: string): boolean;
+    /*
+     *  Debugging
+     */
 
+    debug(): number;
     debug(level: number): void;
+    debug(level: number, message string): void;
+
     debug_instrumented(): boolean;
+
     debug_window(): boolean;
-    debug_window(enable: boolean, name: string): void;
+    debug_window(
+        enable: boolean,
+        autoclose: boolean,
+        name: string
+    ): void;
     debug_window(params: {
-        enable: boolean;
-        autoclose: boolean;
-        name: string;
+        enable?: boolean;
+        autoclose?: boolean;
+        name?: string;
         natural?: boolean;
         width?: number;
         height?: number;
     }): void;
 
-    symbol(name: string): void;
-    symbol(): string;
+    /*
+     *  Code Structuring
+     */
 
-    ns(name: string, value?: any): any;
+    ns(path: string, leaf?: Object): Object;
 
-    version: { major: number; minor: number; micro: number; date: number; };
+    validate(object: Object, spec: string): boolean;
+
+    params(
+        name: string,
+        args: any[],
+        spec: {
+            [key: string]: {
+                pos?: number;
+                req?: boolean;
+                def?: any;
+                valid?: any;
+            }
+        }
+    ): Object;
+
+    attribute(
+        name: string,
+        def: any,
+        validate: any
+    ): (value?: any) => any
+
+    clazz({
+        name?: string;
+        extend?: Object;
+        mixin?: Object[];
+        cons?: (...args: any[]) => any;
+        dynamics?: Object;
+        protos?: Object;
+        statics?: Object;
+    }): Object;
+
+    trait({
+        name?: string;
+        mixin?: Object[];
+        cons?: (...args: any[]) => any;
+        setup?: (...args: any[]) => any;
+        dynamics?: Object;
+        protos?: Object;
+        statics?: Object;
+    }): Object;
+
+    /*
+     *  Component Creation
+     */
+
+    create(spec: string, ...rest: any[]): ComponentJS_comp;
+    create(base: any, spec: string, ...rest: any[]): ComponentJS_comp;
+
+    destroy(spec: string, ...rest: any[]): void;
+    destroy(base: any, spec: string, ...rest: any[]): void;
+
+    /*
+     *  Component Information
+     */
+
+    mark(obj: any, name: string): void;
+    marked(obj: any, name: string): boolean;
 
     pattern: any;
 }
