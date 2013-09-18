@@ -7,9 +7,11 @@
 ##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ##
 
-#   tools mandatory for stage1
+#   tools mandatory for stage0
 PERL            = perl
 SHTOOL          = shtool
+
+#   tools mandatory for stage1
 CLOSURECOMPILER = closure-compiler \
                   --warning_level DEFAULT \
                   --compilation_level SIMPLE_OPTIMIZATIONS \
@@ -40,11 +42,15 @@ VERSION_MICRO   = 9
 VERSION_DATE    = 20130510
 VERSION         = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
-#   make plugin
-MAKE_PLUGIN     = echo "++ assembling build/component.plugin.$$NAME.js <- component.plugin.$$NAME.js (Custom Build Tool)"; \
+#   make plugin (stage 0)
+MAKE_PLUGIN_STAGE0 = \
+                  echo "++ assembling build/component.plugin.$$NAME.js <- component.plugin.$$NAME.js (Custom Build Tool)"; \
                   $(SHTOOL) mkdir -f -p -m 755 build; \
                   $(PERL) build-src.pl build/component.plugin.$$NAME.js component.plugin.$$NAME.js \
                       "$(VERSION_MAJOR)" "$(VERSION_MINOR)" "$(VERSION_MICRO)" "$(VERSION_DATE)"; \
+
+#   make plugin (stage 1)
+MAKE_PLUGIN_STAGE1 = \
                   echo "++ linting build/component.plugin.$$NAME.js (Google Closure Linter)"; \
                   $(GJSLINT) build/component.plugin.$$NAME.js | \
                   egrep -v "E:(0001|0131|0110)" | grep -v "FILE  :" | sed -e '/^Found/,$$d'; \
@@ -98,8 +104,8 @@ LIB_SRC         = component.js \
                   component-4-comp-4-states.js \
                   component-5-glob-0-export.js \
                   component-5-glob-1-plugin.js
-LIB_BLD         = build/component.js \
-                  build/component.min.js \
+LIB_BLD         = build/component.js
+LIB_MIN         = build/component.min.js
 
 #   list of all plugin files
 PLG_SRC         = component.plugin.debugger.js \
@@ -110,6 +116,11 @@ PLG_BLD         = build/component.plugin.debugger.js \
                   build/component.plugin.extjs.js \
                   build/component.plugin.localstorage.js \
                   build/component.plugin.values.js
+PLG_MIN         = build/component.plugin.debugger.min.js \
+                  build/component.plugin.jquery.min.js \
+                  build/component.plugin.extjs.min.js \
+                  build/component.plugin.localstorage.min.js \
+                  build/component.plugin.values.min.js
 
 #   list of all linting files
 LNT_SRC         = build/component.js
@@ -125,15 +136,15 @@ API_BLD         = build/component-api.screen.html \
                   build/component-api.print-a4.pdf
 
 #   standard targets
-all:   stage1 stage2 stage3 stage4
-build: stage1        stage3 stage4
+all:   stage1 stage2 stage3
+build: stage1        stage3
 lint:  stage2
 
 #   standard stages
-stage1: $(LIB_BLD)
+stage0: $(LIB_BLD) $(PLG_BLD)
+stage1: $(LIB_MIN) $(PLG_MIN)
 stage2: $(LNT_BLD)
 stage3: $(API_BLD)
-stage4: $(PLG_BLD)
 
 #   assemble the JavaScript library
 build/component.js: $(LIB_SRC)
@@ -193,15 +204,25 @@ build/component.plugin.debugger.js: component.plugin.debugger.js \
 	component.plugin.debugger-infobox.js component.plugin.debugger-jquery.js \
     component.plugin.debugger-view.js component.plugin.debugger-window.js \
     component.plugin.debugger-render.js
-	@NAME="debugger"; $(MAKE_PLUGIN)
+	@NAME="debugger"; $(MAKE_PLUGIN_STAGE0)
+build/component.plugin.debugger.min.js: build/component.plugin.debugger.js
+	@NAME="debugger"; $(MAKE_PLUGIN_STAGE1)
 build/component.plugin.jquery.js: component.plugin.jquery.js
-	@NAME="jquery"; $(MAKE_PLUGIN)
+	@NAME="jquery"; $(MAKE_PLUGIN_STAGE0)
+build/component.plugin.jquery.min.js: build/component.plugin.jquery.js
+	@NAME="jquery"; $(MAKE_PLUGIN_STAGE1)
 build/component.plugin.extjs.js: component.plugin.extjs.js
-	@NAME="extjs"; $(MAKE_PLUGIN)
+	@NAME="extjs"; $(MAKE_PLUGIN_STAGE0)
+build/component.plugin.extjs.min.js: build/component.plugin.extjs.js
+	@NAME="extjs"; $(MAKE_PLUGIN_STAGE1)
 build/component.plugin.localstorage.js: component.plugin.localstorage.js
-	@NAME="localstorage"; $(MAKE_PLUGIN)
+	@NAME="localstorage"; $(MAKE_PLUGIN_STAGE0)
+build/component.plugin.localstorage.min.js: build/component.plugin.localstorage.js
+	@NAME="localstorage"; $(MAKE_PLUGIN_STAGE1)
 build/component.plugin.values.js: component.plugin.values.js
-	@NAME="values"; $(MAKE_PLUGIN)
+	@NAME="values"; $(MAKE_PLUGIN_STAGE0)
+build/component.plugin.values.min.js: build/component.plugin.values.js
+	@NAME="values"; $(MAKE_PLUGIN_STAGE1)
 
 #   build API documentation in screen HTML format
 build/component-api.screen.html: component-api.txt component-api.tmpl
