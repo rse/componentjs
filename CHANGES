@@ -13,15 +13,40 @@
     Major changes between ComponentJS 0.9.9 and 0.9.10
     --------------------------------------------------
 
+    o Improve build process: provide a "stage0" target which does not
+      need any special tools beside "perl" and "shtool" in order to allow
+      developers under Windows to participate more easily.
+
+    o Added "targeting" (boolean) option to plug() / unplug() and this
+      way indirectly fix the semantic of link() in case a target should
+      link onto itself.
+
+    o Added "scope" (string) option to property() to allow a more
+      convenient way to scope a property instead of the special
+      "name@scope" syntax of the "name" option.
+
+    o In the debugger, prepend log messages instead of appending them
+      as this is a lot more convenient during debugging.
+
+    o Added necessary hooks for companion project "componentjs-tracing",
+      to allow easier instrumentation of ComponentJS based applications.
+
+    o Improved and updated TypeScript definition for newer TypeScript
+      0.9 world order (where "bool" is not "boolean", etc).
+
+    o Skip not-enumerable fields and the special fields "constructor"
+      and "prototype" on object/hash validation.
+
     o Fixed internal cloning of Array objects (which is
       used for the "dynamics" part of cs.clazz!).
 
-    o improve the internal JSON encoder to more correctly detect cycles
+    o Improve the internal JSON encoder to more correctly detect cycles.
 
-    o allow also "null" as an identifier to validate against the special Object null
+    o Allow also "null" as an identifier to validate against the special
+      Object null.
 
-    o allow application to still enforce standard sockets by skipping
-      the jQuery/ExtJS inference if no 'type' parameter is given
+    o Allow application to still enforce standard sockets by skipping
+      the jQuery/ExtJS inference if no 'type' parameter is given.
 
     Major changes between ComponentJS 0.9.8 and 0.9.9
     -------------------------------------------------
