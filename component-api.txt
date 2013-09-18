@@ -852,21 +852,27 @@ target component itself. So, please remember to never plug a socket directly ont
 - O<component>.M<plug>({
       [F<name>: T<String> = "default",]
       F<object>: T<Object>,
-      [F<spool>: T<String>]
+      [F<spool>: T<String>,]
+      [F<targeting>: T<Boolean>]
   }): T<Number>;
   O<component>.M<plug>(P<object>: T<Object>): T<Number>
 
   Plugs F<object> into the socket named F<name> provided by any
   parent/ancestor component of O<component>. Optionally spool the
   corresponding M<unplug>() operation on spool F<spool> attached to O<component>.
+  Optionally (in case of F<targeting> set to C<true>) start the
+  operation on O<component> instead of its parent component.
   Returns an identifier for use with the corresponding M<unplug>() operation.
 
   | cs(this).plug({ object: ui, spool: "materialized" })
 
-- O<component>.M<unplug>({ F<id>: T<Number> }): T<Void>;
+- O<component>.M<unplug>({ F<id>: T<Number>[, F<targeting>: T<Boolean>] }): T<Void>;
   O<component>.M<unplug>(P<id>: T<Number>): T<Void>
 
-  Unplugs the object previously plugged under F<id>.
+  Unplugs the object previously plugged under F<id> from the
+  socket providing parent/ancestor component of O<component>.
+  Optionally (in case of F<targeting> set to C<true>) start the
+  operation on O<component> instead of its parent component.
   This is usually performed indirectly through the Spool mechanism.
 
   | cs(this).unplug(id)
