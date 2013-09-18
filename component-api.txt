@@ -180,10 +180,9 @@ that component shadow objects are defined by C<cs.clazz>!
   following grammar (which is a mixture of JSON-like structure and RegExp-like
   quantifiers):
 
-  + spec      + ::= + bool-not | bool-or | group | hash | array | any | primary | class | special
-  + bool-not  + ::= + "C<!>" spec
-  + bool-or   + ::= + spec "C<|>" spec
-  + group     + ::= + "C<(>" spec "C<)>"
+  + spec      + ::= + not | alt | hash | array | any | primary | class | special
+  + not       + ::= + "C<!>" spec
+  + alt       + ::= + "C<(>" spec ("C<|>" spec)* "C<)>"
   + hash      + ::= + "C<{>" (key arity? "C<:>" spec ("C<,>" key arity? "C<:>" spec)*)? "C<}>"
   + array     + ::= + "C<[>" (spec arity? ("C<,>" spec arity?)*)? "C<]>"
   + arity     + ::= + "C<?>" | "C<*>" | "C<+>"
