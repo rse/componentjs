@@ -167,11 +167,6 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             _cs.hook("ComponentJS:state-invalidate", "none", "states");
             _cs.hook("ComponentJS:state-change", "none");
 
-            /*  execute pending spooled actions  */
-            name = "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter";
-            if (comp.spooled(name))
-                comp.unspool(name);
-
             /*  execute enter method  */
             if (_cs.state_method_call("enter", comp, enter) === false) {
                 /*  FULL STOP: state enter method rejected state transition  */
@@ -259,11 +254,6 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             );
             _cs.hook("ComponentJS:state-invalidate", "none", "states");
             _cs.hook("ComponentJS:state-change", "none");
-
-            /*  execute pending spooled actions  */
-            name = "ComponentJS:state:" + state + ":leave";
-            if (comp.spooled(name))
-                comp.unspool(name);
 
             /*  execute leave method  */
             if (_cs.state_method_call("leave", comp, leave) === false) {
