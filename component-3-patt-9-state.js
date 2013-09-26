@@ -229,8 +229,8 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                         $cs.debug(1,
                             "state: " + comp.path("/") + ": transition (decrease) " +
                             "REJECTED BY CHILD COMPONENT (" + children[i].path("/") + "): " +
-                            "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
-                            "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                            "@" + state_lower + " <--(" + leave + ")-- " +
+                            "@" + state + ": SUSPENDING CURRENT TRANSITION RUN"
                         );
                         return;
                     }
@@ -241,16 +241,16 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             if (_cs.isdefined(comp.__state_guards[leave])) {
                 $cs.debug(1,
                     "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE GUARD: " +
-                    "@" + _cs.states[comp.__state - 1].state + " <--(" + leave + ")-- " +
-                    "@" + _cs.states[comp.__state].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                    "@" + state_lower + " <--(" + leave + ")-- " +
+                    "@" + state + ": SUSPENDING CURRENT TRANSITION RUN"
                 );
                 return;
             }
             comp.__state--;
             $cs.debug(1,
                 "state: " + comp.path("/") + ": transition (decrease): " +
-                "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
-                "@" + _cs.states[comp.__state + 1].state
+                "@" + state_lower + " <--(" + leave + ")-- " +
+                "@" + state
             );
             _cs.hook("ComponentJS:state-invalidate", "none", "states");
             _cs.hook("ComponentJS:state-change", "none");
@@ -260,12 +260,23 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 /*  FULL STOP: state leave method rejected state transition  */
                 $cs.debug(1,
                     "state: " + comp.path("/") + ": transition (decrease) REJECTED BY LEAVE METHOD: " +
-                    "@" + _cs.states[comp.__state].state + " <--(" + leave + ")-- " +
-                    "@" + _cs.states[comp.__state + 1].state + ": SUSPENDING CURRENT TRANSITION RUN"
+                    "@" + state_lower + " <--(" + leave + ")-- " +
+                    "@" + state + ": SUSPENDING CURRENT TRANSITION RUN"
                 );
                 comp.__state++;
                 return;
             }
+            else
+                /*  automatically unspool actions on spool named like the leaving state  */
+                if (comp.spooled(state)) {
+                    $cs.debug(1,
+                        "unspool: " + comp.path("/") + ": automatically unspooled " +
+                        comp.__spool[state].length + " operation" +
+                        (comp.__spool[state].length > 1 ? "s" : "") + " on " + leave
+                    );
+                    comp.unspool(state);
+                }
+
 
             /*  automatically unspool still pending actions
                 on spool named exactly like the left state  */
