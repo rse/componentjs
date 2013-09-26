@@ -114,7 +114,7 @@ _cs.state_progression_single = function (req) {
 /*  perform a single synchronous progression run for a particular component  */
 _cs.state_progression_run = function (comp, arg, _direction) {
     var i, children;
-    var name, state, enter, leave;
+    var name, state, enter, leave, spooled;
 
     /*  handle optional argument (USED INTERNALLY ONLY)  */
     if (typeof _direction === "undefined")
@@ -166,11 +166,6 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             );
             _cs.hook("ComponentJS:state-invalidate", "none", "states");
             _cs.hook("ComponentJS:state-change", "none");
-
-            /*  execute pending spooled actions  */
-            name = "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter";
-            if (comp.spooled(name))
-                comp.unspool(name);
 
             /*  execute enter method  */
             if (_cs.state_method_call("enter", comp, enter) === false) {
@@ -260,11 +255,6 @@ _cs.state_progression_run = function (comp, arg, _direction) {
             _cs.hook("ComponentJS:state-invalidate", "none", "states");
             _cs.hook("ComponentJS:state-change", "none");
 
-            /*  execute pending spooled actions  */
-            name = "ComponentJS:state:" + _cs.states[comp.__state + 1].state + ":leave";
-            if (comp.spooled(name))
-                comp.unspool(name);
-
             /*  execute leave method  */
             if (_cs.state_method_call("leave", comp, leave) === false) {
                 /*  FULL STOP: state leave method rejected state transition  */
@@ -275,6 +265,14 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 );
                 comp.__state++;
                 return;
+            }
+
+            /*  automatically unspool still pending actions
+                on spool named exactly like the left state  */
+            spooled = comp.spooled(state);
+            if (spooled > 0) {
+                $cs.debug(1, "state: " + comp.path("/") + ": auto-unspooling " + spooled + " operation(s)");
+                comp.unspool(state);
             }
 
             /*  notify subscribers about new state  */
