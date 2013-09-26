@@ -114,7 +114,7 @@ _cs.state_progression_single = function (req) {
 /*  perform a single synchronous progression run for a particular component  */
 _cs.state_progression_run = function (comp, arg, _direction) {
     var i, children;
-    var name, state, enter, leave, spooled;
+    var state, enter, leave, spooled;
 
     /*  handle optional argument (USED INTERNALLY ONLY)  */
     if (typeof _direction === "undefined")
