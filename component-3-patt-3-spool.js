@@ -40,17 +40,17 @@ $cs.pattern.spool = $cs.trait({
             return;
         },
 
-        /*  check whether actions are spooled  */
+        /*  return number of actions which are spooled  */
         spooled: function () {
             /*  determine parameters  */
             var params = $cs.params("spooled", arguments, {
                 name: { pos: 0, req: true }
             });
 
-            /*  return whether actions are spooled  */
+            /*  return number of actions which are spooled  */
             return (
-                   _cs.isdefined(this.__spool[params.name])
-                && this.__spool[params.name].length > 0
+                _cs.isdefined(this.__spool[params.name]) ?
+                this.__spool[params.name].length : 0
             );
         },
 

@@ -663,10 +663,10 @@ application itself.
   |     args: [ 42, "foo" ]
   | });
 
-- O<component>.M<spooled>({ F<name>: T<String> }): T<Boolean>;
-  O<component>.M<spooled>(P<name>: T<String>): T<Boolean>
+- O<component>.M<spooled>({ F<name>: T<String> }): T<Number>;
+  O<component>.M<spooled>(P<name>: T<String>): T<Number>
 
-  Check whether any actions are spooled under spool named F<name>.
+  Return the number of actions which are spooled under spool named F<name>.
   Usually done before calling M<unspool>() as it would throw an
   exception if there are no spooled actions at all.
 
