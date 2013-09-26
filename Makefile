@@ -240,15 +240,15 @@ build/component-api.screen.txt: build/component-api.screen.html
 build/component-api.print-a4.pdf: build/component-api.screen.html
 	@$(SHTOOL) mkdir -f -p -m 755 build
 	@echo "++ generating build/component-api.print-a4.pdf <- build/component-api.screen.html (PrinceXML)"; \
-    echo "@media print { @page { size: A4 !important; } }" >build/component-api.paper.css; \
+	echo "@media print { @page { size: A4 !important; } }" >build/component-api.paper.css; \
 	$(PRINCE) --style build/component-api.paper.css -o build/component-api.print-a4.pdf build/component-api.screen.html; \
-	rm -f build/component-api.paper.css
+	rm -rf fontconfig; rm -f build/component-api.paper.css
 
 #   build API documentation in print PDF (US paper) format
 build/component-api.print-us.pdf: build/component-api.screen.html
 	@$(SHTOOL) mkdir -f -p -m 755 build
 	@echo "++ generating build/component-api.print-us.pdf <- build/component-api.screen.html (PrinceXML)"; \
-    echo "@media print { @page { size: US-Letter !important; } }" >build/component-api.paper.css; \
+	echo "@media print { @page { size: US-Letter !important; } }" >build/component-api.paper.css; \
 	$(PRINCE) --style build/component-api.paper.css -o build/component-api.print-us.pdf build/component-api.screen.html; \
 	rm -f build/component-api.paper.css
 
