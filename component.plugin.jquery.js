@@ -49,8 +49,8 @@ ComponentJS.plugin("jquery", function (_cs, $cs, GLOBAL) {
                        typeof params.ctx.jquery === "string" &&
                        params.ctx.jquery.match(/^[0-9]+(?:\.[0-9]+)+$/) ) ) {
                     /*  provide specialized jQuery socket functionality  */
-                    arg.plug   = function (el) { jQuery(this).append(el); };
-                    arg.unplug = function (el) { jQuery(el).remove();     };
+                    arg.plug   = function (el, comp) { jQuery(this).append(el); };
+                    arg.unplug = function (el, comp) { jQuery(el).remove();     };
                 }
 
                 /*  pass-through execution to original/base method  */

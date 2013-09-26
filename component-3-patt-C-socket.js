@@ -207,9 +207,9 @@ _cs.plugger = function (op, origin, name, object, targeting) {
 
     /*  perform plug/unplug operation  */
     if (_cs.istypeof(socket[op]) === "string")
-        socket.ctx[socket[op]].call(socket.ctx, object);
+        socket.ctx[socket[op]].call(socket.ctx, object, origin);
     else if (_cs.istypeof(socket[op]) === "function")
-        socket[op].call(socket.ctx, object);
+        socket[op].call(socket.ctx, object, origin);
     else
         throw _cs.exception(op, "failed to perform \"" + op + "\" operation");
 };
