@@ -44,7 +44,7 @@ some of its internals only once all plugins were loaded and executed.
 
   Bootstrap the ComponentJS library by Initializing its internals.
   This has to be called at least before any calls to M<create>(),
-  but can be called after any calls to M<symbol>, M<debug> or M<ns>.
+  but can be called after any calls to M<symbol>(), M<debug>() or M<ns>().
 
   | cs.bootstrap()
 
@@ -336,7 +336,7 @@ looked up, state transitioned, communicated on and be destroyed.
   either a to be instanciated class constructor (T<Function>) or an already
   instanciated object (T<Object>).
 
-  The M<create> method returns the last created component, i.e., the
+  The M<create>() method returns the last created component, i.e., the
   right-most component in the tree specification.
 
   | cs.create("/{sv,ui/{one,two}}", my.sv, {}, my.ui.one, my.ui.two);
@@ -613,7 +613,7 @@ transitions, enter and leave methods are called accordingly.
   guard which ensures that only after the Nth C<-1> call the guard is finally deactivated
   again. This is useful if you activate the guard in order to await N asynchronous operations.
   Then the guard should be deactivated once the last asynchronous operation is finished
-  (independent which one of the N operations this is). A guard P<level> of C<0> 
+  (independent which one of the N operations this is). A guard P<level> of C<0>
   resets the guard, independent what its current level is.
 
   | var self = this;
@@ -631,8 +631,8 @@ Spools
 ------
 
 In ComponentJS there are at least 4 resource allocating operations which have corresponding deallocation operations:
-Model M<observe>/M<unobserve>, Socket M<plug>/M<unplug>, Event M<subscribe>/M<unsubscribe>, Service
-M<register>/M<unregister> and Hook M<latch>/M<unlatch>. For correct run-time operation it is required that each
+Model M<observe>()/M<unobserve>(), Socket M<plug>()/M<unplug>(), Event M<subscribe>()/M<unsubscribe>(), Service
+M<register>()/M<unregister>() and Hook M<latch>()/M<unlatch>(). For correct run-time operation it is required that each
 allocation operation, performed in a state enter method, is properly reversed with the corresponding deallocation
 operation in the state leave method. As this is extremely cumbersome (especially because you have to store the
 identifiers returned by the allocation operations as you need them for the deallocation operation), ComponentJS provides
@@ -654,7 +654,7 @@ application itself.
   The F<name> parameter can be either just a plain spool-name "C<name>"
   or a combination of (relative) component-path and spool-name "C<path>:C<name>".
   This allows one to spool on a component different from O<component> (usually
-  a relative path back to the component of the caller of the M<spool> operation).
+  a relative path back to the component of the caller of the M<spool>() operation).
 
   | cs(this).spool({
   |     name: "foo",
@@ -760,7 +760,7 @@ component-local information and to communicate information to foreign components
   get the value, but if you resolve the property with C<cs("/foo/baz", "quux")> you
   do not get the value. This allows you to set the same property with different
   values for different child components.
-  Additionally the scope can be a partial component path, too. 
+  Additionally the scope can be a partial component path, too.
   If a property was set with name "C<quux@bar/baz>" on component C< /foo>,
   if you resolve the property with C<cs("/foo/bar/baz", "quux")> you
   get the value, but if you resolve the property with C<cs("/foo/bar/baz2", "quux")> you
@@ -797,8 +797,9 @@ target component itself. So, please remember to never plug a socket directly ont
   scoped for the child component named F<scope>, where M<plug>()
   and M<unplug>() calls on child/ancestor components execute
   the supplied F<plug>/F<unplug> functions with F<ctx> supplied as
-  C<this>.
-  The M<socket> method returns an id which uniquely identifies the socket.
+  C<this>, the F<object> parameter of M<plug>()/M<unplug>() as
+  first argument and O<component> as the second argument.
+  The M<socket>() method returns an id which uniquely identifies the socket.
   Instead of having to manually release the socket later via M<unsocket>()
   you can use the spool mechanism and spool the corresponding M<unsocket>()
   operation via option F<spool>.
@@ -832,12 +833,12 @@ target component itself. So, please remember to never plug a socket directly ont
 
   Create a socket on O<component>, named F<name> and optionally
   scoped for the child component named F<scope>, and pass-through the
-  M<plug>/M<unplug>() calls to the target component F<target>
+  M<plug>()/M<unplug>() calls to the target component F<target>
   and its socket named F<socket>. Usually used by Controller
   components to link their default socket (for the View below itself) to a
   particular socket of a parent component (because a View should be reusable
   and hence is not allowed to know the particular socket intended for it).
-  The M<link> method returns an id which uniquely identifies the linked socket.
+  The M<link>() method returns an id which uniquely identifies the linked socket.
   Instead of having to manually release the socket later via M<unlink>()
   you can use the spool mechanism and spool the corresponding M<unlink>()
   operation via option F<spool>.
@@ -901,7 +902,7 @@ displaying the Model information and storing events into it.
   indicating that on each value write, the value should be
   automatically reset to the initial F<value>, and F<store> (T<Boolean>) for
   indicating that the value should be persistently stored in the browser's C<localStorage>.
-  Multiple calls to the M<model> method on the same component incrementally
+  Multiple calls to the M<model>() method on the same component incrementally
   add model elements.
 
   | cs(this).model({
@@ -973,7 +974,7 @@ displaying the Model information and storing events into it.
   For "set" and "changed" operations, the callback function F<func> has to be of signature
   F<func>(P<ev>: T<Event>, P<value-new>: T<Object>, P<value-old>: T<Object>): T<Void>.
   Both types of callbacks can override the value by using P<ev>.M<result>(P<value>).
-  The M<observe> method returns an id which uniquely identifies the observation.
+  The M<observe>() method returns an id which uniquely identifies the observation.
   Instead of having to manually release the observation later via M<unobserve>()
   you can use the spool mechanism and spool the corresponding M<unobserve>()
   operation via F<spool>.
@@ -1006,14 +1007,14 @@ the path from the target component (exclusive) to the root component (inclusive)
 
 Event objects are implicitly created by the M<publish>() operation and
 they provide various getter/setter methods:
-M<target> (T<Component>): target component the event is send to;
-M<propagation> (T<Boolean>): whether event propagation should continue;
-M<processing> (T<Boolean>): whether final default event processing should be performed;
-M<dispatched> (T<Boolean>): whether event was dispatched at least once to a subscriber;
-M<decline> (T<Boolean>): whether event was declined by subscriber;
-M<state> (T<Boolean>): state of dispatching: C<capturing>, C<targeting>, C<spreading> or C<bubbling>;
-M<result> (T<Object>): optional result value event subscribers can provide;
-M<async> (T<Boolean>): whether event is dispatched asynchronously.
+M<target>() (T<Component>): target component the event is send to;
+M<propagation>() (T<Boolean>): whether event propagation should continue;
+M<processing>() (T<Boolean>): whether final default event processing should be performed;
+M<dispatched>() (T<Boolean>): whether event was dispatched at least once to a subscriber;
+M<decline>() (T<Boolean>): whether event was declined by subscriber;
+M<state>() (T<Boolean>): state of dispatching: C<capturing>, C<targeting>, C<spreading> or C<bubbling>;
+M<result>() (T<Object>): optional result value event subscribers can provide;
+M<async>() (T<Boolean>): whether event is dispatched asynchronously.
 
 - O<component>.M<subscribe>({
       F<name>: T<String>,
@@ -1052,7 +1053,7 @@ M<async> (T<Boolean>): whether event is dispatched asynchronously.
   be dispatched in the spreading phase, too.
   Option F<exclusive> can be set to "C<true>" for an exclusive subscription, i.e.,
   a subscription which prevents any subsequent subscriptions.
-  The M<subscribe> method returns an id which uniquely identifies the subscription.
+  The M<subscribe>() method returns an id which uniquely identifies the subscription.
   Instead of having to manually release the subscription later via M<unsubscribe>()
   you can use the spool mechanism and spool the corresponding M<unsubscribe>()
   operation via option F<spool>.
@@ -1109,8 +1110,8 @@ Services
 --------
 
 Services are loosly coupled method calls across components.
-The functionality provider M<register>s the service and
-the functionality consumer M<call>s the service.
+The functionality provider does M<register>() the service and
+the functionality consumer does M<call>() the service.
 
 - O<component>.M<register>({
       F<name>: T<String>,
@@ -1186,8 +1187,8 @@ Hooks
 -----
 
 Hooks are functionality extension points.
-The single provider performs a M<hook> under run-time while
-the multiple consumers have M<latch>ed into this hook beforehand.
+The single provider performs a M<hook>() under run-time while
+the multiple consumers have M<latch>()'ed into this hook beforehand.
 
 - O<component>.M<latch>({
       F<name>: T<String>,
