@@ -29,6 +29,11 @@ interface ComponentJS_event_cb_directresult {
 interface ComponentJS_comp {
     create(spec: string, ...rest: any[]): ComponentJS_comp;
     destroy(): void;
+    exists(): boolean;
+
+    id(): string;
+    path(): ComponentJS_comp[];
+    path(sep: string): string;
 
     model(params: Object): Object;
 
