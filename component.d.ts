@@ -31,7 +31,7 @@ interface ComponentJS_comp {
     destroy(): void;
     exists(): boolean;
 
-    id(): string;
+    id(id?: string): string;
     path(): ComponentJS_comp[];
     path(sep: string): string;
 
