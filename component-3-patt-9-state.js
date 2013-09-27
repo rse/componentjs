@@ -266,9 +266,9 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 comp.__state++;
                 return;
             }
-            /*  leave method successful  */
             else {
-                /*  automatically unspool still pending actions
+                /*  in case leave method successful or not present
+                    automatically unspool still pending actions
                     on spool named exactly like the left state  */
                 spooled = comp.spooled(state);
                 if (spooled > 0) {
