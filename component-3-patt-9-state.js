@@ -266,13 +266,15 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 comp.__state++;
                 return;
             }
-
-            /*  automatically unspool still pending actions
-                on spool named exactly like the left state  */
-            spooled = comp.spooled(state);
-            if (spooled > 0) {
-                $cs.debug(1, "state: " + comp.path("/") + ": auto-unspooling " + spooled + " operation(s)");
-                comp.unspool(state);
+            /*  leave method successful  */
+            else {
+                /*  automatically unspool still pending actions
+                    on spool named exactly like the left state  */
+                spooled = comp.spooled(state);
+                if (spooled > 0) {
+                    $cs.debug(1, "state: " + comp.path("/") + ": auto-unspooling " + spooled + " operation(s)");
+                    comp.unspool(state);
+                }
             }
 
             /*  notify subscribers about new state  */
