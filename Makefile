@@ -93,10 +93,9 @@ LIB_SRC         = component.js \
                   component-3-patt-A-service.js \
                   component-3-patt-B-shadow.js \
                   component-3-patt-C-socket.js \
-                  component-3-patt-D-hook.js \
-                  component-3-patt-E-marker.js \
-                  component-3-patt-F-store.js \
-                  component-3-patt-G-model.js \
+                  component-3-patt-D-marker.js \
+                  component-3-patt-E-store.js \
+                  component-3-patt-F-model.js \
                   component-4-comp-0-define.js \
                   component-4-comp-1-bootstrap.js \
                   component-4-comp-2-lookup.js \

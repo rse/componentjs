@@ -56,10 +56,9 @@
     $include("component-3-patt-A-service.js");
     $include("component-3-patt-B-shadow.js");
     $include("component-3-patt-C-socket.js");
-    $include("component-3-patt-D-hook.js");
-    $include("component-3-patt-E-marker.js");
-    $include("component-3-patt-F-store.js");
-    $include("component-3-patt-G-model.js");
+    $include("component-3-patt-D-marker.js");
+    $include("component-3-patt-E-store.js");
+    $include("component-3-patt-F-model.js");
 
     /*
     **  COMPONENT API
