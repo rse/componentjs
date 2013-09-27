@@ -367,7 +367,7 @@ accessed via the following getter/setter-style methods.
   the old id. Setting the id of a component should be not done by the application
   as it is done by ComponentJS internally on component creation time.
 
-  | cs(this).id()
+  | cs(this).id() -> "0000000000000000000000000000001"
 
 - O<component>.M<name>(): T<String>;
   O<component>.M<name>(P<name>: T<String>): T<String>
