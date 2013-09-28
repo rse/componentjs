@@ -152,6 +152,13 @@ sub parse2 {
                     $html_spec .= "$txt\n";
                     $html_spec .= "</div>";
                 }
+                elsif ($txt =~ m/^\s*\.\s/s) {
+                    $txt =~ s/([ \t]+)\.([ \t]+)(.+?\n(?:\1 \2.*?\n)*)/<li>$3<\/li>/sg;
+                    $txt = conv(0, $txt);
+                    $html_spec .= "<ul class=\"list\">";
+                    $html_spec .= "$txt\n";
+                    $html_spec .= "</ul>";
+                }
                 elsif ($txt =~ m/^\s*\+\s/s) {
                     $txt =~ s/^\s*\+\s//mg;
                     $txt = conv(0, $txt);

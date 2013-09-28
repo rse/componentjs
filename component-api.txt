@@ -1044,19 +1044,21 @@ they provide various getter/setter methods:
   execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>
   C<, >P<args>C<: >T<Object>C<, ..., >P<sargs>C<: >T<Object>C<, ...)>
   once the event is dispatched to O<component> after it was published.
-  Option F<ctx> allows you to give "C<this>" a particular value for the
-  callback F<func>. Option F<args> allows you to pass additional
-  parameters to F<func> (before those passed by M<publish>()).
-  Option F<noevent> does not pass the P<ev>: T<Event> parameter to F<func>.
   By default an event is dispatched in the (mandatory) targeting and (optional) bubbling phases.
-  Setting option F<bubbling> to "C<false>" indicates that the event should
-  not be dispatched in the bubbling phase, too.
-  Setting option F<capture> to "C<true>" indicates that the event should
-  be dispatched in the capturing phase, too.
-  Setting option F<spreading> to "C<true>" indicates that the event should
-  be dispatched in the spreading phase, too.
-  Option F<exclusive> can be set to "C<true>" for an exclusive subscription, i.e.,
-  a subscription which prevents any subsequent subscriptions.
+
+  . Option F<ctx> allows you to give "C<this>" a particular value for the
+    callback F<func>. Option F<args> allows you to pass additional
+    parameters to F<func> (before those passed by M<publish>()).
+  . Option F<noevent> does not pass the P<ev>: T<Event> parameter to F<func>.
+  . Setting option F<bubbling> to "C<false>" indicates that the event should
+    not be dispatched in the bubbling phase, too.
+  . Setting option F<capture> to "C<true>" indicates that the event should
+    be dispatched in the capturing phase, too.
+  . Setting option F<spreading> to "C<true>" indicates that the event should
+    be dispatched in the spreading phase, too.
+  . Option F<exclusive> can be set to "C<true>" for an exclusive subscription, i.e.,
+    a subscription which prevents any subsequent subscriptions.
+
   The M<subscribe>() method returns an id which uniquely identifies the subscription.
   Instead of having to manually release the subscription later via M<unsubscribe>()
   you can use the spool mechanism and spool the corresponding M<unsubscribe>()
