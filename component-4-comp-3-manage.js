@@ -12,9 +12,14 @@ $cs.create = function () {
     /*  sanity check environment  */
     if (!_cs.bootstrapped) {
         /*  give warning but still be backward compatible  */
+        var msg = "ComponentJS: WARNING: component system still not bootstrapped " +
+            "(please call \"bootstrap\" method before first \"create\" method call!)";
         /* global alert:false */
-        alert("WARNING: ComponentJS still not bootstrapped " +
-            "(please call \"bootstrap\" method before first \"create\" method call!)");
+        if (typeof alert === "function")
+            alert(msg);
+        /* global console:false */
+        else if (typeof console !== "undefined" && typeof console.log === "function")
+            console.log(msg);
         $cs.bootstrap();
     }
 
