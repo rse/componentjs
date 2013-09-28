@@ -165,7 +165,7 @@ $cs.pattern.eventing = $cs.trait({
                 spec:         {             def: {}              },
                 async:        {             def: false           },
                 capturing:    {             def: true            },
-                spreading:    {             def: true            },
+                spreading:    {             def: false           },
                 bubbling:     {             def: true            },
                 completed:    {             def: $cs.nop         },
                 resultinit:   {             def: undefined       },

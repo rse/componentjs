@@ -13,6 +13,9 @@
     Major changes between ComponentJS 0.9.9 and 0.9.10
     --------------------------------------------------
 
+    o On publishing events the "spreading" option no longer defaults to
+      "true" in order to improve performance in standard cases.
+
     o Improve build process: provide a "stage0" target which does not
       need any special tools beside "perl" and "shtool" in order to allow
       developers under Windows to participate more easily.
