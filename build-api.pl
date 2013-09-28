@@ -53,7 +53,7 @@ sub parse2 {
     $html_navi .= "<h2>" . mklink(0, $title) . "</h2>\n";
     $html_navi .= "<ul>\n";
 
-    #   parse third-level structure (part 1)
+    #   parse second-level structure (part 1)
     $body =~ s/
         ^(.+?\n)           # intro paragraph
         (?=\n-[ \t]+\S+)   # start of first function
@@ -62,11 +62,14 @@ sub parse2 {
     /sex;
     sub addpara {
         my ($txt) = @_;
+        $txt =~ s/(\n).[ \t]+([^\n]*(?:\n[ \t]+[^\n]+)*)/$1<li>$2<\/li>/sg;
+        $txt =~ s/(\n\n)(<li>)/$1<ul>$2/sg;
+        $txt =~ s/(<\/li>)(\n\n)/$1<\/ul>$2/sg;
         $txt =~ s/\n{2,}/<p\/>\n/sg;
         return $txt;
     }
 
-    #   parse third-level structure (part 2)
+    #   parse second-level structure (part 2)
     $body =~ s/
         (?<= \n)
         -[ \t]+(\S+.+?)    # function start

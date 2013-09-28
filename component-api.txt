@@ -997,24 +997,28 @@ Events
 The Event mechanism is a central one in ComponentJS. Both
 Models, Services and Hooks are all internally based on the Events mechanism.
 An Event is an object published towards a target component. It is delivered
-in 4 phases: in phase 1 (the "capturing" phase) the Event is delivered
-to all components on the path from the root component (inclusive) towards the target
-component (exclusive); in phase 2 (the "targeting" phase) the Event is delivered to the target component;
-in phase 3 (the "spreading" phase) the Event is delivered to all descendant components of
-the target component in a depth-first traversal order
-and in phase 4 (the "bubbling" phase) the Event is delivered (again) to all components on
-the path from the target component (exclusive) to the root component (inclusive).
+in 4 phases:
+
+. In phase 1 (the "capturing" phase) the Event is delivered
+  to all components on the path from the root component (inclusive) towards the target
+  component (exclusive).
+. In phase 2 (the "targeting" phase) the Event is delivered to the target component.
+. In phase 3 (the "spreading" phase) the Event is delivered to all descendant components of
+  the target component in a depth-first traversal order.
+. In phase 4 (the "bubbling" phase) the Event is delivered (again) to all components on
+  the path from the target component (exclusive) to the root component (inclusive).
 
 Event objects are implicitly created by the M<publish>() operation and
 they provide various getter/setter methods:
-M<target>() (T<Component>): target component the event is send to;
-M<propagation>() (T<Boolean>): whether event propagation should continue;
-M<processing>() (T<Boolean>): whether final default event processing should be performed;
-M<dispatched>() (T<Boolean>): whether event was dispatched at least once to a subscriber;
-M<decline>() (T<Boolean>): whether event was declined by subscriber;
-M<state>() (T<Boolean>): state of dispatching: C<capturing>, C<targeting>, C<spreading> or C<bubbling>;
-M<result>() (T<Object>): optional result value event subscribers can provide;
-M<async>() (T<Boolean>): whether event is dispatched asynchronously.
+
+. M<target>() (T<Component>): target component the event is send to
+. M<propagation>() (T<Boolean>): whether event propagation should continue
+. M<processing>() (T<Boolean>): whether final default event processing should be performed
+. M<dispatched>() (T<Boolean>): whether event was dispatched at least once to a subscriber
+. M<decline>() (T<Boolean>): whether event was declined by subscriber
+. M<state>() (T<Boolean>): state of dispatching: C<capturing>, C<targeting>, C<spreading> or C<bubbling>
+. M<result>() (T<Object>): optional result value event subscribers can provide
+. M<async>() (T<Boolean>): whether event is dispatched asynchronously
 
 - O<component>.M<subscribe>({
       F<name>: T<String>,
