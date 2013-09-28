@@ -36,7 +36,7 @@ $txt =~ s/
     ---+[ \t]*\n            # underlining
     (.+?\n)                 # body
     (?= [A-Z][^\n]+?\n      # following headline
-        ---+[ \t]*\n        # corresponding underling
+        ---+[ \t]*\n        # corresponding underlining
     |   $             )     # or at end file
 /
     parse2($1, $2), ''
