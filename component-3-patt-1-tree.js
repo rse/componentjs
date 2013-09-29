@@ -40,7 +40,7 @@ $cs.pattern.tree = $cs.trait({
         },
 
         /*  method: attach node to tree  */
-        _attach: function (theparent) {
+        attach: function (theparent) {
             if (this.parent() !== null)
                 this.detach();
             var children = theparent.children();
@@ -50,7 +50,7 @@ $cs.pattern.tree = $cs.trait({
         },
 
         /*  method: detach node from tree  */
-        _detach: function () {
+        detach: function () {
             if (this.parent() !== null) {
                 var self = this;
                 this.parent().children(_cs.filter(this.parent().children(), function (x) {

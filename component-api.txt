@@ -479,6 +479,32 @@ The following functions allow you to traverse this tree.
 
   | cs(this).children()
 
+- O<component>.M<attach>(P<parent>: T<Component>): T<Void>
+
+  Attach O<component> as a child to the P<parent> component. In case
+  it is already attached to an old parent component, it automatically
+  calls M<detach>() before attaching to the new parent component.
+  Internally used by ComponentJS on M<create>(), but can be also used by
+  application when moving a sub-tree within the component tree.
+
+  | /*  migrate all children from our view1 onto our view2  */
+  | var view1 = cs(this, "model/view1")
+  | var view2 = cs(this, "model/view2")
+  | view1.children().forEach(function (child) {
+  |     var state = child.state({ state: "created", sync: true })
+  |     child.detach()
+  |     child.attach(view2)
+  |     child.state(state)
+  | })
+
+- O<component>.M<detach>(): T<Void>
+
+  Detach O<component> as a child from its parent component.
+  Internally used by ComponentJS on M<destroy>(), but can be also used by
+  application when moving components within the component tree.
+
+  | cs(this).detach()
+
 - O<component>.M<walk_up>(P<callback>: T<Function>, P<ctx>: T<Object>): T<Object>
 
   Walk the component tree upwards from the current component (inclusive) to

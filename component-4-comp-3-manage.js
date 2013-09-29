@@ -177,7 +177,7 @@ _cs.create_single = function (base, path, clazz) {
     comp.id(id);
 
     /*  attach to tree  */
-    comp._attach(comp_parent);
+    comp.attach(comp_parent);
 
     /*  remember bi-directional relationship between component and object  */
     comp.obj(obj);
@@ -223,7 +223,7 @@ $cs.destroy = function () {
     _cs.hook("ComponentJS:comp-destroyed", "none", comp);
 
     /*  detach component from component tree  */
-    comp._detach();
+    comp.detach();
 
     /*  remove bi-directional relationship between component and object  */
     comp.obj(null);
