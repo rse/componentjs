@@ -71,7 +71,10 @@ $cs.command = function () {
     if (params.wrap) {
         result = function () {
             var args = _cs.concat(arguments);
-            return arguments.callee.command.execute.call(arguments.callee.command, args);
+            var cb = null;
+            if (arguments.callee.command.async())
+                cb = args.pop();
+            return arguments.callee.command.execute.call(arguments.callee.command, args, cb);
         };
         result.command = cmd;
     }
