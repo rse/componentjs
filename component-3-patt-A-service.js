@@ -21,7 +21,6 @@ $cs.pattern.service = $cs.trait({
                 ctx:       {             def: this  },
                 func:      { pos: 1,     req: true  },
                 args:      { pos: "...", def: []    },
-                async:     {             def: false },
                 spool:     {             def: null  },
                 capturing: {             def: false },
                 spreading: {             def: false },
@@ -33,7 +32,6 @@ $cs.pattern.service = $cs.trait({
                 ctx:   params.ctx,
                 func:  params.func,
                 args:  params.args,
-                async: params.async,
                 wrap:  true
             });
 
