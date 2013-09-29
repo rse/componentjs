@@ -131,7 +131,7 @@ sub parse2 {
             $html_spec .= "</div>";
 
             #   parse fifth-level structure (part 2)
-            my $txt = $body;
+            my $txt = $body . "\n";
             $txt =~ s/
                 (.+?\n)
                 (?= \n | $ )
