@@ -109,17 +109,22 @@ LIB_MIN         = build/component.min.js
 #   list of all plugin files
 PLG_SRC         = component.plugin.debugger.js \
                   component.plugin.jquery.js \
-                  component.plugin.extjs.js
+                  component.plugin.extjs.js \
+                  component.plugin.localstorage.js \
+                  component.plugin.values.js \
+                  component.plugin.migrate.js
 PLG_BLD         = build/component.plugin.debugger.js \
                   build/component.plugin.jquery.js \
                   build/component.plugin.extjs.js \
                   build/component.plugin.localstorage.js \
-                  build/component.plugin.values.js
+                  build/component.plugin.values.js \
+                  build/component.plugin.migrate.js
 PLG_MIN         = build/component.plugin.debugger.min.js \
                   build/component.plugin.jquery.min.js \
                   build/component.plugin.extjs.min.js \
                   build/component.plugin.localstorage.min.js \
-                  build/component.plugin.values.min.js
+                  build/component.plugin.values.min.js \
+                  build/component.plugin.migrate.min.js
 
 #   list of all linting files
 LNT_SRC         = build/component.js
@@ -222,6 +227,10 @@ build/component.plugin.values.js: component.plugin.values.js
 	@NAME="values"; $(MAKE_PLUGIN_STAGE0)
 build/component.plugin.values.min.js: build/component.plugin.values.js
 	@NAME="values"; $(MAKE_PLUGIN_STAGE1)
+build/component.plugin.migrate.js: component.plugin.migrate.js
+	@NAME="migrate"; $(MAKE_PLUGIN_STAGE0)
+build/component.plugin.migrate.min.js: build/component.plugin.migrate.js
+	@NAME="migrate"; $(MAKE_PLUGIN_STAGE1)
 
 #   build API documentation in screen HTML format
 build/component-api.screen.html: component-api.txt component-api.tmpl
