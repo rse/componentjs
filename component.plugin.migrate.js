@@ -16,7 +16,7 @@
 /* global ComponentJS:false */
 /* jshint unused:false */
 
-ComponentJS.plugin("values", function (_cs, $cs, GLOBAL) {
+ComponentJS.plugin("migrate", function (_cs, $cs, GLOBAL) {
     /*  define the extra trait for components  */
     var trait = $cs.trait({
         protos: {
