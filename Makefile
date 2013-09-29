@@ -36,10 +36,10 @@ W3M             = w3m
 PRINCE          = prince
 
 #   current version
-VERSION_MAJOR   = 0
-VERSION_MINOR   = 9
-VERSION_MICRO   = 9
-VERSION_DATE    = 20130510
+VERSION_MAJOR   = 1
+VERSION_MINOR   = 0
+VERSION_MICRO   = 0
+VERSION_DATE    = 20130929
 VERSION         = $(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_MICRO)
 
 #   make plugin (stage 0)
@@ -275,13 +275,13 @@ clean:
 	@rmdir build >/dev/null 2>&1 || true
 
 #   create a release distribution
-release: stage1 stage2 stage3 stage4
+release: stage1 stage2 stage3
 	@echo "++ rolling release tarball ComponentJS-$(VERSION).tar.gz"; \
 	$(SHTOOL) tarball -c "gzip -9" -e "ComponentJS-*,.git,.gitignore,build/.linted*" -o ComponentJS-$(VERSION).tar.gz .; \
 	ls -l ComponentJS-$(VERSION).tar.gz
 
 #   create a snapshot distribution
-snapshot: stage1 stage2 stage3 stage4
+snapshot: stage1 stage2 stage3
 	@echo "++ rolling snapshot tarball ComponentJS-SNAPSHOT.tar.gz"; \
 	$(SHTOOL) tarball -c "gzip -9" -e "ComponentJS-*,.git,.gitignore,build/.linted*" -o ComponentJS-SNAPSHOT.tar.gz .; \
 	ls -l ComponentJS-SNAPSHOT.tar.gz
