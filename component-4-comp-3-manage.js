@@ -213,6 +213,8 @@ $cs.destroy = function () {
         throw _cs.exception("destroy", "no such component found to destroy");
     else if (comp === _cs.root)
         throw _cs.exception("destroy", "root component cannot be destroyed");
+    var path = comp.path("/");
+    var id   = comp.id();
 
     /*  switch component state to "dead"
         (here synchronously as one expects that after a destruction of a
@@ -229,7 +231,7 @@ $cs.destroy = function () {
     comp.obj(null);
 
     /*  debug hint  */
-    $cs.debug(1, "component: " + comp.path("/") + ": destroyed component [" + comp.id() + "]");
+    $cs.debug(1, "component: " + path + ": destroyed component [" + id + "]");
 
     /*  give plugins a chance to react (after final destruction of a component)  */
     _cs.hook("ComponentJS:state-invalidate", "none", "components");
