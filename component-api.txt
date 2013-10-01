@@ -165,7 +165,7 @@ that component shadow objects are defined by C<cs.clazz>!
   JavaScript (hash) object, potentially itself part of a parent namespace
   object. The top-most implicit namespace object is C<window>. A namespace has a
   dot-separated fully-qualified symbol path like C<foo.bar.quux>. This
-  method allows to create the fully-qualified path of nested objects throught the
+  method allows to create the fully-qualified path of nested objects through the
   dot-separated P<path> of object names, optionally assign the
   right-most/leaf object to P<leave> and finally return the right-most/leaf T<Object>.
 
@@ -230,7 +230,7 @@ that component shadow objects are defined by C<cs.clazz>!
 - ComponentJS.M<attribute>({ F<name>: T<String>, F<def>: T<Object>, F<validate>: T<Object> }): T<Function>;
   ComponentJS.M<attribute>(P<name>: T<String>, P<def>: T<Object>, P<validate>: T<Object>): T<Function>
 
-  Create a clonable attribute capturing getter/setter function with name P<name> (for exception
+  Create a cloneable attribute capturing getter/setter function with name P<name> (for exception
   handling reasons only), the default value P<def> and the value validation P<validate>.
 
   | var id = ComponentJS.attribute("id", "foo", /^[a-z][a-zA-Z0-9_]*/);
@@ -251,9 +251,9 @@ that component shadow objects are defined by C<cs.clazz>!
   object path F<name>, optionally extending the base/super/parent Class F<extend>
   and optionally mixing in the functionality of one or more Traits via F<mixin>. The class
   can have a constructor function F<cons> which is called once the
-  Class is instanciated and which can further initialize the dynamic fields of the class.
-  On each instanciation, all fields which are specified with F<dynamics> are
-  cloned and instanciated and all methods in F<protos> are copied into the
+  Class is instantiated and which can further initialize the dynamic fields of the class.
+  On each instantiation, all fields which are specified with F<dynamics> are
+  cloned and instantiated and all methods in F<protos> are copied into the
   Class C<prototypes> object. The F<statics> content is copied into the
   Class itself only. In case of F<extend> and/or F<mixin>, both the F<cons>
   and methods of F<protos> can call C<this.base(...)> for the base/super/parent
@@ -293,12 +293,12 @@ that component shadow objects are defined by C<cs.clazz>!
   object path F<name> and
   optionally mixing in the functionality of one or more other Traits via F<mixin>. The trait
   can have a constructor function F<cons> which is called once the
-  Class the Trait is mixed in is instanciated and which can further initialize the dynamic fields of the Class.
-  On each instanciation, all fields which are specified with F<dynamics> are
-  cloned and instanciated and all methods in F<protos> are copied into the
+  Class the Trait is mixed in is instantiated and which can further initialize the dynamic fields of the Class.
+  On each instantiation, all fields which are specified with F<dynamics> are
+  cloned and instantiated and all methods in F<protos> are copied into the
   Class C<prototypes> object. The F<statics> content is copied into the
   Class itself only. The optional F<setup> function is called directly at the end of Class
-  definition (not instanciation) and can further refine the defined Class.
+  definition (not instantiation) and can further refine the defined Class.
 
   | var foo = cs.trait({
   |     protos: {
@@ -333,8 +333,8 @@ looked up, state transitioned, communicated on and be destroyed.
   For instance, the specification C<foo/{bar/baz,quux}> is the
   tree consisting of the two maximum length paths: C<foo/bar/baz> and C<foo/quux>.
   For each name from left-to-right in the tree specification you have to give
-  either a to be instanciated class constructor (T<Function>) or an already
-  instanciated object (T<Object>).
+  either a to be instantiated class constructor (T<Function>) or an already
+  instantiated object (T<Object>).
 
   The M<create>() method returns the last created component, i.e., the
   right-most component in the tree specification.
@@ -422,7 +422,7 @@ global API symbol.
   to uniquely identify a single component.
   The following usages exist:
   1. Lookup T<Component> by absolute path P<path> (this is usually never done explicitly,
-     but occurs implicity if the input parameter is already a T<Component>).
+     but occurs implicitly if the input parameter is already a T<Component>).
   2. Lookup T<Component> by path P<path>, relative to T<Component> P<component>.
   3. Lookup T<Component> by path P<path>, relative to the T<Component> corresponding
   to T<Object> P<object>.
@@ -1065,7 +1065,7 @@ they provide various getter/setter methods:
       [P<args>: T<Object>, ...]
   ): T<Number>
 
-  Subscribe to event F<name> (optionally sub-specifified via F<spec>)
+  Subscribe to event F<name> (optionally sub-specified via F<spec>)
   on component O<component> and
   execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>
   C<, >P<args>C<: >T<Object>C<, ..., >P<sargs>C<: >T<Object>C<, ...)>
@@ -1137,10 +1137,10 @@ they provide various getter/setter methods:
   Publishes an T<Event> to component O<component> named F<name> and with
   optional arguments F<args>. By default the event is intended to be
   dispatched in the (mandatory) targeting and (optional) capturing and
-  bubbling phases. The following options allow you to fruther control
+  bubbling phases. The following options allow you to further control
   the event publishing process:
 
-  . Option F<spec> allows you to sub-specify/parameterize the event with
+  . Option F<spec> allows you to sub-specify/parametrize the event with
     arbitrary key/value pairs in case the F<name> is too generic.
   . Option F<async> allows the event processing to occur asynchronously.
   . Setting option F<capturing> to "C<false>" indicates that the event should
@@ -1159,7 +1159,7 @@ they provide various getter/setter methods:
 Services
 --------
 
-Services are loosly coupled method calls across components.
+Services are loosely coupled method calls across components.
 The functionality provider does M<register>() the service and
 the functionality consumer does M<call>() the service.
 
