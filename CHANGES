@@ -10,6 +10,11 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.0.0 and 1.0.1
+    -------------------------------------------------
+
+    o ...
+
     Major changes between ComponentJS 0.9.9 and 1.0.0
     -------------------------------------------------
 
@@ -101,7 +106,7 @@
       in a dedicated plugin (component.plugin.localstorage.js) because
       the localStorage functionality is not available everywhere
       (e.g. not in NodeJS head-less testing situations, etc).
-    
+
     Major changes between ComponentJS 0.9.6 and 0.9.7
     -------------------------------------------------
 
@@ -154,7 +159,7 @@
 
     o Added back support for Internet Explorer 8 where a field
       cannot be named "constructor". The cs.clazz/cs.trait field
-      is now named "cons". 
+      is now named "cons".
 
     o Added an additional "configured" state which can be used
       to configure subscribe/register/observe/latch operations
@@ -163,7 +168,7 @@
     Major changes between ComponentJS 0.9.0 and 0.9.1
     -------------------------------------------------
 
-    o Implemented an internal hooking and plugin mechanism and 
+    o Implemented an internal hooking and plugin mechanism and
       provided two convenient plugins for jQuery and Ext socket support.
 
     Major changes between ComponentJS 0.0.0 and 0.9.0
