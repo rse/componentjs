@@ -57,6 +57,7 @@ $cs.bootstrap = function () {
 
     /*  set new state  */
     _cs.bootstrapped = true;
+
     return;
 };
 
@@ -69,13 +70,16 @@ $cs.shutdown = function () {
     /*  give plugins a chance to shutdown, too  */
     _cs.hook("ComponentJS:shutdown", "none");
 
-    /*  destroy singleton "<none>" component
-        (its "destroy" method was intentionally killed above!)  */
+    /*  tear down the whole component tree  */
+    _cs.foreach(_cs.root.children(), function (child) {
+        child.destroy();
+    });
+    _cs.root.state({ state: "dead", sync: true });
+
+    /*  destroy singleton "<none>" component  */
     _cs.none = null;
 
-    /*  destroy singleton "<root>" component
-        (its "destroy" method will destroy whole component tree!)  */
-    _cs.root.destroy();
+    /*  destroy singleton "<root>" component  */
     _cs.root = null;
 
     /*  destroy component class  */
@@ -83,6 +87,7 @@ $cs.shutdown = function () {
 
     /*  set new state  */
     _cs.bootstrapped = false;
+
     return;
 };
 
