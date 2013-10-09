@@ -151,6 +151,7 @@ _cs.json = (function () {
                 break;
             default:
                 value = "<unknown>";
+                break;
         }
         return value;
     };
