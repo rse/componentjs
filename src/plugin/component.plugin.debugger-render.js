@@ -343,27 +343,6 @@ _cs.dbg_update_once = function () {
                 return X;
             }, 0);
 
-            /*  component information on mouse click  */
-            var infoboxed = false;
-            _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mousedown", function (ev) {
-                if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
-                    return;
-                infobox_event(ev);
-                infoboxed = true;
-            });
-            _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mousemove", function (ev) {
-                if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
-                    return;
-                if (infoboxed)
-                    infobox_event(ev);
-            });
-            _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mouseup", function (ev) {
-                if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
-                    return;
-                _cs.jq(".dbg .infobox", _cs.dbg.document).css("display", "none");
-                infoboxed = false;
-            });
-
             /*  determine component on infobox event  */
             var infobox_event = function (ev) {
                 var mx = ev.offsetX;
@@ -386,6 +365,27 @@ _cs.dbg_update_once = function () {
                     _cs.jq(".dbg .infobox", _cs.dbg.document).css("display", "block");
                 }
             };
+
+            /*  component information on mouse click  */
+            var infoboxed = false;
+            _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mousedown", function (ev) {
+                if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
+                    return;
+                infobox_event(ev);
+                infoboxed = true;
+            });
+            _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mousemove", function (ev) {
+                if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
+                    return;
+                if (infoboxed)
+                    infobox_event(ev);
+            });
+            _cs.jq(".dbg .viewer canvas", _cs.dbg.document).bind("mouseup", function (ev) {
+                if (ev.target !== _cs.jq(".dbg .viewer canvas", _cs.dbg.document).get(0))
+                    return;
+                _cs.jq(".dbg .infobox", _cs.dbg.document).css("display", "none");
+                infoboxed = false;
+            });
         }
 
         _cs.dbg_state_invalid.components = true;
