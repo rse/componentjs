@@ -34,34 +34,44 @@
 
     - Node [node, npm]
       http://nodejs.org/
+      (for the run-time of Grunt)
 
     - Grunt [grunt]
       http://gruntjs.com/
+      (for executing the individual build steps)
 
     - Perl [perl]
       http://www.perl.org/
+      (for creating the HTML format variant of the API documentation)
 
     Optional
     --------
 
+    - GNU Make [make]
+      http://www.gnu.org/software/shtool/
+      (for using the convenient build targets in Makefile)
+
     - Google Closure Compiler [closure-compiler]
       http://code.google.com/closure/compiler/
+      (for additionally linting the sources)
 
     - Google Closure Linter [gjslint]
       http://code.google.com/p/closure-linter/
-
-    - Yahoo! UI Compressor [yuicompressor]
-      http://developer.yahoo.com/yui/compressor/
-      (OpenPKG "yuicompressor")
+      (for additionally linting the sources)
 
     - W3M [w3m]
       http://w3m.sourceforge.net/
-      (OpenPKG "w3m")
+      (for creating the text format variant of the API documentation)
 
     - PrinceXML [prince]
       http://www.princexml.com/
-      (OpenPKG "prince")
+      (for creating the PDF format variant of the API documentation)
+
+    - GNU Tape Archiver [tar]
+      http://www.gnu.org/software/tar/
+      (for creating the release/snapshot distribution tarballs)
 
     - GNU Portable Shell Tool [shtool]
       http://www.gnu.org/software/shtool/
+      (for creating the release/snapshot distribution tarballs)
 
