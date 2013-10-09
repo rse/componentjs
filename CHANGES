@@ -13,7 +13,12 @@
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
-    o ...
+    o correctly tear down the component tree in shutdown()
+      as the root component cannot be directly destroyed.
+
+    o fix syntax of TypeScript type definition file "component.d.ts".
+
+    o document "clazz" behavior better in the API documentation.
 
     Major changes between ComponentJS 0.9.9 and 1.0.0
     -------------------------------------------------
