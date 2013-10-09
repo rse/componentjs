@@ -63,6 +63,9 @@ module.exports = function (grunt) {
 
     /*  common task aliasing  */
     grunt.registerTask("default", [
+        "build"
+    ]);
+    grunt.registerTask("build", [
         "jshint:bld",
         "mkdir:bld",
         "src-build",
@@ -560,5 +563,49 @@ module.exports = function (grunt) {
             }
         }
     });
+
+    /*
+     *  ==== RELEASE ENGINEERING ====
+     */
+
+    grunt.extendConfig({
+        "path-check": {
+            "release": {
+                src: [ "shtool", "tar", "gzip" ]
+            },
+            "snapshot": {
+                src: [ "shtool", "tar", "gzip" ]
+            }
+        },
+        shell: {
+            "release": {
+                command: "shtool tarball " +
+                    "-c 'gzip -9' " +
+                    "-e 'ComponentJS-*,.git,.gitignore,node_modules,bld/.done-*' " +
+                    "-o ComponentJS-<%= version_string %>.tar.gz " +
+                    "."
+            },
+            "snapshot": {
+                command: "shtool tarball " +
+                    "-c 'gzip -9' " +
+                    "-e 'ComponentJS-*,.git,.gitignore,node_modules,bld/.done-*' " +
+                    "-o ComponentJS-SNAPSHOT.tar.gz " +
+                    "."
+            }
+        }
+    });
+
+    /*  register tasks  */
+    grunt.registerTask("release", [
+        "build",
+        "path-check:release",
+        "shell:release"
+    ]);
+    grunt.registerTask("snapshot", [
+        "build",
+        "path-check:snapshot",
+        "shell:snapshot"
+    ]);
+
 };
 

@@ -24,6 +24,12 @@ test: bootstrap
 cover: bootstrap
 	@$(GRUNT) cover
 
+release: bootstrap
+	@$(GRUNT) release
+
+snapshot: bootstrap
+	@$(GRUNT) snapshot
+
 clean: bootstrap
 	@$(GRUNT) clean:clean
 
