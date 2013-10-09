@@ -13,6 +13,9 @@
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
+    o add an "enabled" state on top of visible for those
+      situations where we want to show a UI but still keep it disabled.
+
     o correctly tear down the component tree in shutdown()
       as the root component cannot be directly destroyed.
 

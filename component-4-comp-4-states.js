@@ -41,4 +41,5 @@ $cs.transition("configured",   "setup",   "teardown", "#eabc43"); /* configured 
 $cs.transition("prepared",     "prepare", "cleanup",  "#f2ec00"); /* prepared and ready for rendering */
 $cs.transition("materialized", "render",  "release",  "#6699cc"); /* rendered onto the DOM tree */
 $cs.transition("visible",      "show",    "hide",     "#669933"); /* visible to the user */
+$cs.transition("enabled",      "enable",  "disable",  "#336600"); /* enabled for interaction */
 

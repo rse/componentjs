@@ -612,6 +612,7 @@ transitions, enter and leave methods are called accordingly.
   | cs.transition("prepared",     "prepare", "cleanup",  "#f2ec00");
   | cs.transition("materialized", "render",  "release",  "#6699cc");
   | cs.transition("visible",      "show",    "hide",     "#669933");
+  | cs.transition("enabled",      "enable",  "disable",  "#336600");
 
 - O<component>.M<state>(): T<String>;
   O<component>.M<state>(P<state>: T<String>[, P<callback>: T<Function>]): T<String>;
