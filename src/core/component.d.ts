@@ -230,7 +230,7 @@ interface ComponentJS_api {
 
     debug(): number;
     debug(level: number): void;
-    debug(level: number, message string): void;
+    debug(level: number, message: string): void;
 
     debug_instrumented(): boolean;
 
@@ -276,7 +276,7 @@ interface ComponentJS_api {
         validate: any
     ): (value?: any) => any
 
-    clazz({
+    clazz(params: {
         name?: string;
         extend?: Object;
         mixin?: Object[];
@@ -286,7 +286,7 @@ interface ComponentJS_api {
         statics?: Object;
     }): Object;
 
-    trait({
+    trait(params: {
         name?: string;
         mixin?: Object[];
         cons?: (...args: any[]) => any;
