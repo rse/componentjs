@@ -7,26 +7,8 @@
 ##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 ##
 
-NPM   = npm
-GRUNT = ./node_modules/grunt-cli/bin/grunt 
-
-all: build
-
-bootstrap:
-	@if [ ! -x $(GRUNT) ]; then $(NPM) install; fi
-
-build: bootstrap
-	@$(GRUNT)
-
-test: bootstrap
-	@$(GRUNT) test
-
-cover: bootstrap
-	@$(GRUNT) cover
-
-clean: bootstrap
-	@$(GRUNT) clean:clean
-
-distclean: bootstrap
-	@$(GRUNT) clean:clean clean:distclean
+major: 1
+minor: 0
+micro: 0
+date:  20131001
 

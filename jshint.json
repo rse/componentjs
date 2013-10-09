@@ -22,5 +22,6 @@
     "maxdepth":      7,
     "maxstatements": 150,
     "maxlen":        200,
-    "loopfunc":      true
+    "loopfunc":      true,
+    "-W014":         false
 }

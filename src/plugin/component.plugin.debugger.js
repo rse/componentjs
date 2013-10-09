@@ -18,12 +18,12 @@
 /* global ComponentJS:false */
 
 ComponentJS.plugin("debugger", function (_cs, $cs, GLOBAL) {
-    $include("component.plugin.debugger-jquery.js");
-    $include("component.plugin.debugger-view.js");
-    $include("component.plugin.debugger-logbook.js");
-    $include("component.plugin.debugger-infobox.js");
-    $include("component.plugin.debugger-window.js");
-    $include("component.plugin.debugger-render.js");
-    $include("component.plugin.debugger-hooks.js");
+    include("component.plugin.debugger-jquery.js");
+    include("component.plugin.debugger-view.js");
+    include("component.plugin.debugger-logbook.js");
+    include("component.plugin.debugger-infobox.js");
+    include("component.plugin.debugger-window.js");
+    include("component.plugin.debugger-render.js");
+    include("component.plugin.debugger-hooks.js");
 });
 

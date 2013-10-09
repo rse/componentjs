@@ -1,0 +1,81 @@
+
+/*  view mask style [VM]  */
+
+.app .login {
+    width: 340px;
+    height: 170px;
+    margin: 4px;
+    padding: 4px;
+    border-top:    1px solid #cccccc;
+    border-right:  1px solid #cccccc;
+    border-bottom: 1px solid #ffffff;
+    border-left:   1px solid #ffffff;
+}
+
+.app .login table tr td {
+    vertical-align: top;
+}
+
+.app .login .title {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #333333;
+    padding-bottom: 5px;
+}
+
+.app .login .label-realms,
+.app .login .label-username,
+.app .login .label-password {
+    color: #666666;
+    position: relative;
+    top: 3px;
+}
+
+.app .login .field-realms select,
+.app .login .field-username input,
+.app .login .field-password input,
+.app .login .button-login input {
+    width: 200px;
+    font-size: 11pt;
+}
+
+.app .login .hint-border.error input {
+    background-color: #cc3333;
+    color: #ffffff;
+}
+.app .login .hint-txt        { font-size: 8pt; }
+.app .login .hint-txt.empty  { color: #a0a0a0; }
+.app .login .hint-txt.error  { color: #cc3333; }
+.app .login .hint-txt.valid  { color: #a0a0a0; }
+
+.app .login .button-login input {
+    background-color: #666666;
+    color: #ffffff;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    border-top: 1px solid #ffffff;
+    border-right: 1px solid #cccccc;
+    border-bottom: 1px solid #cccccc;
+    border-left: 1px solid #ffffff;
+}
+.app .login .button-login input.disabled {
+    background-color: #f0f0f0;
+    color: #c0c0c0;
+}
+
+.app .login .hashcode div {
+    position: relative;
+    top: 3px;
+    background-color: #666666;
+    color: #ffffff;
+    padding: 2px 6px 2px 6px;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    display: none;
+}
+
+.app .login .hashcode div.c0 { display: none; }
+.app .login .hashcode div.c1 { display: block; background-color: #cc3333; }
+.app .login .hashcode div.c2 { display: block; background-color: #339933; }
+.app .login .hashcode div.c3 { display: block; background-color: #3366cc; }
+
