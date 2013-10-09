@@ -260,13 +260,8 @@ that component shadow objects are defined by C<cs.clazz>!
   method.
 
   | var foo = cs.clazz({
-  |     cons: function (bar, baz) {
+  |     cons: function (bar) {
   |         this._bar = bar;
-  |         this._baz = baz;
-  |     },
-  |     dynamics: {
-  |         _bar: "bar",
-  |         _baz: 42
   |     },
   |     protos: {
   |         bar: function (value_new) {
@@ -278,6 +273,50 @@ that component shadow objects are defined by C<cs.clazz>!
   |         [...]
   |     }
   | })
+
+  It is important to notice how calls to any method resolve and how
+  calls to C<this.base()> in any method of a class resolves. When on
+  class C<Foo> and its instanciated object C<foo> a method C<foo.bar()>
+  is called, the following happens:
+
+  . First, a direct property named C<bar> on object C<foo> is tried.
+    This can exist on C<foo> through (in priority order) a C<bar> in
+    either the F<dynamics> definition of a F<mixin> of C<Foo>, or in the
+    F<statics> definition of a F<mixin> of C<Foo>, or in the F<dynamics>
+    definition of C<Foo>, or in the F<statics> definition of C<Foo>.
+
+  . Second, an indirect prototype-based property named C<bar> on object
+    C<foo> is tried. This can exist on C<foo> through (in priority order)
+    a C<bar> in either the F<protos> definition of C<Foo> or in the
+    F<protos> definition of any F<extend> of C<Foo>.
+
+  When on class C<Foo> and its instanciated object C<foo> in any method C<foo.bar()>
+  the C<this.base()> is called, the following happens:
+
+  . First, a call to the super/base/parent functions in the F<mixin> trait chain is attempted.
+    The mixins are traversed in the reverse order of the trait specification in the
+    F<mixin> array, i.e., the last trait's mixins are tried first.
+
+  . Second, a call to the super/base/parent functions in the F<extend>
+    inheritance class chain is attempted. First, the directly F<extend>
+    class is attempted, then the F<extend> class of this class, etc.
+
+  NOTICE: As ComponentJS does not care at all how shadow objects of
+  components are defined, you can alternatively use an arbitrary
+  solution for Class-based OO in JavaScript (e.g. TypeScript, JSClass,
+  ExtendJS, DejaVu, Classy, jTypes, etc) or fallback to the also just
+  fine regular Prototype-based OO in JavaScript:
+
+  | var foo = function (bar) {
+  |     this._bar = bar;
+  | }
+  | foo.prototype.bar = function (value_new) {
+  |     var value_old = this._bar;
+  |     if (typeof value_new !=== "undefined")
+  |         this._bar = value_new;
+  |     return value_old;
+  | }
+  | [...]
 
 - ComponentJS.M<trait>({
         [F<name>:        T<String>,]
