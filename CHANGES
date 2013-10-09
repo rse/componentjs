@@ -10,6 +10,14 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.0.1 and 1.1.0
+    -------------------------------------------------
+
+    o Major Build Environment Refactoring: switched from plain Unix
+      make(1) to Grunt.
+
+    o ...
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
