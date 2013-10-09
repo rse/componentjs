@@ -43,8 +43,8 @@ ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL) {
                 /*  optionally change behaviour  */
                 if (params.type === "extjs") {
                     /*  provide specialized ExtJS socket functionality  */
-                    arg.plug   = function (el, comp) { this.add(el);    };
-                    arg.unplug = function (el, comp) { this.remove(el); };
+                    arg.plug   = function (el /*, comp */) { this.add(el);    };
+                    arg.unplug = function (el /*, comp */) { this.remove(el); };
                 }
 
                 /*  pass-through execution to original/base method  */

@@ -44,10 +44,10 @@ ComponentJS.plugin("migrate", function (_cs, $cs, GLOBAL) {
                     else {
                         /*  migrate asynchronously  */
                         (function (comp, state_old) {
-                            comp.state({ state: "created", sync: false, callback: function (state_new) {
+                            comp.state({ state: "created", sync: false, callback: function (/* state_new */) {
                                 this.detach();
                                 this.attach(parent);
-                                this.state({ state: state_old, sync: false, callback: function (state_old) {
+                                this.state({ state: state_old, sync: false, callback: function (/* state_old */) {
                                     n--;
                                     if (n === 0)
                                         params.completed.call(null);
