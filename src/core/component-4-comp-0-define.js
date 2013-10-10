@@ -25,7 +25,7 @@ _cs.comp_mixins = [
     $cs.pattern.service,
     $cs.pattern.eventing,
     $cs.pattern.property,
-    $cs.pattern.shadow,
+    $cs.pattern.backing,
     $cs.pattern.socket,
     $cs.pattern.model,
     $cs.pattern.store,

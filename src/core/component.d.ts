@@ -316,7 +316,7 @@ interface ComponentJS_api {
     pattern: any;
 }
 
-declare var ComponentJS_export: String
+declare var ComponentJS_export: string
 declare var ComponentJS:        ComponentJS_api
 declare var cs:                 ComponentJS_api
 

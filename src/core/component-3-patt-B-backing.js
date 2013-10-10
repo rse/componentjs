@@ -7,8 +7,8 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  generic pattern: shadow object  */
-$cs.pattern.shadow = $cs.trait({
+/*  generic pattern: backing object  */
+$cs.pattern.backing = $cs.trait({
     dynamics: {
         __obj: null
     },

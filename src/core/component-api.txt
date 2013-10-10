@@ -157,7 +157,7 @@ ComponentJS internally uses a few code structuring utility functions for impleme
 class method parameters and class attributes. Those utility functions
 are also exposed for consumption by application developers, but they are
 NOT(!) required for using ComponentJS. Especially, it is NOT(!) required
-that component shadow objects are defined by C<cs.clazz>!
+that component backing objects are defined by C<cs.clazz>!
 
 - ComponentJS.M<ns>(P<path>: T<String>[, P<leaf>: T<Object> = {}]): T<Object>
 
@@ -301,7 +301,7 @@ that component shadow objects are defined by C<cs.clazz>!
     inheritance class chain is attempted. First, the directly F<extend>
     class is attempted, then the F<extend> class of this class, etc.
 
-  NOTICE: As ComponentJS does not care at all how shadow objects of
+  NOTICE: As ComponentJS does not care at all how backing objects of
   components are defined, you can alternatively use an arbitrary
   solution for Class-based OO in JavaScript (e.g. TypeScript, JSClass,
   ExtendJS, DejaVu, Classy, jTypes, etc) or fallback to the also just
@@ -419,7 +419,7 @@ accessed via the following getter/setter-style methods.
 
 - O<component>.M<obj>(): T<Object>
 
-  Retrieve the shadow T<Object> P<object> to the corresponding T<Component>.
+  Retrieve the backing T<Object> P<object> to the corresponding T<Component>.
 
   | cs(this).obj() === this
 
@@ -465,7 +465,7 @@ global API symbol.
   2. Lookup T<Component> by path P<path>, relative to T<Component> P<component>.
   3. Lookup T<Component> by path P<path>, relative to the T<Component> corresponding
   to T<Object> P<object>.
-  4. Lookup T<Component> object via shadow object P<object>.
+  4. Lookup T<Component> object via backing object P<object>.
   5. Lookup T<Component> object via the P<component> itself (no-operation).
   The paths have to follow the following grammar:
 
@@ -475,7 +475,7 @@ global API symbol.
 
   | cs("/foo/bar")           /* absolute */
   | cs(comp, "model/view")   /* relative to component */
-  | cs(this, "model/view")   /* relative to component via shadow object */
+  | cs(this, "model/view")   /* relative to component via backing object */
   | cs("//bar")              /* full-tree lookup */
   | cs(comp, "//bar")        /* sub-tree lookup */
   | cs(this, "*/view")       /* wildcard lookup */
@@ -601,8 +601,8 @@ transitions, enter and leave methods are called accordingly.
 
   Clear all (if passed just a single C<null> parameter) or add one state transition to target state
   P<target>, either at the top of the transition stack or in the middle, above the source state
-  P<source>. When entering the target state, the optional component shadow object method P<enter> is
-  called. When leaving the target state, the optional component shadow object method P<leave> is called.
+  P<source>. When entering the target state, the optional component backing object method P<enter> is
+  called. When leaving the target state, the optional component backing object method P<leave> is called.
   The P<color> is a "#RRGGBB" string used for visualizing the state in the debugger view. The default
   state transition definitions are given as an example.
 
@@ -755,7 +755,7 @@ Markers
 An object can be "marked" with a set of names. ComponentJS internally
 does not use those markers at all, but the ComponentJS Debugger plugin
 at least uses markers named "service", "model", "view" and "controller" on
-a components' shadow object to render those components in different colors.
+a components' backing object to render those components in different colors.
 
 - C<ComponentJS>.M<mark>(P<obj>: T<Object>, P<name>: T<String>): T<Void>;
   O<component>.M<mark>(P<name>: T<String>): T<Void>

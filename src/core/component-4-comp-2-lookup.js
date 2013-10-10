@@ -41,7 +41,7 @@ _cs.lookup = function (base, path) {
         var base_type = _cs.istypeof(base);
         var base_comp = _cs.annotation(base, "comp");
         if (base_type !== "component" && base_comp !== null)
-            /*  success: found component object via shadow object  */
+            /*  success: found component object via backing object  */
             comp = base_comp;
         else if (base_type !== "component")
             /*  failure: found other object which is not already component  */

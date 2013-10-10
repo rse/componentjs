@@ -53,7 +53,7 @@
     include("component-3-patt-8-cmd.js");
     include("component-3-patt-9-state.js");
     include("component-3-patt-A-service.js");
-    include("component-3-patt-B-shadow.js");
+    include("component-3-patt-B-backing.js");
     include("component-3-patt-C-socket.js");
     include("component-3-patt-D-marker.js");
     include("component-3-patt-E-store.js");
