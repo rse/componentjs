@@ -81,7 +81,7 @@
     /* global global:false */
     /* global exports:false */
     /* global define:false */
-    ( typeof window   !== "undefined"
+    ( typeof window !== "undefined"
         ? window
         : ( typeof global !== "undefined"
             ? global
