@@ -37,8 +37,8 @@ $cs.pattern.property = $cs.trait({
                 (on current node or on any parent node)  */
             var v;
             for (var scope = [], node = this;
-                 node !== null;
-                 scope.unshift(node.name()), node = node.parent()) {
+                node !== null;
+                scope.unshift(node.name()), node = node.parent()) {
 
                 /*  optionally skip the target component
                     (usually if a property on the parent components
