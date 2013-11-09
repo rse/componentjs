@@ -9,6 +9,10 @@
 
 /*  API function: validate an arbitrary value against a type specification  */
 $cs.validate = function (value, spec, non_cache) {
+    /*  is the specification a function, then pass
+        the value to it and return its value  */
+    if (typeof spec === "function")
+        return spec(value);
     /*  compile validation AST from specification
         or reuse cached pre-compiled validation AST  */
     var ast;
