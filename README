@@ -22,6 +22,27 @@
     Property mechanisms, and fully independent and agnostic of the
     particular UI widget toolkit.
 
+    Installing
+    ==========
+
+    You can conveniently get build versions of ComponentJS:
+
+    - either install as a client component via the Bower component manager:
+
+      # install the latest version
+      $ bower install componentjs
+
+      # install a particular version
+      $ bower install "componentjs#1.0.0"
+
+    - or download only the main file from the repository:
+
+      # install the latest version
+      $ curl -O https://raw.github.com/rse/componentjs-build/master/component.js
+
+      # install a particular version
+      $ curl -O https://raw.github.com/rse/componentjs-build/1.0.0/component.js
+
     Building
     ========
 
