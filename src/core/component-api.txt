@@ -707,16 +707,18 @@ application itself.
 
 - O<component>.M<spool>({
       F<name>: T<String>,
-      [F<ctx>: T<Object> = this,]
-      F<func>: T<Function>
+      F<ctx>: T<Object>,
+      F<func>: T<Function>,
       [F<args>: T<Array(Object)> = new Array()]
   }): T<Void>;
   O<component>.M<spool>(
       P<name>: T<String>,
-      P<func>: T<Function>
+      P<ctx>: T<Object>,
+      P<func>: T<Function>,
+      [P<args>: T<Object>, ...]
   ): T<Void>
 
-  Remember action "F<ctx>.F<func>(F<args>)" on spool named F<name>.
+  Remember action "F<func>.C<apply>(F<ctx>, F<args>)" on spool named F<name>.
   The F<name> parameter can be either just a plain spool-name "C<name>"
   or a combination of (relative) component-path and spool-name "C<path>:C<name>".
   This allows one to spool on a component different from O<component> (usually
