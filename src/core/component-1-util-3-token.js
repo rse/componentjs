@@ -64,7 +64,7 @@ _cs.token.prototype = {
         /*  the current token itself  */
         var ctx = "<" + this.text.substr(tok.b2, tok.e2 - tok.b2 + 1) + ">";
         ctx = this.text.substr(tok.b1, tok.b2 - tok.b1) + ctx;
-        ctx = ctx + this.text.substr(tok.e2, tok.e1 - tok.e2);
+        ctx = ctx + this.text.substr(tok.e2 + 1, tok.e1 - tok.e2);
 
         /*  the previous and following token(s)  */
         var k = (width - ctx.length);
