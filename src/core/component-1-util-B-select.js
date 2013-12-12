@@ -44,7 +44,7 @@ _cs.select_parse = function (spec) {
             else if ((m = txt.match(/^\s+$/)) !== null)
                 break;
             else
-                throw new Error("select: parse error: invalid character at: " +
+                throw _cs.exception("select", "parse error: invalid character at: " +
                     spec.substr(0, pos) + "<" + txt.substr(0, 1) + ">" + txt.substr(1));
             pos += m[0].length;
             txt = txt.substr(m[0].length);

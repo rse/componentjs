@@ -9,12 +9,18 @@
 
 /*  custom Token class  */
 _cs.token = function () {
+    this.name   = "";
     this.text   = "";
     this.tokens = [];
     this.pos    = 0;
     this.len    = 0;
 };
 _cs.token.prototype = {
+    /*  setter for caller context name  */
+    setName: function (name) {
+        this.name = name;
+    },
+
     /*  setter for plain-text input  */
     setText: function (text) {
         this.text = text;
@@ -31,7 +37,7 @@ _cs.token.prototype = {
         if (typeof offset === "undefined")
             offset = 0;
         if (offset >= this.len)
-            throw new Error("parse error: not enough tokens");
+            throw _cs.exception(this.name, "parse error: not enough tokens");
         return this.tokens[this.pos + offset].symbol;
     },
 
@@ -40,7 +46,7 @@ _cs.token.prototype = {
         if (typeof len === "undefined")
             len = 1;
         if (len > this.len)
-            throw new Error("parse error: not enough tokens available to skip: " + this.ctx());
+            throw _cs.exception(this.name, "parse error: not enough tokens available to skip: " + this.ctx());
         this.pos += len;
         this.len -= len;
     },
@@ -48,9 +54,9 @@ _cs.token.prototype = {
     /*  consume the current token (by expecting it to be a particular symbol)  */
     consume: function (symbol) {
         if (this.len <= 0)
-            throw new Error("parse error: no more tokens available to consume: " + this.ctx());
+            throw _cs.exception(this.name, "parse error: no more tokens available to consume: " + this.ctx());
         if (this.tokens[this.pos].symbol !== symbol)
-            throw new Error("parse error: expected token symbol \"" + symbol + "\": " + this.ctx());
+            throw _cs.exception(this.name, "parse error: expected token symbol \"" + symbol + "\": " + this.ctx());
         this.pos++;
         this.len--;
     },

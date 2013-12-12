@@ -47,6 +47,7 @@ _cs.validate_compile = function (spec) {
 _cs.validate_tokenize = function (spec) {
     /*  create new Token abstraction  */
     var token = new _cs.token();
+    token.setName("validate");
     token.setText(spec);
 
     /*  determine individual token symbols  */
@@ -55,7 +56,7 @@ _cs.validate_tokenize = function (spec) {
     while (spec !== "") {
         m = spec.match(/^(\s*)([^{}\[\]:,?*+()!|\s]+|[{}\[\]:,?*+()!|])(\s*)/);
         if (m === null)
-            throw new Error("parse error: cannot further canonicalize: \"" + spec + "\"");
+            throw _cs.exception("validate", "parse error: cannot further canonicalize: \"" + spec + "\"");
         token.addToken(
             b,
             b + m[1].length,
@@ -93,7 +94,7 @@ _cs.validate_parser = {
         else if (symbol.match(/^[A-Z][_a-zA-Z$0-9]*$/))
             ast = this.parse_class(token);
         else
-            throw new Error("parse error: invalid token symbol: \"" + token.ctx() + "\"");
+            throw _cs.exception("validate", "parse error: invalid token symbol: \"" + token.ctx() + "\"");
         return ast;
     },
 
@@ -160,7 +161,7 @@ _cs.validate_parser = {
     parse_primary: function (token) {
         var primary = token.peek();
         if (!primary.match(/^(?:null|undefined|boolean|number|string|function|object)$/))
-            throw new Error("parse error: invalid primary type \"" + primary + "\"");
+            throw _cs.exception("validate", "parse error: invalid primary type \"" + primary + "\"");
         token.skip();
         return { type: "primary", name: primary };
     },
@@ -169,7 +170,7 @@ _cs.validate_parser = {
     parse_special: function (token) {
         var special = token.peek();
         if (!special.match(/^(?:clazz|trait|component)$/))
-            throw new Error("parse error: invalid special type \"" + special + "\"");
+            throw _cs.exception("validate", "parse error: invalid special type \"" + special + "\"");
         token.skip();
         return { type: "special", name: special };
     },
@@ -178,7 +179,7 @@ _cs.validate_parser = {
     parse_any: function (token) {
         var any = token.peek();
         if (any !== "any")
-            throw new Error("parse error: invalid any type \"" + any + "\"");
+            throw _cs.exception("validate", "parse error: invalid any type \"" + any + "\"");
         token.skip();
         return { type: "any" };
     },
@@ -187,7 +188,7 @@ _cs.validate_parser = {
     parse_class: function (token) {
         var clazz = token.peek();
         if (!clazz.match(/^[A-Z][_a-zA-Z$0-9]*$/))
-            throw new Error("parse error: invalid class type \"" + clazz + "\"");
+            throw _cs.exception("validate", "parse error: invalid class type \"" + clazz + "\"");
         token.skip();
         return { type: "class", name: clazz };
     },
@@ -228,7 +229,7 @@ _cs.validate_parser = {
     parse_key: function (token) {
         var key = token.peek();
         if (!key.match(/^[_a-zA-Z$][_a-zA-Z$0-9]*$/))
-            throw new Error("parse error: invalid key \"" + key + "\"");
+            throw _cs.exception("validate", "parse error: invalid key \"" + key + "\"");
         token.skip();
         return key;
     }
@@ -253,7 +254,7 @@ _cs.validate_executor = {
                 case "class":   valid = this.exec_class  (value, node); break;
                 case "any":     valid = true;                           break;
                 default:
-                    throw new Error("validation error: invalid validation AST: " +
+                    throw _cs.exception("validate", "invalid validation AST: " +
                         "node has unknown type \"" + node.type + "\"");
             }
         }
