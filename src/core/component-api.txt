@@ -195,6 +195,31 @@ that component backing objects are defined by C<cs.clazz>!
   | cs.validate({ foo: "Foo", bar: "Bar", baz: [ 42, 7, "Quux" ] },
   |      "{ foo: string, bar: any, baz: [ number+, string* ], quux?: any }")
 
+- ComponentJS.M<select>(P<object>: T<Object>, P<path>: T<String>[, P<value>: T<Object>]): T<Object>
+
+  Dereference into (and this way subset) P<object> according to the
+  P<path> specification and either return the dereferenced value or
+  set a new P<value>. Object has to be a hash or array object. The
+  P<path> argument has to follow the following grammar (which is a
+  direct JavaScript dereferencing syntax):
+
+  + path       + ::= + segment segment*
+  + segment    + ::= + bybareword | bykey
+  + bybareword + ::= + "C<.>"? identifier
+  + bykey      + ::= + "C<[>" key "C<]>"
+  + identifier + ::= + /C<[_a-zA-Z$][_a-zA-Z$0-9]*>/
+  + key        + ::= + number | squote | dquote
+  + number     + ::= + /C<[0-9]+>/
+  + dquote     + ::= + /C<"(?:\\"|.)*?">/
+  + squote     + ::= + /C<'(?:\\'|.)*?'>/
+
+  Setting the P<value> to C<undefined> effectively removes the
+  dereferenced value. If the dereferenced parent object is a hash, this
+  means the value is C<delete>'ed from it. If the dereferenced parent
+  object is an array, this means the value is C<splice>'ed out of it.
+
+  | cs.select({ foo: { bar: { baz: [ 42, 7, "Quux" ] } } }, "foo['bar'].baz[2]") -> "Quux"
+
 - ComponentJS.M<params>(P<name>: T<String>, P<args>: T<Object[]>, P<spec>: T<Object>): T<Object>
 
   Handle positional and named function parameters by processing

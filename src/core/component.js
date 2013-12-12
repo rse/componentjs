@@ -30,6 +30,7 @@
     include("component-1-util-8-proxy.js");
     include("component-1-util-9-attribute.js");
     include("component-1-util-A-hook.js");
+    include("component-1-util-B-select.js");
 
     /*
     **  CLASS SYSTEM
