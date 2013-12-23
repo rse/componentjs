@@ -33,7 +33,7 @@ _cs.select_parse = function (spec) {
         var txt = spec;
         var m;
         while (txt !== "") {
-            if ((m = txt.match(/^\s*(?:\.)?\s*([a-zA-Z$_][a-zA-Z$0-9_:-]*|\*{1,2})/)) !== null)
+            if ((m = txt.match(/^\s*(?:\.)?\s*([a-zA-Z$_][a-zA-Z$0-9_:-]*)/)) !== null)
                 path.push(m[1]);
             else if ((m = txt.match(/^\s*\[\s*(\d+|\*{1,2})\s*\]/)) !== null)
                 path.push(m[1]);
