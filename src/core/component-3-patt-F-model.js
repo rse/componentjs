@@ -101,8 +101,23 @@ $cs.pattern.model = $cs.trait({
                 name:        { pos: 0, req: true      },
                 value:       { pos: 1, def: undefined },
                 force:       { pos: 2, def: false     },
+                operation:   {         def: []        },
                 returnowner: {         def: false     }
             });
+
+            /*  determine operation  */
+            if (params.operation.length === 0)
+                params.operation = (_cs.isdefined(params.value) ? [ "set" ] : [ "get" ]);
+            else if (!params.operation[0].match(/^(?:get|set|splice|delete|push|pop|shift|unshift)$/))
+                throw _cs.exception("value", "invalid operation \"" + params.operation[0] + "\"");
+            if (   params.operation[0] === "splice"
+                && (   params.operation.length !== 3
+                    || typeof params.operation[1] !== "number"
+                    || typeof params.operation[2] !== "number"))
+                throw _cs.exception("value", "invalid arguments for operation \"splice\"");
+
+            /*  parse the value name into selection path segments  */
+            var path = _cs.select_parse(params.name);
 
             /*  determine component owning model with requested value  */
             var owner = null;
@@ -111,23 +126,25 @@ $cs.pattern.model = $cs.trait({
             while (comp !== null) {
                 owner = comp.property({ name: "ComponentJS:model", returnowner: true });
                 if (!_cs.isdefined(owner))
-                    throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
+                    throw _cs.exception("value", "no model found containing value \"" + path[0] + "\"");
                 model = owner.property("ComponentJS:model");
-                if (_cs.isdefined(model[params.name]))
+                if (_cs.isdefined(model[path[0]]))
                     break;
                 comp = owner.parent();
             }
             if (comp === null)
-                throw _cs.exception("value", "no model found containing value \"" + params.name + "\"");
+                throw _cs.exception("value", "no model found containing value \"" + path[0] + "\"");
 
             /*  get new model value  */
             var value_new = params.value;
 
             /*  get old model value  */
             var ev;
-            var value_old = model[params.name].value;
+            var value_old = model[path[0]].value;
+            if (path.length > 1)
+                value_old = $cs.select(value_old, path.slice(1));
             var result;
-            if (typeof value_new === "undefined") {
+            if (params.operation[0] === "get") {
                 if (owner.property({ name: "ComponentJS:model:subscribers:get", bubbling: false }) === true) {
                     /*  send event to observers for value get and allow observers
                         to reject value get operation and/or change old value to get  */
@@ -142,7 +159,9 @@ $cs.pattern.model = $cs.trait({
                     if (ev.processing()) {
                         /*  re-fetch value from model
                             (in case the callback set a new value directly)  */
-                        value_old = model[params.name].value;
+                        value_old = model[path[0]].value;
+                        if (path.length > 1)
+                            value_old = $cs.select(value_old, path.slice(1));
 
                         /*  allow value to be overridden by event result  */
                         result = ev.result();
@@ -153,22 +172,55 @@ $cs.pattern.model = $cs.trait({
             }
 
             /*  optionally set new model value  */
-            if (   typeof value_new !== "undefined"
+            if (   params.operation[0] !== "get"
                 && (params.force || value_old !== value_new)) {
 
-                /*  check validity of new value  */
-                if (!$cs.validate(value_new, model[params.name].valid))
-                    throw _cs.exception("value", "model field \"" + params.name + "\" receives " +
-                        "new value " + _cs.json(value_new) + ", which does not validate " +
-                        "against validation \"" + model[params.name].valid + "\"");
+                /*  translate special-case array operations to splice operation  */
+                var obj;
+                switch (params.operation[0]) {
+                    case "unshift":
+                        params.operation = [ "splice", 0, 0 ];
+                        break;
+                    case "shift":
+                        params.operation = [ "splice", 0, 1 ];
+                        value_new = undefined;
+                        break;
+                    case "push":
+                        obj = $cs.select(model[path[0]].value, path.slice(1));
+                        params.operation = [ "splice", obj.length, 0 ];
+                        break;
+                    case "pop":
+                        obj = $cs.select(model[path[0]].value, path.slice(1));
+                        params.operation = [ "splice", obj.length - 1, 1 ];
+                        value_new = undefined;
+                        break;
+                    default:
+                        break;
+                }
 
-                /*  send event to observers for value set operation and allow observers
+                /*  check validity of new value  */
+                if (   params.operation[0] === "set"
+                    || (   params.operation[0] === "splice"
+                        && value_new !== undefined)        ) {
+                    var subPath = (
+                          params.operation[0] === "splice"
+                        ? path.slice(1).concat([ "0" ])
+                        : path.slice(1)
+                    );
+                    if (!$cs.validate(value_new, model[path[0]].valid, subPath))
+                        throw _cs.exception("value", "model field \"" + params.name + "\" receives " +
+                            "new value " + _cs.json(value_new) + ", which does not validate " +
+                            "against validation \"" + model[path[0]].valid + "\"" +
+                            (subPath.length > 0 ? " at sub-path \"" + subPath.join(".") + "\"" : ""));
+                }
+
+                /*  send event to observers for value set/splice operation and allow observers
                     to reject value set operation and/or change new value to set  */
                 var cont = true;
-                if (owner.property({ name: "ComponentJS:model:subscribers:set", bubbling: false }) === true) {
+                if (owner.property({ name: "ComponentJS:model:subscribers:" + params.operation[0], bubbling: false }) === true) {
                     ev = owner.publish({
-                        name:      "ComponentJS:model:" + params.name + ":set",
-                        args:      [ value_new, value_old ],
+                        name:      "ComponentJS:model:" + path.join(".") + ":" + params.operation[0],
+                        args:      [ value_new, value_old, params.operation ],
                         capturing: false,
                         spreading: false,
                         bubbling:  false,
@@ -183,22 +235,57 @@ $cs.pattern.model = $cs.trait({
                             value_new = result;
                     }
                 }
-                if (cont && !model[params.name].autoreset) {
-                    /*  set value in model  */
-                    model[params.name].value = value_new;
+                if (cont && !model[path[0]].autoreset) {
+                    /*  perform destructive operation on model  */
+                    if (params.operation[0] === "set") {
+                        /*  set value in model  */
+                        if (path.length > 1)
+                            $cs.select(model[path[0]].value, path.slice(1), value_new);
+                        else
+                            model[path[0]].value = value_new;
+                    }
+                    else if (params.operation[0] === "splice") {
+                        /*  splice value into model  */
+                        if (path.length > 1)
+                            obj = $cs.select(model[path[0]].value, path.slice(1));
+                        else
+                            obj = model[path[0]].value;
+                        if (!(obj instanceof Array))
+                            throw new _cs.exception("value", "cannot splice: target object is not of Array type");
+                        if (typeof value_new !== "undefined")
+                            obj.splice(params.operation[1], params.operation[2], value_new);
+                        else
+                            obj.splice(params.operation[1], params.operation[2]);
+                    }
+                    else if (params.operation[0] === "delete") {
+                        /*  delete value from model  */
+                        if (path.length >= 3)
+                            obj = $cs.select(model[path[0]].value, path.slice(1, path.length - 1));
+                        else if (path.length === 2)
+                            obj = model[path[0]].value;
+                        else
+                            throw new _cs.exception("value", "cannot delete a root model entry");
+                        var pathSegment = path[path.length - 1];
+                        if (obj instanceof Array)
+                            obj.splice(parseInt(pathSegment), 1);
+                        else if (typeof obj === "object")
+                            delete obj[pathSegment];
+                        else
+                            throw new _cs.exception("value", "cannot delete: target object is neither Array nor Object type");
+                    }
 
                     /*  synchronize model with underlying store  */
-                    if (model[params.name].store) {
+                    if (model[path[0]].store) {
                         var store = owner.store("model");
-                        store[params.name] = model[params.name].value;
+                        store[path[0]] = model[path[0]].value;
                         owner.store("model", store);
                     }
 
                     /*  send event to observers after value finally changed  */
                     if (owner.property({ name: "ComponentJS:model:subscribers:changed", bubbling: false }) === true) {
                         owner.publish({
-                            name:      "ComponentJS:model:" + params.name + ":changed",
-                            args:      [ value_new, value_old ],
+                            name:      "ComponentJS:model:" + path.join(".") + ":changed",
+                            args:      [ value_new, value_old, params.operation ],
                             noresult:  true,
                             capturing: false,
                             spreading: false,
@@ -239,6 +326,9 @@ $cs.pattern.model = $cs.trait({
                 spool:     {         def: null  }
             });
 
+            /*  parse the value name into selection path segments  */
+            var path = _cs.select_parse(params.name);
+
             /*  determine the actual component owning the model
                 as we want to subscribe the change event there only  */
             var owner = null;
@@ -247,18 +337,22 @@ $cs.pattern.model = $cs.trait({
             while (comp !== null) {
                 owner = comp.property({ name: "ComponentJS:model", returnowner: true });
                 if (!_cs.isdefined(owner))
-                    throw _cs.exception("observe", "no model found containing value \"" + params.name + "\"");
+                    throw _cs.exception("observe", "no model found containing value \"" + path[0] + "\"");
                 model = owner.property("ComponentJS:model");
-                if (_cs.isdefined(model[params.name]))
+                if (_cs.isdefined(model[path[0]]))
                     break;
                 comp = owner.parent();
             }
             if (comp === null)
-                throw _cs.exception("observe", "no model found containing value \"" + params.name + "\"");
+                throw _cs.exception("observe", "no model found containing value \"" + path[0] + "\"");
 
             /*  subscribe to model value change event  */
+            var name = path.join(".")
+                .replace(/\./g, "\\.")
+                .replace(/\*\*/g, ".+?")
+                .replace(/\*/g, "[^.]+");
             var id = owner.subscribe({
-                name:      "ComponentJS:model:" + params.name + ":" + params.operation,
+                name:      new RegExp("ComponentJS:model:" + name + ":" + params.operation),
                 capturing: false,
                 spreading: false,
                 bubbling:  false,
