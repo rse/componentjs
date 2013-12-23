@@ -8,20 +8,25 @@
 */
 
 /*  API function: validate an arbitrary value against a type specification  */
-$cs.validate = function (value, spec, non_cache) {
+$cs.validate = function (value, spec, path) {
     /*  is the specification a function, then pass
         the value to it and return its value  */
     if (typeof spec === "function")
         return spec(value);
+
     /*  compile validation AST from specification
         or reuse cached pre-compiled validation AST  */
-    var ast;
-    if (!non_cache)
-        ast = _cs.validate_cache[spec];
-    if (typeof ast === "undefined")
+    var ast = _cs.validate_cache[spec];
+    if (typeof ast === "undefined") {
         ast = _cs.validate_compile(spec);
-    if (!non_cache)
         _cs.validate_cache[spec] = ast;
+    }
+
+    /*  optionally subset the AST  */
+    if (typeof path !== "undefined") {
+        var steps = (typeof path === "string" ? _cs.select_parse(path) : path);
+        ast = _cs.validate_subset(ast, steps);
+    }
 
     /*  execute validation AST against the value  */
     return _cs.validate_executor.exec_spec(value, ast);
@@ -233,6 +238,38 @@ _cs.validate_parser = {
         token.skip();
         return key;
     }
+};
+
+/*
+ *  VALIDATION AST SUB-SETTING
+ */
+
+/*  subset an AST through a path of dereferencing steps  */
+_cs.validate_subset = function (node, path) {
+    var i, imax, j, jmax;
+    for (i = 0, imax = path.length; i < imax; i++) {
+        if (node.type === "hash") {
+            var found = false;
+            for (j = 0, jmax = node.elements.length; j < jmax; j++) {
+                if (node.elements[j].key === path[i]) {
+                    node = node.elements[j].element;
+                    found = true;
+                    break;
+                }
+            }
+            if (!found)
+                throw _cs.exception("validate", "dereference error: hash key \"" + path[i] + "\" not found");
+        }
+        else if (node.type === "array") {
+            j = parseInt(path[i]);
+            if (j >= node.elements.length)
+                throw _cs.exception("validate", "dereference error: array index #" + j + " (\"" + path[i] + "\") not found");
+            node = node.elements[j].element;
+        }
+        else
+            throw _cs.exception("validate", "dereference error: no more hash or array to be dereferenced by \"" + path[i] + "\"");
+    }
+    return node;
 };
 
 /*
