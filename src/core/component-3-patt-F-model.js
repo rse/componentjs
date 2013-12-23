@@ -106,6 +106,8 @@ $cs.pattern.model = $cs.trait({
             });
 
             /*  determine operation  */
+            if (typeof params.operation === "string")
+                params.operation = [ params.operation ];
             if (params.operation.length === 0)
                 params.operation = (_cs.isdefined(params.value) ? [ "set" ] : [ "get" ]);
             else if (!params.operation[0].match(/^(?:get|set|splice|delete|push|pop|shift|unshift)$/))
