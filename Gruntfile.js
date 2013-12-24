@@ -27,6 +27,7 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks("grunt-path-check");
     grunt.loadNpmTasks("grunt-shell");
     grunt.loadNpmTasks("grunt-touch");
+    grunt.loadNpmTasks("grunt-eslint");
 
     /*
      *  ==== COMMON CONFIGURATION ====
@@ -40,6 +41,12 @@ module.exports = function (grunt) {
             "bld": [ "Gruntfile.js" ],
             options: {
                 jshintrc: "jshint.json"
+            }
+        },
+        eslint: {
+            "bld": [ "Gruntfile.js" ],
+            options: {
+                config: "eslint.json"
             }
         },
         mkdir: {
@@ -67,6 +74,7 @@ module.exports = function (grunt) {
     ]);
     grunt.registerTask("build", [
         "jshint:bld",
+        "eslint:bld",
         "mkdir:bld",
         "src-build",
         "doc-build"
@@ -172,19 +180,35 @@ module.exports = function (grunt) {
                 src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
                 dest: "bld/.done-src-jshint",
                 options: { tasks: [ "jshint:src", "touch:src-jshint-done" ] }
+            },
+            "src-eslint": {
+                src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
+                dest: "bld/.done-src-eslint",
+                options: { tasks: [ "eslint:src", "touch:src-eslint-done" ] }
             }
         },
         jshint: {
             "src": [ "bld/*.js", "!bld/*.min.js" ]
         },
+        eslint: {
+            "src": {
+                src: [ "bld/*.js", "!bld/*.min.js" ]
+            }
+        },
         touch: {
             "src-jshint-done": {
                 src: [ "bld/.done-src-jshint" ]
+            },
+            "src-eslint-done": {
+                src: [ "bld/.done-src-eslint" ]
             }
         },
         clean: {
             "src-jshint": [
                 "bld/.done-src-jshint"
+            ],
+            "src-eslint": [
+                "bld/.done-src-eslint"
             ]
         }
     });
@@ -311,6 +335,7 @@ module.exports = function (grunt) {
         "newer:src-plugin-debugger",
         "newer:src-plugin-other",
         "newer:src-jshint",
+        "newer:src-eslint",
         "newer:src-closurecompiler",
         "newer:src-closurelinter",
         "newer:src-min"
@@ -320,6 +345,7 @@ module.exports = function (grunt) {
         "clean:src-plugin-debugger",
         "clean:src-plugin-other",
         "clean:src-jshint",
+        "clean:src-eslint",
         "clean:src-closurecompiler",
         "clean:src-closurelinter",
         "clean:src-min"
