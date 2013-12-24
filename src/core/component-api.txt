@@ -1049,7 +1049,7 @@ displaying the Model information and storing events into it.
   In addition to the basic get/set operations on scalar values,
   you can also use array and hash operations on collections
   by using the F<operation> option. Supported F<operation>
-  values are C<"get">, C<"set">, C<["splice",>offset<,>removeC<]>,
+  values are C<"get">, C<"set">, C<["splice",>offsetC<,>removeC<]>,
   C<"delete">, C<"push">, C<"pop">, C<"unshift"> and C<"shift">.
   The last four array operations are internally translated to the
   corresponding C<splice> operation. The arguments to the C<splice>
