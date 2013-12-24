@@ -83,7 +83,7 @@ _cs.select_path = function (obj, path) {
         if (value_new === undefined) {
             /*  delete value from collection  */
             if (obj instanceof Array)
-                obj.splice(parseInt(path[i]), 1);
+                obj.splice(parseInt(path[i], 10), 1);
             else
                 delete obj[path[i]];
         }

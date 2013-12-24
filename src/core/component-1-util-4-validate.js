@@ -261,7 +261,7 @@ _cs.validate_subset = function (node, path) {
                 throw _cs.exception("validate", "dereference error: hash key \"" + path[i] + "\" not found");
         }
         else if (node.type === "array") {
-            j = parseInt(path[i]);
+            j = parseInt(path[i], 10);
             if (j >= node.elements.length)
                 throw _cs.exception("validate", "dereference error: array index #" + j + " (\"" + path[i] + "\") not found");
             node = node.elements[j].element;

@@ -269,7 +269,7 @@ $cs.pattern.model = $cs.trait({
                             throw new _cs.exception("value", "cannot delete a root model entry");
                         var pathSegment = path[path.length - 1];
                         if (obj instanceof Array)
-                            obj.splice(parseInt(pathSegment), 1);
+                            obj.splice(parseInt(pathSegment, 10), 1);
                         else if (typeof obj === "object")
                             delete obj[pathSegment];
                         else
