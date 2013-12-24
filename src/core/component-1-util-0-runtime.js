@@ -32,7 +32,7 @@ _cs.exception = function (method, error) {
 _cs.log = function (msg) {
     /*  try ComponentJS debugger  */
     if (_cs.hook("ComponentJS:log", "or", msg))
-        {} /*  do nothing, as plugins have already logged the message  */
+        { /* eslint no-empty: 0 */ } /*  do nothing, as plugins have already logged the message  */
 
     /*  try Firebug-style console (in regular browser or Node)  */
     else if (   typeof GLOBAL.console     !== "undefined"

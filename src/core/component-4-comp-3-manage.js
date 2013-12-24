@@ -15,9 +15,11 @@ $cs.create = function () {
         var msg = "ComponentJS: WARNING: component system still not bootstrapped " +
             "(please call \"bootstrap\" method before first \"create\" method call!)";
         /* global alert:false */
+        /* eslint no-alert: 0 */
         if (typeof alert === "function")
             alert(msg);
         /* global console:false */
+        /* eslint no-console: 0 */
         else if (typeof console !== "undefined" && typeof console.log === "function")
             console.log(msg);
         $cs.bootstrap();
