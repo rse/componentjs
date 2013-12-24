@@ -46,7 +46,7 @@ describe("ComponentJS Models", function () {
         it("should support scalar values", function (done) {
             var id = cs("//quux").observe({
                 name: "obj.a[0]", 
-                func: function (ev, vnew, vold, op) {
+                func: function (ev, vnew, vold, op, path) {
                     expect(vnew).to.be.equal("a2")
                     expect(vold).to.be.like("a1")
                     cs("//quux").unobserve(id)
@@ -60,7 +60,7 @@ describe("ComponentJS Models", function () {
             var id = cs("//quux").observe({
                 name: "obj.a", 
                 operation: "splice",
-                func: function (ev, vnew, vold, op) {
+                func: function (ev, vnew, vold, op, path) {
                     expect(vnew).to.be.equal("a3")
                     expect(vold).to.be.like([ "a2" ])
                     cs("//quux").unobserve(id)
@@ -99,6 +99,22 @@ describe("ComponentJS Models", function () {
             expect(cs("//quux").value("obj.c")).to.be.like({ c1: "c1", c2: "c2" })
             cs("//quux").value({ name: "obj.c.c1", operation: "delete" })
             expect(cs("//quux").value("obj.c")).to.be.like({ c2: "c2" })
+        })
+        it("should support observations at parent items", function (done) {
+            cs("//quux").value({ name: "obj.a", operation: "set", value: [] })
+            var id = cs("//quux").observe({
+                name: "obj",
+                operation: "splice",
+                func: function (ev, vnew, vold, op, path) {
+                    expect(vnew).to.be.equal("a1")
+                    expect(vold).to.be.like([])
+                    expect(op[0]).to.be.equal("splice")
+                    expect(path).to.be.equal("obj.a")
+                    cs("//quux").unobserve(id)
+                    done()
+                }
+            });
+            cs("//quux").value({ name: "obj.a", operation: "push", value: "a1" })
         })
     })
 })

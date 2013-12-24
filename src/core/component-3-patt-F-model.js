@@ -121,6 +121,9 @@ $cs.pattern.model = $cs.trait({
             /*  parse the value name into selection path segments  */
             var path = _cs.select_parse(params.name);
 
+            /*  create new name out of the canonicalized path segments  */
+            var pathName = path.join(".");
+
             /*  determine component owning model with requested value  */
             var owner = null;
             var model = null;
@@ -151,8 +154,8 @@ $cs.pattern.model = $cs.trait({
                     /*  send event to observers for value get and allow observers
                         to reject value get operation and/or change old value to get  */
                     ev = owner.publish({
-                        name:      "ComponentJS:model:" + params.name + ":get",
-                        args:      [ value_old ],
+                        name:      "ComponentJS:model:" + pathName + ":get",
+                        args:      [ value_old, value_old, [ "get" ], pathName ],
                         capturing: false,
                         spreading: false,
                         bubbling:  false,
@@ -221,8 +224,8 @@ $cs.pattern.model = $cs.trait({
                 var cont = true;
                 if (owner.property({ name: "ComponentJS:model:subscribers:" + params.operation[0], bubbling: false }) === true) {
                     ev = owner.publish({
-                        name:      "ComponentJS:model:" + path.join(".") + ":" + params.operation[0],
-                        args:      [ value_new, value_old, params.operation ],
+                        name:      "ComponentJS:model:" + pathName + ":" + params.operation[0],
+                        args:      [ value_new, value_old, params.operation, pathName ],
                         capturing: false,
                         spreading: false,
                         bubbling:  false,
@@ -286,8 +289,8 @@ $cs.pattern.model = $cs.trait({
                     /*  send event to observers after value finally changed  */
                     if (owner.property({ name: "ComponentJS:model:subscribers:changed", bubbling: false }) === true) {
                         owner.publish({
-                            name:      "ComponentJS:model:" + path.join(".") + ":changed",
-                            args:      [ value_new, value_old, params.operation ],
+                            name:      "ComponentJS:model:" + pathName + ":changed",
+                            args:      [ value_new, value_old, params.operation, pathName ],
                             noresult:  true,
                             capturing: false,
                             spreading: false,
@@ -353,6 +356,7 @@ $cs.pattern.model = $cs.trait({
                 .replace(/\./g, "\\.")
                 .replace(/\*\*/g, ".+?")
                 .replace(/\*/g, "[^.]+");
+            name += "(?:\\.[^.]+)*";
             var id = owner.subscribe({
                 name:      new RegExp("ComponentJS:model:" + name + ":" + params.operation),
                 capturing: false,
