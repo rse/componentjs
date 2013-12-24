@@ -16,7 +16,14 @@
     o Major Build Environment Refactoring: switched from plain Unix
       make(1) to Grunt.
 
-    o ...
+    o Added (API exposed) utility select() method for selecting values
+      from arbitrary structured object graphs.
+
+    o Added support for validating a value against a subset of the type
+      specification.
+
+    o Added support for manipulating and observing arbitrary structured
+      model values.
 
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
