@@ -143,19 +143,48 @@ $cs.pattern.model = $cs.trait({
             /*  get new model value  */
             var value_new = params.value;
 
+            /*  translate special-case array operations to splice operation  */
+            var obj;
+            switch (params.operation[0]) {
+                case "unshift":
+                    params.operation = [ "splice", 0, 0 ];
+                    break;
+                case "shift":
+                    params.operation = [ "splice", 0, 1 ];
+                    value_new = undefined;
+                    break;
+                case "push":
+                    obj = $cs.select(model[path[0]].value, path.slice(1));
+                    params.operation = [ "splice", obj.length, 0 ];
+                    break;
+                case "pop":
+                    obj = $cs.select(model[path[0]].value, path.slice(1));
+                    params.operation = [ "splice", obj.length - 1, 1 ];
+                    value_new = undefined;
+                    break;
+            }
+
             /*  get old model value  */
             var ev;
+            var result;
             var value_old = model[path[0]].value;
             if (path.length > 1)
                 value_old = $cs.select(value_old, path.slice(1));
-            var result;
-            if (params.operation[0] === "get") {
+            if (params.operation[0] === "splice") {
+                /*  splice operation is on collection itself,
+                    so pick the target collection element!  */
+                if (params.operation[2] > 0)
+                    value_old = $cs.select(value_old, "" + params.operation[1]);
+                else
+                    value_old = undefined;
+            }
+            else if (params.operation[0] === "get") {
                 if (owner.property({ name: "ComponentJS:model:subscribers:get", bubbling: false }) === true) {
                     /*  send event to observers for value get and allow observers
                         to reject value get operation and/or change old value to get  */
                     ev = owner.publish({
-                        name:      "ComponentJS:model:" + pathName + ":get",
-                        args:      [ value_old, value_old, [ "get" ], pathName ],
+                        name:      "ComponentJS:model:" + pathName + ":" + params.operation[0],
+                        args:      [ value_old, value_old, params.operation, pathName ],
                         capturing: false,
                         spreading: false,
                         bubbling:  false,
@@ -176,32 +205,11 @@ $cs.pattern.model = $cs.trait({
                 }
             }
 
-            /*  optionally set new model value  */
-            if (   params.operation[0] !== "get"
-                && (params.force || value_old !== value_new)) {
-
-                /*  translate special-case array operations to splice operation  */
-                var obj;
-                switch (params.operation[0]) {
-                    case "unshift":
-                        params.operation = [ "splice", 0, 0 ];
-                        break;
-                    case "shift":
-                        params.operation = [ "splice", 0, 1 ];
-                        value_new = undefined;
-                        break;
-                    case "push":
-                        obj = $cs.select(model[path[0]].value, path.slice(1));
-                        params.operation = [ "splice", obj.length, 0 ];
-                        break;
-                    case "pop":
-                        obj = $cs.select(model[path[0]].value, path.slice(1));
-                        params.operation = [ "splice", obj.length - 1, 1 ];
-                        value_new = undefined;
-                        break;
-                    default:
-                        break;
-                }
+            /*  optionally set/delete/splice new model value  */
+            if (   (   params.operation[0] === "set"
+                    && (params.force || value_old !== value_new))
+                || params.operation[0] === "delete"
+                || params.operation[0] === "splice"              ) {
 
                 /*  check validity of new value  */
                 if (   params.operation[0] === "set"
