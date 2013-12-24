@@ -255,7 +255,7 @@ interface ComponentJS_api {
 
     ns(path: string, leaf?: Object): Object;
 
-    validate(object: Object, spec: string): boolean;
+    validate(object: Object, spec: string, path?: string): boolean;
     select(object: Object, path: string): Object;
 
     params(
