@@ -334,9 +334,9 @@ module.exports = function (grunt) {
         newer: {
             "doc-component-api-screen-html": {
                 src: [
-                    "src/core/component-api.pl",
-                    "src/core/component-api.txt",
-                    "src/core/component-api.tmpl"
+                    "doc/component-api.pl",
+                    "doc/component-api.tmpl",
+                    "doc/component-api-*.txt"
                 ],
                 dest: "bld/component-api.screen.html",
                 options: { tasks: [ "path-check:doc-component-api-screen-html" ] }
@@ -354,11 +354,11 @@ module.exports = function (grunt) {
         shell: {
             "doc-component-api-screen-html": {
                 command: "perl " +
-                    "src/core/component-api.pl " +
-                    "src/core/component-api.txt " +
-                    "src/core/component-api.tmpl " +
+                    "doc/component-api.pl " +
+                    "\"<%= version_string %>\" " +
                     "bld/component-api.screen.html " +
-                    "\"<%= version_string %>\""
+                    "doc/component-api.tmpl " +
+                    "doc/component-api-*.txt"
             }
         },
         clean: {

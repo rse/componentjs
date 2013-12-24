@@ -1,0 +1,60 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Component Lookup
+----------------
+
+Before performing certain operations on a component, it first have to
+be looked up in the component tree. As this is one of the most prominent
+functionalities of ComponentJS, it is directly exposed through the
+global API symbol.
+
+- M<ComponentJS>(P<abs-path>: T<string>): T<Component>;
+  M<ComponentJS>(P<component>: T<Component>, P<rel-path>: T<String>): T<Component>;
+  M<ComponentJS>(P<object>: T<Object>, P<rel-path>: T<String>): T<Component>;
+  M<ComponentJS>(P<component>: T<Component>): T<Component>;
+  M<ComponentJS>(P<object>: T<Object>): T<Component>
+
+  Components can be looked up by absolute/relative paths
+  from root/base components. A path is a string of slash-separated component names
+  with four special names allowed: "C<.>" for current component name, "C<..>" for parent
+  component name, "C<*>" for any component name and an empty name (C<//>) for
+  any component trees between current and following components. In any case, the result has
+  to uniquely identify a single component.
+  The following usages exist:
+  1. Lookup T<Component> by absolute path P<path> (this is usually never done explicitly,
+     but occurs implicitly if the input parameter is already a T<Component>).
+  2. Lookup T<Component> by path P<path>, relative to T<Component> P<component>.
+  3. Lookup T<Component> by path P<path>, relative to the T<Component> corresponding
+  to T<Object> P<object>.
+  4. Lookup T<Component> object via backing object P<object>.
+  5. Lookup T<Component> object via the P<component> itself (no-operation).
+  The paths have to follow the following grammar:
+
+  + abs-path + ::= + "/" rel-path
+  + rel-path + ::= + name ("/" name)*
+  + name     + ::= + "" | "C<*>" | /C<^[^\/]+$>/
+
+  | cs("/foo/bar")           /* absolute */
+  | cs(comp, "model/view")   /* relative to component */
+  | cs(this, "model/view")   /* relative to component via backing object */
+  | cs("//bar")              /* full-tree lookup */
+  | cs(comp, "//bar")        /* sub-tree lookup */
+  | cs(this, "*/view")       /* wildcard lookup */
+  | cs(this, "..//view")     /* parent sub-tree lookup */
+
+- O<component>.M<exists>(): T<Boolean>
+
+  Check whether a (usually previously looked up) O<component> (either a real
+  existing on or the special pre-existing singleton component with name "C<&lt;none&gt;>") really
+  exists in the component tree.
+
+  | if (cs("//quux").exists()) ...
+  | if (cs("//quux").name() !== "&lt;none&gt;") ...
+

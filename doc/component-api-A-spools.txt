@@ -1,0 +1,67 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Spools
+------
+
+In ComponentJS there are at least 4 resource allocating operations which have corresponding deallocation operations:
+Model M<observe>()/M<unobserve>(), Socket M<plug>()/M<unplug>(), Event M<subscribe>()/M<unsubscribe>(), Service and
+M<register>()/M<unregister>(). For correct run-time operation it is required that each
+allocation operation, performed in a state enter method, is properly reversed with the corresponding deallocation
+operation in the state leave method. As this is extremely cumbersome (especially because you have to store the
+identifiers returned by the allocation operations as you need them for the deallocation operation), ComponentJS provides
+a convenient spool mechanism which all of the above allocation operations support and which also can be used by the
+application itself.
+
+- O<component>.M<spool>({
+      F<name>: T<String>,
+      F<ctx>: T<Object>,
+      F<func>: T<Function>,
+      [F<args>: T<Array(Object)> = new Array()]
+  }): T<Void>;
+  O<component>.M<spool>(
+      P<name>: T<String>,
+      P<ctx>: T<Object>,
+      P<func>: T<Function>,
+      [P<args>: T<Object>, ...]
+  ): T<Void>
+
+  Remember action "F<func>.C<apply>(F<ctx>, F<args>)" on spool named F<name>.
+  The F<name> parameter can be either just a plain spool-name "C<name>"
+  or a combination of (relative) component-path and spool-name "C<path>:C<name>".
+  This allows one to spool on a component different from O<component> (usually
+  a relative path back to the component of the caller of the M<spool>() operation).
+
+  | cs(this).spool({
+  |     name: "foo",
+  |     ctx: this,
+  |     func: function (num, str) { ... },
+  |     args: [ 42, "foo" ]
+  | });
+
+- O<component>.M<spooled>({ F<name>: T<String> }): T<Number>;
+  O<component>.M<spooled>(P<name>: T<String>): T<Number>
+
+  Return the number of actions which are spooled under spool named F<name>.
+  Usually done before calling M<unspool>() as it would throw an
+  exception if there are no spooled actions at all.
+
+  | if (cs(this).spooled("foo"))
+  |     cs(this).unspool("foo")
+
+- O<component>.M<unspool>({ F<name>: T<String> }): T<Void>;
+  O<component>.M<unspool>(P<name>: T<String>): T<Void>
+
+  Perform all actions previously spooled on spool F<name>
+  in reverse spooling order (those spooled last are executed first).
+
+  | release: function () {
+  |     cs(this).unspool("materialized")
+  | }
+

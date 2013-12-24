@@ -1,0 +1,36 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+API Management
+--------------
+
+Change the API symbol in the global variable namespace under which ComponentJS
+is exposed. By default ComponentJS is exposed under the symbol name
+C<ComponentJS>. It is a common convention to change the symbol to C<cs> (for
+"component system/service") to have a convenient short-hand.
+
+- ComponentJS.M<symbol>([P<name>: T<String>]): T<ComponentJS>
+
+  Change symbol of ComponentJS API to global variable P<name> and return it.
+  If P<name> is not given, ComponentJS does not occupy any global namespace slot at all --
+  then it is required to store the return value and use ComponentJS directly through it.
+
+  | ComponentJS.symbol("cs")        /* standard    */
+  | var cs = ComponentJS.symbol()   /* alternative */
+
+- ComponentJS.M<version> = {
+      F<major>: T<Number>, F<minor>: T<Number>, F<micro>: T<Number>, F<date>:  T<Number>
+  }
+
+  Access the ComponentJS implementation version "F<major>C<.>F<minor>C<.>F<micro>"
+  and the corresponding release F<date> (in format YYYYMMDD).
+
+  | if (ComponentJS.version.date &lt; 20120101)
+  |      throw new Error("need at least ComponentJS as of 20120101")
+

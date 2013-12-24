@@ -1,0 +1,56 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Properties
+----------
+
+Every component can have an arbitrary number of key/value based properties attached to it.
+The keys have to be of type T<String>, the values can be of any type. A property
+is set on a target component but is resolved on both the target component and
+all parent components (up to and including the root component). This way properties
+feel like inherited and overrideable values which can be used for both storing
+component-local information and to communicate information to foreign components.
+
+- O<component>.M<property>({
+      F<name>: T<String>,
+      [F<value>: T<Object> = C<undefined>,]
+      [F<scope>: T<String> = C<undefined>,]
+      [F<bubbling>: T<Boolean> = C<true>,]
+      [F<targeting>: T<Boolean> = C<true>,]
+      [F<returnowner>: T<Boolean> = C<false>]
+  }): T<Object>;
+  O<component>.M<property>(P<name>: T<String>, P<value>: T<Object>): T<Object>;
+  O<component>.M<property>(P<name>: T<String>): T<Object>
+
+  Get or set property with name F<name> and value F<value> on component O<component>.
+  If F<bubbling> is set to C<false> a property get operation does not resolve
+  on any parent components ("it does not bubble up to the root").
+  If F<targeting> is set to C<false> a property get operation does not resolve
+  on the target component O<component> (resolving starts on parent component).
+  If F<returnowner> is set to F<true> instead of the property value, the
+  owning component is returned.
+  Finally, properties can be scoped with a child component name or even
+  a descendant component name path: on each attempt
+  to resolve the property, first the scoped variants are tried. This means,
+  if a property was set with F<name> "C<quux@bar>" (or with F<name> "C<quux>" and an
+  explicitly F<scope> set to "C<bar>") on component C< /foo>,
+  if you resolve the property with C<cs("/foo/bar", "quux")> you
+  get the value, but if you resolve the property with C<cs("/foo/baz", "quux")> you
+  do not get the value. This allows you to set the same property with different
+  values for different child components.
+  Additionally the scope can be a partial component path, too.
+  If a property was set with name "C<quux@bar/baz>" on component C< /foo>,
+  if you resolve the property with C<cs("/foo/bar/baz", "quux")> you
+  get the value, but if you resolve the property with C<cs("/foo/bar/baz2", "quux")> you
+  do not get the value. This allows you for instance to skip so-called intermediate namespace-only
+  components.
+  Setting F<value> to "C<null>" removes the property.
+
+  | cs(this).property("foo")
+

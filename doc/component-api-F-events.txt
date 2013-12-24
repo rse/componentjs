@@ -1,0 +1,148 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Events
+------
+
+The Event mechanism is a central one in ComponentJS. Both
+Models and Services are internally based on the Events mechanism.
+An Event is an object published towards a target component. It is delivered
+in 4 phases:
+
+. In phase 1 (the "capturing" phase) the Event is delivered
+  to all components on the path from the root component (inclusive) towards the target
+  component (exclusive).
+. In phase 2 (the "targeting" phase) the Event is delivered to the target component.
+. In phase 3 (the "spreading" phase) the Event is delivered to all descendant components of
+  the target component in a depth-first traversal order.
+. In phase 4 (the "bubbling" phase) the Event is delivered (again) to all components on
+  the path from the target component (exclusive) to the root component (inclusive).
+
+Event objects are implicitly created by the M<publish>() operation and
+they provide various getter/setter methods:
+
+. M<target>() (T<Component>): target component the event is send to
+. M<propagation>() (T<Boolean>): whether event propagation should continue
+. M<processing>() (T<Boolean>): whether final default event processing should be performed
+. M<dispatched>() (T<Boolean>): whether event was dispatched at least once to a subscriber
+. M<decline>() (T<Boolean>): whether event was declined by subscriber
+. M<state>() (T<Boolean>): state of dispatching: C<capturing>, C<targeting>, C<spreading> or C<bubbling>
+. M<result>() (T<Object>): optional result value event subscribers can provide
+. M<async>() (T<Boolean>): whether event is dispatched asynchronously
+
+- O<component>.M<subscribe>({
+      F<name>: T<String>,
+      [F<spec>: T<Object> = C<{}>],
+      [F<ctx>: T<Object> = O<component>,]
+      F<func>: T<Function>,
+      [F<args>: T<Object[]> = C<[]>],
+      [F<capturing>: T<Boolean> = C<false>],
+      [F<spreading>: T<Boolean> = C<false>],
+      [F<bubbling>: T<Boolean> = C<true>],
+      [F<noevent>: T<Boolean> = C<false>],
+      [F<exclusive>: T<Boolean> = C<false>],
+      [F<spool>: T<String> = C<null>]
+  }): T<Number>;
+  O<component>.M<subscribe>(
+      P<name>: T<String>,
+      P<func>: T<Function>,
+      [P<args>: T<Object>, ...]
+  ): T<Number>
+
+  Subscribe to event F<name> (optionally sub-specified via F<spec>)
+  on component O<component> and
+  execute callback F<func> as F<func>C<(>P<ev>C<: >T<Event>
+  C<, >P<args>C<: >T<Object>C<, ..., >P<sargs>C<: >T<Object>C<, ...)>
+  once the event is dispatched to O<component> after it was published.
+  By default an event is dispatched in the (mandatory) targeting and (optional) bubbling phases.
+
+  . Option F<ctx> allows you to give "C<this>" a particular value for the
+    callback F<func>. Option F<args> allows you to pass additional
+    parameters to F<func> (before those passed by M<publish>().
+  . Option F<noevent> does not pass the P<ev>: T<Event> parameter to F<func>.
+  . Setting option F<capturing> to "C<true>" indicates that the event should
+    be also dispatched in the capturing phase.
+  . Setting option F<spreading> to "C<true>" indicates that the event should
+    be also dispatched in the spreading phase.
+  . Setting option F<bubbling> to "C<false>" indicates that the event should
+    not be dispatched in the bubbling phase.
+  . Option F<exclusive> can be set to "C<true>" for an exclusive subscription, i.e.,
+    a subscription which prevents any subsequent subscriptions.
+
+  The M<subscribe>() method returns an id which uniquely identifies the subscription.
+  Instead of having to manually release the subscription later via M<unsubscribe>()
+  you can use the spool mechanism and spool the corresponding M<unsubscribe>()
+  operation via option F<spool>.
+
+  | cs(self).subscribe({
+  |     name: "data-loaded",
+  |     spool: "prepared",
+  |     func: function (ev, data, info) {
+  |         ...
+  |     }
+  | })
+
+- O<component>.M<unsubscribe>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unsubscribe>(P<id>: T<Number>): T<Void>
+
+  Release the subscription identified by F<id>, previously acquired by a call to M<subscribe>().
+  This is usually done implicitly through the spooling mechanism.
+
+  | cs(this).unsubscribe(id)
+
+- O<component>.M<subscription>({ F<id>: T<Number> }): T<Boolean>;
+  O<component>.M<subscription>(P<id>: T<Number>): T<Boolean>
+
+  Checks whether the subscription identified by F<id> exists on O<component>.
+
+  | cs(this).subscription(id)
+
+- O<component>.M<publish>({
+      F<name>: T<String>,
+      [F<spec>: T<Object> = C<{}>,]
+      [F<async>: T<Boolean> = C<false>,]
+      [F<capturing>: T<Boolean> = C<true>,]
+      [F<spreading>: T<Boolean> = C<false>,]
+      [F<bubbling>: T<Boolean> = C<true>,]
+      [F<completed>: T<Function>,]
+      [F<resultinit>: T<Object> = C<undefined>,]
+      [F<resultstep>: T<Function>,]
+      [F<directresult>: T<Boolean> = C<false>,]
+      [F<noresult>: T<Boolean> = C<false>,]
+      [F<firstonly>: T<Boolean> = C<false>,]
+      [F<silent>: T<Boolean> = C<false>,]
+      [F<args>: T<Object[]> = C<[]>]
+  }): T<Object>;
+  O<component>.M<publish>(
+      P<name>: T<String>,
+      P<args>...: T<Object>
+  ): T<Object>
+
+  Publishes an T<Event> to component O<component> named F<name> and with
+  optional arguments F<args>. By default the event is intended to be
+  dispatched in the (mandatory) targeting and (optional) capturing and
+  bubbling phases. The following options allow you to further control
+  the event publishing process:
+
+  . Option F<spec> allows you to sub-specify/parametrize the event with
+    arbitrary key/value pairs in case the F<name> is too generic.
+  . Option F<async> allows the event processing to occur asynchronously.
+  . Setting option F<capturing> to "C<false>" indicates that the event should
+    not be intended to be dispatched in the capturing phase.
+  . Setting option F<spreading> to "C<true>" indicates that the event should
+    also be intended to be dispatched in the spreading phase.
+  . Setting option F<bubbling> to "C<false>" indicates that the event should
+    not be intended to be dispatched in the bubbling phase.
+  . Option F<completed> executes the specified callback function
+    once the event was dispatched to subscribers in all possible phases.
+    This allows you to react at the end of F<async>=C<true> events.
+  . Option F<resultinit> and F<resultstep>
+
+  | cs(this).publish("data-loaded", data, info)
+

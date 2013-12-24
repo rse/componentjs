@@ -1,0 +1,95 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Component Tree
+--------------
+
+Components are managed within a component tree.
+The following functions allow you to traverse this tree.
+
+- O<component>.M<path>(): T<Array(Component)>;
+  O<component>.M<path>(P<separator>: T<String>): T<String>
+
+  Either retrieve as an array all T<Components> from the current O<component>
+  up to and including the root component, or get the slash-separated component name path T<String>
+  from the root component down to and including the current O<component>.
+
+  | cs("/foo/bar").path("/") -> "/foo/bar"
+  | cs("/foo/bar").path() -> [ cs("/foo/bar"), cs("/foo"), cs("/") ]
+
+- O<component>.M<parent>(): T<Component>
+
+  Return the parent component of O<component>, or C<null> if O<component> is the root or none component.
+
+  | cs(this).parent() === cs(this, "..")
+
+- O<component>.M<children>(): T<Array(Component)>
+
+  Return the array of child components of O<component>.
+
+  | cs(this).children()
+
+- O<component>.M<attach>(P<parent>: T<Component>): T<Void>
+
+  Attach O<component> as a child to the P<parent> component. In case
+  it is already attached to an old parent component, it automatically
+  calls M<detach>() before attaching to the new parent component.
+  Internally used by ComponentJS on M<create>(), but can be also used by
+  application when moving a sub-tree within the component tree.
+
+  | /*  migrate all children from our view1 onto our view2  */
+  | var view1 = cs(this, "model/view1")
+  | var view2 = cs(this, "model/view2")
+  | view1.children().forEach(function (child) {
+  |     var state = child.state({ state: "created", sync: true })
+  |     child.detach()
+  |     child.attach(view2)
+  |     child.state(state)
+  | })
+
+- O<component>.M<detach>(): T<Void>
+
+  Detach O<component> as a child from its parent component.
+  Internally used by ComponentJS on M<destroy>(), but can be also used by
+  application when moving components within the component tree.
+
+  | cs(this).detach()
+
+- O<component>.M<walk_up>(P<callback>: T<Function>, P<ctx>: T<Object>): T<Object>
+
+  Walk the component tree upwards from the current component (inclusive) to
+  the root component (inclusive). The P<callback> T<Function> has to be
+  of signature P<callback>(P<depth>: T<Number>, P<component>: T<Component>, P<ctx>: T<Object>): T<Object>
+  and for each component it is called like "C<ctx = >P<callback>C<(depth++, comp, ctx)>" where
+  initially C<ctx=>P<ctx>, C<comp=>O<component> and C<depth=>C<0> was set.
+
+  | var path = cs(this).walk_up("", function (depth, comp, ctx) {
+  |     return "/" + comp.name() + ctx;
+  | }, "")
+
+- O<component>.M<walk_down>(P<callback>: T<Function>, P<ctx>: T<Object>): T<Object>
+
+  Walk the component tree downwards from the current component (inclusive) to all the transitive child components
+  (inclusive). The P<callback> T<Function> has to be of signature P<callback>(P<ctx>: T<Object>, P<component>:
+  T<Component>, P<depth>: T<Number>, P<depth_first>: T<Boolean>): T<Object> and for each component it is called twice(!): once
+  like "C<ctx = >P<callback>C<(depth, comp, ctx, false)>"  when entering the component (before all children will be
+  visited) and once like "C<ctx = >P<callback>C<(depth, comp, ctx, true)>" when leaving a component (after all children
+  were visited). Initially C<ctx=>P<ctx>, C<comp=>O<component> and C<depth=>C<0> is set.
+
+  | var output = cs(this).walk_down(
+  |     function (depth, comp, output, depth_first) {
+  |         if (!depth_first) {
+  |             for (var n = 0; n &lt; depth; n++)
+  |                 output += "    ";
+  |             output += "\"" + comp.name() + "\"\n";
+  |         }
+  |         return output;
+  |     },
+  | "")
+

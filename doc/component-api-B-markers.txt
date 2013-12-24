@@ -1,0 +1,49 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Markers
+-------
+
+An object can be "marked" with a set of names. ComponentJS internally
+does not use those markers at all, but the ComponentJS Debugger plugin
+at least uses markers named "service", "model", "view" and "controller" on
+a components' backing object to render those components in different colors.
+
+- C<ComponentJS>.M<mark>(P<obj>: T<Object>, P<name>: T<String>): T<Void>;
+  O<component>.M<mark>(P<name>: T<String>): T<Void>
+
+  Mark object P<obj> with marker named P<name>.
+  An arbitrary number of markers can be added to an object.
+  An an alternative and for convenience reasons, but only if the component classes are
+  defined through ComponentJS' optional Class/Trait system,
+  the traits C<cs.marker.{service,model,view,controller}>
+  can be mixed into.
+
+  | app.ui.panel.view = cs.clazz({
+  |     create: function () {
+  |         cs(this).mark("view");
+  |     }
+  |     ...
+  | });
+
+  | app.ui.panel.view = cs.clazz({
+  |     mixin: [ cs.marker.view ]
+  |     ...
+  | });
+
+- C<ComponentJS>.M<marked>(P<obj>: T<Object>, P<name>: T<String>): T<Boolean>;
+  O<component>.M<marked>(P<name>: T<String>): T<Boolean>
+
+  Checks whether object P<obj> is marked with marker named P<name>.
+  This is usually interesting for ComponentJS plugin developers only.
+
+  | if (cs("/").marked("controller")) {
+  |     ...
+  | }
+

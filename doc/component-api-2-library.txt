@@ -1,0 +1,60 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Library Management
+------------------
+
+ComponentJS can be extended through plugins, so it can initialize
+some of its internals only once all plugins were loaded and executed.
+
+- ComponentJS.M<bootstrap>(): T<Void>
+
+  Bootstrap the ComponentJS library by initializing its internals.
+  This has to be called at least before any calls to M<create>(),
+  but can be called after any calls to M<symbol>(), M<debug>() or M<ns>().
+
+  | cs.bootstrap()
+
+- ComponentJS.M<shutdown>(): T<Void>
+
+  Shutdown the ComponentJS library by destroying its internals.
+  This implicitly destroy the existing component tree, too.
+
+  | cs.shutdown()
+
+- ComponentJS.M<plugin>(): T<String[]>;
+  ComponentJS.M<plugin>(P<name>: T<String>): T<Boolean>;
+  ComponentJS.M<plugin>(P<name>: T<String>, P<callback>: T<Function>): T<Void>
+
+  Return the names of all registered plugins, check for the
+  registration of a particular plugin with name P<name> or register
+  a new plugin under name P<name> with callback function P<callback>.
+  The callback function P<callback> should have the signature
+  "P<callback>(P<_cs>: T<ComponentJS_API_internal>, P<$cs>:
+  T<ComponentJS_API_external>, P<GLOBAL>: T<Environment>): T<Void>" where P<_cs> is the internal ComponentJS
+  API (you have to check the source code of ComponentJS to know
+  what you can do with it), P<$cs> is the external ComponentJS API
+  (the one described in this document) and P<GLOBAL> is the global
+  environment object (usually C<window> in a browser, C<global> in
+  Node.js, etc).
+
+  | /*  add a "foo()" method to all components  */
+  | ComponentJS.plugin("foo", function (_cs, $cs, GLOBAL) {
+  |     var trait = $cs.trait({
+  |         protos: {
+  |             foo: function () {
+  |                 ...
+  |             }
+  |         }
+  |     });
+  |     _cs.latch("ComponentJS:bootstrap:comp:mixin", function (mixins) {
+  |         mixins.push(trait);
+  |     });
+  | });
+

@@ -1,0 +1,105 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Services
+--------
+
+Services are loosely coupled method calls across components.
+The functionality provider does M<register>() the service and
+the functionality consumer does M<call>() the service.
+
+- O<component>.M<register>({
+      F<name>: T<String>,
+      [F<ctx>: T<Object> = O<component>,]
+      F<func>: T<Function>,
+      [F<args>: T<Object[]> = C<[]>,]
+      [F<spool>: T<String>,]
+      [F<capturing>: T<Boolean> = C<false>,]
+      [F<spreading>: T<Boolean> = C<false>,]
+      [F<bubbling>: T<Boolean> = C<true>]
+  }): T<Number>;
+  O<component>.M<register>(
+      P<name>: T<String>,
+      P<func>: T<Function>
+  ): T<Number>
+
+  Register a service F<name> on O<component> with the implementing
+  callback function F<func>. The function returns an identifier for
+  M<unregister>(). The following options can be used to control the
+  later service calls:
+
+  . Option F<ctx> can be used to set the F<this> pointer for F<func>.
+  . Option F<args> can be used to pass additional parameters to F<func> (before the F<args> of M<call>()!).
+  . Option F<spool> can be used to spool the corresponding M<unregister>() call.
+  . Option F<capturing> can be set to C<true> to provide the service also in the "capturing" phase.
+  . Option F<spreading> can be set to C<true> to provide the service also in the "spreading" phase.
+  . Option F<bubbling> can be set to C<false> to not provide the service in the "bubbling" phase.
+
+  | var id = cs(this).register({
+  |     name: "load-entity",
+  |     args: [ em ],
+  |     func: function (em, clazz, id) {
+  |         return em.findById(clazz, id);
+  |     }
+  | })
+
+- O<component>.M<unregister>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unregister>(P<id>: T<Number>): T<Void>
+
+  Release the registration identified by F<id>, previously acquired by a call to M<register>().
+  This is usually done implicitly through the spooling mechanism.
+
+  | cs(this).unregister(id)
+
+- O<component>.M<registration>({ F<id>: T<Number> }): T<Boolean>;
+  O<component>.M<registration>(P<id>: T<Number>): T<Boolean>
+
+  Checks whether the registration identified by F<id> exists on O<component>.
+
+  | cs(this).registration(id)
+
+- O<component>.M<callable>({ F<name>: T<String>[, F<value>: T<Boolean>] }): T<Boolean>;
+  O<component>.M<callable>(P<name>: T<String>[, P<value>: T<Boolean>]): T<Boolean>
+
+  Checks whether a registered service is callable/enabled or enable/disable
+  a registered service. On every change to the "callable" status of a service,
+  an internal event named "C<ComponentJS:service:>F<name>C<:callable>" is
+  published with two arguments: the new and old boolean value.
+
+  | cs(this).subscribe("ComponentJS:service:load-person:callable", function (old, new) {
+  |     if (new) {
+  |         /* react on now callable service  */
+  |     }
+  | })
+  | cs(this).callable("load-person", false)
+  | cs(this).callable("load-person", true)
+
+- O<component>.M<call>({
+      F<name>: T<String>,
+      [F<args>: T<Object[]> = C<[]>,]
+      F<capturing>: T<Boolean> = C<false>,]
+      F<spreading>: T<Boolean> = C<false>,]
+      F<bubbling>: T<Boolean> = C<true>]
+  }): T<Object>;
+  O<component>.M<call>(
+      P<name>: T<String>
+      [, P<args>...: T<Object>]
+  ): T<Object>
+
+  Call service named F<name> on component O<component>, optionally
+  passing it the arguments F<args> (after the optional F<args> of
+  M<register>()!). The following options can be used to control the
+  service call:
+
+  . Option F<capturing> can be set to C<true> to deliver the underlying service event also in the "capturing" phase.
+  . Option F<spreading> can be set to C<true> to deliver the underlying service event also in the "spreading" phase.
+  . Option F<bubbling> can be set to C<false> to not deliver the underlying service event in the "bubbling" phase.
+
+  | var person = cs("/sv").call("load-entity", "Person", 42)
+

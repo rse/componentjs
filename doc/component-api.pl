@@ -10,11 +10,16 @@
 use IO::File;
 
 #   command-line arguments
-my ($filename_txt, $filename_tmpl, $filename_html, $version) = @ARGV;
+my ($version, $filename_html, $filename_tmpl, @filename_txt) = @ARGV;
 
-#   read textual description and template
-my $fp = new IO::File "<$filename_txt"; $txt = ""; $txt .= $_ while (<$fp>); $fp->close();
-$fp = new IO::File "<$filename_tmpl"; $tmpl = ""; $tmpl .= $_ while (<$fp>); $fp->close();
+#   read textual template
+my $fp = new IO::File "<$filename_tmpl"; $tmpl = ""; $tmpl .= $_ while (<$fp>); $fp->close();
+
+#   read textual descriptions
+my $txt = "";
+foreach my $filename_txt (sort(@filename_txt)) {
+    $fp = new IO::File "<$filename_txt"; $txt .= $_ while (<$fp>); $fp->close();
+}
 
 #   replace version information
 $tmpl =~ s/0\.0\.0/$version/s;

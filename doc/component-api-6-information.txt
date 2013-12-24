@@ -1,0 +1,55 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Component Information
+---------------------
+
+Components carry a few distinct information. They can be
+accessed via the following getter/setter-style methods.
+
+- O<component>.M<id>(): T<String>;
+  O<component>.M<id>(P<id>: T<String>): T<String>
+
+  Get current unique id of O<component> or set new P<id> on O<component> and return
+  the old id. Setting the id of a component should be not done by the application
+  as it is done by ComponentJS internally on component creation time.
+
+  | cs(this).id() -> "0000000000000000000000000000001"
+
+- O<component>.M<name>(): T<String>;
+  O<component>.M<name>(P<name>: T<String>): T<String>
+
+  Get current non-unique name of O<component> or set new P<name> on O<component> and return
+  the old name. Setting the name of a component should be not done by the application
+  as it is done by ComponentJS internally on component creation time.
+
+  | cs("/foo/bar").name() === "bar"
+
+- O<component>.M<obj>(): T<Object>
+
+  Retrieve the backing T<Object> P<object> to the corresponding T<Component>.
+
+  | cs(this).obj() === this
+
+- O<component>.M<cfg>(): T<Array(String)>;
+  O<component>.M<cfg>(P<key>: T<String>): T<Object>;
+  O<component>.M<cfg>(P<key>: T<String>, P<value>: T<Object>): T<Object>;
+  O<component>.M<cfg>(P<key>: T<String>, C<undefined>): T<Object>
+
+  Components can have key/value pairs attached for application
+  configuration purposes. Four use cases exists for this method: 1.
+  get array of all key strings, 2. get current configuration property
+  identified by P<key>, 3. set configuration property identified by
+  P<key> to new value P<value> and return the old value, and 4. delete
+  the configuration property identified by P<key>.
+
+  | var value = cs("/foo/bar").cfg("quux")
+  | cs("/foo/bar").cfg("quux", value)
+  | cs("/foo/bar").cfg("quux", undefined)
+

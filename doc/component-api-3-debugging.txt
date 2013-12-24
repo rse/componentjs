@@ -1,0 +1,74 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Debugging
+---------
+
+ComponentJS has special support for debugging its run-time processing,
+especially for visualizing the current component tree in real-time.
+
+- ComponentJS.M<debug>(): T<Number>;
+  ComponentJS.M<debug>(P<level>: T<Number>): T<Void>;
+  ComponentJS.M<debug>(P<level>: T<Number>, P<message>: T<String>): T<Void>
+
+  Get current debug level, or configure the debugging through maximum debug-level P<level>
+  (C<0> disables all debug messages, C<9> enables all debug messages) or log a particular
+  P<message> under debug-level P<level>.
+
+  | cs.debug(0)
+  | if (cs.plugin("debugger")) {
+  |     if (cs.debug_instrumented()) {
+  |          cs.debug(9)
+  |          cs.debug_window({ ... })
+  |     }
+  | }
+
+- ComponentJS.M<debug_instrumented>(): T<Boolean>
+
+  [AVAILABLE THROUGH THE COMPONENTJS PLUGIN "debugger" ONLY]
+  Determine whether the current browser is "instrumented" for debugging, i.e., whether
+  the browser's built-in debugger is activated (in detached mode only). Currently
+  ComponentJS is able to determine Firefox's Firebug and Chrome's Inspector only.
+
+  | if (cs.debug_instrumented()) ...
+
+- ComponentJS.M<debug_window>({
+      F<enable>: T<Boolean>,
+      F<autoclose>: T<Boolean>,
+      F<name>: T<String>,
+      F<width>: T<Number> = 800,
+      F<height>: T<Number> = 600,
+      F<natural>: T<Boolean> = false
+  });
+  ComponentJS.M<debug_window>(
+      P<enable>: T<Boolean>,
+      P<autoclose>: T<Boolean>,
+      P<name>: T<String>)
+
+  [AVAILABLE THROUGH THE COMPONENTJS PLUGIN "debugger" ONLY]
+  On F<enable> C<true>/C<false> open/close the extra browser window
+  containing the ComponentJS debugger view for the ComponentJS application
+  identified by F<name>. If F<autoclose> is C<true>,
+  optionally automatically close the debugger window with application window
+  (which usually is inconvenient during debugging because on application
+  reloads the ComponentJS debugger window is recreated with default width/height
+  at default position instead of reused). Parameters F<width> and F<height> can be
+  used to change the initial window size. Parameter F<natural> controls whether
+  the component tree is drawn with the root component at the bottom (C<true>)
+  or at the top (C<false>).
+
+  | cs.debug_window({
+  |     enable: true,
+  |     autoclose: false,
+  |     name "My App"
+  |     width: 800,
+  |     height: 800,
+  |     natural: true
+  | })
+

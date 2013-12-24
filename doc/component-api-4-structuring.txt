@@ -1,0 +1,235 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Code Structuring
+----------------
+
+ComponentJS internally uses a few code structuring utility functions for implementing
+class method parameters and class attributes. Those utility functions
+are also exposed for consumption by application developers, but they are
+NOT(!) required for using ComponentJS. Especially, it is NOT(!) required
+that component backing objects are defined by C<cs.clazz>!
+
+- ComponentJS.M<ns>(P<path>: T<String>[, P<leaf>: T<Object> = {}]): T<Object>
+
+  Classes and traits should be structured through namespaces. A namespace is a
+  JavaScript (hash) object, potentially itself part of a parent namespace
+  object. The top-most implicit namespace object is C<window>. A namespace has a
+  dot-separated fully-qualified symbol path like C<foo.bar.quux>. This
+  method allows to create the fully-qualified path of nested objects through the
+  dot-separated P<path> of object names, optionally assign the
+  right-most/leaf object to P<leave> and finally return the right-most/leaf T<Object>.
+
+  | cs.ns("my.app"); my.app.ui = cs.clazz({ ... })  /* standard    */
+  | cs.ns("my.app").ui = cs.clazz({ ... })          /* alternative */
+  | cs.ns("my.app.ui", cs.clazz({ ... })            /* alternative */
+
+- ComponentJS.M<select>(P<object>: T<Object>, P<path>: T<String>[, P<value>: T<Object>]): T<Object>
+
+  Dereference into (and this way subset) P<object> according to the
+  P<path> specification and either return the dereferenced value or
+  set a new P<value>. Object has to be a hash or array object. The
+  P<path> argument has to follow the following grammar (which is a
+  direct JavaScript dereferencing syntax):
+
+  + path       + ::= + segment segment*
+  + segment    + ::= + bybareword | bykey
+  + bybareword + ::= + "C<.>"? identifier
+  + bykey      + ::= + "C<[>" key "C<]>"
+  + identifier + ::= + /C<[_a-zA-Z$][_a-zA-Z$0-9]*>/
+  + key        + ::= + number | squote | dquote
+  + number     + ::= + /C<[0-9]+>/
+  + dquote     + ::= + /C<"(?:\\"|.)*?">/
+  + squote     + ::= + /C<'(?:\\'|.)*?'>/
+
+  Setting the P<value> to C<undefined> effectively removes the
+  dereferenced value. If the dereferenced parent object is a hash, this
+  means the value is C<delete>'ed from it. If the dereferenced parent
+  object is an array, this means the value is C<splice>'ed out of it.
+
+  | cs.select({ foo: { bar: { baz: [ 42, 7, "Quux" ] } } }, "foo['bar'].baz[2]") -> "Quux"
+
+- ComponentJS.M<validate>(P<object>: T<Object>, P<spec>: T<String>[, P<path>: T<String>]): T<Boolean>
+
+  Validate an arbitrary nested JavaScript object P<object> against the
+  textual specification P<spec> (optionally subset with the JSON path
+  P<path>). The specification has to follow the following grammar (which
+  is a mixture of JSON-like structure and RegExp-like quantifiers):
+
+  + spec      + ::= + not | alt | hash | array | any | primary | class | special
+  + not       + ::= + "C<!>" spec
+  + alt       + ::= + "C<(>" spec ("C<|>" spec)* "C<)>"
+  + hash      + ::= + "C<{>" (key arity? "C<:>" spec ("C<,>" key arity? "C<:>" spec)*)? "C<}>"
+  + array     + ::= + "C<[>" (spec arity? ("C<,>" spec arity?)*)? "C<]>"
+  + arity     + ::= + "C<?>" | "C<*>" | "C<+>"
+  + key       + ::= + /C<^[_a-zA-Z$][_a-zA-Z$0-9]*$>/
+  + any       + ::= + "C<any>"
+  + primary   + ::= + /C<^(?:null|undefined|boolean|number|string|function|object)$>/
+  + class     + ::= + /C<^[A-Z][_a-zA-Z$0-9]*$>/
+  + special   + ::= + /C<^(?:clazz|trait|component)$>/
+
+  The optional P<path> has to follow the same grammar as the P<path> argument
+  of the M<select> method and allows you to validate P<object> against
+  a subset of P<spec>.
+
+  | cs.validate({ foo: "Foo", bar: "Bar", baz: [ 42, 7, "Quux" ] },
+  |      "{ foo: string, bar: any, baz: [ number+, string* ], quux?: any }")
+
+- ComponentJS.M<params>(P<name>: T<String>, P<args>: T<Object[]>, P<spec>: T<Object>): T<Object>
+
+  Handle positional and named function parameters by processing
+  a function's C<arguments> array. Parameter P<name> is the name
+  of the function for use in exceptions in case of invalid parameters.
+  Parameter P<args> usually is the JavaScript C<arguments> pseudo-array of
+  a function. Parameter P<spec> is the parameter specification: each key
+  is the name of a parameter and the value has to be an T<Object> with
+  the following possible fields: P<pos> for the optional position in case
+  of positional usage, P<def> for the default value (of not required
+  and hence optional parameters), P<req> to indicate whether the
+  parameter is required and P<valid> for type validation (either
+  a string accepted by the M<validate>() method,
+  or a valid regular expression C</.../>
+  for validating a T<String> against it or an arbitrary callback function.
+
+  | function config () {
+  |     var params = $cs.params("config", arguments, {
+  |         scope: { pos: 0, req: true,      valid: "boolean"           },
+  |         key:   { pos: 1, req: true,      valid: /^[a-z][a-z0-9_]*$/ },
+  |         value: { pos: 2, def: undefined, valid: "object"            },
+  |         force: {         def: false,     valid: "boolean"           }
+  |     });
+  |     var result = db_get(params.scope, params.key);
+  |     if (typeof params.value !== "undefined")
+  |         db_set(params.scope, params.key, params.value, params.force);
+  |     return result;
+  | }
+  | var value = config("foo", "bar");
+  | config("foo", "bar", "quux");
+  | config({ scope: "foo", key: "bar", value: "quux", force: true });
+
+- ComponentJS.M<attribute>({ F<name>: T<String>, F<def>: T<Object>, F<validate>: T<Object> }): T<Function>;
+  ComponentJS.M<attribute>(P<name>: T<String>, P<def>: T<Object>, P<validate>: T<Object>): T<Function>
+
+  Create a cloneable attribute capturing getter/setter function with name P<name> (for exception
+  handling reasons only), the default value P<def> and the value validation P<validate>.
+
+  | var id = ComponentJS.attribute("id", "foo", /^[a-z][a-zA-Z0-9_]*/);
+  | id() === "foo"
+  | id("bar") -> "foo"; id() -> "bar"
+
+- ComponentJS.M<clazz>({
+        [F<name>:        T<String>,]
+        [F<extend>:      T<Clazz>,]
+        [F<mixin>:       T<Array(Trait)>,]
+        [F<cons>:        T<Function>,]
+        [F<dynamics>:    T<Object>,]
+        [F<protos>:      T<Object>,]
+        [F<statics>:     T<Object>]
+  }): T<Clazz>
+
+  Define a JavaScript Class, optionally stored under the absolute dot-separated
+  object path F<name>, optionally extending the base/super/parent Class F<extend>
+  and optionally mixing in the functionality of one or more Traits via F<mixin>. The class
+  can have a constructor function F<cons> which is called once the
+  Class is instantiated and which can further initialize the dynamic fields of the class.
+  On each instantiation, all fields which are specified with F<dynamics> are
+  cloned and instantiated and all methods in F<protos> are copied into the
+  Class C<prototypes> object. The F<statics> content is copied into the
+  Class itself only. In case of F<extend> and/or F<mixin>, both the F<cons>
+  and methods of F<protos> can call C<this.base(...)> for the base/super/parent
+  method.
+
+  | var foo = cs.clazz({
+  |     cons: function (bar) {
+  |         this._bar = bar;
+  |     },
+  |     protos: {
+  |         bar: function (value_new) {
+  |             var value_old = this._bar;
+  |             if (typeof value_new !=== "undefined")
+  |                 this._bar = value_new;
+  |             return value_old;
+  |         }
+  |         [...]
+  |     }
+  | })
+
+  It is important to notice how calls to any method resolve and how
+  calls to C<this.base()> in any method of a class resolves. When on
+  class C<Foo> and its instanciated object C<foo> a method C<foo.bar()>
+  is called, the following happens:
+
+  . First, a direct property named C<bar> on object C<foo> is tried.
+    This can exist on C<foo> through (in priority order) a C<bar> in
+    either the F<dynamics> definition of a F<mixin> of C<Foo>, or in the
+    F<statics> definition of a F<mixin> of C<Foo>, or in the F<dynamics>
+    definition of C<Foo>, or in the F<statics> definition of C<Foo>.
+
+  . Second, an indirect prototype-based property named C<bar> on object
+    C<foo> is tried. This can exist on C<foo> through (in priority order)
+    a C<bar> in either the F<protos> definition of C<Foo> or in the
+    F<protos> definition of any F<extend> of C<Foo>.
+
+  When on class C<Foo> and its instanciated object C<foo> in any method C<foo.bar()>
+  the C<this.base()> is called, the following happens:
+
+  . First, a call to the super/base/parent functions in the F<mixin> trait chain is attempted.
+    The mixins are traversed in the reverse order of the trait specification in the
+    F<mixin> array, i.e., the last trait's mixins are tried first.
+
+  . Second, a call to the super/base/parent functions in the F<extend>
+    inheritance class chain is attempted. First, the directly F<extend>
+    class is attempted, then the F<extend> class of this class, etc.
+
+  NOTICE: As ComponentJS does not care at all how backing objects of
+  components are defined, you can alternatively use an arbitrary
+  solution for Class-based OO in JavaScript (e.g. TypeScript, JSClass,
+  ExtendJS, DejaVu, Classy, jTypes, etc) or fallback to the also just
+  fine regular Prototype-based OO in JavaScript:
+
+  | var foo = function (bar) {
+  |     this._bar = bar;
+  | }
+  | foo.prototype.bar = function (value_new) {
+  |     var value_old = this._bar;
+  |     if (typeof value_new !=== "undefined")
+  |         this._bar = value_new;
+  |     return value_old;
+  | }
+  | [...]
+
+- ComponentJS.M<trait>({
+        [F<name>:        T<String>,]
+        [F<mixin>:       T<Array(Trait)>,]
+        [F<cons>:        T<Function>,]
+        [F<setup>:       T<Function>,]
+        [F<dynamics>:    T<Object>,]
+        [F<protos>:      T<Object>,]
+        [F<statics>:     T<Object>]
+  }): T<Trait>
+
+  Define a JavaScript Trait (a Class which can be mixed in), optionally stored under the absolute dot-separated
+  object path F<name> and
+  optionally mixing in the functionality of one or more other Traits via F<mixin>. The trait
+  can have a constructor function F<cons> which is called once the
+  Class the Trait is mixed in is instantiated and which can further initialize the dynamic fields of the Class.
+  On each instantiation, all fields which are specified with F<dynamics> are
+  cloned and instantiated and all methods in F<protos> are copied into the
+  Class C<prototypes> object. The F<statics> content is copied into the
+  Class itself only. The optional F<setup> function is called directly at the end of Class
+  definition (not instantiation) and can further refine the defined Class.
+
+  | var foo = cs.trait({
+  |     protos: {
+  |         bar: function () {
+  |             [...]
+  |         }
+  |     }
+  | })
+

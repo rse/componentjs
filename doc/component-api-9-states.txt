@@ -1,0 +1,126 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2013 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License, v. 2.0. If a copy of the MPL was not distributed with this
+##  file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+States
+------
+
+Components, during their life-cycle, are in various particular states.
+Components can be triggered to change their state. During those state
+transitions, enter and leave methods are called accordingly.
+
+- ComponentJS.M<transition>(C<null>);
+  ComponentJS.M<transition>(
+        P<target>: T<String>,
+        P<enter>: T<String>,
+        P<leave>: T<String>,
+        P<color>: T<String>,
+        [P<source>: T<String>]
+  );
+  ComponentJS.M<transition>({
+        F<target>: T<String>,
+        F<enter>: T<String>,
+        F<leave>: T<String>,
+        F<color>: T<String>,
+        [F<source>: T<String>]
+  })
+
+  Clear all (if passed just a single C<null> parameter) or add one state transition to target state
+  P<target>, either at the top of the transition stack or in the middle, above the source state
+  P<source>. When entering the target state, the optional component backing object method P<enter> is
+  called. When leaving the target state, the optional component backing object method P<leave> is called.
+  The P<color> is a "#RRGGBB" string used for visualizing the state in the debugger view. The default
+  state transition definitions are given as an example.
+
+  | cs.transition(null);
+  | cs.transition("created",      "create",  "destroy",  "#cc3333");
+  | cs.transition("configured",   "setup",   "teardown", "#eabc43");
+  | cs.transition("prepared",     "prepare", "cleanup",  "#f2ec00");
+  | cs.transition("materialized", "render",  "release",  "#6699cc");
+  | cs.transition("visible",      "show",    "hide",     "#669933");
+  | cs.transition("enabled",      "enable",  "disable",  "#336600");
+
+- O<component>.M<state>(): T<String>;
+  O<component>.M<state>(P<state>: T<String>[, P<callback>: T<Function>]): T<String>;
+  O<component>.M<state>({
+      F<state>: T<String>,
+      [F<callback>: T<Function> = undefined,]
+      [F<sync>: T<Boolean> = false,]
+  }): T<String>
+
+  Determine the current state or request a transition to a new state of O<component>.
+  By default a state transition is performed asynchronously, but you
+  can request a synchronous transition with F<sync>. For asynchronous
+  transitions you can await the transition finish with F<callback>.
+  The old state is returned on state transitions.
+  On each state transition, for each transitively involved component and each
+  target or intermediate state, a non-capturing/non-bubbling event is
+  internally published named "C<ComponentJS:state:>F<state>C<:enter>"
+  or "C<ComponentJS:state:>F<state>C<:leave>". You can subscribe to those
+  in order to react to state transitions from outside the component, too.
+
+  | cs("/ui").state("visible")
+
+- O<component>.M<state_compare>({ F<state>: T<String> }): T<Number>;
+  O<component>.M<state_compare>(P<state>: T<String>): T<Number>
+
+  Compare the state of O<component> with F<state>. If O<component> is
+  in a lower state than F<state>, a negative number is returned. If
+  O<component> is in same state than F<state>, a zero is returned.
+  If O<component> is in a higher state than F<state>, a positive number
+  is returned.
+
+  | if (cs(this).state_compare("visible") &lt; 0) ...
+
+- O<component>.M<state_auto_increase>(P<increase>: T<Boolean>): T<Boolean>;
+  O<component>.M<state_auto_increase>(): T<Boolean>
+
+  Get or set component O<component> to automatically
+  transition to same higher/increased state than its
+  parent component.
+
+  | cs(this).state_auto_increase(true)
+
+- O<component>.M<state_auto_decrease>(P<decrease>: T<Boolean>): T<Boolean>;
+  O<component>.M<state_auto_decrease>(): T<Boolean>
+
+  Get or set component O<component> to automatically
+  transition to same lower/decreased state than its
+  child components. Notice that this means that a child can
+  drag down the parent component and this way implicitly also
+  all of its other sibling child components. Hence, use with care!
+
+  | cs(this).state_auto_decrease(true)
+
+- O<component>.M<guard>({ F<method>: T<String>, F<level>: T<Number> }): T<Void>;
+  O<component>.M<guard>(P<method>: T<String>, P<level>: T<Number>): T<Void>
+
+  Guard component O<component> from calling the state enter/leave method F<method>
+  and this way prevent it from entering/leaving the corresponding state.
+  The F<level> can be increased and decreased. Initially it should be set to
+  a positive number to activate the guard. Then it should be set to
+  a negative number to (potentially) deactivate the guard. A usage with
+  an initial call of C<+1> and then followed by a C<-1> is a boolean guard.
+  An initial call of C<+N> and then followed by N times a C<-1> call is a Semaphore-like
+  guard which ensures that only after the Nth C<-1> call the guard is finally deactivated
+  again. This is useful if you activate the guard in order to await N asynchronous operations.
+  Then the guard should be deactivated once the last asynchronous operation is finished
+  (independent which one of the N operations this is). A guard P<level> of C<0>
+  resets the guard, independent what its current level is.
+
+  | var self = this;
+  | cs(self).guard("render", +2)
+  | $.get(url1, function (data) {
+  |     self.data1 = data;
+  |     cs(self).guard("render", -1)
+  | });
+  | $.get(url2, function (data) {
+  |     self.data2 = data;
+  |     cs(self).guard("render", -1)
+  | });
+
