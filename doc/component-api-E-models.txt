@@ -93,22 +93,79 @@ displaying the Model information and storing events into it.
   hash elements while C<splice>/C<push>/C<pop>/C<unshift>/C<shift> can operate on
   array objects only.
 
+  To illustrate the functionality see the following comparisons
+  between the standard JavaScript variable access code and the ComponentJS
+  model value access code.
+
+  First, working with scalars:
+
+  | //  val = foo.bar
+  | val = cs(this).value("foo.bar")
+  | val = cs(this).value({ name: "foo.bar", operation: "get" })
+  | 
+  | //  foo.bar = "quux"
+  | cs(this).value("foo.bar", "quux")
+  | cs(this).value({ name: "foo.bar", operation: "set", value: "quux" })
+
+  Second, working with Arrays:
+
+  | //  foo.bar = []
   | cs(this).value("foo.bar", [])
-  | cs(this).value({ name: "foo.bar", operation: "push", value: "quux1" }) -> foo.bar: [ "quux1" ]
-  | cs(this).value({ name: "foo.bar", operation: "push", value: "quux2" }) -> foo.bar: [ "quux1", "quux2" ]
-  | cs(this).value({ name: "foo.bar", operation: "pop" }) -> foo.bar: [ "quux1" ]
-  | cs(this).value({ name: "foo.bar", operation: "unshift", value: "quux2" }) -> foo.bar: [ "quux2", "quux1" ]
-  | cs(this).value({ name: "foo.bar", operation: "unshift", value: "quux3" }) -> foo.bar: [ "quux3", "quux2", "quux1" ]
-  | cs(this).value({ name: "foo.bar", operation: "shift" }) -> foo.bar: [ "quux2", "quux1" ]
-  | cs(this).value({ name: "foo.bar", operation: [ "splice", 1, 0 ], value: "quux3" }) -> foo.bar: [ "quux2", "quux3", "quux1" ]
-  | cs(this).value({ name: "foo.bar[1]", operation: "delete" }) -> foo.bar: [ "quux2", "quux1" ]
-  | cs(this).value("foo.bar[0]") -> "quux2"
-  | cs(this).value("foo.bar[1]") -> "quux1"
-  | cs(this).value("foo.baz", {})
-  | cs(this).value("foo.baz.quux1", "quux1") -> foo.baz: { quux1: "quux1" }
-  | cs(this).value("foo.baz.quux2", "quux2") -> foo.baz: { quux1: "quux1", quux2: "quux2" }
-  | cs(this).value({ name: "foo.baz.quux1", operation: "delete" }) -> foo.baz: { quux2: "quux2" }
-  | cs(this).value("foo.baz.quux2") -> "quux2"
+  | cs(this).value({ name: "foo.bar", value: [] })
+  | 
+  | //  len = foo.bar.length
+  | len = cs(this).value("foo.bar").length
+  | 
+  | //  val = foo.bar[42]
+  | val = cs(this).value("foo.bar[42]")
+  | val = cs(this).value({ name: "foo.bar[42]", operation: "get" })
+  | 
+  | //  foo.bar[42] = "quux"
+  | cs(this).value("foo.bar[42]", "quux")
+  | cs(this).value({ name: "foo.bar[42]", operation: "set", value: "quux" })
+  | 
+  | //  foo.bar.splice(1, 0, "quux")
+  | cs(this).value({ name: "foo.bar", operation: [ "splice", 1, 0 ], value: "quux" })
+  | 
+  | //  foo.bar.push("foo")
+  | cs(this).value({ name: "foo.bar", operation: "push", value: "foo" })
+  | 
+  | //  val = foo.bar.pop()
+  | val = cs(this).value({ name: "foo.bar", operation: "pop" })
+  | 
+  | //  foo.bar.unshift("bar")
+  | cs(this).value({ name: "foo.bar", operation: "unshift", value: "bar" })
+  | 
+  | //  val = foo.bar.shift()
+  | val = cs(this).value({ name: "foo.bar", operation: "shift" })
+
+  Third, working with hashes:
+
+  | //  foo.bar = {}
+  | cs(this).value("foo.bar", {})
+  | cs(this).value({ name: "foo.bar", value: {} })
+  | 
+  | //  keys = Object.keys(foo.bar)
+  | keys = Object.keys(cs(this).value("foo.bar"))
+  | 
+  | //  val = foo.bar.baz
+  | //  val = foo.bar["baz"]
+  | val = cs(this).value("foo.bar.baz")
+  | val = cs(this).value("foo.bar['baz']")
+  | val = cs(this).value({ name: "foo.bar.baz",    operation: "get" })
+  | val = cs(this).value({ name: "foo.bar['baz']", operation: "get" })
+  | 
+  | //  foo.bar.baz = "quux"
+  | //  foo.bar["baz"] = "quux"
+  | cs(this).value("foo.bar.baz",    "quux")
+  | cs(this).value("foo.bar['baz']", "quux")
+  | cs(this).value({ name: "foo.bar.baz",    operation: "set", value: "quux" })
+  | cs(this).value({ name: "foo.bar['baz']", operation: "set", value: "quux" })
+  | 
+  | //  delete foo.bar.baz
+  | //  delete foo.bar["baz"]
+  | cs(this).value({ name: "foo.bar.baz",    operation: "delete" })
+  | cs(this).value({ name: "foo.bar['baz']", operation: "delete" })
 
 - O<component>.M<touch>({
       F<name>: T<String>,
