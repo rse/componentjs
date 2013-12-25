@@ -14,7 +14,14 @@ $cs.pattern.model = $cs.trait({
         model: function () {
             /*  determine parameters  */
             var params = $cs.params("model", arguments, {
-                model: { pos: 0, def: null }
+                model: { pos: 0, def: null, valid:
+                    "{ @: {" +
+                    " value?: any," +
+                    " valid?: (string|function|RegExp),"+
+                    " autoreset?: boolean,"+
+                    " store?: boolean" +
+                    "} }"
+                }
             });
 
             /*  simplify further processing  */
