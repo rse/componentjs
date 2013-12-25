@@ -94,8 +94,9 @@ that component backing objects are defined by C<cs.clazz>!
   and hence optional parameters), P<req> to indicate whether the
   parameter is required and P<valid> for type validation (either
   a string accepted by the M<validate>() method,
-  or a valid regular expression C</.../>
-  for validating a T<String> against it or an arbitrary callback function.
+  or a valid regular expression C</.../> object
+  for validating a T<String> against it or an arbitrary validation callback function
+  of signature "P<valid>(T<Object>): T<Boolean>".
 
   | function config () {
   |     var params = $cs.params("config", arguments, {
