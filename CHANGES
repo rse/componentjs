@@ -25,6 +25,9 @@
     o Added support for manipulating and observing arbitrary structured
       model values.
 
+    o Added "def" (default value) option to method property()
+      to simplify application code.
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
