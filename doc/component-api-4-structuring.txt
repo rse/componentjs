@@ -69,11 +69,13 @@ that component backing objects are defined by C<cs.clazz>!
   + array     + ::= + "C<[>" (spec arity? ("C<,>" spec arity?)*)? "C<]>"
   + arity     + ::= + "C<?>" | "C<*>" | "C<+>" | "C<{>" number "C<,>" (number | "C<oo>") "C<}>"
   + number    + ::= + /C<^[0-9]+$>/
-  + key       + ::= + /C<^[_a-zA-Z$][_a-zA-Z$0-9]*$>/
+  + key       + ::= + /C<^[_a-zA-Z$][_a-zA-Z$0-9]*$>/ | "C<@>"
   + any       + ::= + "C<any>"
   + primary   + ::= + /C<^(?:null|undefined|boolean|number|string|function|object)$>/
   + class     + ::= + /C<^[A-Z][_a-zA-Z$0-9]*$>/
   + special   + ::= + /C<^(?:clazz|trait|component)$>/
+
+  The special key "C<@>" can be used to match an arbitrary hash element key.
 
   The optional P<path> has to follow the same grammar as the P<path> argument
   of the M<select> method and allows you to validate P<object> against

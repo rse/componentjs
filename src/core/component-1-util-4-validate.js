@@ -233,7 +233,7 @@ _cs.validate_parser = {
     /*  parse hash key specification  */
     parse_key: function (token) {
         var key = token.peek();
-        if (!key.match(/^[_a-zA-Z$][_a-zA-Z$0-9]*$/))
+        if (!key.match(/^(?:[_a-zA-Z$][_a-zA-Z$0-9]*|@)$/))
             throw _cs.exception("validate", "parse error: invalid key \"" + key + "\"");
         token.skip();
         return key;
@@ -322,7 +322,9 @@ _cs.validate_executor = {
             for (i = 0; i < node.elements.length; i++) {
                 el = node.elements[i];
                 fields[el.key] = el.element;
-                if (el.arity[0] > 0 && typeof value[el.key] === "undefined") {
+                if (   el.arity[0] > 0
+                    && (   (el.key === "@" && _cs.keysof(value).length === 0)
+                        || (el.key !== "@" && typeof value[el.key] === "undefined"))) {
                     valid = false;
                     break;
                 }
@@ -334,13 +336,17 @@ _cs.validate_executor = {
             for (var field in value) {
                 if (   !Object.hasOwnProperty.call(value, field)
                     || !Object.propertyIsEnumerable.call(value, field)
-                    || (field === "constructor" || field === "prototype"))
+                    || field === "constructor"
+                    || field === "prototype"                          )
                     continue;
-                if (   typeof fields[field] === "undefined"
-                    || !this.exec_spec(value[field], fields[field])) {  /*  RECURSION  */
-                    valid = false;
-                    break;
-                }
+                if (   typeof fields[field] !== "undefined"
+                    && this.exec_spec(value[field], fields[field])) /*  RECURSION  */
+                    continue;
+                if (   typeof fields["@"] !== "undefined"
+                    && this.exec_spec(value[field], fields["@"]))   /*  RECURSION  */
+                    continue;
+                valid = false;
+                break;
             }
         }
         return valid;
