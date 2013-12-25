@@ -20,6 +20,7 @@ component-local information and to communicate information to foreign components
 - O<component>.M<property>({
       F<name>: T<String>,
       [F<value>: T<Object> = C<undefined>,]
+      [F<def>: T<Object> = C<undefined>,]
       [F<scope>: T<String> = C<undefined>,]
       [F<bubbling>: T<Boolean> = C<true>,]
       [F<targeting>: T<Boolean> = C<true>,]
@@ -51,6 +52,7 @@ component-local information and to communicate information to foreign components
   do not get the value. This allows you for instance to skip so-called intermediate namespace-only
   components.
   Setting F<value> to "C<null>" removes the property.
+  If no property F<name> is found at all, F<def> (by default the value C<undefined>) is returned.
 
   | cs(this).property("foo")
 

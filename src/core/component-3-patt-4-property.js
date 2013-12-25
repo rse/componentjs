@@ -20,6 +20,7 @@ $cs.pattern.property = $cs.trait({
             var params = $cs.params("property", arguments, {
                 name:        { pos: 0, req: true      },
                 value:       { pos: 1, def: undefined },
+                def:         {         def: undefined },
                 scope:       {         def: undefined },
                 bubbling:    {         def: true      },
                 targeting:   {         def: true      },
@@ -30,8 +31,8 @@ $cs.pattern.property = $cs.trait({
             if (!params.targeting && !params.bubbling)
                 throw _cs.exception("property", "disabling both targeting and bubbling makes no sense");
 
-            /*  start resolving with an undefined value  */
-            var result; result = undefined;
+            /*  start resolving with the default value  */
+            var result; result = params.def;
 
             /*  get old configuration value
                 (on current node or on any parent node)  */
