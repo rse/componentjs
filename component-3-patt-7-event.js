@@ -82,8 +82,9 @@ $cs.pattern.eventing = $cs.trait({
                 spool:     {             def: null  }
             });
 
-            /*  honor exclusive request  */
-            var subscriptions = this._subscriptions(params.name, params.spec);
+            /*  honor exclusive request
+                (attention: name can also be a regular expression object!)  */
+            var subscriptions = this._subscriptions(params.name.toString(), params.spec);
             if (subscriptions.length === 1 && subscriptions[0].exclusive)
                 throw _cs.exception("subscribe", "existing exclusive subscription prevents additional one");
             if (params.exclusive && subscriptions.length > 0)

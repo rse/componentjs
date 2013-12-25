@@ -697,8 +697,8 @@ Spools
 ------
 
 In ComponentJS there are at least 4 resource allocating operations which have corresponding deallocation operations:
-Model M<observe>()/M<unobserve>(), Socket M<plug>()/M<unplug>(), Event M<subscribe>()/M<unsubscribe>(), Service
-M<register>()/M<unregister>() and Hook M<latch>()/M<unlatch>(). For correct run-time operation it is required that each
+Model M<observe>()/M<unobserve>(), Socket M<plug>()/M<unplug>(), Event M<subscribe>()/M<unsubscribe>(), Service and
+M<register>()/M<unregister>(). For correct run-time operation it is required that each
 allocation operation, performed in a state enter method, is properly reversed with the corresponding deallocation
 operation in the state leave method. As this is extremely cumbersome (especially because you have to store the
 identifiers returned by the allocation operations as you need them for the deallocation operation), ComponentJS provides
@@ -1061,7 +1061,7 @@ Events
 ------
 
 The Event mechanism is a central one in ComponentJS. Both
-Models, Services and Hooks are all internally based on the Events mechanism.
+Models and Services are internally based on the Events mechanism.
 An Event is an object published towards a target component. It is delivered
 in 4 phases:
 

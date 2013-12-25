@@ -48,7 +48,7 @@ _cs.log = function (msg) {
 
 /*  utility function: debugging  */
 $cs.debug = (function () {
-    var debug_level = 9;
+    var debug_level = 0;
     return function (level, msg) {
         if (arguments.length === 0)
             /*  return old debug level  */
