@@ -10,8 +10,9 @@
 describe("ComponentJS Application Structuring: Namespaces", function () {
     describe("ns()", function () {
         it("should create namespaces", function () {
-            cs.ns("foo.bar.quux")
+            var quux = cs.ns("foo.bar.quux")
             expect(foo).to.be.like({ bar: { quux: {} } })
+            expect(quux).to.be.equal(foo.bar.quux)
         })
     })
 })
