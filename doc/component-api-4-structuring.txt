@@ -55,11 +55,12 @@ that component backing objects are defined by C<cs.clazz>!
 
   | cs.select({ foo: { bar: { baz: [ 42, 7, "Quux" ] } } }, "foo['bar'].baz[2]") -> "Quux"
 
-- ComponentJS.M<validate>(P<object>: T<Object>, P<spec>: T<String>[, P<path>: T<String>]): T<Boolean>
+- ComponentJS.M<validate>(P<object>: T<Object>, P<spec>: T<String>): T<Boolean>
 
   Validate an arbitrary nested JavaScript object P<object> against the
-  textual specification P<spec> (optionally subset with the JSON path
-  P<path>). The specification has to follow the following grammar (which
+  specification P<spec>. The specification P<spec> has to be either
+  a C<RegExp> object for T<String> validation, a validation function of signature
+  "P<spec>(T<Object>): T<Boolean>" or a string following the following grammar (which
   is a mixture of JSON-like structure and RegExp-like quantifiers):
 
   + spec      + ::= + not | alt | hash | array | any | primary | class | special
@@ -76,10 +77,6 @@ that component backing objects are defined by C<cs.clazz>!
   + special   + ::= + /C<^(?:clazz|trait|component)$>/
 
   The special key "C<@>" can be used to match an arbitrary hash element key.
-
-  The optional P<path> has to follow the same grammar as the P<path> argument
-  of the M<select> method and allows you to validate P<object> against
-  a subset of P<spec>.
 
   | cs.validate({ foo: "Foo", bar: "Bar", baz: [ 42, 7, "Quux" ] },
   |      "{ foo: string, bar: any, baz: [ number+, string* ], quux?: any }")
@@ -117,8 +114,8 @@ that component backing objects are defined by C<cs.clazz>!
   | config("foo", "bar", "quux");
   | config({ scope: "foo", key: "bar", value: "quux", force: true });
 
-- ComponentJS.M<attribute>({ F<name>: T<String>, F<def>: T<Object>, F<validate>: T<Object> }): T<Function>;
-  ComponentJS.M<attribute>(P<name>: T<String>, P<def>: T<Object>, P<validate>: T<Object>): T<Function>
+- ComponentJS.M<attribute>({ F<name>: T<String>, F<def>: T<Object>, F<valid>: T<Object> }): T<Function>;
+  ComponentJS.M<attribute>(P<name>: T<String>, P<def>: T<Object>, P<valid>: T<Object>): T<Function>
 
   Create a cloneable attribute capturing getter/setter function with name P<name> (for exception
   handling reasons only), the default value P<def> and the value validation P<validate>.

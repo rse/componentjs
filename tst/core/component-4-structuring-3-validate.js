@@ -68,7 +68,7 @@ describe("ComponentJS Application Structuring: Value Validation", function () {
             expect(cs.validate({ foo: "foo" }, "{ foo: any }")).to.be.true
             expect(cs.validate({ foo: "foo", bar: "bar" }, "{ foo: any }")).to.be.false
         })
-        it("should validate complex structure fully", function () {
+        it("should validate complex structure", function () {
             expect(cs.validate(
                 { foo: { bar: "bar", baz: 42 } },
                 "{ foo: { bar: string, baz: number } }"
@@ -80,13 +80,6 @@ describe("ComponentJS Application Structuring: Value Validation", function () {
             expect(cs.validate(
                 { foo: { bar: "bar", baz: [ 7, 42 ], quux: "quux" } },
                 "{ foo: { bar: string, baz: [ number* ], quux?: string } }"
-            )).to.be.true
-        })
-        it("should validate complex structure partially", function () {
-            expect(cs.validate(
-                { bar: "bar", baz: [ 7, 42 ], quux: "quux" },
-                "{ foo: { bar: string, baz: [ number* ], quux?: string } }",
-                "foo"
             )).to.be.true
         })
     })

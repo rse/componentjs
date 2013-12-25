@@ -11,9 +11,9 @@
 $cs.attribute = function () {
     /*  determine parameters  */
     var params = $cs.params("attribute", arguments, {
-        name:     { pos: 0, req: true  },
-        def:      { pos: 1, req: true  },
-        validate: { pos: 2, def: null  }
+        name:  { pos: 0, req: true,      valid: "string"                   },
+        def:   { pos: 1, req: true,      valid: "any"                      },
+        valid: { pos: 2, def: undefined, valid: "(function|RegExp|string)" }
     });
 
     /*  return closure-based getter/setter method  */
@@ -25,29 +25,8 @@ $cs.attribute = function () {
         if (arguments.length > 0) {
             /*  check whether new value is valid  */
             var is_valid = true;
-            if (params.validate !== null) {
-                /*  case 1: plain type comparison  */
-                if (   typeof params.validate === "string"
-                    || typeof params.validate === "boolean"
-                    || typeof params.validate === "number" )
-                    is_valid = (value_new === params.validate);
-
-                /*  case 2: regular expression string match  */
-                else if (   typeof params.validate === "object"
-                         && params.validate instanceof RegExp  )
-                    is_valid = params.validate.test(value_new);
-
-                /*  case 3: flexible callback function check  */
-                else if (typeof params.validate === "function")
-                    is_valid = params.validate(value_new, value_old, validate_only, params.name);
-
-                /*  otherwise: error  */
-                else
-                    throw _cs.exception("attribute",
-                        "validation value \"" + params.validate + "\" " +
-                        "for attribute \"" + params.name + "\" " +
-                        "is of unsupported type \"" + (typeof params.validate) + "\"");
-            }
+            if (typeof params.validate !== "undefined")
+                is_valid = $cs.validate(value_new, params.validate);
 
             /*  either return validation result...  */
             if (typeof validate_only !== "undefined" && validate_only)

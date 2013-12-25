@@ -227,7 +227,7 @@ $cs.pattern.model = $cs.trait({
                         ? path.slice(1).concat([ "0" ])
                         : path.slice(1)
                     );
-                    if (!$cs.validate(value_new, model[path[0]].valid, subPath))
+                    if (!_cs.validate_at(value_new, model[path[0]].valid, subPath))
                         throw _cs.exception("value", "model field \"" + params.name + "\" receives " +
                             "new value " + _cs.json(value_new) + ", which does not validate " +
                             "against validation \"" + model[path[0]].valid + "\"" +

@@ -60,18 +60,9 @@ $cs.params = function (func_name, func_args, spec) {
 
     /*  common value validity checking  */
     var check_validity = function (func, name, value, valid) {
-        if (typeof valid === "string") {
+        if (typeof valid !== "undefined")
             if (!$cs.validate(value, valid))
-                throw _cs.exception(func, "value of parameter \"" + name + "\" not valid");
-        }
-        else if (typeof valid === "object" && valid instanceof RegExp) {
-            if (!(typeof value === "string" && value.match(valid)))
-                throw _cs.exception(func, "value of parameter \"" + name + "\" not valid (regexp)");
-        }
-        else if (typeof valid === "function") {
-            if (!valid(value))
-                throw _cs.exception(func, "value of parameter \"" + name + "\" not valid (callback)");
-        }
+                 throw _cs.exception(func, "value of parameter \"" + name + "\" not valid");
     };
 
     /*  set actual values  */

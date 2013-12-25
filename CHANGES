@@ -46,6 +46,14 @@
       name "operation" is really too long and we want to also use
       the more concise "op" for value(), etc.
 
+    o INCOMPATIBILITY:
+      Rename attribute() option "validate" to "valid" to be more in sync
+      with similar options of other methods.
+
+    o IMPROVEMENT:
+      For params() use the new validate() functionality (which now also
+      supports RegExp and functions) only.
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 

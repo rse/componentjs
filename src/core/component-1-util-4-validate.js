@@ -7,13 +7,27 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  API function: validate an arbitrary value against a type specification  */
-$cs.validate = function (value, spec, path) {
-    /*  is the specification a function, then pass
-        the value to it and return its value  */
+/*  API function: validate an arbitrary value  */
+$cs.validate = function (value, spec) {
+    /*  case 1: specification is a function  */
     if (typeof spec === "function")
         return spec(value);
 
+    /*  case 2: specification is a regular expression object  */
+    else if (typeof spec === "object" && spec instanceof RegExp)
+        return spec.test(value.toString);
+
+    /*  case 3: specification is a validation expression  */
+    else if (typeof spec === "string")
+        return _cs.validate_at(value, spec);
+
+    /*  anything else is a usage error  */
+    else
+        throw _cs.exception("validate", "invalid specification argument: \"" + spec + "\"");
+};
+
+/*  internal: validate an arbitrary value against a type specification  */
+_cs.validate_at = function (value, spec, path) {
     /*  compile validation AST from specification
         or reuse cached pre-compiled validation AST  */
     var ast = _cs.validate_cache[spec];

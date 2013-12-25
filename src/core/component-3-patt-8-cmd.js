@@ -20,11 +20,7 @@ $cs.pattern.command = $cs.clazz({
         async: $cs.attribute("async", false),
 
         /*  usually observed attribute  */
-        enabled: $cs.attribute({
-            name:     "enabled",
-            def:      true,
-            validate: function (v) { return typeof v === "boolean"; }
-        })
+        enabled: $cs.attribute("enabled", true, "boolean")
     },
     protos: {
         /*  method: execute the command  */
