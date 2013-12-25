@@ -9,13 +9,13 @@
 
 /*  API function: validate an arbitrary value  */
 $cs.validate = function (value, spec) {
-    /*  case 1: specification is a function  */
-    if (typeof spec === "function")
-        return spec(value);
+    /*  case 1: specification is a regular expression object  */
+    if (typeof spec === "object" && spec instanceof RegExp)
+        return spec.test(value.toString());
 
-    /*  case 2: specification is a regular expression object  */
-    else if (typeof spec === "object" && spec instanceof RegExp)
-        return spec.test(value.toString);
+    /*  case 1: specification is a function  */
+    else if (typeof spec === "function")
+        return spec(value);
 
     /*  case 3: specification is a validation expression  */
     else if (typeof spec === "string")
