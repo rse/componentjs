@@ -11,13 +11,13 @@
 $cs.clazz = function () {
     /*  determine parameters  */
     var params = $cs.params("clazz", arguments, {
-        name:        { def: undefined, valid: "string"       },
-        extend:      { def: undefined, valid: "clazz"        },
-        mixin:       { def: undefined, valid: "[trait*]"     },
-        cons:        { def: undefined, valid: "function"     },
-        dynamics:    { def: undefined, valid: "object"       },
-        protos:      { def: undefined, valid: "object"       },
-        statics:     { def: undefined, valid: "object"       }
+        name:        { def: undefined, valid: "string"          },
+        extend:      { def: undefined, valid: "clazz"           },
+        mixin:       { def: undefined, valid: "[ trait* ]"      },
+        cons:        { def: undefined, valid: "function"        },
+        statics:     { def: undefined, valid: "object"          },
+        dynamics:    { def: undefined, valid: "object"          },
+        protos:      { def: undefined, valid: "{ @: function }" }
     });
 
     /*  just pass through definition  */
@@ -34,13 +34,13 @@ $cs.clazz = function () {
 $cs.trait = function () {
     /*  determine parameters  */
     var params = $cs.params("trait", arguments, {
-        name:        { def: undefined, valid: "string"       },
-        mixin:       { def: undefined, valid: "[trait*]"     },
-        cons:        { def: undefined, valid: "function"     },
-        setup:       { def: undefined, valid: "function"     },
-        dynamics:    { def: undefined, valid: "object"       },
-        protos:      { def: undefined, valid: "object"       },
-        statics:     { def: undefined, valid: "object"       }
+        name:        { def: undefined, valid: "string"          },
+        mixin:       { def: undefined, valid: "[ trait* ]"      },
+        cons:        { def: undefined, valid: "function"        },
+        setup:       { def: undefined, valid: "function"        },
+        statics:     { def: undefined, valid: "object"          },
+        dynamics:    { def: undefined, valid: "object"          },
+        protos:      { def: undefined, valid: "{ @: function }" }
     });
 
     /*  just pass through definition  */
