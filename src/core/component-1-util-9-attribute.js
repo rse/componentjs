@@ -25,8 +25,8 @@ $cs.attribute = function () {
         if (arguments.length > 0) {
             /*  check whether new value is valid  */
             var is_valid = true;
-            if (typeof params.validate !== "undefined")
-                is_valid = $cs.validate(value_new, params.validate);
+            if (typeof params.valid !== "undefined")
+                is_valid = $cs.validate(value_new, params.valid);
 
             /*  either return validation result...  */
             if (typeof validate_only !== "undefined" && validate_only)
