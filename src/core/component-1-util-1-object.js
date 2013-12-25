@@ -85,7 +85,7 @@ _cs.istypeof = function (obj) {
 _cs.keysof = function (obj) {
     var keys = [];
     for (var key in obj) {
-        if (obj.hasOwnProperty(key))
+        if (Object.hasOwnProperty.call(obj, key))
             keys.push(key);
     }
     return keys;
