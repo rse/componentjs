@@ -15,7 +15,7 @@ $cs.pattern.command = $cs.clazz({
     dynamics: {
         /*  standard attributes  */
         ctx:   $cs.attribute("ctx",   null),
-        func:  $cs.attribute("func",  $cs.nop),
+        func:  $cs.attribute("func",  _cs.nop),
         args:  $cs.attribute("args",  []),
         async: $cs.attribute("async", false),
 

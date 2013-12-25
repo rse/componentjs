@@ -123,7 +123,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
 
     /*  remember user-supplied constructor function
         (and provide fallback implementation)  */
-    var cons = $cs.nop;
+    var cons = _cs.nop;
     if (_cs.isdefined(params.cons))
         cons = params.cons;
     else if (_cs.isdefined(params.extend))

@@ -8,7 +8,7 @@
 */
 
 /*  utility function: no operation (for passing as dummy callback)  */
-$cs.nop = function () {};
+_cs.nop = function () {};
 
 /*  utility function: annotate an object  */
 _cs.annotation = function (obj, name, value) {

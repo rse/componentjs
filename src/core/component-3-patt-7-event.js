@@ -147,7 +147,7 @@ $cs.pattern.eventing = $cs.trait({
             var ev = $cs.event({
                 name:   params.name,
                 spec:   params.spec,
-                target: $cs.nop
+                target: _cs.nop
             });
 
             /*  find and return all matching subscriptions  */
@@ -175,7 +175,7 @@ $cs.pattern.eventing = $cs.trait({
                 capturing:    {             def: true            },
                 spreading:    {             def: false           },
                 bubbling:     {             def: true            },
-                completed:    {             def: $cs.nop         },
+                completed:    {             def: _cs.nop         },
                 resultinit:   {             def: undefined       },
                 resultstep:   {             def: function (a, b) { return b; } },
                 directresult: {             def: false           },
