@@ -179,7 +179,7 @@ $cs.pattern.model = $cs.trait({
                     value_old = undefined;
             }
             else if (params.operation[0] === "get") {
-                if (owner.property({ name: "ComponentJS:model:subscribers:get", bubbling: false }) === true) {
+                if (owner.property({ name: "ComponentJS:model:subscribers:get", def: 0, bubbling: false }) > 0) {
                     /*  send event to observers for value get and allow observers
                         to reject value get operation and/or change old value to get  */
                     ev = owner.publish({
@@ -230,7 +230,7 @@ $cs.pattern.model = $cs.trait({
                 /*  send event to observers for value set/splice operation and allow observers
                     to reject value set operation and/or change new value to set  */
                 var cont = true;
-                if (owner.property({ name: "ComponentJS:model:subscribers:" + params.operation[0], bubbling: false }) === true) {
+                if (owner.property({ name: "ComponentJS:model:subscribers:" + params.operation[0], def: 0, bubbling: false }) > 0) {
                     ev = owner.publish({
                         name:      "ComponentJS:model:" + pathName + ":" + params.operation[0],
                         args:      [ value_new, value_old, params.operation, pathName ],
@@ -295,7 +295,7 @@ $cs.pattern.model = $cs.trait({
                     }
 
                     /*  send event to observers after value finally changed  */
-                    if (owner.property({ name: "ComponentJS:model:subscribers:changed", bubbling: false }) === true) {
+                    if (owner.property({ name: "ComponentJS:model:subscribers:changed", def: 0, bubbling: false }) > 0) {
                         owner.publish({
                             name:      "ComponentJS:model:" + pathName + ":changed",
                             args:      [ value_new, value_old, params.operation, pathName ],
@@ -375,7 +375,10 @@ $cs.pattern.model = $cs.trait({
 
             /*  mark component for having subscribers of operation
                 (for performance optimization reasons)  */
-            owner.property("ComponentJS:model:subscribers:" + params.operation, true);
+            var key = "ComponentJS:model:subscribers:" + params.operation;
+            var subscribers = owner.property({ name: key, def: 0 });
+            subscribers += 1;
+            owner.property({ name: key, value: subscribers });
 
             /*  optionally spool reverse operation  */
             if (params.spool !== null) {
@@ -401,19 +404,26 @@ $cs.pattern.model = $cs.trait({
                 as we want to unsubscribe the change event there only  */
             var owner = null;
             var comp = this;
+            var subscription;
             while (comp !== null) {
                 owner = comp.property({ name: "ComponentJS:model", returnowner: true });
                 if (!_cs.isdefined(owner))
                     throw _cs.exception("unobserve", "no model subscription found");
-                if (owner.subscription(params.id))
+                if ((subscription = owner._subscription(params.id, true)) !== undefined)
                     break;
                 comp = owner.parent();
             }
             if (comp === null)
                 throw _cs.exception("unobserve", "no model subscription found");
 
-            /*  subscribe to model value change event  */
+            /*  unsubscribe from model value change event  */
             owner.unsubscribe(params.id);
+
+            /*  unmark component for having subscribers of operation  */
+            var key = "ComponentJS:model:subscribers:" + subscription.operation;
+            var subscribers = owner.property({ name: key, def: 0 });
+            subscribers = subscribers > 0 ? subscribers - 1 : null;
+            owner.property({ name: key, value: subscribers });
         }
     }
 });
