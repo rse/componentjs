@@ -118,11 +118,12 @@ that component backing objects are defined by C<cs.clazz>!
   ComponentJS.M<attribute>(P<name>: T<String>, P<def>: T<Object>, P<valid>: T<Object>): T<Function>
 
   Create a cloneable attribute capturing getter/setter function with name P<name> (for exception
-  handling reasons only), the default value P<def> and the value validation P<validate>.
+  handling reasons only), the default value P<def> and the value validation P<valid>.
 
   | var id = ComponentJS.attribute("id", "foo", /^[a-z][a-zA-Z0-9_]*/);
   | id() === "foo"
-  | id("bar") -> "foo"; id() -> "bar"
+  | id("bar") -> "foo"
+  | id() -> "bar"
 
 - ComponentJS.M<clazz>({
         [F<name>:        T<String>,]
