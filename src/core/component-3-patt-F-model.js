@@ -121,13 +121,13 @@ $cs.pattern.model = $cs.trait({
             /*  parse the value name into selection path segments  */
             var path = _cs.select_parse(params.name);
 
-            /*  create new name out of the canonicalized path segments  */
+            /*  create new canonical name out of the parsed path segments  */
             var pathName = path.join(".");
 
             /*  determine component owning model with requested value  */
             var owner = null;
             var model = null;
-            var comp = this;
+            var comp  = this;
             while (comp !== null) {
                 owner = comp.property({ name: "ComponentJS:model", returnowner: true });
                 if (!_cs.isdefined(owner))
@@ -346,7 +346,7 @@ $cs.pattern.model = $cs.trait({
                 as we want to subscribe the change event there only  */
             var owner = null;
             var model = null;
-            var comp = this;
+            var comp  = this;
             while (comp !== null) {
                 owner = comp.property({ name: "ComponentJS:model", returnowner: true });
                 if (!_cs.isdefined(owner))
@@ -359,12 +359,14 @@ $cs.pattern.model = $cs.trait({
             if (comp === null)
                 throw _cs.exception("observe", "no model found containing value \"" + path[0] + "\"");
 
-            /*  subscribe to model value change event  */
+            /*  support wildcard matching and always match childs  */
             var name = path.join(".")
                 .replace(/\./g, "\\.")
                 .replace(/\*\*/g, ".+?")
                 .replace(/\*/g, "[^.]+");
             name += "(?:\\.[^.]+)*";
+
+            /*  subscribe to model value change event  */
             var id = owner.subscribe({
                 name:      new RegExp("ComponentJS:model:" + name + ":" + params.operation),
                 capturing: false,
