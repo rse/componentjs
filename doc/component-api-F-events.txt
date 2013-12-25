@@ -96,13 +96,6 @@ they provide various getter/setter methods:
 
   | cs(this).unsubscribe(id)
 
-- O<component>.M<subscription>({ F<id>: T<Number> }): T<Boolean>;
-  O<component>.M<subscription>(P<id>: T<Number>): T<Boolean>
-
-  Checks whether the subscription identified by F<id> exists on O<component>.
-
-  | cs(this).subscription(id)
-
 - O<component>.M<publish>({
       F<name>: T<String>,
       [F<spec>: T<Object> = C<{}>,]

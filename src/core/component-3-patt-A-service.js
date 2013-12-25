@@ -73,17 +73,6 @@ $cs.pattern.service = $cs.trait({
             return id;
         },
 
-        /*  determine registration existence  */
-        registration: function () {
-            /*  determine parameters  */
-            var params = $cs.params("registration", arguments, {
-                id: { pos: 0, req: true }
-            });
-
-            /*  determine whether registration exists  */
-            return this.subscription(params.id);
-        },
-
         /*  unregister a service  */
         unregister: function () {
             /*  determine parameters  */

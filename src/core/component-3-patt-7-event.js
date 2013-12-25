@@ -118,20 +118,27 @@ $cs.pattern.eventing = $cs.trait({
         },
 
         /*  determine subscription existence  */
-        subscription: function () {
+        _subscription: function () {
             /*  determine parameters  */
-            var params = $cs.params("subscription", arguments, {
-                id: { pos: 0, req: true }
+            var params = $cs.params("_subscription", arguments, {
+                id:      { pos: 0, req: true  },
+                details: { pos: 1, def: false }
             });
 
             /*  determine whether subscription exists  */
-            return (typeof this.__subscription[params.id] !== "undefined");
+            var result = (typeof this.__subscription[params.id] !== "undefined");
+
+            /*  optionally provide details about subscription  */
+            if (params.details)
+                result = (result ? this.__subscription[params.id] : undefined);
+
+            return result;
         },
 
         /*  determine subscriptions (internal)  */
         _subscriptions: function () {
             /*  determine parameters  */
-            var params = $cs.params("subscriptions", arguments, {
+            var params = $cs.params("_subscriptions", arguments, {
                 name:  { pos: 0, req: true },
                 spec:  { pos: 1, def: {}   }
             });

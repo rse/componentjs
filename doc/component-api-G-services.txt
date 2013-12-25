@@ -57,13 +57,6 @@ the functionality consumer does M<call>() the service.
 
   | cs(this).unregister(id)
 
-- O<component>.M<registration>({ F<id>: T<Number> }): T<Boolean>;
-  O<component>.M<registration>(P<id>: T<Number>): T<Boolean>
-
-  Checks whether the registration identified by F<id> exists on O<component>.
-
-  | cs(this).registration(id)
-
 - O<component>.M<callable>({ F<name>: T<String>[, F<value>: T<Boolean>] }): T<Boolean>;
   O<component>.M<callable>(P<name>: T<String>[, P<value>: T<Boolean>]): T<Boolean>
 

@@ -28,6 +28,13 @@
     o Added "def" (default value) option to method property()
       to simplify application code.
 
+    o Removed API methods "subscription" and "registration" as they
+      are effectively useless for application code and only useful
+      for ComponentJS internals. They should never have been used
+      in any application, as it is not necessary to remember a
+      subscription/registration id and to explicitly check whether it is
+      still active.
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
