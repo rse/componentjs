@@ -17,38 +17,27 @@ $cs.attribute = function () {
     });
 
     /*  return closure-based getter/setter method  */
-    return _cs.proxy({ value: params.def }, function (value_new, validate_only) {
+    return _cs.proxy({ value: params.def }, function (value_new) {
         /*  remember old value  */
         var value_old = this.value;
 
         /*  act on new value if given  */
         if (arguments.length > 0) {
             /*  check whether new value is valid  */
-            var is_valid = true;
             if (typeof params.valid !== "undefined")
-                is_valid = $cs.validate(value_new, params.valid);
+                if (!$cs.validate(value_new, params.valid))
+                    throw _cs.exception("attribute",
+                        "invalid value \"" + value_new + "\" " +
+                        "for attribute \"" + params.name + "\"");
 
-            /*  either return validation result...  */
-            if (typeof validate_only !== "undefined" && validate_only)
-                return is_valid;
+            /*  set new value  */
+            this.value = value_new;
 
-            /*  ...or set new valid value...  */
-            else if (is_valid) {
-                /*  set new value  */
-                this.value = value_new;
-
-                /*  optionally notify observers  */
-                var obj = this.__this__;
-                if (   typeof obj !== "undefined"
-                    && typeof obj.notify === "function")
-                    obj.notify.call(obj, "attribute:set:" + params.name, value_new, value_old, params.name);
-            }
-
-            /*  ...or throw an exception  */
-            else
-                throw _cs.exception("attribute",
-                    "invalid value \"" + value_new + "\" " +
-                    "for attribute \"" + params.name + "\"");
+            /*  optionally notify observers  */
+            var obj = this.__this__;
+            if (   typeof obj !== "undefined"
+                && typeof obj.notify === "function")
+                obj.notify.call(obj, "attribute:set:" + params.name, value_new, value_old, params.name);
         }
 
         /*  return old value  */
