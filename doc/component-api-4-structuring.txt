@@ -67,7 +67,8 @@ that component backing objects are defined by C<cs.clazz>!
   + alt       + ::= + "C<(>" spec ("C<|>" spec)* "C<)>"
   + hash      + ::= + "C<{>" (key arity? "C<:>" spec ("C<,>" key arity? "C<:>" spec)*)? "C<}>"
   + array     + ::= + "C<[>" (spec arity? ("C<,>" spec arity?)*)? "C<]>"
-  + arity     + ::= + "C<?>" | "C<*>" | "C<+>"
+  + arity     + ::= + "C<?>" | "C<*>" | "C<+>" | "C<{>" number "C<,>" (number | "C<oo>") "C<}>"
+  + number    + ::= + /C<^[0-9]+$>/
   + key       + ::= + /C<^[_a-zA-Z$][_a-zA-Z$0-9]*$>/
   + any       + ::= + "C<any>"
   + primary   + ::= + /C<^(?:null|undefined|boolean|number|string|function|object)$>/
