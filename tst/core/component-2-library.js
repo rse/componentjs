@@ -7,8 +7,8 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-describe("ComponentJS Library Management:", function () {
-    describe("bootstrap & shutdown:", function () {
+describe("ComponentJS Library Management", function () {
+    describe("bootstrap() & shutdown()", function () {
         it("need to be called as pairs", function () {
             cs.bootstrap()
             cs.shutdown()
@@ -17,11 +17,14 @@ describe("ComponentJS Library Management:", function () {
             cs.bootstrap()
         })
     })
-    describe("plugin:", function () {
-        it("allows a plugin to access the internal API", function () {
+    describe("plugin()", function () {
+        it("allows a plugin to access the internal and external API", function () {
             cs.plugin("test", function (_cs, $cs, GLOBAL) {
+                expect(_cs).to.be.a("function")
+                expect(_cs.exception).to.be.a("function")
                 expect($cs).to.be.equal(cs)
-            });
+                expect(GLOBAL).to.be.equal(global)
+            })
         })
     })
 })
