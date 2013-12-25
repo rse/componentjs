@@ -7,7 +7,7 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-describe("ComponentJS Application Structuring", function () {
+describe("ComponentJS Application Structuring: Namespaces", function () {
     describe("ns()", function () {
         it("should create namespaces", function () {
             cs.ns("foo.bar.quux")

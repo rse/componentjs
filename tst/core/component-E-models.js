@@ -21,8 +21,8 @@ describe("ComponentJS Models", function () {
                 create: function () {
                     cs(this).model({
                         "bar": { value: "TheBarValue", valid: "string" },
-                        "obj": { value: { a: [ "a1" ], b: [ "b1" ], c: {} }, 
-                                 valid: "{ a: [ string* ], b: [ string* ], " + 
+                        "obj": { value: { a: [ "a1" ], b: [ "b1" ], c: {} },
+                                 valid: "{ a: [ string* ], b: [ string* ], " +
                                         "  c: { c1?: string, c2?: string } }" }
                     })
                 }
@@ -45,7 +45,7 @@ describe("ComponentJS Models", function () {
     describe("observe() & value()", function () {
         it("should support scalar values", function (done) {
             var id = cs("//quux").observe({
-                name: "obj.a[0]", 
+                name: "obj.a[0]",
                 func: function (ev, vnew, vold, op, path) {
                     expect(vnew).to.be.equal("a2")
                     expect(vold).to.be.equal("a1")
@@ -58,7 +58,7 @@ describe("ComponentJS Models", function () {
         })
         it("should support collection values (push only)", function (done) {
             var id = cs("//quux").observe({
-                name: "obj.a", 
+                name: "obj.a",
                 op: "splice",
                 func: function (ev, vnew, vold, op, path) {
                     expect(vnew).to.be.equal("a3")

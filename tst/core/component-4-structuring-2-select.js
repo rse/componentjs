@@ -7,30 +7,31 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-describe("ComponentJS Object Selection:", function () {
-    var obj = {
-        foo: { 
-            bar: { 
-                baz: [ 7, "foo", 42, "bar", "quux" ],
-                quux: 42 
+describe("ComponentJS Application Structuring: Value Selection", function () {
+    describe("select()", function () {
+        var obj = {
+            foo: {
+                bar: {
+                    baz: [ 7, "foo", 42, "bar", "quux" ],
+                    quux: 42
+                }
             }
-        } 
-    };
-    it("select() should correctly get value", function () {
-        expect(cs.select(obj, "")).to.be.equal(obj);
-        expect(cs.select(obj, "   ")).to.be.equal(obj);
-        expect(cs.select(obj, "foo")).to.be.equal(obj.foo);
-        expect(cs.select(obj, "foo.bar")).to.be.equal(obj.foo.bar);
-        expect(cs.select(obj, "foo.bar.baz[0]")).to.be.equal(obj.foo.bar.baz[0]);
-        expect(cs.select(obj, "foo.bar.baz[4]")).to.be.equal(obj.foo.bar.baz[4]);
-        expect(cs.select(obj, "foo['bar'].baz[4]")).to.be.equal(obj.foo.bar.baz[4]);
-        expect(cs.select(obj, "['foo']['bar'][\"baz\"]['4']")).to.be.equal(obj.foo.bar.baz[4]);
-        expect(cs.select(obj, " [ 'foo' ] [ 'bar'] [ \"baz\" ][ '4' ] ")).to.be.equal(obj.foo.bar.baz[4]);
-    });
-    it("select() should correctly set value", function () {
-        var old = obj.foo.bar.baz;
-        expect(cs.select(obj, "foo.bar.baz", { marker: 42 })).to.be.equal(old);
-        expect(obj).to.be.like({ foo: { bar: { baz: { marker: 42 }, quux: 42 }}});
+        };
+        it("should correctly get value", function () {
+            expect(cs.select(obj, "")).to.be.equal(obj);
+            expect(cs.select(obj, "   ")).to.be.equal(obj);
+            expect(cs.select(obj, "foo")).to.be.equal(obj.foo);
+            expect(cs.select(obj, "foo.bar")).to.be.equal(obj.foo.bar);
+            expect(cs.select(obj, "foo.bar.baz[0]")).to.be.equal(obj.foo.bar.baz[0]);
+            expect(cs.select(obj, "foo.bar.baz[4]")).to.be.equal(obj.foo.bar.baz[4]);
+            expect(cs.select(obj, "foo['bar'].baz[4]")).to.be.equal(obj.foo.bar.baz[4]);
+            expect(cs.select(obj, "['foo']['bar'][\"baz\"]['4']")).to.be.equal(obj.foo.bar.baz[4]);
+            expect(cs.select(obj, " [ 'foo' ] [ 'bar'] [ \"baz\" ][ '4' ] ")).to.be.equal(obj.foo.bar.baz[4]);
+        });
+        it("should correctly set value", function () {
+            var old = obj.foo.bar.baz;
+            expect(cs.select(obj, "foo.bar.baz", { marker: 42 })).to.be.equal(old);
+            expect(obj).to.be.like({ foo: { bar: { baz: { marker: 42 }, quux: 42 }}});
+        });
     });
 });
-

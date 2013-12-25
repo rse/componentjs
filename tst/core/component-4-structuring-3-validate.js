@@ -7,7 +7,7 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-describe("ComponentJS Value Validation", function () {
+describe("ComponentJS Application Structuring: Value Validation", function () {
     describe("validate()", function () {
         it("should validate stand-alone null/undefined", function () {
             expect(cs.validate(null, "null")).to.be.true
