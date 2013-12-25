@@ -154,7 +154,7 @@ that component backing objects are defined by C<cs.clazz>!
   |     protos: {
   |         bar: function (value_new) {
   |             var value_old = this._bar;
-  |             if (typeof value_new !=== "undefined")
+  |             if (typeof value_new !== "undefined")
   |                 this._bar = value_new;
   |             return value_old;
   |         }
