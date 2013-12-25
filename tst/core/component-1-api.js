@@ -7,18 +7,19 @@
 **  file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-describe("ComponentJS API Management:", function () {
-    describe("symbol:", function () {
+describe("ComponentJS API Management", function () {
+    describe("symbol()", function () {
         it("cannot be tested in Node's CommonJS environment", function () {
             /*  cannot be tested  */
         })
     })
-    describe("version:", function () {
+    describe("version()", function () {
         it("should return reasonable structure", function () {
-            expect( ComponentJS.version.major ).to.be.a("number")
-            expect( ComponentJS.version.minor ).to.be.a("number")
-            expect( ComponentJS.version.micro ).to.be.a("number")
-            expect( ComponentJS.version.date  ).to.be.a("number")
+            expect(ComponentJS.version).to.have.keys([ "major", "minor", "micro", "date" ])
+            expect(ComponentJS.version.major).to.be.a("number").least(0)
+            expect(ComponentJS.version.minor).to.be.a("number").least(0)
+            expect(ComponentJS.version.micro).to.be.a("number").least(0)
+            expect(ComponentJS.version.date ).to.be.a("number").least(19700101)
         })
     })
 })
