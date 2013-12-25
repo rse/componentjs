@@ -61,6 +61,7 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
             expect(foo.sentinel).to.be.like(sentinel)
             expect(foo.sentinel).to.be.not.equal(sentinel)
             expect(foo.quux()).to.be.equal("quux")
+            /*  FIXME: also test .base() functionality  */
         })
     })
 })
