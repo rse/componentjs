@@ -13,22 +13,28 @@
     Major changes between ComponentJS 1.0.1 and 1.1.0
     -------------------------------------------------
 
-    o Major Build Environment Refactoring: switched from plain Unix
+    o IMPROVEMENT:
+      Major Build Environment Refactoring: switched from plain Unix
       make(1) to Grunt.
 
-    o Added (API exposed) utility select() method for selecting values
+    o ADDITION:
+      Added (API exposed) utility select() method for selecting values
       from arbitrary structured object graphs.
 
-    o Added support for validating a value against a subset of the type
+    o ADDITION:
+      Added support for validating a value against a subset of the type
       specification.
 
-    o Added support for manipulating and observing arbitrary structured
+    o ADDITION:
+      Added support for manipulating and observing arbitrary structured
       model values.
 
-    o Added "def" (default value) option to method property()
+    o ADDITION:
+      Added "def" (default value) option to method property()
       to simplify application code.
 
-    o Removed API methods "subscription" and "registration" as they
+    o INCOMPATIBILITY:
+      Removed API methods "subscription" and "registration" as they
       are effectively useless for application code and only useful
       for ComponentJS internals. They should never have been used
       in any application, as it is not necessary to remember a
@@ -38,104 +44,133 @@
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
-    o add an "enabled" state on top of visible for those
+    o ADDITION:
+      add an "enabled" state on top of visible for those
       situations where we want to show a UI but still keep it disabled.
 
-    o correctly tear down the component tree in shutdown()
+    o BUGFIX:
+      correctly tear down the component tree in shutdown()
       as the root component cannot be directly destroyed.
 
-    o fix syntax of TypeScript type definition file "component.d.ts".
+    o BUGFIX:
+      fix syntax of TypeScript type definition file "component.d.ts".
 
-    o document "clazz" behavior better in the API documentation.
+    o IMPROVEMENT:
+      document "clazz" behavior better in the API documentation.
 
     Major changes between ComponentJS 0.9.9 and 1.0.0
     -------------------------------------------------
 
-    o Removed the "async" option on register() as it never worked
+    o INCOMPATIBILITY:
+      Removed the "async" option on register() as it never worked
       and was a wrong design idea anyway.
 
-    o On publishing events the "spreading" option no longer defaults to
+    o INCOMPATIBILITY:
+      On publishing events the "spreading" option no longer defaults to
       "true" in order to improve performance in standard cases.
 
-    o Improve build process: provide a "stage0" target which does not
+    o IMPROVEMENT:
+      Improve build process: provide a "stage0" target which does not
       need any special tools beside "perl" and "shtool" in order to allow
       developers under Windows to participate more easily.
 
-    o Added "targeting" (boolean) option to plug() / unplug() and this
+    o ADDITION:
+      Added "targeting" (boolean) option to plug() / unplug() and this
       way indirectly fix the semantic of link() in case a target should
       link onto itself.
 
-    o Added "scope" (string) option to property() to allow a more
+    o ADDITION:
+      Added "scope" (string) option to property() to allow a more
       convenient way to scope a property instead of the special
       "name@scope" syntax of the "name" option.
 
-    o In the debugger, prepend log messages instead of appending them
+    o INCOMPATIBILITY:
+      In the debugger, prepend log messages instead of appending them
       as this is a lot more convenient during debugging.
 
-    o Added necessary hooks for companion project "componentjs-tracing",
+    o IMPROVEMENT:
+      Added necessary hooks for companion project "componentjs-tracing",
       to allow easier instrumentation of ComponentJS based applications.
 
-    o Improved and updated TypeScript definition for newer TypeScript
+    o IMPROVEMENT:
+      Improved and updated TypeScript definition for newer TypeScript
       0.9 world order (where "bool" is not "boolean", etc).
 
-    o Skip not-enumerable fields and the special fields "constructor"
+    o BUGFIX:
+      Skip not-enumerable fields and the special fields "constructor"
       and "prototype" on object/hash validation.
 
-    o Fixed internal cloning of Array objects (which is
+    o BUGFIX:
+      Fixed internal cloning of Array objects (which is
       used for the "dynamics" part of cs.clazz!).
 
-    o Improve the internal JSON encoder to more correctly detect cycles.
+    o IMPROVEMENT:
+      Improve the internal JSON encoder to more correctly detect cycles.
 
-    o Allow also "null" as an identifier to validate against the special
+    o INCOMPATIBILITY:
+      Allow also "null" as an identifier to validate against the special
       Object null.
 
-    o Allow application to still enforce standard sockets by skipping
+    o INCOMPATIBILITY:
+      Allow application to still enforce standard sockets by skipping
       the jQuery/ExtJS inference if no 'type' parameter is given.
 
     Major changes between ComponentJS 0.9.8 and 0.9.9
     -------------------------------------------------
 
-    o Switch code-base to latest JSHint.
+    o IMPROVEMENT:
+      Switch code-base to latest JSHint.
 
-    o Improve API documentation.
+    o IMPROVEMENT:
+      Improve API documentation.
 
-    o Reduced the external build-time dependencies.
+    o IMPROVEMENT:
+      Reduced the external build-time dependencies.
 
-    o Bugfix cs.params() function and add additional hook
+    o BUGFIX:
+      Bugfix cs.params() function and add additional hook
       for plugins to cs.params().
 
-    o Provide "this.result" (the current aggregated result)
+    o ADDITION:
+      Provide "this.result" (the current aggregated result)
       and "this.hooks" (the total number of registered hooks)
       to the internal hooking mechanism to allow plugins to
       leverage from more information.
 
-    o Reduce the number of redundant internal annotation calls
+    o IMPROVEMENT:
+      Reduce the number of redundant internal annotation calls
       in the central clazz/trait mechanism.
 
-    o Cleanup all internal "cs.params()" usages by using either
+    o BUGFIX:
+      Cleanup all internal "cs.params()" usages by using either
       "req" or "def" but never both in parallel (as it makes no sense).
 
-    o Allow all "spool" parameters to use the syntax
+    o ADDITION:
+      Allow all "spool" parameters to use the syntax
       "<comp-path>:<spool-name>" in addition to the standard
       "<spool-name>" in order to use the spool of component, addressed
       via the relative path "<comp-path>".
 
-    o Sockets created with socket()/link() can be no destroyed
+    o BUGFIX:
+      Sockets created with socket()/link() can be not destroyed
       with unsocket()/unlink()
 
     Major changes between ComponentJS 0.9.7 and 0.9.8
     -------------------------------------------------
 
-    o Improved Debugger plugin: the components in the component tree
+    o IMPROVEMENT:
+      Improved Debugger plugin: the components in the component tree
       view are now clickable. Once clicked details about the component
       are displayed in the new infobox view which overlays the console
       view. Additionally, the component tree view now provides a zoom
       and scroll functionality in order to allow you to display large
       component trees in a reasonable way, too.
 
-    o Modularized the debugger plugin sources.
+    o IMPROVEMENT:
+      Modularized the debugger plugin sources.
 
-    o The localStorage persistence functionality of models is now
+    o INCOMPATIBILITY:
+      The localStorage persistence functionality of models is now
       in a dedicated plugin (component.plugin.localstorage.js) because
       the localStorage functionality is not available everywhere
       (e.g. not in NodeJS head-less testing situations, etc).
@@ -143,28 +178,33 @@
     Major changes between ComponentJS 0.9.6 and 0.9.7
     -------------------------------------------------
 
-    o Fixed internal "clazz" parameter validation.
+    o BUGIX:
+      Fixed internal "clazz" parameter validation.
 
     Major changes between ComponentJS 0.9.5 and 0.9.6
     -------------------------------------------------
 
-    o Improved Debugger plugin: the status bar is now grabbable
+    o IMPROVEMENT:
+      Improved Debugger plugin: the status bar is now grabbable
       to allow you to more precisely control the size of the component
       tree visual display. The background of the visual display, header
       and status bar are now gradient based. Active state transition
       guards are now indicated by partially-overlayed red light bulps
       (rendered only if guards are not at level 0).
 
-    o <component>.subscribe({ origin: true, ... }) functionality was
+    o INCOMPATIBILITY:
+      <component>.subscribe({ origin: true, ... }) functionality was
       removed as the Event object on callbacks has the origin via its
       <ev>.target() method.
 
-    o fixed "exclusive" subcription handling.
+    o BUGFIX:
+      fixed "exclusive" subcription handling.
 
     Major changes between ComponentJS 0.9.4 and 0.9.5
     -------------------------------------------------
 
-    o Replaced the object validation mechanism of cs.params() and
+    o INCOMPATIBILITY:
+      Replaced the object validation mechanism of cs.params() and
       cs.model() with a full-blown DSL-based implementation. The most
       notably changes are that a "null" value now matches the type
       "object". Upgrade your source: "array(foo)" is now "[foo*]"
@@ -172,36 +212,44 @@
     Major changes between ComponentJS 0.9.3 and 0.9.4
     -------------------------------------------------
 
-    o The 4th argument (DOCUMENT) for ComponentJS.plugin() is now gone.
+    o INCOMPATIBILITY:
+      The 4th argument (DOCUMENT) for ComponentJS.plugin() is now gone.
       Plugins should not need it anyway.
 
-    o Additional internal hooks are provided for plugins.
+    o ADDITION:
+      Additional internal hooks are provided for plugins.
 
-    o Model default values are initially validated, too.
+    o INCOMPATIBILITY:
+      Model default values are initially validated, too.
 
-    o The <script data-symbol="<name>" [...]> functionalit
+    o INCOMPATIBILITY:
+      The <script data-symbol="<name>" [...]> functionality
       was removed as it conflicts with the plugin mechanism.
 
     Major changes between ComponentJS 0.9.2 and 0.9.3
     -------------------------------------------------
 
-    o Refactored out the debugger into its own plugin.
+    o INCOMPATIBILITY:
+      Refactored out the debugger into its own plugin.
 
     Major changes between ComponentJS 0.9.1 and 0.9.2
     -------------------------------------------------
 
-    o Added back support for Internet Explorer 8 where a field
+    o BUGFIX:
+      Added back support for Internet Explorer 8 where a field
       cannot be named "constructor". The cs.clazz/cs.trait field
       is now named "cons".
 
-    o Added an additional "configured" state which can be used
+    o ADDITION:
+      Added an additional "configured" state which can be used
       to configure subscribe/register/observe/latch operations
       while "prepare" is still intended for loading data.
 
     Major changes between ComponentJS 0.9.0 and 0.9.1
     -------------------------------------------------
 
-    o Implemented an internal hooking and plugin mechanism and
+    o ADDITION:
+      Implemented an internal hooking and plugin mechanism and
       provided two convenient plugins for jQuery and Ext socket support.
 
     Major changes between ComponentJS 0.0.0 and 0.9.0
