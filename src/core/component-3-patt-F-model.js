@@ -101,21 +101,21 @@ $cs.pattern.model = $cs.trait({
                 name:        { pos: 0, req: true      },
                 value:       { pos: 1, def: undefined },
                 force:       { pos: 2, def: false     },
-                operation:   {         def: []        },
+                op:          {         def: []        },
                 returnowner: {         def: false     }
             });
 
             /*  determine operation  */
-            if (typeof params.operation === "string")
-                params.operation = [ params.operation ];
-            if (params.operation.length === 0)
-                params.operation = (_cs.isdefined(params.value) ? [ "set" ] : [ "get" ]);
-            else if (!params.operation[0].match(/^(?:get|set|splice|delete|push|pop|shift|unshift)$/))
-                throw _cs.exception("value", "invalid operation \"" + params.operation[0] + "\"");
-            if (   params.operation[0] === "splice"
-                && (   params.operation.length !== 3
-                    || typeof params.operation[1] !== "number"
-                    || typeof params.operation[2] !== "number"))
+            if (typeof params.op === "string")
+                params.op = [ params.op ];
+            if (params.op.length === 0)
+                params.op = (_cs.isdefined(params.value) ? [ "set" ] : [ "get" ]);
+            else if (!params.op[0].match(/^(?:get|set|splice|delete|push|pop|shift|unshift)$/))
+                throw _cs.exception("value", "invalid operation \"" + params.op[0] + "\"");
+            if (   params.op[0] === "splice"
+                && (   params.op.length !== 3
+                    || typeof params.op[1] !== "number"
+                    || typeof params.op[2] !== "number"))
                 throw _cs.exception("value", "invalid arguments for operation \"splice\"");
 
             /*  parse the value name into selection path segments  */
@@ -145,21 +145,21 @@ $cs.pattern.model = $cs.trait({
 
             /*  translate special-case array operations to splice operation  */
             var obj;
-            switch (params.operation[0]) {
+            switch (params.op[0]) {
                 case "unshift":
-                    params.operation = [ "splice", 0, 0 ];
+                    params.op = [ "splice", 0, 0 ];
                     break;
                 case "shift":
-                    params.operation = [ "splice", 0, 1 ];
+                    params.op = [ "splice", 0, 1 ];
                     value_new = undefined;
                     break;
                 case "push":
                     obj = $cs.select(model[path[0]].value, path.slice(1));
-                    params.operation = [ "splice", obj.length, 0 ];
+                    params.op = [ "splice", obj.length, 0 ];
                     break;
                 case "pop":
                     obj = $cs.select(model[path[0]].value, path.slice(1));
-                    params.operation = [ "splice", obj.length - 1, 1 ];
+                    params.op = [ "splice", obj.length - 1, 1 ];
                     value_new = undefined;
                     break;
             }
@@ -170,21 +170,21 @@ $cs.pattern.model = $cs.trait({
             var value_old = model[path[0]].value;
             if (path.length > 1)
                 value_old = $cs.select(value_old, path.slice(1));
-            if (params.operation[0] === "splice") {
+            if (params.op[0] === "splice") {
                 /*  splice operation is on collection itself,
                     so pick the target collection element!  */
-                if (params.operation[2] > 0)
-                    value_old = $cs.select(value_old, "" + params.operation[1]);
+                if (params.op[2] > 0)
+                    value_old = $cs.select(value_old, "" + params.op[1]);
                 else
                     value_old = undefined;
             }
-            else if (params.operation[0] === "get") {
+            else if (params.op[0] === "get") {
                 if (owner.property({ name: "ComponentJS:model:subscribers:get", def: 0, bubbling: false }) > 0) {
                     /*  send event to observers for value get and allow observers
                         to reject value get operation and/or change old value to get  */
                     ev = owner.publish({
-                        name:      "ComponentJS:model:" + pathName + ":" + params.operation[0],
-                        args:      [ value_old, value_old, params.operation, pathName ],
+                        name:      "ComponentJS:model:" + pathName + ":" + params.op[0],
+                        args:      [ value_old, value_old, params.op, pathName ],
                         capturing: false,
                         spreading: false,
                         bubbling:  false,
@@ -206,17 +206,17 @@ $cs.pattern.model = $cs.trait({
             }
 
             /*  optionally set/delete/splice new model value  */
-            if (   (   params.operation[0] === "set"
+            if (   (   params.op[0] === "set"
                     && (params.force || value_old !== value_new))
-                || params.operation[0] === "delete"
-                || params.operation[0] === "splice"              ) {
+                || params.op[0] === "delete"
+                || params.op[0] === "splice"              ) {
 
                 /*  check validity of new value  */
-                if (   params.operation[0] === "set"
-                    || (   params.operation[0] === "splice"
+                if (   params.op[0] === "set"
+                    || (   params.op[0] === "splice"
                         && value_new !== undefined)        ) {
                     var subPath = (
-                          params.operation[0] === "splice"
+                          params.op[0] === "splice"
                         ? path.slice(1).concat([ "0" ])
                         : path.slice(1)
                     );
@@ -230,10 +230,10 @@ $cs.pattern.model = $cs.trait({
                 /*  send event to observers for value set/splice operation and allow observers
                     to reject value set operation and/or change new value to set  */
                 var cont = true;
-                if (owner.property({ name: "ComponentJS:model:subscribers:" + params.operation[0], def: 0, bubbling: false }) > 0) {
+                if (owner.property({ name: "ComponentJS:model:subscribers:" + params.op[0], def: 0, bubbling: false }) > 0) {
                     ev = owner.publish({
-                        name:      "ComponentJS:model:" + pathName + ":" + params.operation[0],
-                        args:      [ value_new, value_old, params.operation, pathName ],
+                        name:      "ComponentJS:model:" + pathName + ":" + params.op[0],
+                        args:      [ value_new, value_old, params.op, pathName ],
                         capturing: false,
                         spreading: false,
                         bubbling:  false,
@@ -250,14 +250,14 @@ $cs.pattern.model = $cs.trait({
                 }
                 if (cont && !model[path[0]].autoreset) {
                     /*  perform destructive operation on model  */
-                    if (params.operation[0] === "set") {
+                    if (params.op[0] === "set") {
                         /*  set value in model  */
                         if (path.length > 1)
                             $cs.select(model[path[0]].value, path.slice(1), value_new);
                         else
                             model[path[0]].value = value_new;
                     }
-                    else if (params.operation[0] === "splice") {
+                    else if (params.op[0] === "splice") {
                         /*  splice value into model  */
                         if (path.length > 1)
                             obj = $cs.select(model[path[0]].value, path.slice(1));
@@ -266,11 +266,11 @@ $cs.pattern.model = $cs.trait({
                         if (!(obj instanceof Array))
                             throw new _cs.exception("value", "cannot splice: target object is not of Array type");
                         if (typeof value_new !== "undefined")
-                            obj.splice(params.operation[1], params.operation[2], value_new);
+                            obj.splice(params.op[1], params.op[2], value_new);
                         else
-                            obj.splice(params.operation[1], params.operation[2]);
+                            obj.splice(params.op[1], params.op[2]);
                     }
-                    else if (params.operation[0] === "delete") {
+                    else if (params.op[0] === "delete") {
                         /*  delete value from model  */
                         if (path.length >= 3)
                             obj = $cs.select(model[path[0]].value, path.slice(1, path.length - 1));
@@ -298,7 +298,7 @@ $cs.pattern.model = $cs.trait({
                     if (owner.property({ name: "ComponentJS:model:subscribers:changed", def: 0, bubbling: false }) > 0) {
                         owner.publish({
                             name:      "ComponentJS:model:" + pathName + ":changed",
-                            args:      [ value_new, value_old, params.operation, pathName ],
+                            args:      [ value_new, value_old, params.op, pathName ],
                             noresult:  true,
                             capturing: false,
                             spreading: false,
@@ -335,7 +335,7 @@ $cs.pattern.model = $cs.trait({
                 name:      { pos: 0, req: true  },
                 func:      { pos: 1, req: true  },
                 touch:     {         def: false },
-                operation: {         def: "set" },
+                op:        {         def: "set" },
                 spool:     {         def: null  }
             });
 
@@ -368,7 +368,7 @@ $cs.pattern.model = $cs.trait({
 
             /*  subscribe to model value change event  */
             var id = owner.subscribe({
-                name:      new RegExp("ComponentJS:model:" + name + ":" + params.operation),
+                name:      new RegExp("ComponentJS:model:" + name + ":" + params.op),
                 capturing: false,
                 spreading: false,
                 bubbling:  false,
@@ -377,7 +377,7 @@ $cs.pattern.model = $cs.trait({
 
             /*  mark component for having subscribers of operation
                 (for performance optimization reasons)  */
-            var key = "ComponentJS:model:subscribers:" + params.operation;
+            var key = "ComponentJS:model:subscribers:" + params.op;
             var subscribers = owner.property({ name: key, def: 0 });
             subscribers += 1;
             owner.property({ name: key, value: subscribers });
@@ -422,7 +422,7 @@ $cs.pattern.model = $cs.trait({
             owner.unsubscribe(params.id);
 
             /*  unmark component for having subscribers of operation  */
-            var key = "ComponentJS:model:subscribers:" + subscription.operation;
+            var key = "ComponentJS:model:subscribers:" + subscription.op;
             var subscribers = owner.property({ name: key, def: 0 });
             subscribers = subscribers > 0 ? subscribers - 1 : null;
             owner.property({ name: key, value: subscribers });

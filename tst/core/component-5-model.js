@@ -59,7 +59,7 @@ describe("ComponentJS Models", function () {
         it("should support collection values (push only)", function (done) {
             var id = cs("//quux").observe({
                 name: "obj.a", 
-                operation: "splice",
+                op: "splice",
                 func: function (ev, vnew, vold, op, path) {
                     expect(vnew).to.be.equal("a3")
                     expect(vold).to.be.undefined
@@ -67,37 +67,37 @@ describe("ComponentJS Models", function () {
                     done()
                 }
             });
-            cs("//quux").value({ name: "obj.a", operation: "push", value: "a3" })
+            cs("//quux").value({ name: "obj.a", op: "push", value: "a3" })
             expect(cs("//quux").value("obj.a[1]")).to.be.equal("a3")
         })
         it("should support collection values (array operations)", function () {
-            cs("//quux").value({ name: "obj.a", operation: "set", value: [] })
+            cs("//quux").value({ name: "obj.a", op: "set", value: [] })
             expect(cs("//quux").value("obj.a")).to.be.like([])
 
-            cs("//quux").value({ name: "obj.a", operation: "push", value: "a1" })
+            cs("//quux").value({ name: "obj.a", op: "push", value: "a1" })
             expect(cs("//quux").value("obj.a")).to.be.like([ "a1" ])
 
-            cs("//quux").value({ name: "obj.a", operation: "unshift", value: "a0" })
+            cs("//quux").value({ name: "obj.a", op: "unshift", value: "a0" })
             expect(cs("//quux").value("obj.a")).to.be.like([ "a0", "a1" ])
 
-            cs("//quux").value({ name: "obj.a", operation: "push", value: "a2" })
+            cs("//quux").value({ name: "obj.a", op: "push", value: "a2" })
             expect(cs("//quux").value("obj.a")).to.be.like([ "a0", "a1", "a2" ])
 
-            var val = cs("//quux").value({ name: "obj.a[1]", operation: "delete" })
+            var val = cs("//quux").value({ name: "obj.a[1]", op: "delete" })
             expect(val).to.be.equal("a1");
             expect(cs("//quux").value("obj.a")).to.be.like([ "a0", "a2" ])
 
-            cs("//quux").value({ name: "obj.a", operation: [ "splice", 1, 0 ], value: "a1" })
+            cs("//quux").value({ name: "obj.a", op: [ "splice", 1, 0 ], value: "a1" })
             expect(cs("//quux").value("obj.a")).to.be.like([ "a0", "a1", "a2" ])
 
-            val = cs("//quux").value({ name: "obj.a", operation: "pop" })
+            val = cs("//quux").value({ name: "obj.a", op: "pop" })
             expect(val).to.be.equal("a2");
             expect(cs("//quux").value("obj.a")).to.be.like([ "a0", "a1" ])
 
-            cs("//quux").value({ name: "obj.a", operation: "shift" })
+            cs("//quux").value({ name: "obj.a", op: "shift" })
             expect(cs("//quux").value("obj.a")).to.be.like([ "a1" ])
 
-            cs("//quux").value({ name: "obj.a", operation: "shift" })
+            cs("//quux").value({ name: "obj.a", op: "shift" })
             expect(cs("//quux").value("obj.a")).to.be.like([])
 
             val = cs("//quux").value({ name: "obj.a[0]", value: "a0" })
@@ -115,14 +115,14 @@ describe("ComponentJS Models", function () {
             cs("//quux").value({ name: "obj.c.c2", value: "c2" })
             expect(cs("//quux").value("obj.c")).to.be.like({ c1: "c1", c2: "c2" })
 
-            cs("//quux").value({ name: "obj.c.c1", operation: "delete" })
+            cs("//quux").value({ name: "obj.c.c1", op: "delete" })
             expect(cs("//quux").value("obj.c")).to.be.like({ c2: "c2" })
         })
         it("should support observations at parent items", function (done) {
-            cs("//quux").value({ name: "obj.a", operation: "set", value: [] })
+            cs("//quux").value({ name: "obj.a", op: "set", value: [] })
             var id = cs("//quux").observe({
                 name: "obj",
-                operation: "splice",
+                op: "splice",
                 func: function (ev, vnew, vold, op, path) {
                     expect(vnew).to.be.equal("a1")
                     expect(vold).to.be.undefined
@@ -132,7 +132,7 @@ describe("ComponentJS Models", function () {
                     done()
                 }
             });
-            cs("//quux").value({ name: "obj.a", operation: "push", value: "a1" })
+            cs("//quux").value({ name: "obj.a", op: "push", value: "a1" })
         })
     })
 })

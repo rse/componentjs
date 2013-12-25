@@ -41,6 +41,11 @@
       subscription/registration id and to explicitly check whether it is
       still active.
 
+    o INCOMPATIBILITY:
+      Renamed the observe() option "operation" to just "op" as the
+      name "operation" is really too long and we want to also use
+      the more concise "op" for value(), etc.
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
