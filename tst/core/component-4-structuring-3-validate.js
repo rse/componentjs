@@ -48,6 +48,7 @@ describe("ComponentJS Application Structuring: Value Validation", function () {
             expect(cs.validate(c, "component")).to.be.true
         })
         it("should validate arrays with arities", function () {
+            expect(cs.validate([], "[ any ]")).to.be.false
             expect(cs.validate([], "[ any? ]")).to.be.true
             expect(cs.validate([], "[ any* ]")).to.be.true
             expect(cs.validate([], "[ any+ ]")).to.be.false
@@ -60,6 +61,13 @@ describe("ComponentJS Application Structuring: Value Validation", function () {
             expect(cs.validate([ 42, "foo" ], "[ any* ]")).to.be.true
             expect(cs.validate([ 42, "foo" ], "[ any+ ]")).to.be.true
             expect(cs.validate([ 42, "foo" ], "[ any{1,2} ]")).to.be.true
+        })
+        it("should validate arrays as tuples", function () {
+            expect(cs.validate([ "foo", 42, true ], "[ string, number, boolean ])")).to.be.true
+            expect(cs.validate([ "foo", 42, 7, true ], "[ string, number+, boolean ])")).to.be.true
+            expect(cs.validate([ "foo", 42, 7, true ], "[ string, number*, boolean ])")).to.be.true
+            expect(cs.validate([ "foo", 42, 7, true ], "[ string, number{1,2}, boolean ])")).to.be.true
+            expect(cs.validate([ "foo", 42, 7, 0, true ], "[ string, number{1,2}, boolean ])")).to.be.false
         })
         it("should validate hashes with arities", function () {
             expect(cs.validate({}, "{}")).to.be.true
