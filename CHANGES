@@ -58,6 +58,16 @@
       params() now validates already the default value of a parameter
       against its validation specification.
 
+    o INCOMPATIBILITY:
+      renamed the name of the only argument of model() from "model" to
+      "spec" to be in sync with the documentation. This is harmless, because
+      one usually always use the argument in positional variant only.
+
+    o IMPROVEMENT:
+      Refactored models created by model() into a read-only specification
+      and separate data. This allows forthcoming plugins to directly
+      access the model data more easily.
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 

@@ -14,7 +14,7 @@ $cs.pattern.model = $cs.trait({
         model: function () {
             /*  determine parameters  */
             var params = $cs.params("model", arguments, {
-                model: { pos: 0, def: null, valid:
+                spec: { pos: 0, req: true, valid:
                     "{ @: {" +
                     " value?: any," +
                     " valid?: (string|function|RegExp),"+
@@ -24,89 +24,73 @@ $cs.pattern.model = $cs.trait({
                 }
             });
 
-            /*  simplify further processing  */
-            var model = params.model;
-            if (model === null)
-                model = undefined;
+            /*  create new model  */
+            var model = { spec: params.spec, data: {} };
+            _cs.foreach(_cs.keysof(model.spec), function (name) {
+                var item = model.spec[name];
 
-            /*  sanity check model  */
-            var name;
-            if (_cs.isdefined(model)) {
-                for (name in model) {
-                    if (!_cs.isown(model, name))
-                        continue;
-                    if (typeof model[name].value     === "undefined") model[name].value     = "";
-                    if (typeof model[name].valid     === "undefined") model[name].valid     = "string";
-                    if (typeof model[name].autoreset === "undefined") model[name].autoreset = false;
-                    if (typeof model[name].store     === "undefined") model[name].store     = false;
-                    if (!$cs.validate(model[name].value, model[name].valid))
-                        throw _cs.exception("model", "model field \"" + name + "\" has " +
-                            "default value " + _cs.json(model[name].value) + ", which does not validate " +
-                            "against validation \"" + model[name].valid + "\"");
-                }
-            }
+                /*  provide default values for all the optional model item options  */
+                if (typeof item.value     === "undefined") item.value     = "";
+                if (typeof item.valid     === "undefined") item.valid     = "string";
+                if (typeof item.autoreset === "undefined") item.autoreset = false;
+                if (typeof item.store     === "undefined") item.store     = false;
 
-            /*  try to load stored model values  */
+                /*  sanity check model item specification  */
+                if (!$cs.validate(item.value, item.valid))
+                    throw _cs.exception("model", "model field \"" + name + "\" has " +
+                        "default value " + _cs.json(item.value) + ", which does not validate " +
+                        "against validation specification \"" + item.valid + "\"");
+
+                /*  take over initial model item value  */
+                model.data[name] = item.value;
+            });
+
+            /*  optionally load model values from store  */
             var store = this.store("model");
             if (store !== null) {
-                if (_cs.isdefined(model)) {
-                    for (name in model) {
-                        if (!_cs.isown(model, name))
-                            continue;
-                        if (model[name].store) {
-                            if (_cs.isdefined(store[name]))
-                                model[name].value = store[name];
-                        }
-                    }
-                }
+                _cs.foreach(_cs.keysof(model.spec), function (name) {
+                    if (model.spec[name].store)
+                        if (_cs.isdefined(store[name]))
+                            model.data[name] = store[name];
+                });
             }
 
-            /*  retrieve old model  */
+            /*  optionally merge new model into old model  */
             var model_old = this.property({ name: "ComponentJS:model", bubbling: false });
-
-            /*  store model  */
-            if (_cs.isdefined(model)) {
-                if (_cs.isdefined(model_old)) {
-                    /*  merge model into existing one  */
-                    var model_new = {};
-                    _cs.extend(model_new, model_old);
-                    _cs.extend(model_new, model);
-                    this.property("ComponentJS:model", model_new);
-                    model = model_new;
-                }
-                else {
-                    /*  set initial model  */
-                    this.property("ComponentJS:model", model);
-                }
-
-                /*  optionally save stored model values  */
-                store = {};
-                var save = false;
-                for (name in model) {
-                    if (!_cs.isown(model, name))
-                        continue;
-                    if (model[name].store) {
-                        store[name] = model[name].value;
-                        save = true;
-                    }
-                }
-                if (save)
-                    this.store("model", store);
+            if (_cs.isdefined(model_old)) {
+                var model_new = { spec: {}, data: {} };
+                _cs.extend(model_new.spec, model_old.spec);
+                _cs.extend(model_new.data, model_old.data);
+                _cs.extend(model_new.spec, model.spec);
+                _cs.extend(model_new.data, model.data);
+                model = model_new;
             }
 
-            /*  return old model  */
-            return model_old;
+            /*  optionally save model values to store  */
+            store = {};
+            var save = false;
+            _cs.foreach(_cs.keysof(model.spec), function (name) {
+                if (model.spec[name].store) {
+                    store[name] = model.data[name];
+                    save = true;
+                }
+            });
+            if (save)
+                this.store("model", store);
+
+            /*  (re)attach model to component  */
+            this.property("ComponentJS:model", model);
         },
 
         /*  get/set model value  */
         value: function () {
             /*  determine parameters  */
             var params = $cs.params("value", arguments, {
-                name:        { pos: 0, req: true      },
-                value:       { pos: 1, def: undefined },
-                force:       { pos: 2, def: false     },
-                op:          {         def: []        },
-                returnowner: {         def: false     }
+                name:        { pos: 0, req: true,      valid: "string"   },
+                value:       { pos: 1, def: undefined, valid: "any"      },
+                force:       { pos: 2, def: false,     valid: "boolean"  },
+                op:          {         def: [],        valid: "(string|[string?]|[string,number,number])" },
+                returnowner: {         def: false,     valid: "boolean"  }
             });
 
             /*  determine operation  */
@@ -137,7 +121,7 @@ $cs.pattern.model = $cs.trait({
                 if (!_cs.isdefined(owner))
                     throw _cs.exception("value", "no model found containing value \"" + path[0] + "\"");
                 model = owner.property("ComponentJS:model");
-                if (_cs.isdefined(model[path[0]]))
+                if (_cs.isdefined(model.spec[path[0]]))
                     break;
                 comp = owner.parent();
             }
@@ -158,11 +142,11 @@ $cs.pattern.model = $cs.trait({
                     value_new = undefined;
                     break;
                 case "push":
-                    obj = $cs.select(model[path[0]].value, path.slice(1));
+                    obj = $cs.select(model.data, path);
                     params.op = [ "splice", obj.length, 0 ];
                     break;
                 case "pop":
-                    obj = $cs.select(model[path[0]].value, path.slice(1));
+                    obj = $cs.select(model.data, path);
                     params.op = [ "splice", obj.length - 1, 1 ];
                     value_new = undefined;
                     break;
@@ -171,9 +155,7 @@ $cs.pattern.model = $cs.trait({
             /*  get old model value  */
             var ev;
             var result;
-            var value_old = model[path[0]].value;
-            if (path.length > 1)
-                value_old = $cs.select(value_old, path.slice(1));
+            var value_old = $cs.select(model.data, path);
             if (params.op[0] === "splice") {
                 /*  splice operation is on collection itself,
                     so pick the target collection element!  */
@@ -195,12 +177,6 @@ $cs.pattern.model = $cs.trait({
                         async:     false
                     });
                     if (ev.processing()) {
-                        /*  re-fetch value from model
-                            (in case the callback set a new value directly)  */
-                        value_old = model[path[0]].value;
-                        if (path.length > 1)
-                            value_old = $cs.select(value_old, path.slice(1));
-
                         /*  allow value to be overridden by event result  */
                         result = ev.result();
                         if (typeof result !== "undefined")
@@ -213,21 +189,21 @@ $cs.pattern.model = $cs.trait({
             if (   (   params.op[0] === "set"
                     && (params.force || value_old !== value_new))
                 || params.op[0] === "delete"
-                || params.op[0] === "splice"              ) {
+                || params.op[0] === "splice"                     ) {
 
                 /*  check validity of new value  */
                 if (   params.op[0] === "set"
                     || (   params.op[0] === "splice"
-                        && value_new !== undefined)        ) {
+                        && value_new !== undefined  )) {
                     var subPath = (
                           params.op[0] === "splice"
                         ? path.slice(1).concat([ "0" ])
                         : path.slice(1)
                     );
-                    if (!_cs.validate_at(value_new, model[path[0]].valid, subPath))
+                    if (!_cs.validate_at(value_new, model.spec[path[0]].valid, subPath))
                         throw _cs.exception("value", "model field \"" + params.name + "\" receives " +
                             "new value " + _cs.json(value_new) + ", which does not validate " +
-                            "against validation \"" + model[path[0]].valid + "\"" +
+                            "against \"" + model.spec[path[0]].valid + "\"" +
                             (subPath.length > 0 ? " at sub-path \"" + subPath.join(".") + "\"" : ""));
                 }
 
@@ -252,21 +228,15 @@ $cs.pattern.model = $cs.trait({
                             value_new = result;
                     }
                 }
-                if (cont && !model[path[0]].autoreset) {
+                if (cont && !model.spec[path[0]].autoreset) {
                     /*  perform destructive operation on model  */
                     if (params.op[0] === "set") {
                         /*  set value in model  */
-                        if (path.length > 1)
-                            $cs.select(model[path[0]].value, path.slice(1), value_new);
-                        else
-                            model[path[0]].value = value_new;
+                        $cs.select(model.data, path, value_new);
                     }
                     else if (params.op[0] === "splice") {
                         /*  splice value into model  */
-                        if (path.length > 1)
-                            obj = $cs.select(model[path[0]].value, path.slice(1));
-                        else
-                            obj = model[path[0]].value;
+                        obj = $cs.select(model.data, path);
                         if (!(obj instanceof Array))
                             throw new _cs.exception("value", "cannot splice: target object is not of Array type");
                         if (typeof value_new !== "undefined")
@@ -276,12 +246,9 @@ $cs.pattern.model = $cs.trait({
                     }
                     else if (params.op[0] === "delete") {
                         /*  delete value from model  */
-                        if (path.length >= 3)
-                            obj = $cs.select(model[path[0]].value, path.slice(1, path.length - 1));
-                        else if (path.length === 2)
-                            obj = model[path[0]].value;
-                        else
-                            throw new _cs.exception("value", "cannot delete a root model entry");
+                        if (path.length < 2)
+                            throw new _cs.exception("value", "cannot delete model root or top-level model entry");
+                        obj = $cs.select(model.data, path.slice(0, path.length - 1));
                         var pathSegment = path[path.length - 1];
                         if (obj instanceof Array)
                             obj.splice(parseInt(pathSegment, 10), 1);
@@ -292,9 +259,9 @@ $cs.pattern.model = $cs.trait({
                     }
 
                     /*  synchronize model with underlying store  */
-                    if (model[path[0]].store) {
+                    if (model.spec[path[0]].store) {
                         var store = owner.store("model");
-                        store[path[0]] = model[path[0]].value;
+                        store[path[0]] = model.data[path[0]];
                         owner.store("model", store);
                     }
 
@@ -321,12 +288,12 @@ $cs.pattern.model = $cs.trait({
         touch: function () {
             /*  determine parameters  */
             var params = $cs.params("touch", arguments, {
-                name: { pos: 0, req: true }
+                name: { pos: 0, req: true, valid: "string" }
             });
 
             /*  simply force value to same value in order to trigger event  */
             this.value({
-                name: params.name,
+                name:  params.name,
                 value: this.value(params.name),
                 force: true
             });
@@ -336,11 +303,11 @@ $cs.pattern.model = $cs.trait({
         observe: function () {
             /*  determine parameters  */
             var params = $cs.params("observe", arguments, {
-                name:      { pos: 0, req: true  },
-                func:      { pos: 1, req: true  },
-                touch:     {         def: false },
-                op:        {         def: "set" },
-                spool:     {         def: null  }
+                name:      { pos: 0, req: true,   valid: "string"        },
+                func:      { pos: 1, req: true,   valid: "function"      },
+                touch:     {         def: false,  valid: "boolean"       },
+                op:        {         def: "set",  valid: /^(?:get|set|splice|delete|)$/ },
+                spool:     {         def: null,   valid: "(null|string)" }
             });
 
             /*  parse the value name into selection path segments  */
@@ -356,7 +323,7 @@ $cs.pattern.model = $cs.trait({
                 if (!_cs.isdefined(owner))
                     throw _cs.exception("observe", "no model found containing value \"" + path[0] + "\"");
                 model = owner.property("ComponentJS:model");
-                if (_cs.isdefined(model[path[0]]))
+                if (_cs.isdefined(model.spec[path[0]]))
                     break;
                 comp = owner.parent();
             }
@@ -403,7 +370,7 @@ $cs.pattern.model = $cs.trait({
         unobserve: function () {
             /*  determine parameters  */
             var params = $cs.params("unobserve", arguments, {
-                id: { pos: 0, req: true }
+                id: { pos: 0, req: true, valid: "string" }
             });
 
             /*  determine the actual component owning the model
