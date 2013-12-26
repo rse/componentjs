@@ -69,7 +69,9 @@ $cs.params = function (func_name, func_args, spec) {
     var check_validity = function (func, name, value, valid) {
         if (typeof valid !== "undefined")
             if (!$cs.validate(value, valid))
-                 throw _cs.exception(func, "value of parameter \"" + name + "\" not valid");
+                throw _cs.exception(func, "parameter \"" + name + "\" has " +
+                    "value " + _cs.json(value) + ", which does not validate " +
+                    "against \"" + valid + "\"");
     };
 
     /*  set actual values  */
