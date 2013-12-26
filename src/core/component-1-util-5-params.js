@@ -110,10 +110,9 @@ $cs.params = function (func_name, func_args, spec) {
             if (typeof pos2name["..."] === "undefined")
                 throw _cs.exception(func_name, "too many arguments provided");
             args = [];
-            for (; i < func_args.length; i++) {
-                check_validity(func_name, pos2name["..."], func_args[i], spec[pos2name["..."]].valid);
+            for (; i < func_args.length; i++)
                 args.push(func_args[i]);
-            }
+            check_validity(func_name, pos2name["..."], args, spec[pos2name["..."]].valid);
             params[pos2name["..."]] = args;
         }
     }
