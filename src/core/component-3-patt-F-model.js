@@ -41,11 +41,6 @@ $cs.pattern.model = $cs.trait({
                         model[name].autoreset = false;
                     if (typeof model[name].store === "undefined")
                         model[name].store = false;
-                    for (var key in model[name]) {
-                        if (key !== "value" && key !== "valid" && key !== "autoreset" && key !== "store")
-                            throw _cs.exception("model", "invalid specification key \"" +
-                                key + "\" in specification of model field \"" + name + "\"");
-                    }
                     if (!$cs.validate(model[name].value, model[name].valid))
                         throw _cs.exception("model", "model field \"" + name + "\" has " +
                             "default value " + _cs.json(model[name].value) + ", which does not validate " +
