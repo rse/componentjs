@@ -54,6 +54,10 @@
       For params() use the new validate() functionality (which now also
       supports RegExp and functions) only.
 
+    o INCOMPATIBILITY:
+      params() now validates already the default value of a parameter
+      against its validation specification.
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
