@@ -35,14 +35,10 @@ $cs.pattern.model = $cs.trait({
                 for (name in model) {
                     if (!_cs.isown(model, name))
                         continue;
-                    if (typeof model[name].value === "undefined")
-                        model[name].value = "";
-                    if (typeof model[name].valid === "undefined")
-                        model[name].valid = "string";
-                    if (typeof model[name].autoreset === "undefined")
-                        model[name].autoreset = false;
-                    if (typeof model[name].store === "undefined")
-                        model[name].store = false;
+                    if (typeof model[name].value     === "undefined") model[name].value     = "";
+                    if (typeof model[name].valid     === "undefined") model[name].valid     = "string";
+                    if (typeof model[name].autoreset === "undefined") model[name].autoreset = false;
+                    if (typeof model[name].store     === "undefined") model[name].store     = false;
                     if (!$cs.validate(model[name].value, model[name].valid))
                         throw _cs.exception("model", "model field \"" + name + "\" has " +
                             "default value " + _cs.json(model[name].value) + ", which does not validate " +
