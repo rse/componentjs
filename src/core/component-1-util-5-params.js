@@ -17,7 +17,8 @@ $cs.params = function (func_name, func_args, spec) {
 
     /*  1. determine number of total    positional parameters,
         2. determine number of required positional parameters,
-        3. set default values  */
+        3. set default values
+        4. sanity check default value against validation  */
     var positional = 0;
     var required   = 0;
     var pos2name   = {};
@@ -34,8 +35,14 @@ $cs.params = function (func_name, func_args, spec) {
             }
 
             /*  process default value  */
-            if (typeof spec[name].def !== "undefined")
+            if (typeof spec[name].def !== "undefined") {
+                if (typeof spec[name].valid !== "undefined")
+                    if (!$cs.validate(spec[name].def, spec[name].valid))
+                        throw _cs.exception(func_name, "parameter \"" + name + "\" has " +
+                            "default value " + _cs.json(spec[name].def) + ", which does not validate " +
+                            "against validation specification \"" + spec[name].valid + "\"");
                 params[name] = spec[name].def;
+            }
         }
     }
 
