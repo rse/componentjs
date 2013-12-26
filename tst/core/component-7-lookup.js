@@ -8,15 +8,15 @@
 */
 
 describe("ComponentJS Component Lookup", function () {
+    var foo   = { id: "foo" }
+    var bar   = { id: "bar" }
+    var baz   = { id: "baz" }
+    var quux  = { id: "quux" }
+    var quux2 = { id: "quux2" }
+	before(function () {
+        cs.create("/foo/{bar/quux,baz/quux}", foo, bar, quux, baz, quux2);
+	})
     describe("cs()", function () {
-        var foo   = { id: "foo" }
-        var bar   = { id: "bar" }
-        var baz   = { id: "baz" }
-        var quux  = { id: "quux" }
-        var quux2 = { id: "quux2" }	
-    	before(function () {
-	        cs.create("/foo/{bar/quux,baz/quux}", foo, bar, quux, baz, quux2);
-    	})
         it("should lookup root and none components", function () {
             expect(cs("/").name()).to.be.equal("<root>")
             expect(cs("/unknown").name()).to.be.equal("<none>")
@@ -48,8 +48,15 @@ describe("ComponentJS Component Lookup", function () {
             expect(cs(Foo, "baz/*")).to.be.equal(Quux2)
             expect(cs(Foo.obj())).to.be.equal(Foo)
         })
-        after(function () {
-            cs.destroy("/foo")
+    })
+    describe("exists()", function () {
+        it("should correctly check for component existence", function () {
+            expect(cs("/").exists()).to.be.true
+            expect(cs("/foo").exists()).to.be.true
+            expect(cs("/unknown").exists()).to.be.false
         })
+    })
+    after(function () {
+        cs.destroy("/foo")
     })
 })
