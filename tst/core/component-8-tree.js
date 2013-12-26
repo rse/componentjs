@@ -39,7 +39,16 @@ describe("ComponentJS Component Tree", function () {
             expect(cs("/foo").children()).to.be.like([ cs(bar), cs(baz) ])
         })
     })
-    /*  FIXME: attach, detach, walk_down, walk_up  */
+    describe.skip("attach() & detach()", function () {
+        it("should attach and detach components", function () {
+            /*  FIXME  */ 
+        })
+    })
+    describe.skip("walk_down() & walk_up()", function () {
+        it("should walk upward and downward the component tree", function () {
+            /*  FIXME  */ 
+        })
+    })
     after(function () {
         cs.destroy("/foo")
     })
