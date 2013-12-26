@@ -63,7 +63,7 @@ module.exports = function (grunt) {
             }
         },
         clean: {
-            "clean":     [ "bld" ],
+            "clean":     [ "bld", "cov" ],
             "distclean": [ "node_modules" ]
         }
     });
