@@ -33,6 +33,8 @@ $cs.pattern.model = $cs.trait({
             var name;
             if (_cs.isdefined(model)) {
                 for (name in model) {
+                    if (!_cs.isown(model, name))
+                        continue;
                     if (typeof model[name].value === "undefined")
                         model[name].value = "";
                     if (typeof model[name].valid === "undefined")
@@ -53,6 +55,8 @@ $cs.pattern.model = $cs.trait({
             if (store !== null) {
                 if (_cs.isdefined(model)) {
                     for (name in model) {
+                        if (!_cs.isown(model, name))
+                            continue;
                         if (model[name].store) {
                             if (_cs.isdefined(store[name]))
                                 model[name].value = store[name];
@@ -83,6 +87,8 @@ $cs.pattern.model = $cs.trait({
                 store = {};
                 var save = false;
                 for (name in model) {
+                    if (!_cs.isown(model, name))
+                        continue;
                     if (model[name].store) {
                         store[name] = model[name].value;
                         save = true;
