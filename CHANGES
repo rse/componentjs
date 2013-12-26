@@ -68,6 +68,11 @@
       and separate data. This allows forthcoming plugins to directly
       access the model data more easily.
 
+    o INCOMPATIBILITY:
+      Remove an undocumented feature: the model() method no longer
+      returns the (old) model and no longer can be called without any
+      arguments (to just retrieve the model).
+
     Major changes between ComponentJS 1.0.0 and 1.0.1
     -------------------------------------------------
 
