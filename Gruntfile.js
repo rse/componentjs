@@ -582,8 +582,8 @@ module.exports = function (grunt) {
                 src: [ "src/core/*.js" ],
                 options: {
                     errorsOnly:      false,
-                    cyclomatic:      30,
-                    halstead:        75,
+                    cyclomatic:      40,
+                    halstead:        80,
                     maintainability: 65
                 }
             }
