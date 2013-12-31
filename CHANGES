@@ -90,6 +90,30 @@
     o IMPROVEMENT:
       document "clazz" behavior better in the API documentation.
 
+    Major changes between ComponentJS 1.0.1 and 1.0.2
+    -------------------------------------------------
+
+    o BUGFIX:
+      Cherry-picked and back-ported all major bugfixes from the
+      ComponentJS development branch.
+
+    Major changes between ComponentJS 1.0.0 and 1.0.1
+    -------------------------------------------------
+
+    o ADDITION:
+      add an "enabled" state on top of visible for those
+      situations where we want to show a UI but still keep it disabled.
+
+    o BUGFIX:
+      correctly tear down the component tree in shutdown()
+      as the root component cannot be directly destroyed.
+
+    o BUGFIX:
+      fix syntax of TypeScript type definition file "component.d.ts".
+
+    o IMPROVEMENT:
+      document "clazz" behavior better in the API documentation.
+
     Major changes between ComponentJS 0.9.9 and 1.0.0
     -------------------------------------------------
 
