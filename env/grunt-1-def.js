@@ -13,12 +13,12 @@ module.exports = function (grunt) {
     grunt.extendConfig({
         jshint: {
             options: {
-                jshintrc: "jshint.json"
+                jshintrc: "env/lint-1-jshint.json"
             }
         },
         eslint: {
             options: {
-                config: "eslint.json"
+                config: "env/lint-2-eslint.json"
             }
         },
         shell: {
