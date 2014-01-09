@@ -149,7 +149,7 @@ $cs.pattern.socket = $cs.trait({
             var id = _cs.cid();
             this.__plugs[id] = params;
 
-            /*  pass-though operation to common helper function  */
+            /*  pass-through operation to common helper function  */
             _cs.plugger("plug", this, params.name, params.object, params.targeting);
 
             /*  optionally spool reverse operation  */
