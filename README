@@ -96,3 +96,12 @@
       http://www.gnu.org/software/shtool/
       (for creating the release/snapshot distribution tarballs)
 
+    Continuous Integration
+    ======================
+
+    On each change, the ComponentJS sources are automatically built and the regression
+    test suite run on the Travis Continous Integration (CI) service. The latest
+    [build status](https://travis-ci.org/rse/componentjs) can be found online.
+
+    [![Build Status](https://travis-ci.org/rse/componentjs.png?branch=master)](https://travis-ci.org/rse/componentjs)
+
