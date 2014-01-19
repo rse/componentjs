@@ -24,7 +24,7 @@
         "build"
     ],
     "scripts": {
-        "test": "grunt test"
+        "test": "grunt build test"
     },
     "devDependencies": {
         "load-grunt-tasks":     "~0.2.1",
