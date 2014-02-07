@@ -17,8 +17,8 @@ $cs.pattern.model = $cs.trait({
                 spec: { pos: 0, req: true, valid:
                     "{ @: {" +
                     " value?: any," +
-                    " valid?: (string|function|RegExp),"+
-                    " autoreset?: boolean,"+
+                    " valid?: (string|function|RegExp)," +
+                    " autoreset?: boolean," +
                     " store?: boolean" +
                     "} }"
                 }
