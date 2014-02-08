@@ -36,6 +36,7 @@
         "grunt-contrib-clean":  "~0.5.0",
         "grunt-expand-include": "~0.9.6",
         "grunt-extend-config":  "~0.9.2",
+        "grunt-execute":        "~0.1.5",
         "grunt-shell":          "~0.6.4",
         "grunt-mkdir":          "~0.1.1",
         "grunt-touch":          "~0.1.0",
@@ -54,6 +55,7 @@
         "chai-things":          "~0.2.0",
         "chai-interface":       "~1.1.0",
         "sinon-chai":           "~2.5.0",
-        "sinon":                "~1.8.1"
+        "sinon":                "~1.8.1",
+        "xregexp":              "~2.0.0"
     }
 }

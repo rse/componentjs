@@ -8,6 +8,7 @@
 */
 
 /* global module: true */
+/* global process: true */
 module.exports = function (grunt) {
     /*  generate HTML format  */
     grunt.extendConfig({
@@ -19,22 +20,13 @@ module.exports = function (grunt) {
                     "doc/component-api-*.txt"
                 ],
                 dest: "bld/component-api.screen.html",
-                options: { tasks: [ "path-check:doc-component-api-screen-html" ] }
-            }
-        },
-        "path-check": {
-            "doc-component-api-screen-html": {
-                src: [ "perl" ],
-                options: {
-                    mandatory: false,
-                    tasks: [ "shell:doc-component-api-screen-html" ]
-                }
+                options: { tasks: [ "shell:doc-component-api-screen-html" ] }
             }
         },
         shell: {
             "doc-component-api-screen-html": {
-                command: "perl " +
-                    "doc/component-api.pl " +
+                command: process.execPath + " " +
+                    "doc/component-api.js " +
                     "\"<%= version_string %>\" " +
                     "bld/component-api.screen.html " +
                     "doc/component-api.tmpl " +

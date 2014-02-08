@@ -61,10 +61,6 @@
       http://gruntjs.com/
       (for executing the individual build steps)
 
-    - Perl [perl]
-      http://www.perl.org/
-      (for creating the HTML format variant of the API documentation)
-
     Optional
     --------
 
