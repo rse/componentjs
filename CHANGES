@@ -14,6 +14,11 @@
     -------------------------------------------------
 
     o IMPROVEMENT:
+      Replaced the HTML API documentation generator component-api.pl
+      (Perl script) with component-api.js (JavaScript script) to have
+      even less external dependencies.
+
+    o IMPROVEMENT:
       Major Build Environment Refactoring: switched from plain Unix
       make(1) to Grunt.
 
