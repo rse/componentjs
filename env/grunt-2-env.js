@@ -12,10 +12,10 @@ module.exports = function (grunt) {
     /*  build environment  */
     grunt.extendConfig({
         jshint: {
-            "env": [ "Gruntfile.js", "Gruntfile.d/*.js" ]
+            "env": [ "Gruntfile.js", "env/*.js", "doc/*.js" ]
         },
         eslint: {
-            "env": [ "Gruntfile.js", "Gruntfile.d/*.js" ]
+            "env": [ "Gruntfile.js", "env/*.js", "doc/*.js" ]
         },
         jsonlint: {
             "env": {
