@@ -19,7 +19,11 @@ module.exports = function (grunt) {
         },
         jsonlint: {
             "env": {
-                src: [ "jshint.json", "eslint.json" ]
+                src: [
+                    "package.json",
+                    "env/lint-1-jshint.json",
+                    "env/lint-2-eslint.json"
+                ]
             }
         },
         mkdir: {
