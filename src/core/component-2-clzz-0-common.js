@@ -72,7 +72,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
         };
         init(obj, clz, arg, true);
 
-        return;
+        return obj;
     };
 
     /*

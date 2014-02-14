@@ -38,7 +38,7 @@ $cs.pattern.spec = $cs.trait({
                     }
                 }
             }
-            return;
+            return undefined;
         },
 
         /*  method: determine whether this object matches the name/spec patterns  */

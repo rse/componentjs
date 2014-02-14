@@ -198,7 +198,7 @@ $cs.pattern.eventing = $cs.trait({
                 }
                 if (!subscribers) {
                     if (params.noresult)
-                        return;
+                        return undefined;
                     else if (params.directresult)
                         return params.resultinit;
                     else
@@ -356,7 +356,7 @@ $cs.pattern.eventing = $cs.trait({
 
             /*  return the event, directly the result value or no result value at all  */
             if (params.noresult)
-                return;
+                return undefined;
             else if (params.directresult)
                 return ev.result();
             else

@@ -26,7 +26,7 @@ $cs.pattern.command = $cs.clazz({
         /*  method: execute the command  */
         execute: function (caller_args, caller_result) {
             if (!this.enabled())
-                return;
+                return undefined;
             var args = [];
             if (this.async()) {
                 args.push(function (value) {
