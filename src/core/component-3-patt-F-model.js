@@ -89,6 +89,7 @@ $cs.pattern.model = $cs.trait({
                 name:        { pos: 0, req: true,      valid: "string"   },
                 value:       { pos: 1, def: undefined, valid: "any"      },
                 force:       { pos: 2, def: false,     valid: "boolean"  },
+                injected:    {         def: false,     valid: "boolean"  },
                 op:          {         def: [],        valid: "(string|[string?]|[string,number,number])" },
                 returnowner: {         def: false,     valid: "boolean"  }
             });
@@ -219,8 +220,14 @@ $cs.pattern.model = $cs.trait({
                         bubbling:  false,
                         async:     false
                     });
-                    if (!ev.processing())
+                    if (!ev.processing()) {
+                        if (params.injected)
+                            throw _cs.exception("value", "model field \"" + params.name + "\" receives (again) " +
+                                "value " + _cs.json(value_new) + ", which is rejected by observers, " +
+                                "but the value was indicated to be already injected by third-parties " +
+                                "(so it technically no longer can be rejected)");
                         cont = false;
+                    }
                     else {
                         /*  allow value to be overridden  */
                         result = ev.result();
@@ -293,9 +300,10 @@ $cs.pattern.model = $cs.trait({
 
             /*  simply force value to same value in order to trigger event  */
             this.value({
-                name:  params.name,
-                value: this.value(params.name),
-                force: true
+                name:     params.name,
+                value:    this.value(params.name),
+                injected: true,
+                force:    true
             });
         },
 

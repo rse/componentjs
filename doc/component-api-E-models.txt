@@ -50,7 +50,8 @@ displaying the Model information and storing events into it.
       F<name>: T<String>,
       [F<op>: T<String>,]
       [F<value>: T<Object>,]
-      [F<force>: T<Boolean>]
+      [F<force>: T<Boolean>,]
+      [F<injected>: T<Boolean>]
   });
   O<component>.M<value>(
       P<name>: T<String>,
@@ -64,6 +65,9 @@ displaying the Model information and storing events into it.
   changing a value to the same value does not trigger anything.
   But if F<force> is C<true> even setting a model element to its
   current value triggers observers.
+  Setting the option F<injected> to C<true> should be done by plugins
+  only and prevents model value observers from rejecting the (already
+  injected) value.
 
   | var val = cs(this).value("foo")
   | cs(this).value("foo", "bar")
