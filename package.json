@@ -55,7 +55,7 @@
         "chai-things":          "~0.2.0",
         "chai-interface":       "~1.1.0",
         "sinon-chai":           "~2.5.0",
-        "sinon":                "~1.8.1",
+        "sinon":                "~1.8.2",
         "xregexp":              "~2.0.0"
     }
 }
