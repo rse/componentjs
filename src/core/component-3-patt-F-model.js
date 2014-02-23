@@ -314,7 +314,7 @@ $cs.pattern.model = $cs.trait({
                 name:      { pos: 0, req: true,   valid: "string"        },
                 func:      { pos: 1, req: true,   valid: "function"      },
                 touch:     {         def: false,  valid: "boolean"       },
-                op:        {         def: "set",  valid: /^(?:get|set|splice|delete|)$/ },
+                op:        {         def: "set",  valid: /^(?:get|set|changed|splice|delete|)$/ },
                 spool:     {         def: null,   valid: "(null|string)" }
             });
 
