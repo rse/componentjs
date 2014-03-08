@@ -12,7 +12,7 @@ module.exports = function (grunt) {
     /*  code complexity reporting  */
     grunt.extendConfig({
         complexity: {
-            generic: {
+            "core": {
                 src: [ "src/core/*.js" ],
                 options: {
                     errorsOnly:      false,

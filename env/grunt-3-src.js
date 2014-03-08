@@ -9,10 +9,6 @@
 
 /* global module: true */
 module.exports = function (grunt) {
-    /*
-     *  ==== SOURCE BUILDING ====
-     */
-
     /*  build core  */
     grunt.extendConfig({
         newer: {

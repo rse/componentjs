@@ -22,6 +22,8 @@ test: build
 	@$(GRUNT) test
 cover: build
 	@$(GRUNT) cover
+complexity: build
+	@$(GRUNT) complexity
 
 release: bootstrap
 	@$(GRUNT) release
