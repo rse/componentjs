@@ -13,6 +13,9 @@
     Major changes between ComponentJS 1.0.1 and 1.1.0
     -------------------------------------------------
 
+    o BUGFIX:
+      Support "@: type" validation notation also in subsetting cases.
+
     o IMPROVEMENT:
       Replaced the HTML API documentation generator component-api.pl
       (Perl script) with component-api.js (JavaScript script) to have
