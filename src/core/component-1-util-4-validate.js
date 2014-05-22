@@ -270,6 +270,10 @@ _cs.validate_subset = function (node, path) {
                     found = true;
                     break;
                 }
+                else if (node.elements[j].key === "@") {
+                    node = node.elements[j].element;
+                    found = true;
+                }
             }
             if (!found)
                 throw _cs.exception("validate", "dereference error: hash key \"" + path[i] + "\" not found");
