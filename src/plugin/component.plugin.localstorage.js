@@ -16,8 +16,9 @@
  *  optional plugin, of course.
  */
 
-/* global ComponentJS:false */
-/* jshint unused:false */
+/* global ComponentJS: false */
+/* eslint no-unused-vars: 0 */
+/* jshint unused: false */
 
 ComponentJS.plugin("localstorage", function (_cs, $cs, GLOBAL) {
     /*  sanity check run-time environment  */

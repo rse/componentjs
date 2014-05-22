@@ -13,8 +13,9 @@
  *  core framework.
  */
 
-/* global ComponentJS:false */
-/* jshint unused:false */
+/* global ComponentJS: false */
+/* eslint no-unused-vars: 0 */
+/* jshint unused: false */
 
 ComponentJS.plugin("extjs", function (_cs, $cs, GLOBAL) {
     /*

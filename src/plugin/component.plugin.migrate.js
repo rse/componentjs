@@ -13,8 +13,9 @@
  *  to a new common parent component.
  */
 
-/* global ComponentJS:false */
-/* jshint unused:false */
+/* global ComponentJS: false */
+/* eslint no-unused-vars: 0 */
+/* jshint unused: false */
 
 ComponentJS.plugin("migrate", function (_cs, $cs, GLOBAL) {
     /*  define the extra trait for components  */
