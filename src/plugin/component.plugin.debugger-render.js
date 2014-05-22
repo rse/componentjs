@@ -194,12 +194,12 @@ _cs.dbg_update_once = function () {
 
                         /*  determine boundaries for x position  */
                         var minx = _cs.annotation(children[0], "debugger_x");
-                        var miny = _cs.annotation(children[0], "debugger_y");
+                        /* var miny = _cs.annotation(children[0], "debugger_y"); */
                         var maxx = minx;
-                        var maxy = miny;
+                        /* var maxy = miny; */
                         if (children.length > 1) {
                             maxx = _cs.annotation(children[children.length - 1], "debugger_x");
-                            maxy = _cs.annotation(children[children.length - 1], "debugger_y");
+                            /* maxy = _cs.annotation(children[children.length - 1], "debugger_y"); */
                         }
 
                         /*  calculate our information  */
