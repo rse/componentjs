@@ -73,7 +73,7 @@ $cs.debug_window = function () {
         if (_cs.dbg === null) {
             /*  determine (potentially application specific) title  */
             var title = "ComponentJS Debugger";
-            if (typeof params.name !== null)
+            if (params.name !== null)
                 title += " (" + params.name + ")";
 
             /*  create external debugger window  */
