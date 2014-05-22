@@ -13,6 +13,9 @@
     Major changes between ComponentJS 1.0.1 and 1.1.0
     -------------------------------------------------
 
+    o IMPROVEMENT:
+      Allow empty "protos" fields in clazz() and trait() methods.
+
     o BUGFIX:
       Support "@: type" validation notation also in subsetting cases.
 
