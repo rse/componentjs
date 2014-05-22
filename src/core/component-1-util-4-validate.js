@@ -273,6 +273,7 @@ _cs.validate_subset = function (node, path) {
                 else if (node.elements[j].key === "@") {
                     node = node.elements[j].element;
                     found = true;
+                    /*  continue processing  */
                 }
             }
             if (!found)
