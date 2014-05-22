@@ -37,5 +37,5 @@ distclean: clean
 
 update-package-json: bootstrap
 	$(NPM) install npm-check-updates
-	./node_modules/npm-check-updates/bin/npm-check-updates
+	./node_modules/npm-check-updates/bin/npm-check-updates -u
 
