@@ -23,14 +23,14 @@ module.exports = function (grunt) {
             "release": {
                 command: "shtool tarball " +
                     "-c 'gzip -9' " +
-                    "-e 'ComponentJS-*,.git,.gitignore,node_modules,bld/.done-*' " +
+                    "-e 'ComponentJS-*,.git,.gitignore,.travis.yml,node_modules,bld/.done-*' " +
                     "-o ComponentJS-<%= version_string %>.tar.gz " +
                     "."
             },
             "snapshot": {
                 command: "shtool tarball " +
                     "-c 'gzip -9' " +
-                    "-e 'ComponentJS-*,.git,.gitignore,node_modules,bld/.done-*' " +
+                    "-e 'ComponentJS-*,.git,.gitignore,.travis.yml,node_modules,bld/.done-*' " +
                     "-o ComponentJS-SNAPSHOT.tar.gz " +
                     "."
             }
