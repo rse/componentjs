@@ -152,7 +152,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
     /*  internal utility method for resolving an annotation on a
         possibly cloned function (just for the following "base" method).
         Notice: for a cloned function the clone is a wrapper annotated
-        with the annoation "clone" set to "true"!  */
+        with the annotation "clone" set to "true"!  */
     var resolve = function (func, name) {
         var result = _cs.annotation(func, name);
         while (result === null && _cs.annotation(func.caller, "clone") === true) {
