@@ -17,6 +17,10 @@
       Fixed .base() method for inheritance chaining situations
       with more than one parent class.
 
+    o BUGFIX:
+      Fixed the build-time substitution for the ComponentJS
+      version information in the API.
+
     Major changes between ComponentJS 1.0.1 and 1.1.0
     -------------------------------------------------
 

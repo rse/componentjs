@@ -9,9 +9,9 @@
 
 /*  API version  */
 $cs.version = {
-    major: 0,
-    minor: 0,
-    micro: 0,
-    date:  19700101
+    major: $major,
+    minor: $minor,
+    micro: $micro,
+    date:  $date
 };
 
