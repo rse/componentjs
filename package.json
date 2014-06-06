@@ -2,7 +2,7 @@
     "name":        "ComponentJS",
     "homepage":    "http://componentjs.com/",
     "description": "Powerful run-time Component System for structuring HTML5-based Rich Clients",
-    "version":     "1.1.0",
+    "version":     "1.1.1",
     "license":     "MPL/2.0",
     "author": {
         "name":    "Ralf S. Engelschall",
@@ -44,9 +44,9 @@
         "grunt-path-check":     "~0.9.3",
         "grunt-env":            "~0.4.1",
         "grunt-open":           "~0.2.3",
-        "grunt-complexity":     "~0.1.6",
+        "grunt-complexity":     "~0.1.7",
         "grunt-eslint":         "~0.5.0",
-        "grunt-mocha-test":     "~0.10.2",
+        "grunt-mocha-test":     "~0.11.0",
         "grunt-istanbul":       "~0.3.0",
         "grunt-jsonlint":       "~1.0.4",
         "chai":                 "~1.9.1",
@@ -55,7 +55,7 @@
         "chai-things":          "~0.2.0",
         "chai-interface":       "~1.1.0",
         "sinon-chai":           "~2.5.0",
-        "sinon":                "~1.10.0",
+        "sinon":                "~1.10.2",
         "xregexp":              "~2.0.0"
     }
 }
