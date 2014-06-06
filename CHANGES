@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.1.0 and 1.1.1
+    -------------------------------------------------
+
+    o BUGFIX:
+      Fixed .base() method for inheritance chaining situations
+      with more than one parent class.
+
     Major changes between ComponentJS 1.0.1 and 1.1.0
     -------------------------------------------------
 

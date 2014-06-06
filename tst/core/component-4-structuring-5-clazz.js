@@ -10,7 +10,8 @@
 describe("ComponentJS Application Structuring: Classes and Traits", function () {
     describe("clazz() & trait()", function () {
         it("should create reasonable classes", function () {
-            var sentinel = [ "42" ];
+            var log = ""
+            var sentinel = [ "42" ]
             var Trait = cs.trait({
                 dynamics: {
                     _quux: "quux"
@@ -21,10 +22,24 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
                     }
                 }
             })
-            var Parent1 = cs.clazz({})
+            var Parent1 = cs.clazz({
+                protos: {
+                    baz1: function (arg) {
+                        return "<Parent1 arg=" + arg + "/>"
+                    },
+                    baz2: function (arg) {
+                        return "<Parent1 arg=" + arg + "/>"
+                    }
+                }
+            })
             var Parent2 = cs.clazz({
                 extend: Parent1,
-                mixin: [ Trait ]
+                mixin: [ Trait ],
+                protos: {
+                    baz1: function (arg) {
+                        return "<Parent2 arg=" + arg + ">" + this.base(arg) + "</Parent2>"
+                    }
+                }
             })
             var Foo = cs.clazz({
                 extend: Parent2,
@@ -45,6 +60,12 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
                         if (typeof value_new !== "undefined")
                             this._bar = value_new
                         return value_old
+                    },
+                    baz1: function (arg) {
+                        return "<Foo arg=" + arg + ">" + this.base(arg) + "</Foo>"
+                    },
+                    baz2: function (arg) {
+                        return "<Foo arg=" + arg + ">" + this.base(arg) + "</Foo>"
                     }
                 }
             })
@@ -61,7 +82,8 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
             expect(foo.sentinel).to.be.like(sentinel)
             expect(foo.sentinel).to.be.not.equal(sentinel)
             expect(foo.quux()).to.be.equal("quux")
-            /*  FIXME: also test .base() functionality  */
+            expect(foo.baz1("baz")).to.be.equal("<Foo arg=baz><Parent2 arg=baz><Parent1 arg=baz/></Parent2></Foo>")
+            expect(foo.baz2("baz")).to.be.equal("<Foo arg=baz><Parent1 arg=baz/></Foo>")
         })
     })
 })
