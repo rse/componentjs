@@ -17,6 +17,14 @@
       On .create() enter the first user-defined state (on top of "dead")
       instead of the hard-coded "created" state.
 
+    o BUGFIX:
+      Implement the internally published events "ComponentJS:state:<name>:enter"
+      and "ComponentJS:state:<name>:leave" the way they were documented.
+
+    o ADDITION:
+      Provide internal hooks "ComponentJS:state-enter" and
+      "ComponentJS:state-leave" to plugins.
+
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------
 

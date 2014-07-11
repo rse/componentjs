@@ -181,7 +181,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
 
             /*  notify subscribers about new state  */
             comp.publish({
-                name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
+                name:         "ComponentJS:state:" + _cs.states[comp.__state].state + ":enter",
                 noresult:     true,
                 capturing:    false,
                 spreading:    false,
@@ -189,6 +189,9 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 async:        true,
                 silent:       true
             });
+
+            /*  give plugins a chance to react  */
+            _cs.hook("ComponentJS:state-enter", "none", comp, _cs.states[comp.__state].state);
 
             /*  optionally automatically transition
                 child component(s) to higher state third  */
@@ -279,7 +282,7 @@ _cs.state_progression_run = function (comp, arg, _direction) {
 
             /*  notify subscribers about new state  */
             comp.publish({
-                name:         "ComponentJS:state:" + _cs.states[comp.__state].state,
+                name:         "ComponentJS:state:" + _cs.states[comp.__state + 1].state + ":leave",
                 noresult:     true,
                 capturing:    false,
                 spreading:    false,
@@ -287,6 +290,9 @@ _cs.state_progression_run = function (comp, arg, _direction) {
                 async:        true,
                 silent:       true
             });
+
+            /*  give plugins a chance to react  */
+            _cs.hook("ComponentJS:state-leave", "none", comp, _cs.states[comp.__state + 1].state);
 
             /*  optionally automatically transition
                 parent component to lower state third  */

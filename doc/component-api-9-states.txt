@@ -61,7 +61,9 @@ transitions, enter and leave methods are called accordingly.
   On each state transition, for each transitively involved component and each
   target or intermediate state, a non-capturing/non-bubbling event is
   internally published named "C<ComponentJS:state:>F<state>C<:enter>"
-  or "C<ComponentJS:state:>F<state>C<:leave>". You can subscribe to those
+  (after the higher state F<state> was entered from the state below it) or
+  "C<ComponentJS:state:>F<state>C<:leave>" (after the higher state
+  F<state> was left towards the state below it). You can subscribe to those
   in order to react to state transitions from outside the component, too.
 
   | cs("/ui").state("visible")
