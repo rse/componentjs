@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.1.1 and 1.1.2
+    -------------------------------------------------
+
+    o BUGFIX:
+      On .create() enter the first user-defined state (on top of "dead")
+      instead of the hard-coded "created" state.
+
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------
 

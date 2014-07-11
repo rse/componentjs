@@ -190,10 +190,12 @@ _cs.create_single = function (base, path, clazz) {
     /*  give plugins a chance to react (before creation of a component)  */
     _cs.hook("ComponentJS:comp-created", "none", comp);
 
-    /*  switch state from "dead" to "created"
+    /*  switch state from "dead" to the first user-defined state (usually "created")
         (here synchronously as one expects that after a creation of a
         component, the state is really already "created", of course)  */
-    comp.state({ state: "created", sync: true });
+    if (_cs.states.length <= 1)
+        throw _cs.exception("create", "no user-defined component states");
+    comp.state({ state: _cs.states[1].state, sync: true });
 
     /*  give plugins a chance to react (after creation of a component)  */
     _cs.hook("ComponentJS:state-invalidate", "none", "components");
