@@ -47,7 +47,7 @@ describe("ComponentJS Demo (Headless Mode)", function () {
             }
             var fillout = function (name) {
                 var comp = cs("//" + name + "/model")
-                comp.subscribe("ComponentJS:state:prepared", function () {
+                comp.subscribe("ComponentJS:state:prepared:enter", function () {
                     comp.value("data:username", name)
                     comp.value("data:password", "foo!bar!quux")
                     comp.value("event:login-requested", true)
