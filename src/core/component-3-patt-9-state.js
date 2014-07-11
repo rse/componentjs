@@ -342,11 +342,18 @@ $cs.pattern.state = $cs.trait({
                 state:    { pos: 0, req: true,
                             valid: function (s) { return _cs.state_name2idx(s) !== -1; } },
                 callback: { pos: 1, def: undefined },
+                min:      {         def: undefined },
+                max:      {         def: undefined },
                 sync:     {         def: false     }
             });
 
             /*  if requested state is still not reached...  */
-            if (_cs.states[this.__state].state !== params.state) {
+            var sOld = this.__state;
+            var sNew = _cs.state_name2idx(params.state);
+            if (   ( params.min === true && !params.max          && sNew  >  sOld)
+                || (!params.min          &&  params.max === true && sNew  <  sOld)
+                || ( params.min === true &&  params.max === true && sNew !== sOld)
+                || (!params.min          && !params.max          && sNew !== sOld)) {
                 var enqueue = true;
                 var request = {
                     comp:     this,

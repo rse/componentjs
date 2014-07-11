@@ -10,7 +10,7 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
-    Major changes between ComponentJS 1.1.1 and 1.1.2
+    Major changes between ComponentJS 1.1.1 and 1.2.0
     -------------------------------------------------
 
     o BUGFIX:
@@ -24,6 +24,10 @@
     o ADDITION:
       Provide internal hooks "ComponentJS:state-enter" and
       "ComponentJS:state-leave" to plugins.
+
+    o ADDITION:
+      Method state() now supports the additional optional parameters
+      "min" and "max" for conveniently refining the transition request.
 
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------

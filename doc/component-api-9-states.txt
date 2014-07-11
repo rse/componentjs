@@ -51,6 +51,8 @@ transitions, enter and leave methods are called accordingly.
       F<state>: T<String>,
       [F<callback>: T<Function> = undefined,]
       [F<sync>: T<Boolean> = false,]
+      [F<min>: T<Boolean> = undefined,]
+      [F<max>: T<Boolean> = undefined]
   }): T<String>
 
   Determine the current state or request a transition to a new state of O<component>.
@@ -65,6 +67,12 @@ transitions, enter and leave methods are called accordingly.
   "C<ComponentJS:state:>F<state>C<:leave>" (after the higher state
   F<state> was left towards the state below it). You can subscribe to those
   in order to react to state transitions from outside the component, too.
+  By default if the current and requested state of O<component> is
+  just different, the current state is transitioned towards the requested
+  state. Setting parameter F<min> to C<true> skips the transition if
+  the current state is already higher or equal to the requested state.
+  Setting parameter F<max> to C<true> skips the transition if
+  the current state is already lower or equal to the requested state.
 
   | cs("/ui").state("visible")
 
