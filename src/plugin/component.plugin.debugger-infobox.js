@@ -109,8 +109,9 @@ _cs.dbg_infobox_content = function (comp) {
     for (id in comp.__subscription)
         if (_cs.isown(comp.__subscription, id))
             if (typeof comp.__subscription[id] === "object")
-                if (!comp.__subscription[id].name.match(/^ComponentJS:/))
-                    subscriptions += "<code>" + comp.__subscription[id].name + "</code>, ";
+                if (typeof comp.__subscription[id].name === "string")
+                    if (!comp.__subscription[id].name.match(/^ComponentJS:/))
+                        subscriptions += "<code>" + comp.__subscription[id].name + "</code>, ";
     subscriptions = subscriptions.replace(/, $/, "");
     if (subscriptions === "")
         subscriptions = "<span class=\"none\">none</span>";
@@ -124,9 +125,10 @@ _cs.dbg_infobox_content = function (comp) {
     for (id in comp.__subscription)
         if (_cs.isown(comp.__subscription, id))
             if (typeof comp.__subscription[id] === "object")
-                if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
-                    registrations += "<code>" + comp.__subscription[id].name
-                        .replace(/^ComponentJS:service:/, "") + "</code>, ";
+                if (typeof comp.__subscription[id].name === "string")
+                    if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
+                        registrations += "<code>" + comp.__subscription[id].name
+                            .replace(/^ComponentJS:service:/, "") + "</code>, ";
     registrations = registrations.replace(/, $/, "");
     if (registrations === "")
         registrations = "<span class=\"none\">none</span>";
@@ -140,9 +142,10 @@ _cs.dbg_infobox_content = function (comp) {
     for (id in comp.__subscription)
         if (_cs.isown(comp.__subscription, id))
             if (typeof comp.__subscription[id] === "object")
-                if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
-                    hooks += "<code>" + comp.__subscription[id].name
-                        .replace(/^ComponentJS:hook:/, "") + "</code>, ";
+                if (typeof comp.__subscription[id].name === "string")
+                    if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
+                        hooks += "<code>" + comp.__subscription[id].name
+                            .replace(/^ComponentJS:hook:/, "") + "</code>, ";
     hooks = hooks.replace(/, $/, "");
     if (hooks === "")
         hooks = "<span class=\"none\">none</span>";

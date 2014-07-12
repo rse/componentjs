@@ -29,6 +29,10 @@
       Method state() now supports the additional optional parameters
       "min" and "max" for conveniently refining the transition request.
 
+    o BUGFIX:
+      Prevent errors in debugger in case the subscription is not a
+      string (but perhaps a RegExp)
+
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------
 
