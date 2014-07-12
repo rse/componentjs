@@ -341,7 +341,7 @@ $cs.pattern.state = $cs.trait({
             var params = $cs.params("state", arguments, {
                 state:    { pos: 0, req: true,
                             valid: function (s) { return _cs.state_name2idx(s) !== -1; } },
-                callback: { pos: 1, def: undefined },
+                func:     { pos: 1, def: undefined },
                 min:      {         def: undefined },
                 max:      {         def: undefined },
                 sync:     {         def: false     }
@@ -358,7 +358,7 @@ $cs.pattern.state = $cs.trait({
                 var request = {
                     comp:     this,
                     state:    params.state,
-                    callback: params.callback
+                    callback: params.func
                 };
                 if (params.sync) {
                     /*  perform new state transition request (synchronously)  */
@@ -375,8 +375,8 @@ $cs.pattern.state = $cs.trait({
             }
             else {
                 /*  still run its optional callback function  */
-                if (typeof params.callback === "function")
-                    params.callback.call(this, params.state);
+                if (typeof params.func === "function")
+                    params.func.call(this, params.state);
             }
 
             /*  return old (and perhaps still current) state  */

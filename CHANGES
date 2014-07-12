@@ -38,6 +38,13 @@
       under Firefox and similar browers (where an Event has no
       .offsetX/Y but .layerX/Y and .clientX/Y properties).
 
+    o INCOMPATIBILITY:
+      Renamed the second argument of state() from "callback" to just
+      "func" to be aligned with all other callback parameters in the
+      API. This is just an incompatibility if state() is called with
+      named parameters, not if state() is called with positional
+      parameters.
+
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------
 
