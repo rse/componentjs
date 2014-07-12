@@ -346,7 +346,11 @@ _cs.dbg_update_once = function () {
             /*  determine component on infobox event  */
             var infobox_event = function (ev) {
                 var mx = ev.offsetX;
+                if (typeof mx === "undefined") mx = ev.layerX;
+                if (typeof mx === "undefined") mx = ev.clientX;
                 var my = ev.offsetY;
+                if (typeof my === "undefined") my = ev.layerY;
+                if (typeof my === "undefined") my = ev.clientY - _cs.jq(".dbg .header", _cs.dbg.document).height();
                 var comp = null;
                 _cs.root.walk_down(function (level, comp_this, X, depth_first) {
                     if (depth_first) {

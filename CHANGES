@@ -33,6 +33,11 @@
       Prevent errors in debugger in case the subscription is not a
       string (but perhaps a RegExp)
 
+    o BUGFIX:
+      Fix debugger's "click on component and show infobox" functionality
+      under Firefox and similar browers (where an Event has no
+      .offsetX/Y but .layerX/Y and .clientX/Y properties).
+
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------
 
