@@ -46,10 +46,10 @@ transitions, enter and leave methods are called accordingly.
   | cs.transition("enabled",      "enable",  "disable",  "#336600");
 
 - O<component>.M<state>(): T<String>;
-  O<component>.M<state>(P<state>: T<String>[, P<callback>: T<Function>]): T<String>;
+  O<component>.M<state>(P<state>: T<String>[, P<func>: T<Function>]): T<String>;
   O<component>.M<state>({
       F<state>: T<String>,
-      [F<callback>: T<Function> = undefined,]
+      [F<func>: T<Function> = undefined,]
       [F<sync>: T<Boolean> = false,]
       [F<min>: T<Boolean> = undefined,]
       [F<max>: T<Boolean> = undefined]
@@ -58,7 +58,7 @@ transitions, enter and leave methods are called accordingly.
   Determine the current state or request a transition to a new state of O<component>.
   By default a state transition is performed asynchronously, but you
   can request a synchronous transition with F<sync>. For asynchronous
-  transitions you can await the transition finish with F<callback>.
+  transitions you can await the transition finish with F<func>.
   The old state is returned on state transitions.
   On each state transition, for each transitively involved component and each
   target or intermediate state, a non-capturing/non-bubbling event is
