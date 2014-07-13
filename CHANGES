@@ -45,6 +45,11 @@
       named parameters, not if state() is called with positional
       parameters.
 
+    o ADDITION:
+      Added new "testdrive" plugin which provides a use-case based
+      suite of tests for test-driving an application through bare state
+      transitions and model manipulations.
+
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------
 

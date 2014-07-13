@@ -42,4 +42,5 @@ var load = function (name) {
 /*  load all library parts  */
 global.ComponentJS = load("component").ComponentJS;
 global.cs = global.ComponentJS;
+load("component.plugin.testdrive");
 

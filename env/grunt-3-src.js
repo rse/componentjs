@@ -65,11 +65,40 @@ module.exports = function (grunt) {
         }
     });
 
+    /*  build plugins (testdrive only)  */
+    grunt.extendConfig({
+        newer: {
+            "src-plugin-testdrive": {
+                src: [ "src/plugin/component.plugin.testdrive.js", "src/plugin/component.plugin.testdrive-*.js" ],
+                dest: "bld/component.plugin.testdrive.js",
+                options: { tasks: [ "expand-include:src-plugin-testdrive" ] }
+            }
+        },
+        "expand-include": {
+            "src-plugin-testdrive": {
+                src: "src/plugin/component.plugin.testdrive.js",
+                dest: "bld/component.plugin.testdrive.js",
+                options: {
+                    directiveSyntax: "js"
+                }
+            }
+        },
+        clean: {
+            "src-plugin-testdrive": [
+                "bld/component.plugin.testdrive.js"
+            ]
+        }
+    });
+
     /*  build plugins (others)  */
     grunt.extendConfig({
         newer: {
             "src-plugin-other": {
-                src: [ "src/plugin/component.plugin.*.js", "!src/plugin/component.plugin.debugger*.js" ],
+                src: [
+                    "src/plugin/component.plugin.*.js",
+                    "!src/plugin/component.plugin.debugger*.js",
+                    "!src/plugin/component.plugin.testdrive*.js"
+                ],
                 dest: "bld/component.plugin.jquery.js",
                 options: { tasks: [ "copy:src-plugin-other" ] }
             }
@@ -80,7 +109,8 @@ module.exports = function (grunt) {
                     expand: true,
                     src: [
                         "src/plugin/component.plugin.*.js",
-                        "!src/plugin/component.plugin.debugger*.js"
+                        "!src/plugin/component.plugin.debugger*.js",
+                        "!src/plugin/component.plugin.testdrive*.js"
                     ],
                     dest: "bld",
                     flatten: true
@@ -254,6 +284,7 @@ module.exports = function (grunt) {
     grunt.registerTask("src-build", [
         "newer:src-core",
         "newer:src-plugin-debugger",
+        "newer:src-plugin-testdrive",
         "newer:src-plugin-other",
         "newer:src-jshint",
         "newer:src-eslint",
@@ -264,6 +295,7 @@ module.exports = function (grunt) {
     grunt.registerTask("src-clean", [
         "clean:src-core",
         "clean:src-plugin-debugger",
+        "clean:src-plugin-testdrive",
         "clean:src-plugin-other",
         "clean:src-jshint",
         "clean:src-eslint",

@@ -19,6 +19,7 @@ load("tst/demo/app-ui-login-ctrl.js")
 load("tst/demo/app-ui-login-model.js")
 load("tst/demo/app-ui-login-view.js")
 load("tst/demo/app-sv.js")
+load("tst/demo/app-testdrive.js")
 
 /*  execute test scenario  */
 describe("ComponentJS Demo (Headless Mode)", function () {
