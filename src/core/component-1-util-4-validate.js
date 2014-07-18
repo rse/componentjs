@@ -13,7 +13,7 @@ $cs.validate = function (value, spec) {
     if (typeof spec === "object" && spec instanceof RegExp)
         return spec.test(value.toString());
 
-    /*  case 1: specification is a function  */
+    /*  case 2: specification is a function  */
     else if (typeof spec === "function")
         return spec(value);
 
