@@ -315,7 +315,8 @@ $cs.pattern.model = $cs.trait({
                 func:      { pos: 1, req: true,   valid: "function"      },
                 touch:     {         def: false,  valid: "boolean"       },
                 op:        {         def: "set",  valid: /^(?:get|set|changed|splice|delete|)$/ },
-                spool:     {         def: null,   valid: "(null|string)" }
+                spool:     {         def: null,   valid: "(null|string)" },
+                noevent:   {         def: false,  valid: "boolean"       }
             });
 
             /*  parse the value name into selection path segments  */
@@ -351,6 +352,7 @@ $cs.pattern.model = $cs.trait({
                 capturing: false,
                 spreading: false,
                 bubbling:  false,
+                noevent:   params.noevent,
                 func:      params.func
             });
 

@@ -190,7 +190,8 @@ displaying the Model information and storing events into it.
       F<func>: T<Function>,
       [F<touch>: T<Boolean> = false,]
       [F<op>: T<String> = "set",]
-      [F<spool>: T<String> = null]
+      [F<spool>: T<String> = null,]
+      [F<noevent>: T<Boolean> = false]
   }): T<Number>;
   O<component>.M<observe>(
       F<name>: T<String>,
@@ -210,7 +211,9 @@ displaying the Model information and storing events into it.
   uniquely identifies the observation. Instead of having to manually
   release the observation later via M<unobserve>() you can use the spool
   mechanism and spool the corresponding M<unobserve>() operation via
-  F<spool>.
+  F<spool>. Option F<noevent> (similar to the same option for M<subscribe>())
+  prevents the passing of the event parameter P<ev> to the callback function
+  F<func> in case you don't need it.
 
   | id = cs(this).observe("state:username", function (ev, username) {
   |     ...

@@ -50,6 +50,11 @@
       suite of tests for test-driving an application through bare state
       transitions and model manipulations.
 
+    o ADDITION:
+      Added "noevent" parameter to observe() which (similar to
+      "noevengt" on subscribe()) prevents the event to be passed as
+      first argument to the callback function.
+
     Major changes between ComponentJS 1.1.0 and 1.1.1
     -------------------------------------------------
 
