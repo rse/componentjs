@@ -201,13 +201,16 @@ displaying the Model information and storing events into it.
   for F<op> operations (by default "set" operations).
   For "get" operations, the callback function F<func> has to be of
   signature F<func>(P<ev>: T<Event>, P<value>: T<Object>): T<Void>.
-  For "set" and "changed" operations, the callback function F<func> has to be of signature
-  F<func>(P<ev>: T<Event>, P<value-new>: T<Object>, P<value-old>: T<Object>, P<op>: T<Object>, P<path>: T<String>): T<Void>.
-  Both types of callbacks can override the value by using P<ev>.M<result>(P<value>).
-  The M<observe>() method returns an id which uniquely identifies the observation.
-  Instead of having to manually release the observation later via M<unobserve>()
-  you can use the spool mechanism and spool the corresponding M<unobserve>()
-  operation via F<spool>.
+  For "set" (and "splice", "delete", "push", "pop", "unshift", "shift")
+  and "changed" operations, the callback function F<func> has to be
+  of signature F<func>(P<ev>: T<Event>, P<value-new>: T<Object>,
+  P<value-old>: T<Object>, P<op>: T<Object>, P<path>: T<String>):
+  T<Void>. Both types of callbacks can override the value by using
+  P<ev>.M<result>(P<value>). The M<observe>() method returns an id which
+  uniquely identifies the observation. Instead of having to manually
+  release the observation later via M<unobserve>() you can use the spool
+  mechanism and spool the corresponding M<unobserve>() operation via
+  F<spool>.
 
   | id = cs(this).observe("state:username", function (ev, username) {
   |     ...
