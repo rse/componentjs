@@ -208,8 +208,8 @@ $cs.pattern.model = $cs.trait({
                             (subPath.length > 0 ? " at sub-path \"" + subPath.join(".") + "\"" : ""));
                 }
 
-                /*  send event to observers for value set/splice operation and allow observers
-                    to reject value set operation and/or change new value to set  */
+                /*  send event to observers for value set/delete/splice operation
+                    and allow observers to reject operation and/or change new value to set  */
                 var cont = true;
                 if (owner.property({ name: "ComponentJS:model:subscribers:" + params.op[0], def: 0, bubbling: false }) > 0) {
                     ev = owner.publish({
