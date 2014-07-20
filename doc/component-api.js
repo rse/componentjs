@@ -13,6 +13,7 @@
 /* jshint -W003: false */
 /* eslint no-console: 0 */
 /* eslint no-use-before-define: 0 */
+/* eslint no-shadow: 0 */
 
 /*  load external requirements  */
 var fs  = require("fs");
