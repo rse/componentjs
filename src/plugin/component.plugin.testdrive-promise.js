@@ -22,7 +22,7 @@ $cs.promise = (function () {
     /* global process: false */
     /* global define: false */
     /* eslint no-unused-expressions: 0 */
-    /* eslint no-yoda: 0 */
+    /* eslint yoda: 0 */
     /* eslint semi: 0 */
     /* eslint space-infix-ops: 0 */
     /* eslint eqeqeq: 0 */
