@@ -10,7 +10,7 @@
 /*  global API function: promise-based polling  */
 $cs.poll = function () {
     /*  determine parameters  */
-    var params = $cs.params("sleep", arguments, {
+    var params = $cs.params("poll", arguments, {
         check: { pos: 0, req: true, valid: "function"          },
         wait:  { pos: 1, def: 100,  valid: "(function|number)" },
         max:   { pos: 2, def: 600,  valid: "number"            }
