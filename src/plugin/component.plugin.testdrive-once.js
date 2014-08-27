@@ -7,7 +7,7 @@
 **  with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-/*  global API function: promise-based jQuery#on()  */
+/*  global API function: promise-based jQuery#one() with additional DOM mutation support  */
 $cs.once = function () {
     /*  determine parameters  */
     var params = $cs.params("once", arguments, {
