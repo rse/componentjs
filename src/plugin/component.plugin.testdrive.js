@@ -25,7 +25,7 @@ ComponentJS.plugin("testdrive", function (_cs, $cs, GLOBAL) {
     include("component.plugin.testdrive-ensure.js");
     include("component.plugin.testdrive-await.js");
     include("component.plugin.testdrive-poll.js");
-    include("component.plugin.testdrive-once.js");
     include("component.plugin.testdrive-sleep.js");
+    include("component.plugin.testdrive-once.js");
 });
 
