@@ -75,7 +75,7 @@ $cs.drive = function () {
     if (!resolved) {
         if (   (typeof result === "object" || typeof result === "function")
             && typeof result.then === "function"                           )
-            /*  replace out response promise with the given one  */
+            /*  replace our response promise with the given one  */
             response = result;
         else
             /*  fulfill our response promise  */
