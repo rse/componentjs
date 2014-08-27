@@ -16,7 +16,7 @@ $cs.drive = function () {
     var params = $cs.params("drive", arguments, {
         name:       { pos: 0, req: true, valid: "string" },
         conf:       { pos: 1, def: {},   valid: "object" },
-        timeout:    {         def: 0                     }
+        timeout:    { pos: 2, def: 0,    valid: "number" }
     });
 
     /*  sanity check usecase  */
