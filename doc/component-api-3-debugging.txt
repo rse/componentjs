@@ -31,7 +31,7 @@ especially for visualizing the current component tree in real-time.
 
 - ComponentJS.M<debug_instrumented>(): T<Boolean>
 
-  Notice: available through the ComponentJS plugin C<debugger> only!
+  Notice: requires ComponentJS plugin C<debugger> to be loaded!
 
   Determine whether the current browser is "instrumented" for debugging, i.e., whether
   the browser's built-in debugger is activated (in detached mode only). Currently
@@ -52,7 +52,7 @@ especially for visualizing the current component tree in real-time.
       P<autoclose>: T<Boolean>,
       P<name>: T<String>)
 
-  Notice: available through the ComponentJS plugin C<debugger> only!
+  Notice: requires ComponentJS plugin C<debugger> to be loaded!
 
   On F<enable> C<true>/C<false> open/close the extra browser window
   containing the ComponentJS debugger view for the ComponentJS application
