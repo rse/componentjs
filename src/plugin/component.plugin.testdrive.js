@@ -11,12 +11,6 @@
  *  This is a ComponentJS plugin which provides a Promise-based
  *  environment for test-driving a ComponentJS application based on a
  *  set of use-cases.
- *
- *  usecase(name: string, desc: string, cb: (done: () => void) => void): void
- *  drive  (name: string, ...args: any[]                   ): Thenable
- *  ensure (path: string, state: string                    ): Thenable
- *  await  (path: string, state: string, direction?: string): Thenable
- *  promise(executor?: ): Promise
  */
 
 /* global ComponentJS: false */
