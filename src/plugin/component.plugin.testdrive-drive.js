@@ -83,9 +83,7 @@ $cs.drive = function () {
     }
 
     response = response.then(null, function (e) {
-        /* global console: true */
-        /* eslint no-console: 0 */
-        console.log("testdrive: ERROR: ", e);
+        $cs.debug(1, "drive: usecase \"" + params.name + "\" failed: " + e);
         return e;
     });
 
