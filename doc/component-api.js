@@ -206,6 +206,12 @@ function parse2 (title, body) {
                     html_spec += txt + "\n";
                     html_spec += "</div>";
                 }
+                else if (xre.test(txt, xre("^\\s*Notice:\\s+", "s"))) {
+                    txt = conv(0, txt);
+                    html_spec += "<div class=\"notice\">";
+                    html_spec += txt + "\n";
+                    html_spec += "</div>";
+                }
                 else if (xre.test(txt, xre("^\\s*\\.\\s", "s"))) {
                     txt = xre.replace(txt, xre("([ \\t]+)\\.([ \\t]+)(.+?\\n(?:\\1 \\2.*?\\n)*)", "sg"), "<li>$3</li>");
                     txt = conv(0, txt);
