@@ -82,6 +82,7 @@ $cs.drive = function () {
             promise.fulfill(true);
     }
 
+    /*  log the regular reject of the promise, too  */
     response = response.then(null, function (e) {
         $cs.debug(1, "drive: usecase \"" + params.name + "\" failed: " + e);
         return e;
