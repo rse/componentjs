@@ -147,7 +147,11 @@ $cs.suite = function () {
         if (typeof id === "string" && id !== "") {
             /*  close UI and execute usecase  */
             close(function () {
-                $cs.drive(id);
+                $cs.drive(id).then(null, function (e) {
+                    /* global alert: true */
+                    /* eslint no-alert: 0 */
+                    alert("ComponentJS: testdrive: use case \"" + "\" failed: " + e);
+                });
             });
         }
     });
