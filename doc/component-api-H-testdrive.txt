@@ -1,0 +1,291 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2014 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License (MPL), version 2.0. If a copy of the MPL was not distributed
+##  with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Test-Driving
+------------
+
+ComponentJS has optional support for test-driving an application,
+based on asynchronously executed use-cases with the help
+of its C<testdrive> plugin.
+
+- ComponentJS.M<suite>(): T<Void>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Notice: requires external library jQuery to be loaded!
+
+  Open the interactive dialog of use-cases which can be driven.
+  Usually this is executed from within the application itself
+  (in case the test-drive functionality is used for something
+  like UI macros) or through an external bookmark.
+
+  | /*  open test-drive suite from within application  */
+  | if (cs.plugin("testdrive"))
+  |     cs.suite();
+
+  | <!-- open test-drive suite from within a bookmark/link -->
+  | <a href="javascript:cs.suite()">test-drive</a>
+
+- [new] ComponentJS.M<promise>(): T<Promise>;
+  [new] ComponentJS.M<promise>(P<executor>: T<Function>): T<Void>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Return a Promise/A+ based promise, internally backed by
+  an embedded "Thenable" implementation. The alternative
+  usage with an P<executor> (of type "C<(fulfill: (value?: any) =&gt; Promise, 
+  reject: (value?: any) =&gt; Promise) =&gt; void>" in TypeScript definition syntax)
+  avoids a temporary variable.
+
+  | /*  standard usage  */
+  | var promise = new $cs.promise();
+  | doSomethingAsync(
+  |     function onSuccess (msg) { promise.fulfill(msg); }, 
+  |     function onError   (err) { promise.reject(err);  }
+  | );
+  | return promise.proxy;
+
+  | /*  alternative usage (regular)  */
+  | return new $cs.promise(function (fulfill, reject) {
+  |     doSomethingAsync(
+  |         function onSuccess (msg) { fulfill(msg); }, 
+  |         function onError   (err) { reject(err);  }
+  |     );
+  | }).proxy;
+
+  | /*  alternative usage (compact)  */
+  | return $cs.promise(function (fulfill, reject) {
+  |     doSomethingAsync(fulfill, reject);
+  | }).proxy;
+
+- ComponentJS.M<usecase>({
+      F<name>: T<String>, 
+      F<desc>: T<String>, 
+      [F<conf>: T<Object>,]
+      F<func>: T<Function>
+  }): T<Void>;
+  ComponentJS.M<usecase>(
+      P<name>: T<String>, 
+      P<desc>: T<String>, 
+      P<func>: T<Function>
+  ): T<Void>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Define a single use-case of unique name F<name>, with description
+  F<desc>, default configuration F<conf> and the use-case executing
+  function F<func> (of type "C<() =&gt; void>" in TypeScript definition syntax).
+  The P<name> is used for driving the use-case with M<drive>()
+  and F<conf> can be overwritten with M<drive>().
+  The function F<func> can either execute synchronously
+  or asynchronously. In case of a synchronous execution, the
+  return value of F<func> does not matter. In case of an asynchronous
+  execution, the return value of F<func> has to be a Promise/A+ based
+  promise (usually created with M<ensure>(), M<await>(), M<drive> or M<poll> implicitly,
+  or with M<promise>() explicitly). The callback function receives the
+  actual configuration as the first parameter.
+
+  | if (cs.plugin("testdrive")) {
+  |     cs.usecase("reset", "reset all login dialogs", function () {
+  |         return cs.ensure("/ui/panel/model", "prepared").then(function (comp) {
+  |             comp.value("event:reset", true);
+  |         });
+  |     });
+  |     cs.usecase({
+  |         name: "login",
+  |         desc: "fill out a login dialog",
+  |         conf: { num: 1, realm: "foo", username: "bar", password: "baz!quux" },
+  |         func: function (conf) {
+  |             return cs.ensure("//login" + conf.num + "/model", "prepared")
+                .then(function (comp) {
+  |                 comp.value("data:realm", conf.realm);
+  |                 comp.value("data:username", conf.username);
+  |                 comp.value("data:password", conf.password);
+  |                 comp.value("event:login-requested", true);
+  |             });
+  |         }
+  |     });
+  |     cs.usecase({
+  |         name: "awaitStatus",
+  |         desc: "await the status to show a particular text",
+  |         conf: { num: 1, realm: "foo", username: "bar", password: "baz!quux" },
+  |         func: function (conf) {
+  |             var re = new RegExp("login from \".*login" + conf.num +
+  |                 "\" with realm \"" + conf.realm + "\", username \"" + 
+  |                 conf.username + "\" and password \"" + conf.password + "\"");
+  |             return cs.poll(function (fulfill, reject) {
+  |                 return $("div.status").text().match(re);
+  |             }, function () {
+  |                 return cs.once($("div.status"), "mutation");
+  |             });
+  |         }
+  |     });
+  |     cs.usecase("all", "fill out all login dialogs", function () {
+  |         return cs.drive("reset")
+  |             .then(function () { return cs.drive("login",       { num: 2 }); })
+  |             .then(function () { return cs.drive("awaitStatus", { num: 2 }); })
+  |     });
+  | }
+
+- ComponentJS.M<drive>({
+      F<name>: T<String>, 
+      [F<conf>: T<Object>,]
+      [F<timeout>: T<Number>]
+  }): T<Promise>;
+  ComponentJS.M<drive>(
+      P<name>: T<String>, 
+      [P<conf>: T<Object>,] 
+      [P<timeout>: T<Number>]
+  ): T<Promise>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Drive a single use-case F<name>, with optional
+  configuration F<conf> and a run-time timeout of T<timeout> (by default 10*1000) milliseconds.
+  The function returns a Promise/A+ promise which is either fulfilled (with dummy value C<true>)
+  or rejected with an error message.
+
+  | cs.drive("login", { num: 3 }, 2*1000).then(null, function (e) {
+  |     alert("failed to login");
+  | });
+
+- ComponentJS.M<ensure>({
+      F<path>: T<String>, 
+      F<state>: T<String>,
+      [F<min>: T<Boolean> = C<true>,]
+      [F<max>: T<Boolean> = C<false>,]
+      [F<sync>: T<Boolean> = C<false>]
+  }): T<Promise>;
+  ComponentJS.M<ensure>(
+      P<path>: T<String>, 
+      P<state>: T<String>
+  ): T<Promise>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Ensure that a component under F<path> reaches a particular F<state> which is
+  at least (in case of F<min> = C<true>), and/or at most (in case of F<max> = true) 
+  a particular F<state>, by synchronously (in case of F<sync> = C<true>) or asynchronously 
+  (by default), triggering a state change on the component under F<path>.
+  The state change is explicitly trigger by M<ensure>() itself.
+  The function returns a Promise/A+ promise which is either fulfilled with the component
+  object corresponding to F<path> or rejected with an error message.
+
+  | cs.ensure({ path: "//login1/model", state: "prepared", min: true })
+  | .then(function (comp) {
+  |     comp.value("data:username", "foo");
+  | });
+
+- ComponentJS.M<await>({
+      F<path>: T<String>, 
+      F<state>: T<String>,
+      [F<direction>: T<String> = C<"enter">]
+  }): T<Promise>;
+  ComponentJS.M<await>(
+      P<path>: T<String>, 
+      P<state>: T<String>,
+      [P<direction>: T<String> = C<"enter">]
+  ): T<Promise>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Awaits that a component under F<path> reaches a particular F<state>,
+  either on enter (in case of F<direction> = C<"enter">) or
+  leave (in case of F<direction> = C<"enter">). The enter/leave methods
+  of the component will be already called in both cases. The component
+  under F<path> is NOT required to already exist. It is allowed
+  that it springs into existence later.
+  There is NO state change trigger by M<await>() itself.
+  The function returns a Promise/A+ promise which is either fulfilled with the component
+  object corresponding to F<path> or rejected with an error message.
+
+  | cs.await({ path: "//login1/model", state: "prepared" }).then(function (comp) {
+  |     comp.value("data:username", "foo");
+  | });
+
+- ComponentJS.M<poll>({
+      F<check>: T<Function>, 
+      [F<wait>: T<Function>,]
+      [F<max>: T<Number> = C<600>]
+  }): T<Promise>;
+  ComponentJS.M<poll>(
+      P<check>: T<Function>, 
+      [P<wait>: T<Function>,]
+      [P<max>: T<Number> = C<600>]
+  ): T<Promise>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Polls for a situation to occur by checking its occurance condition with F<check> (of
+  type C<() => Boolean> in TypeScript definition syntax) and
+  in case of a still F<false> return waits through F<wait>
+  and repeat from the beginning with a new round with F<check>.
+  The F<wait> function has to be of type "C<() =&gt; Promise>"
+  and usually delays processing (usually with C<setTimeout>())
+  and then resolves. If you pass a T<Number> instead of a T<Function>
+  to F<wait>, a default implementation is used which waits the
+  number of milliseconds. The default for F<wait> is C<100>, i.e.,
+  it internally maps onto "C<function () { return cs.sleep(100); }>".
+
+  | cs.usecase({
+  |     name: "awaitStatus",
+  |     desc: "await the status to show a particular text",
+  |     conf: { num: 1, realm: "foo", username: "bar", password: "baz!quux" },
+  |     func: function (conf) {
+  |         var re = new RegExp("login from \".*login" + conf.num +
+  |             "\" with realm \"" + conf.realm + "\", username \"" + 
+  |             conf.username + "\" and password \"" + conf.password + "\"");
+  |         return cs.poll(function (fulfill, reject) {
+  |             return $("div.status").text().match(re);
+  |         }, function () {
+  |             return cs.once($("div.status"), "mutation");
+  |         });
+  |     }
+  | });
+
+- ComponentJS.M<sleep>({
+      F<ms>: T<Number>,
+  }): T<Promise>;
+  ComponentJS.M<sleep>(
+      P<ms>: T<Number>
+  ): T<Promise>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Sleeps a certain amount of milliseconds (with C<setTimeout>())
+  and then resolves the promise which is returned by this function.
+
+  | cs.sleep(100).then(function () { ... })
+
+- ComponentJS.M<once>({
+      F<selector>: T<String/Object>,
+      F<events>: T<String>,
+      [F<subselector>: T<String> = C<null>]
+  }): T<Promise>;
+  ComponentJS.M<once>(
+      P<selector>: T<String/Object>,
+      P<events>: T<String>,
+      [P<subselector>: T<String> = C<null>]
+  ): T<Promise>
+
+  Notice: requires ComponentJS plugin C<testdrive> to be loaded!
+
+  Notice: requires external library jQuery to be loaded!
+
+  Awaits once(!) with jQuery's M<one>() method for a DOM
+  event to occur and then resolves the promise (with the jQuery event
+  object as the value) this function returns.
+  The three parameters F<selector>, F<events> and F<subselector>
+  are directly passed through to jQuery by mapping onto the
+  internal call "C<jQuery(selector).one(events, subselector, ...)>".
+  Additionally, in case F<events> = C<"mutation"> the function
+  internally uses the HTML5 C<MutationObserver> functionality to
+  await a DOM mutation (in this case F<subselector> is ignored).
+
+  | cs.once("ul.list", "click", "li").then(function (ev) { ... })
