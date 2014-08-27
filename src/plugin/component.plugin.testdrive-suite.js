@@ -29,6 +29,7 @@ $cs.suite = function () {
                 "<div class=\"" + name + "-list\"></div>" +
             "</div>"
         );
+        ui.hide();
         $("body").append(ui);
     }
 
@@ -45,9 +46,15 @@ $cs.suite = function () {
         });
     };
 
+    /*  allow one to close on subsequent call  */
+    if ($("body > ." + name).filter(":visible").length > 0) {
+        close();
+        return;
+    }
+
     /*  determine sizes  */
     var w = $(GLOBAL).width();
-    var uiw = (w/10) * 8;
+    var uiw = (w / 10) * 8;
     var uih = 400;
 
     /*  style the UI panel  */
