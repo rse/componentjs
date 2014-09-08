@@ -311,12 +311,13 @@ $cs.pattern.model = $cs.trait({
         observe: function () {
             /*  determine parameters  */
             var params = $cs.params("observe", arguments, {
-                name:      { pos: 0, req: true,   valid: "string"        },
-                func:      { pos: 1, req: true,   valid: "function"      },
-                touch:     {         def: false,  valid: "boolean"       },
-                op:        {         def: "set",  valid: /^(?:get|set|changed|splice|delete|)$/ },
-                spool:     {         def: null,   valid: "(null|string)" },
-                noevent:   {         def: false,  valid: "boolean"       }
+                name:        { pos: 0, req: true,   valid: "string"        },
+                func:        { pos: 1, req: true,   valid: "function"      },
+                touch:       {         def: false,  valid: "boolean"       },
+                boot:        {         def: false,  valid: "boolean"       },
+                op:          {         def: "set",  valid: /^(?:get|set|changed|splice|delete|)$/ },
+                spool:       {         def: null,   valid: "(null|string)" },
+                noevent:     {         def: false,  valid: "boolean"       }
             });
 
             /*  parse the value name into selection path segments  */
@@ -369,9 +370,28 @@ $cs.pattern.model = $cs.trait({
                 info.comp.spool(info.name, this, "unobserve", id);
             }
 
-            /*  if requested, touch the model value once (for an initial observer run)  */
+            /*  if requested (for a one-time initial observer run),
+                either touch the model value once (which causes _all_ observers to trigger!)
+                or do a "bootstrapping execution" of only our callback function once  */
             if (params.touch)
                 this.touch(params.name);
+            else if (params.boot) {
+                var value = this.value(params.name);
+                var args = [ value, value, params.op, path.join(".") ];
+                if (!params.noevent) {
+                    args.unshift($cs.event({
+                        name:        params.name,
+                        spec:        {},
+                        async:       false,
+                        result:      undefined,
+                        target:      this,
+                        propagation: true,
+                        processing:  true,
+                        dispatched:  false
+                    }));
+                }
+                params.func.apply(this, args);
+            }
 
             return id;
         },

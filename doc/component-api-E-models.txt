@@ -189,6 +189,7 @@ displaying the Model information and storing events into it.
       F<name>: T<String>,
       F<func>: T<Function>,
       [F<touch>: T<Boolean> = false,]
+      [F<boot>: T<Boolean> = false,]
       [F<op>: T<String> = "set",]
       [F<spool>: T<String> = null,]
       [F<noevent>: T<Boolean> = false]
@@ -214,9 +215,14 @@ displaying the Model information and storing events into it.
   F<spool>. Option F<noevent> (similar to the same option for M<subscribe>())
   prevents the passing of the event parameter P<ev> to the callback function
   F<func> in case you don't need it. Option F<touch> causes M<observe>()
-  to execute M<touch>() internally at the end of its operation in order
-  to also execute the callback function F<func> (and also all other
-  observers of model element named F<name>!) once.
+  to execute M<touch>() internally at the end of its observation
+  registration operation for bootstrapping purposes. This indirectly
+  causes the callback function F<func> (and also all other observers) to
+  execute. Option F<boot> causes M<observe>() to execute the callback
+  function F<func> once at the end of its observation registration
+  operation for bootstrapping purposes. This explicitly causes the
+  callback function F<func> (and only F<func> and no other observers) to
+  excecute.
 
   | id = cs(this).observe("state:username", function (ev, username) {
   |     ...
