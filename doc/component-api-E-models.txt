@@ -213,7 +213,10 @@ displaying the Model information and storing events into it.
   mechanism and spool the corresponding M<unobserve>() operation via
   F<spool>. Option F<noevent> (similar to the same option for M<subscribe>())
   prevents the passing of the event parameter P<ev> to the callback function
-  F<func> in case you don't need it.
+  F<func> in case you don't need it. Option F<touch> causes M<observe>()
+  to execute M<touch>() internally at the end of its operation in order
+  to also execute the callback function F<func> (and also all other
+  observers of model element named F<name>!) once.
 
   | id = cs(this).observe("state:username", function (ev, username) {
   |     ...
