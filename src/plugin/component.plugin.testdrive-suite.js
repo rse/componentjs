@@ -64,7 +64,7 @@ $cs.suite = function () {
         .css("top", -uih)
         .css("left", (w / 2) - (uiw / 2))
         .css("position", "absolute")
-        .css("z-index", 1000)
+        .css("z-index", 10000)
         .css("background-color", "#f8f8f8")
         .css("-webkit-box-shadow", "0 4px 16px 0 #909090")
         .css("box-shadow", "0 4px 16px 0 #909090")
