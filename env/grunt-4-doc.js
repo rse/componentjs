@@ -30,7 +30,7 @@ module.exports = function (grunt) {
                     "\"<%= version_string %>\" " +
                     "bld/component-api.screen.html " +
                     "doc/component-api.tmpl " +
-                    "doc/component-api-*.txt"
+                    grunt.file.expand("doc/component-api-*.txt").join(" ")
             }
         },
         clean: {
