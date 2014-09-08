@@ -179,7 +179,7 @@ displaying the Model information and storing events into it.
   )
 
   Touches the value of O<component>'s model element named F<name>,
-  without changing the value but with triggering all its "get" observers
+  without changing the value but with triggering all its "set" observers
   (its "changed" observers are not triggered). This can be useful for
   firing "set" observers manually.
 
