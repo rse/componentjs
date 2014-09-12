@@ -17,10 +17,15 @@ $cs.poll = function () {
     });
 
     /*  optionally on-the-fly provide waiting-promise  */
-    if (typeof params.wait === "number")
-        params.wait = function () { return $cs.sleep(params.wait); };
+    if (typeof params.wait === "number") {
+        params.wait = (function (wait) {
+            return function () {
+                return $cs.sleep(wait);
+            };
+        })(params.wait);
+    }
 
-    /*  create promise around a polling loop */
+    /*  create promise around a polling loop  */
     var check = params.check;
     var wait  = params.wait;
     var max   = params.max;
