@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.0 and 1.2.1
+    -------------------------------------------------
+
+    o BUGFIX:
+      Fixed "wait" parameter of testdrive#poll() for the case of a
+      passed number instead of a function.
+
     Major changes between ComponentJS 1.1.1 and 1.2.0
     -------------------------------------------------
 
