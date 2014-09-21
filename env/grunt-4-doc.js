@@ -11,7 +11,7 @@
 /* global process: true */
 module.exports = function (grunt) {
     /*  generate HTML format  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "doc-component-api-screen-html": {
                 src: [
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
     });
 
     /*  generate TXT format  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "doc-component-api-screen-txt": {
                 src: [ "bld/component-api.screen.html" ],
@@ -73,7 +73,7 @@ module.exports = function (grunt) {
     });
 
     /*  generate PDF format  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "doc-component-api-print-a4-pdf": {
                 src: [ "bld/component-api.screen.html" ],

@@ -10,7 +10,7 @@
 /* global module: true */
 module.exports = function (grunt) {
     /*  build core  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-core": {
                 src: [ "src/core/component.js", "src/core/component-*.js" ],
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
     });
 
     /*  build plugins (debugger only)  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-plugin-debugger": {
                 src: [ "src/plugin/component.plugin.debugger.js", "src/plugin/component.plugin.debugger-*.js" ],
@@ -66,7 +66,7 @@ module.exports = function (grunt) {
     });
 
     /*  build plugins (testdrive only)  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-plugin-testdrive": {
                 src: [ "src/plugin/component.plugin.testdrive.js", "src/plugin/component.plugin.testdrive-*.js" ],
@@ -91,7 +91,7 @@ module.exports = function (grunt) {
     });
 
     /*  build plugins (others)  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-plugin-other": {
                 src: [
@@ -125,7 +125,7 @@ module.exports = function (grunt) {
     });
 
     /*  linting (JSHint)  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-jshint": {
                 src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
@@ -165,7 +165,7 @@ module.exports = function (grunt) {
     });
 
     /*  linting (Google Closure Compiler)  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-closurecompiler": {
                 src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
@@ -209,7 +209,7 @@ module.exports = function (grunt) {
     });
 
     /*  linting (Google Closure Linter)  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-closurelinter": {
                 src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
@@ -250,7 +250,7 @@ module.exports = function (grunt) {
     });
 
     /*  minification (UglifyJS)  */
-    grunt.extendConfig({
+    grunt.config.merge({
         newer: {
             "src-min": {
                 src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
