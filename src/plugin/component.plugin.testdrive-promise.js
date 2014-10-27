@@ -31,6 +31,8 @@ $cs.promise = (function () {
     /* eslint no-use-before-define: 0 */
     /* eslint space-return-throw-case: 0 */
     /* eslint no-catch-shadow: 0 */
+    /* eslint no-shadow: 0 */
+    /* eslint comma-spacing: 0 */
     /* --- START VERBATIM EMBEDDING ---- */
 
 /*
