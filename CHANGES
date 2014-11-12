@@ -22,7 +22,10 @@
       passed number instead of a function.
 
     o BUGFIX:
-      The resolving order of "this.base()" in Clazz/Trait was fixed.
+      The resolving order of Clazz/Trait was fixed.
+
+    o BUGFIX:
+      The traversal of Clazz/Trait on "this.base()" calls was fixed.
 
     Major changes between ComponentJS 1.1.1 and 1.2.0
     -------------------------------------------------

@@ -171,26 +171,33 @@ _cs.clazz_or_trait = function (params, is_clazz) {
 
     /*  internal utility method for resolving the parent class
         in the inheritance chain by searching for one of its functions  */
-    var resolve_extend = function (clazz, func) {
+    var resolve_extend = function (name, clazz, func) {
         /*  determine inheritance of current class  */
         var extend = _cs.annotation(clazz, "extend");
         if (extend === null)
             return null;
 
-        /*  determine whether function is in current class' prototypes  */
+        /*  find function in current class' prototypes and mixin chains  */
         var found = false;
-        var keys = _cs.keysof(clazz.prototype);
-        for (var i = 0; i < keys.length; i++) {
-            if (clazz.prototype[keys[i]] === func) {
-                found = true;
-                break;
+        var currentFuncOfChain = clazz.prototype[name];
+        if (currentFuncOfChain === func)
+            found = true;
+        else {
+            while (typeof currentFuncOfChain === "function") {
+                currentFuncOfChain = resolve_annotation(currentFuncOfChain, "base");
+                if (currentFuncOfChain === null)
+                    break;
+                else if (currentFuncOfChain === func) {
+                    found = true;
+                    break;
+                }
             }
         }
 
         /*  if not found, search recusively in the parent hierarchy,
             starting from the parent class  */
         if (!found)
-            return resolve_extend(extend, func);
+            return resolve_extend(name, extend, func);
 
         /*  return the parent class  */
         return extend;
@@ -213,7 +220,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
                     optionally have to take those into account during resolving, too!  */
         var name = resolve_annotation(arguments.callee.caller, "name");
         var base = resolve_annotation(arguments.callee.caller, "base");
-        var extend = resolve_extend(this.constructor, resolve_clone(arguments.callee.caller));
+        var extend = resolve_extend(name, this.constructor, resolve_clone(arguments.callee.caller));
 
         /*  attempt 1: call base/super/parent function in mixin chain  */
         if (_cs.istypeof(base) === "function")
