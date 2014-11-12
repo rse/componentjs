@@ -21,6 +21,9 @@
       Fixed "wait" parameter of testdrive#poll() for the case of a
       passed number instead of a function.
 
+    o BUGFIX:
+      The resolving order of "this.base()" in Clazz/Trait was fixed.
+
     Major changes between ComponentJS 1.1.1 and 1.2.0
     -------------------------------------------------
 

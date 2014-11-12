@@ -100,7 +100,16 @@ _cs.clazz_or_trait = function (params, is_clazz) {
     }
 
     /*
-     *  STEP 3: OPTIONALLY EXPLICITLY INHERIT FROM MIXIN CLASSES
+     *  STEP 3: EXTEND CLASS WITH OWN PROPERTIES AND METHODS
+     */
+
+    if (_cs.isdefined(params.statics))
+        _cs.extend(clazz, params.statics);
+    if (_cs.isdefined(params.protos))
+        _cs.mixin(clazz.prototype, params.protos);
+
+    /*
+     *  STEP 4: OPTIONALLY EXPLICITLY INHERIT FROM MIXIN CLASSES
      */
 
     if (_cs.isdefined(params.mixin)) {
@@ -118,7 +127,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
     }
 
     /*
-     *  STEP 4: OPTIONALLY SET OWN FIELDS/METHODS
+     *  STEP 5: REMEMBER INFORMATION
      */
 
     /*  remember user-supplied constructor function
@@ -139,15 +148,13 @@ _cs.clazz_or_trait = function (params, is_clazz) {
     if (_cs.isdefined(params.setup))
         _cs.annotation(clazz, "setup", params.setup);
 
-    /*  extend class with own properties and methods  */
-    if (_cs.isdefined(params.statics))
-        _cs.extend(clazz, params.statics);
-    if (_cs.isdefined(params.protos))
-        _cs.mixin(clazz.prototype, params.protos);
-
     /*  remember dynamics for per-object initialization  */
     if (_cs.isdefined(params.dynamics))
         _cs.annotation(clazz, "dynamics", params.dynamics);
+
+    /*
+     *  STEP 6: PROVIDE BASE/SUPER/PARENT RESOLVING FUNCTIONALITY
+     */
 
     /*  internal utility method for resolving an annotation on a
         possibly cloned function (just for the following "base" method).
@@ -232,7 +239,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
     };
 
     /*
-     * STEP 5: ALLOW TRAITS TO POST-ADJUST/SETUP DEFINED CLASS
+     *  STEP 7: ALLOW TRAITS TO POST-ADJUST/SETUP DEFINED CLASS
      */
 
     /*  only classes execute trait setups...  */
@@ -253,7 +260,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
     }
 
     /*
-     * STEP 6: PROVIDE RESULTS
+     *  STEP 8: PROVIDE RESULTS
      */
 
     /*  optionally insert class into global namespace ourself  */
