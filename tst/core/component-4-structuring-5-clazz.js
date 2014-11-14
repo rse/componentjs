@@ -69,6 +69,8 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
                     }
                 }
             })
+            expect(function () { var Bad = cs.clazz({ extend: Trait }) }).to.throw(Error)
+            expect(function () { var Bad = cs.clazz({ mixin: [ Foo ] }) }).to.throw(Error)
             expect(Foo).to.be.a("function")
             expect(Foo.BAR).to.be.equal("BAZ")
             var foo = new Foo()
