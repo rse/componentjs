@@ -30,7 +30,7 @@ chai.use(require("chai-things"));
 chai.use(require("chai-interface"));
 
 /*  print stack traces on assertion failures  */
-chai.Assertion.includeStack = true;
+chai.config.includeStack = true;
 
 /*  load either instrumented or regular library  */
 var load = function (name) {
