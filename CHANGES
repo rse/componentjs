@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.1 and 1.2.2
+    -------------------------------------------------
+
+    o BUGFIX:
+      Once again fix edge cases of the class/trait system
+      and the resolving of "this.base()" in traits.
+
     Major changes between ComponentJS 1.2.0 and 1.2.1
     -------------------------------------------------
 
