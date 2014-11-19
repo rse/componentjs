@@ -15,7 +15,7 @@
 
     o BUGFIX:
       Once again fix edge cases of the class/trait system
-      and the resolving of "this.base()" in traits.
+      and the rather complex resolving of "this.base()" in traits.
 
     Major changes between ComponentJS 1.2.0 and 1.2.1
     -------------------------------------------------
