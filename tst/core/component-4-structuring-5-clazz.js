@@ -9,6 +9,46 @@
 
 describe("ComponentJS Application Structuring: Classes and Traits", function () {
     describe("clazz() & trait()", function () {
+        it("classes and traits combinations and base resolving", function () {
+            var Trait11 = cs.trait({ protos: { foo: function () {
+                return "Trait11<" + this.base() + ">"
+            }}})
+            var Trait12 = cs.trait({ protos: { foo: function () {
+                return "Trait12<" + this.base() + ">"
+            }}})
+            var Trait21 = cs.trait({ protos: { foo: function () {
+                return "Trait21<" + this.base() + ">"
+            }}})
+            var Trait22 = cs.trait({ protos: { foo: function () {
+                return "Trait22<" + this.base() + ">"
+            }}})
+            var Trait31 = cs.trait({ protos: { foo: function () {
+                return "Trait31<" + this.base() + ">"
+            }}})
+            var Trait32 = cs.trait({ protos: { foo: function () {
+                return "Trait32<" + this.base() + ">"
+            }}})
+            var Class3 = cs.clazz({
+                mixin: [ Trait31, Trait32 ],
+                protos: { foo: function () { return "Class3" }}
+            })
+            var Class2 = cs.clazz({
+                extend: Class3,
+                mixin: [ Trait21, Trait22 ],
+                protos: { foo: function () { return "Class2<" + this.base() + ">" } }
+            })
+            var Class1 = cs.clazz({
+                extend: Class2,
+                mixin: [ Trait11, Trait12 ],
+                protos: { foo: function () { return "Class1<" + this.base() + ">" } }
+            })
+            var Class0 = cs.clazz({
+                extend: Class1,
+                protos: { foo: function () { return "Class0<" + this.base() + ">" } }
+            })
+            var c0 = new Class0()
+            expect(c0.foo()).to.be.equal("Class0<Trait12<Trait11<Class1<Trait22<Trait21<Class2<Trait32<Trait31<Class3>>>>>>>>>")
+        })
         it("should create reasonable classes", function () {
             var log = ""
             var sentinel = [ "42" ]
@@ -89,3 +129,4 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
         })
     })
 })
+
