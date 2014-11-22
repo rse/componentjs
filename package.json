@@ -24,7 +24,15 @@
         "build"
     ],
     "scripts": {
-        "test": "grunt build test"
+        "update-package-json":  "npm-check-updates -u"
+        "grunt":                "grunt",
+        "build":                "grunt build",
+        "test":                 "grunt build test",
+        "cover":                "grunt build cover",
+        "complexity":           "grunt build complexity",
+        "release":              "grunt release",
+        "snapshot":             "grunt snapshot",
+        "cleanup":              "grunt cleanup",
     },
     "devDependencies": {
         "load-grunt-tasks":     "~1.0.0",
@@ -45,7 +53,7 @@
         "grunt-open":           "~0.2.3",
         "grunt-complexity":     "~0.2.0",
         "grunt-eslint":         "~2.0.0",
-        "grunt-mocha-test":     "~0.12.3",
+        "grunt-mocha-test":     "~0.12.4",
         "grunt-istanbul":       "~0.3.0",
         "grunt-jsonlint":       "~1.0.4",
         "chai":                 "~1.10.0",
@@ -55,6 +63,7 @@
         "chai-interface":       "~1.1.0",
         "sinon-chai":           "~2.6.0",
         "sinon":                "~1.12.1",
-        "xregexp":              "~2.0.0"
+        "xregexp":              "~2.0.0",
+        "npm-check-updates":    "~1.2.0"
     }
 }
