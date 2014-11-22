@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.2 and 1.2.3
+    -------------------------------------------------
+
+    o IMPROVEMENT:
+      provide platform independent alternative to Unix Makefile by
+      leveraging NPM scripts which have node_modules/.bin/ in PATH
+
     Major changes between ComponentJS 1.2.1 and 1.2.2
     -------------------------------------------------
 
