@@ -24,7 +24,7 @@
         "build"
     ],
     "scripts": {
-        "update-package-json":  "npm-check-updates -u"
+        "update-package-json":  "npm-check-updates -u",
         "grunt":                "grunt",
         "build":                "grunt build",
         "test":                 "grunt build test",
@@ -32,7 +32,7 @@
         "complexity":           "grunt build complexity",
         "release":              "grunt release",
         "snapshot":             "grunt snapshot",
-        "cleanup":              "grunt cleanup",
+        "cleanup":              "grunt cleanup"
     },
     "devDependencies": {
         "load-grunt-tasks":     "~1.0.0",
