@@ -19,7 +19,7 @@ describe("ComponentJS Component Tree", function () {
     describe("path()", function () {
         it("should return reasonable path", function () {
             expect(cs("/foo/bar/quux").path()).to.be.like([
-                cs("/foo/bar/quux"), cs("/foo/bar"), cs("/foo"), cs("/") 
+                cs("/foo/bar/quux"), cs("/foo/bar"), cs("/foo"), cs("/")
             ])
             expect(cs("/foo/bar/quux").path("/")).to.be.equal("/foo/bar/quux")
             expect(cs("/").path("/")).to.be.equal("/")
@@ -41,12 +41,12 @@ describe("ComponentJS Component Tree", function () {
     })
     describe.skip("attach() & detach()", function () {
         it("should attach and detach components", function () {
-            /*  FIXME  */ 
+            /*  FIXME  */
         })
     })
     describe.skip("walk_down() & walk_up()", function () {
         it("should walk upward and downward the component tree", function () {
-            /*  FIXME  */ 
+            /*  FIXME  */
         })
     })
     after(function () {
