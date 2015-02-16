@@ -77,8 +77,8 @@ _cs.dbg_infobox_content = function (comp) {
         if (_cs.isown(comp.__config, id))
             if (id.match(/^ComponentJS:property:ComponentJS:model/))
                 if (typeof comp.__config[id] === "object")
-                    for (name in comp.__config[id])
-                        if (_cs.isown(comp.__config[id], name))
+                    for (name in comp.__config[id].data)
+                        if (_cs.isown(comp.__config[id].data, name))
                             values += "<code>" + name + "</code>, ";
     values = values.replace(/, $/, "");
     if (values === "")
