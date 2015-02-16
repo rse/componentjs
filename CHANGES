@@ -13,6 +13,10 @@
     Major changes between ComponentJS 1.2.2 and 1.2.3
     -------------------------------------------------
 
+    o BUGFIX:
+      fix viewing of "Model" components in the debugger where
+      the model items were not correctly displayed.
+
     o IMPROVEMENT:
       provide platform independent alternative to Unix Makefile by
       leveraging NPM scripts which have node_modules/.bin/ in PATH
