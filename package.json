@@ -21,7 +21,8 @@
         "url":  "http://github.com/rse/componentjs/issues"
     },
     "files": [
-        "build"
+        "CHANGES", "Gruntfile.js", "LICENSE", "Makefile", "README", "VERSION",
+        "bld", "doc", "env", "src", "tst"
     ],
     "scripts": {
         "update-package-json":  "npm-check-updates -u",
