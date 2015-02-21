@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.3 and 1.2.4
+    -------------------------------------------------
+
+    o IMPROVEMENT:
+      As NPM also becomes popular for shipping client-side code, ship
+      ComponentJS under name "componentjs" via both Bower and NPM now.
+
     Major changes between ComponentJS 1.2.2 and 1.2.3
     -------------------------------------------------
 
