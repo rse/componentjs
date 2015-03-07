@@ -10,6 +10,14 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.4 and 1.2.5
+    -------------------------------------------------
+
+    o BUGFIX:
+      Internet Explorer chokes on many characters in the debugger window
+      title, so in IE we finally replace all characters in the title
+      which potentially could lead to problems.
+
     Major changes between ComponentJS 1.2.3 and 1.2.4
     -------------------------------------------------
 
