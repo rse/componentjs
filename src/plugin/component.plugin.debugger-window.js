@@ -81,7 +81,7 @@ $cs.debug_window = function () {
             var wopts = "location=no,scrollbars=no,toolbars=no,menubar=no,status=no";
             wopts += ",width=" + params.width + ",height=" + params.height;
             if (_cs.isIE())
-                wname = wname.replace(/ /g, "_").replace(/[()]/g, "");
+                wname = wname.replace(/[^a-zA-Z0-9_]/g, "_");
             else
                 wopts += ",replace=yes";
             _cs.dbg = GLOBAL.open("about:blank", wname, wopts);
