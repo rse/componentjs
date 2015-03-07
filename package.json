@@ -43,7 +43,7 @@
         "grunt-contrib-clean":  "~0.6.0",
         "grunt-expand-include": "~0.9.6",
         "grunt-execute":        "~0.2.2",
-        "grunt-shell":          "~1.1.1",
+        "grunt-shell":          "~1.1.2",
         "grunt-mkdir":          "~0.1.2",
         "grunt-touch":          "~0.1.0",
         "grunt-newer-explicit": "~0.9.4",
@@ -51,7 +51,7 @@
         "grunt-env":            "~0.4.4",
         "grunt-open":           "~0.2.3",
         "grunt-complexity":     "~0.3.0",
-        "grunt-eslint":         "~6.0.0",
+        "grunt-eslint":         "~7.0.1",
         "grunt-mocha-test":     "~0.12.7",
         "grunt-istanbul":       "~0.4.0",
         "grunt-jsonlint":       "~1.0.4",
@@ -61,7 +61,7 @@
         "chai-things":          "~0.2.0",
         "chai-interface":       "~1.1.0",
         "sinon-chai":           "~2.7.0",
-        "sinon":                "~1.12.2",
+        "sinon":                "~1.13.0",
         "xregexp":              "~2.0.0",
         "npm-check-updates":    "~1.5.1"
     }
