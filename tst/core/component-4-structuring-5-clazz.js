@@ -28,9 +28,15 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
             var Trait32 = cs.trait({ protos: { foo: function () {
                 return "Trait32<" + this.base() + ">"
             }}})
+            var Class5 = cs.clazz({
+                protos: { foo: function () { return "Class5" }}
+            })
+            var Class4 = cs.clazz({
+                extend: Class5
+            })
             var Class3 = cs.clazz({
-                mixin: [ Trait31, Trait32 ],
-                protos: { foo: function () { return "Class3" }}
+                extend: Class4,
+                mixin: [ Trait31, Trait32 ]
             })
             var Class2 = cs.clazz({
                 extend: Class3,
@@ -47,7 +53,7 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
                 protos: { foo: function () { return "Class0<" + this.base() + ">" } }
             })
             var c0 = new Class0()
-            expect(c0.foo()).to.be.equal("Class0<Trait12<Trait11<Class1<Trait22<Trait21<Class2<Trait32<Trait31<Class3>>>>>>>>>")
+            expect(c0.foo()).to.be.equal("Class0<Trait12<Trait11<Class1<Trait22<Trait21<Class2<Trait32<Trait31<Class5>>>>>>>>>")
         })
         it("should create reasonable classes", function () {
             var log = ""
