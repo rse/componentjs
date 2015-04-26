@@ -10,6 +10,12 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.5 and 1.2.6
+    -------------------------------------------------
+
+    o BUGFIX:
+      Aligned versions between NPM package.json and VERSION file.
+
     Major changes between ComponentJS 1.2.4 and 1.2.5
     -------------------------------------------------
 
