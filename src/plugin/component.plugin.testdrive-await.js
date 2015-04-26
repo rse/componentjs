@@ -77,7 +77,7 @@ var changeOccured = function (comp, state, direction) {
                 awaited[i].comp = $cs(awaited[i].path);
 
     /*  iterate over all awaiting situations...  */
-    for (i = 0; typeof awaited[i] !== "undefined";) {
+    for (i = 0; typeof awaited[i] !== "undefined"; ) {
         if (   awaited[i].comp      === comp
             && awaited[i].state     === state
             && awaited[i].direction === direction) {
