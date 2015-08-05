@@ -10,6 +10,15 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.6 and 1.2.7
+    -------------------------------------------------
+
+    o BUGFIX:
+      Add missing documentation for publish() parameters.
+
+    o IMPROVEMENT:
+      Update all build-time dependencies.
+
     Major changes between ComponentJS 1.2.5 and 1.2.6
     -------------------------------------------------
 
