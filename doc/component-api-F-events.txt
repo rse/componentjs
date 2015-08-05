@@ -118,24 +118,54 @@ they provide various getter/setter methods:
   ): T<Object>
 
   Publishes an T<Event> to component O<component> named F<name> and with
-  optional arguments F<args>. By default the event is intended to be
+  optional arguments F<args>. By default, the event is intended to be
   dispatched in the (mandatory) targeting and (optional) capturing and
   bubbling phases. The following options allow you to further control
   the event publishing process:
 
   . Option F<spec> allows you to sub-specify/parametrize the event with
     arbitrary key/value pairs in case the F<name> is too generic.
+    This then has to be matched by the corresponding F<spec> option
+    of method M<subscribe>().
   . Option F<async> allows the event processing to occur asynchronously.
+    The default is synchronously.
   . Setting option F<capturing> to "C<false>" indicates that the event should
-    not be intended to be dispatched in the capturing phase.
+    not be intended to be dispatched in the capturing phase. The default
+    is to be dispatched in the capturing phase.
   . Setting option F<spreading> to "C<true>" indicates that the event should
     also be intended to be dispatched in the spreading phase.
+    The default is not to be dispatched in the spreading phase.
   . Setting option F<bubbling> to "C<false>" indicates that the event should
     not be intended to be dispatched in the bubbling phase.
+    The default is to be dispatched in the bubbling phase.
   . Option F<completed> executes the specified callback function
     once the event was dispatched to subscribers in all possible phases.
     This allows you to react at the end of F<async>=C<true> events.
-  . Option F<resultinit> and F<resultstep>
+  . Options F<resultinit> and F<resultstep> allow you to control
+    how the results of subscribers should be aggregated. The F<resultinit>
+    provides the initial value to start the aggregation. The F<resultstep>
+    is a callback function with signature "C<(old: any, cur: any): any>"
+    which aggregates the initial/old value and the current value into
+    a new value. The default for F<resultinit> is "C<undefined>" and
+    the default for F<resultstep> is "C<function (old, cur) { return cur }>",
+    meaning that just the last result will be kept. The result is
+    delivered with the M<result>() method of returned Event objects.
+  . Option F<directresult> forces M<publish()> to directly return
+    C<ev.result()> instead of the Event object C<ev>.
+  . Option F<noresult> forces M<publish()> to directly return
+    C<undefined> instead of the Event object C<ev>. This
+    allows M<publish>() to internally optimize the event handling
+    in case no Event object is necessary at all.
+  . Option F<firstonly> automatically stops the event propagation/delivery
+    (with C<ev.propagation(false)>) once the first subscriber has
+    accepted the value (meaning: has not called C<ev.decline()> on the
+    Event object).
+  . Option F<silent> can be used to disable the expensive creation of
+    internal debugging messages related to the Event processing.
+    This can be used to speed-optimize the event processing.
+  . Option F<args> can be used to pass arguments to the subscribers.
+    The subscribers receive those arguments at the end of their
+    parameter list.
 
   | cs(this).publish("data-loaded", data, info)
 
