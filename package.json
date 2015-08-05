@@ -3,7 +3,7 @@
     "homepage":    "http://componentjs.com/",
     "description": "Powerful run-time Component System for structuring HTML5-based Rich Clients",
     "version":     "1.2.6",
-    "license":     "MPL/2.0",
+    "license":     "MPL-2.0",
     "author": {
         "name":    "Ralf S. Engelschall",
         "email":   "rse@engelschall.com",
