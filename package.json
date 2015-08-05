@@ -57,6 +57,7 @@
         "grunt-jsonlint":       "~1.0.4",
         "chai":                 "~3.2.0",
         "chai-fuzzy":           "~1.5.0",
+        "underscore":           "~1.8.3",
         "chai-factories":       "~0.1.0",
         "chai-things":          "~0.2.0",
         "chai-interface":       "~2.0.2",
