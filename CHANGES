@@ -10,6 +10,20 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.7 and 1.2.8
+    -------------------------------------------------
+
+    o BUGFIX:
+      Pass-through arguments in internal intermediate/auto-generated
+      "this.base()" trampoline methods and always annotate those methods
+      with the intended name. This allows mixins to correctly call
+      "this.base(arg)" and get "arg" to be correctly passed to a base
+      function in the inheritance chain of the class the mixin is mixed
+      into.
+
+    o IMPROVEMENT:
+      Update all build-time dependencies.
+
     Major changes between ComponentJS 1.2.6 and 1.2.7
     -------------------------------------------------
 
