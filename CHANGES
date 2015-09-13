@@ -10,7 +10,7 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
-    Major changes between ComponentJS 1.2.7 and 1.2.8
+    Major changes between ComponentJS 1.2.6 and 1.2.7
     -------------------------------------------------
 
     o BUGFIX:
@@ -21,14 +21,11 @@
       function in the inheritance chain of the class the mixin is mixed
       into.
 
-    o IMPROVEMENT:
-      Update all build-time dependencies.
-
-    Major changes between ComponentJS 1.2.6 and 1.2.7
-    -------------------------------------------------
-
     o BUGFIX:
       Add missing documentation for publish() parameters.
+
+    o IMPROVEMENT:
+      Update all build-time dependencies.
 
     o IMPROVEMENT:
       Update all build-time dependencies.
