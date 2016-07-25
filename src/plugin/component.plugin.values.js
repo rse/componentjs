@@ -35,41 +35,41 @@ ComponentJS.plugin("values", function (_cs, $cs, GLOBAL) {
         protos: {
             /*  retrieve a property-based values object  */
             values: function () {
-                /*  attempt to retrieve cached values object  */
-                var values = this.property({ name: "ComponentJS:model:values" });
-                if (!_cs.isdefined(values)) {
-                    /*  create initial values object  */
-                    values = {};
+                /*  create initial values object  */
+                var values = {};
 
-                    /*  iterate over all models towards the root component  */
-                    var found = false;
-                    var comp = this;
-                    var owner, model;
-                    while (comp !== null) {
-                        owner = comp.property({ name: "ComponentJS:model", returnowner: true });
-                        if (!_cs.isdefined(owner))
-                            break;
-                        found = true;
-                        model = owner.property("ComponentJS:model");
-                        comp = owner.parent();
+                /*  iterate over all models towards the root component  */
+                var found = false;
+                var comp = this;
+                var owner, model;
+                while (comp !== null) {
+                    owner = comp.property({ name: "ComponentJS:model", returnowner: true });
+                    if (!_cs.isdefined(owner))
+                        break;
+                    found = true;
+                    model = owner.property("ComponentJS:model");
+                    comp = owner.parent();
 
-                        /*  enhance values object with properties of all models  */
-                        for (var name in model) {
-                            var symbol = name.replace(/[^a-zA-Z0-9_]+/g, "_");
-                            (function (comp, name, symbol) {
-                                Object.defineProperty(values, symbol, {
-                                    enumerable:   false,
-                                    configurable: false,
-                                    writeable:    true,
-                                    get: function ()      { return comp.value(name);        },
-                                    set: function (value) { return comp.value(name, value); }
-                                });
-                            })(comp, name, symbol);
-                        }
+                    /*  enhance values object with properties of all models  */
+                    for (var name in model.data) {
+                        var symbol = name.replace(/[^a-zA-Z0-9_]+/g, "_");
+                        (function (owner, name, symbol) {
+                            Object.defineProperty(values, symbol, {
+                                enumerable:   false,
+                                configurable: false,
+                                writeable:    true,
+                                get: function ()      { return owner.value(name);        },
+                                set: function (value) { return owner.value(name, value); }
+                            });
+                        })(owner, name, symbol);
                     }
-                    if (!found)
-                        throw _cs.exception("values", "no models found at all");
                 }
+
+                /*  sanity check situation  */
+                if (!found)
+                    throw _cs.exception("values", "no models found at all");
+
+                /*  return generated object  */
                 return values;
             }
         }
