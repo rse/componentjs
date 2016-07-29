@@ -174,7 +174,7 @@ _cs.dbg_view_mask = function (title) {
                 "color: #909090;" +
                 "font-style: italic;" +
             "}" +
-            ".dbg .plus, .dbg .reset, .dbg .minus {" +
+            ".dbg .plus, .dbg .reset, .dbg .minus, .dbg .exporter {" +
                 "position: absolute; " +
                 "top: 4px; " +
                 "width: 10px; " +
@@ -206,24 +206,8 @@ _cs.dbg_view_mask = function (title) {
                 "right: 140px; " +
             "}" +
             ".dbg .exporter {" +
-                "position: absolute; " +
-                "top: 4px; " +
                 "right: 20px; " +
-                "padding: 2px 8px 2px 8px; " +
-                "border-top: 1px solid #777777;" +
-                "border-left: 1px solid #777777;" +
-                "border-right: 1px solid #555555;" +
-                "border-bottom: 1px solid #555555;" +
-                "background: #666666;" +
-                "background: -moz-linear-gradient(top,  #666666 0%, #333333 49%, #222222 51%, #000000 100%);" +
-                "background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#666666), color-stop(49%,#333333), color-stop(51%,#222222), color-stop(100%,#000000));" +
-                "background: -webkit-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
-                "background: -o-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
-                "background: -ms-linear-gradient(top,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
-                "background: linear-gradient(to bottom,  #666666 0%,#333333 49%,#222222 51%,#000000 100%);" +
-                "filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#666666', endColorstr='#000000',GradientType=0 );" +
-                "color: #c0c0c0;" +
-                "z-index: 100;" +
+                "font-weight: normal; " +
             "}" +
         "</style>" +
         "<div class=\"dbg\">" +
