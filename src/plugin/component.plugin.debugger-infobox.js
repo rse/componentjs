@@ -12,6 +12,17 @@ _cs.dbg_infobox_content = function (comp) {
     var name, method, id;
     var html = "";
 
+    var arrayToSortedCodeElements =  function (arr) {
+        arr.sort();
+        var values = "";
+        for (id in arr)
+            values += "<code>" + arr[id] + "</code>, ";
+        values = values.replace(/, $/, "");
+        if (values === "")
+            values = "<span class=\"none\">none</span>";
+        return values;
+    };
+
     /*  name and path  */
     name = comp.name().replace(/</, "&lt;").replace(/>/, "&gt;");
     html += "<tr>" +
@@ -72,86 +83,71 @@ _cs.dbg_infobox_content = function (comp) {
         "</tr>";
 
     /*  model values  */
-    var values = "";
+    var modelNames = [];
     for (id in comp.__config)
         if (_cs.isown(comp.__config, id))
             if (id.match(/^ComponentJS:property:ComponentJS:model/))
                 if (typeof comp.__config[id] === "object")
                     for (name in comp.__config[id].data)
                         if (_cs.isown(comp.__config[id].data, name))
-                            values += "<code>" + name + "</code>, ";
-    values = values.replace(/, $/, "");
-    if (values === "")
-        values = "<span class=\"none\">none</span>";
+                            modelNames.push(name);
     html += "<tr>" +
         "<td class=\"label\">Model Values:</td>" +
-        "<td class=\"value\">" + values + "</td>" +
+        "<td class=\"value\">" + arrayToSortedCodeElements(modelNames) + "</td>" +
         "</tr>";
 
     /*  sockets  */
-    var sockets = "";
+    var socketNames = [];
     for (id in comp.__config)
         if (_cs.isown(comp.__config, id))
             if (id.match(/^ComponentJS:property:ComponentJS:socket:/))
                 if (typeof comp.__config[id] === "object")
-                    sockets += "<code>" + id
-                        .replace(/^ComponentJS:property:ComponentJS:socket:/, "") + "</code>, ";
-    sockets = sockets.replace(/, $/, "");
-    if (sockets === "")
-        sockets = "<span class=\"none\">none</span>";
+                    socketNames.push(id
+                        .replace(/^ComponentJS:property:ComponentJS:socket:/, ""));
     html += "<tr>" +
         "<td class=\"label\">Sockets:</td>" +
-        "<td class=\"value\">" + sockets + "</td>" +
+        "<td class=\"value\">" + arrayToSortedCodeElements(socketNames) + "</td>" +
         "</tr>";
 
     /*  event subscriptions  */
-    var subscriptions = "";
+    var subscriptionNames = [];
     for (id in comp.__subscription)
         if (_cs.isown(comp.__subscription, id))
             if (typeof comp.__subscription[id] === "object")
                 if (typeof comp.__subscription[id].name === "string")
                     if (!comp.__subscription[id].name.match(/^ComponentJS:/))
-                        subscriptions += "<code>" + comp.__subscription[id].name + "</code>, ";
-    subscriptions = subscriptions.replace(/, $/, "");
-    if (subscriptions === "")
-        subscriptions = "<span class=\"none\">none</span>";
+                        subscriptionNames.push(comp.__subscription[id].name);
     html += "<tr>" +
         "<td class=\"label\">Event Subscriptions:</td>" +
-        "<td class=\"value\">" + subscriptions + "</td>" +
+        "<td class=\"value\">" + arrayToSortedCodeElements(subscriptionNames) + "</td>" +
         "</tr>";
 
     /*  service registrations  */
-    var registrations = "";
+    var registrationNames = [];
     for (id in comp.__subscription)
         if (_cs.isown(comp.__subscription, id))
             if (typeof comp.__subscription[id] === "object")
                 if (typeof comp.__subscription[id].name === "string")
                     if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
-                        registrations += "<code>" + comp.__subscription[id].name
-                            .replace(/^ComponentJS:service:/, "") + "</code>, ";
-    registrations = registrations.replace(/, $/, "");
-    if (registrations === "")
-        registrations = "<span class=\"none\">none</span>";
+                        registrationNames.push(comp.__subscription[id].name
+                            .replace(/^ComponentJS:service:/, ""));
     html += "<tr>" +
         "<td class=\"label\">Service Registrations:</td>" +
-        "<td class=\"value\">" + registrations + "</td>" +
+        "<td class=\"value\">" + arrayToSortedCodeElements(registrationNames) + "</td>" +
         "</tr>";
 
     /*  hooks  */
-    var hooks = "";
+    var hookNames = [];
     for (id in comp.__subscription)
         if (_cs.isown(comp.__subscription, id))
             if (typeof comp.__subscription[id] === "object")
                 if (typeof comp.__subscription[id].name === "string")
                     if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
-                        hooks += "<code>" + comp.__subscription[id].name
-                            .replace(/^ComponentJS:hook:/, "") + "</code>, ";
-    hooks = hooks.replace(/, $/, "");
-    if (hooks === "")
-        hooks = "<span class=\"none\">none</span>";
+                        hookNames.push(comp.__subscription[id].name
+                            .replace(/^ComponentJS:hook:/, "") );
     html += "<tr>" +
         "<td class=\"label\">Hook Points:</td>" +
-        "<td class=\"value\">" + hooks + "</td>" +
+        "<td class=\"value\">" + arrayToSortedCodeElements(hookNames) + "</td>" +
         "</tr>";
 
     /*  finish and return table  */
