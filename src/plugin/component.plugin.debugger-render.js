@@ -34,7 +34,7 @@ _cs.dbg_refresh = function () {
 
     /*  calculate viewer and console sizes based on grabber offset  */
     var h1 =      _cs.dbg_grabber_offset - _cs.jq(".dbg .header", _cs.dbg.document).height();
-    var h2 = vh - _cs.dbg_grabber_offset + _cs.jq(".dbg .status", _cs.dbg.document).height();
+    var h2 = vh - _cs.dbg_grabber_offset - _cs.jq(".dbg .status", _cs.dbg.document).height();
     _cs.jq(".dbg .viewer",  _cs.dbg.document).height(h1);
     _cs.jq(".dbg .console", _cs.dbg.document).height(h2);
     _cs.jq(".dbg .infobox", _cs.dbg.document).height(h2);
