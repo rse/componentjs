@@ -175,6 +175,7 @@ _cs.dbg_view_mask = function (title) {
                 "font-style: italic;" +
             "}" +
             ".dbg .plus, .dbg .reset, .dbg .minus, .dbg .exporter {" +
+                "cursor: pointer; " +
                 "position: absolute; " +
                 "top: 4px; " +
                 "width: 10px; " +
