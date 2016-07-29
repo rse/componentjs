@@ -91,7 +91,7 @@ _cs.dbg_view_mask = function (title) {
                 "height: 50%;" +
                 "background-color: #ffffff;" +
                 "color: #000000;" +
-                "overflow: scroll;" +
+                "overflow-y: scroll;" +
                 "font-size: 9pt;" +
             "}" +
             ".dbg .console .text {" +
