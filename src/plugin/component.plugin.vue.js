@@ -149,7 +149,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 vm.$mount();
 
                 /*  attach ComponentJS information to Vue instance  */
-                vm.__ComponentJS = { observers: [], sockets: [] }
+                vm.__ComponentJS = { observers: [], sockets: [] };
 
                 /*  provide observers for the ComponentJS model values  */
                 _cs.foreach(names, function (name) {
@@ -160,7 +160,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     };
                     _cs.foreach([ "set", "splice", "delete" ], function (op) {
                         var id = $cs(self).observe({ name: name, op: op, func: onChange });
-                        vm.__ComponentJS.observers.push(id)
+                        vm.__ComponentJS.observers.push(id);
                     });
                 });
 
@@ -173,7 +173,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                                 name:  name === "socket" ? "default" : name,
                                 ctx:   ref
                             });
-                            vm.__ComponentJS.sockets.push(id)
+                            vm.__ComponentJS.sockets.push(id);
                         }
                     })(ref, vm.$refs[ref]);
                 }
