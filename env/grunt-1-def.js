@@ -18,7 +18,7 @@ module.exports = function (grunt) {
         },
         eslint: {
             options: {
-                config: "env/lint-2-eslint.json"
+                configFile: "env/lint-2-eslint.json"
             }
         },
         shell: {
