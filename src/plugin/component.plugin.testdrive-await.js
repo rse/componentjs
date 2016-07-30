@@ -10,6 +10,50 @@
 /*  list of currently awaited scenarios  */
 var awaited = [];
 
+/*  a situation change occurred...  */
+var changeOccured = function (comp, state, direction) {
+    var i;
+
+    /*  if a component was created, refresh all component lookups
+        which previously resolved to the "none" component, in the hope
+        they now resolve to the new component  */
+    if (_cs.states.length <= 1)
+        throw _cs.exception("await(internal)", "no user-defined component states");
+    if (state === _cs.states[1].state && direction === "enter")
+        for (i = 0; i < awaited.length; i++)
+            if (awaited[i].comp === _cs.none)
+                awaited[i].comp = $cs(awaited[i].path);
+
+    /*  iterate over all awaiting situations...  */
+    for (i = 0; typeof awaited[i] !== "undefined"; ) {
+        if (   awaited[i].comp      === comp
+            && awaited[i].state     === state
+            && awaited[i].direction === direction) {
+
+            /*  asynchronously fulfill all promises and remove entry from awaited situations  */
+            for (var j = 0; j < awaited[i].promises.length; j++) {
+                (function (promise, comp) {
+                    /* global setTimeout: false */
+                    setTimeout(_cs.hook("ComponentJS:settimeout:func", "pass", function () {
+                        promise.fulfill(comp);
+                    }), 0);
+                })(awaited[i].promises[j], comp);
+            }
+            awaited.splice(i, 1);
+        }
+        else
+            i++;
+    }
+
+    /* if a component was destroyed, it will soon no longer be
+       attached to the component tree, so change its lookup back to
+       "none" in all remaining awaiting situations  */
+    if (state === _cs.states[1].state && direction === "leave")
+        for (i = 0; i < awaited.length; i++)
+            if (awaited[i].comp === comp)
+                awaited[i].comp = _cs.none;
+};
+
 /*  global API function: await a particular state to occur  */
 $cs.await = function (path, state, direction) {
     /*  determine parameters  */
@@ -60,50 +104,6 @@ $cs.await = function (path, state, direction) {
 
     /*  return (proxied) promise  */
     return promise.proxy;
-};
-
-/*  a situation change occurred...  */
-var changeOccured = function (comp, state, direction) {
-    var i;
-
-    /*  if a component was created, refresh all component lookups
-        which previously resolved to the "none" component, in the hope
-        they now resolve to the new component  */
-    if (_cs.states.length <= 1)
-        throw _cs.exception("await(internal)", "no user-defined component states");
-    if (state === _cs.states[1].state && direction === "enter")
-        for (i = 0; i < awaited.length; i++)
-            if (awaited[i].comp === _cs.none)
-                awaited[i].comp = $cs(awaited[i].path);
-
-    /*  iterate over all awaiting situations...  */
-    for (i = 0; typeof awaited[i] !== "undefined"; ) {
-        if (   awaited[i].comp      === comp
-            && awaited[i].state     === state
-            && awaited[i].direction === direction) {
-
-            /*  asynchronously fulfill all promises and remove entry from awaited situations  */
-            for (var j = 0; j < awaited[i].promises.length; j++) {
-                (function (promise, comp) {
-                    /* global setTimeout: false */
-                    setTimeout(_cs.hook("ComponentJS:settimeout:func", "pass", function () {
-                        promise.fulfill(comp);
-                    }), 0);
-                })(awaited[i].promises[j], comp);
-            }
-            awaited.splice(i, 1);
-        }
-        else
-            i++;
-    }
-
-    /* if a component was destroyed, it will soon no longer be
-       attached to the component tree, so change its lookup back to
-       "none" in all remaining awaiting situations  */
-    if (state === _cs.states[1].state && direction === "leave")
-        for (i = 0; i < awaited.length; i++)
-            if (awaited[i].comp === comp)
-                awaited[i].comp = _cs.none;
 };
 
 /*  hook into the core functionality  */

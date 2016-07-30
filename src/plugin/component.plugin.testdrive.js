@@ -18,9 +18,9 @@
 /* jshint unused: false */
 
 ComponentJS.plugin("testdrive", function (_cs, $cs, GLOBAL) {
+    include("component.plugin.testdrive-usecase.js");
     include("component.plugin.testdrive-suite.js");
     include("component.plugin.testdrive-promise.js");
-    include("component.plugin.testdrive-usecase.js");
     include("component.plugin.testdrive-drive.js");
     include("component.plugin.testdrive-ensure.js");
     include("component.plugin.testdrive-await.js");

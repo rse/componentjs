@@ -33,6 +33,11 @@ $cs.suite = function () {
         $("body").append(ui);
     }
 
+    /*  determine sizes  */
+    var w = $(GLOBAL).width();
+    var uiw = (w / 10) * 8;
+    var uih = 400;
+
     /*  provide helper functions for animating the opening/closing of the UI  */
     var open = function (complete) {
         $(ui).show().animate({ top: 0 }, 300, "swing", complete);
@@ -51,11 +56,6 @@ $cs.suite = function () {
         close();
         return;
     }
-
-    /*  determine sizes  */
-    var w = $(GLOBAL).width();
-    var uiw = (w / 10) * 8;
-    var uih = 400;
 
     /*  style the UI panel  */
     ui
