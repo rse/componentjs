@@ -10,6 +10,24 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.2.7 and 1.3.0
+    -------------------------------------------------
+
+    o BUGFIX:
+      The "op" parameter of method value() accepted an empty string
+      which is not valid.
+
+    o IMPROVEMENT:
+      Revamped values plugin (component.plugin.values.js): no more
+      caching (as it can make trouble), use correct owner component, use
+      the internal .data sub-field.
+
+    o IMPROVEMENT:
+      Upgraded all build environment dependencies.
+
+    o ADDITION:
+      Added a Vue.js plugin (component.plugin.vue.js).
+
     Major changes between ComponentJS 1.2.6 and 1.2.7
     -------------------------------------------------
 
