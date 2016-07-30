@@ -17,7 +17,7 @@
 
 /*  load external requirements  */
 var fs  = require("fs");
-var xre = require("xregexp").XRegExp;
+var xre = require("xregexp");
 
 /*  command-line arguments  */
 var version       = process.argv[2];
