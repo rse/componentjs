@@ -168,7 +168,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     Vue-referenced DOM elements which are named sockets  */
                 for (var ref in vm.$refs) {
                     (function (name, ref) {
-                        if (name.match(/^socket.+/)) {
+                        if (name.match(/^socket.*/)) {
                             var id = $cs(self).socket({
                                 name:  name === "socket" ? "default" : name,
                                 ctx:   ref
