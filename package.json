@@ -55,7 +55,7 @@
         "grunt-mocha-test":     "~0.12.7",
         "grunt-istanbul":       "~0.7.1",
         "grunt-jsonlint":       "~1.1.0",
-        "mocha":                "~2.5.3",
+        "mocha":                "~3.0.0",
         "chai":                 "~3.5.0",
         "chai-fuzzy":           "~1.6.1",
         "underscore":           "~1.8.3",
