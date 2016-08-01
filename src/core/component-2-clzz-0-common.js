@@ -42,7 +42,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
             if (dynamics !== null) {
                 for (var field in dynamics) {
                     if (_cs.isown(dynamics, field)) {
-                        if (_cs.istypeof(dynamics[field]) !== "null"
+                        if (   _cs.istypeof(dynamics[field]) !== "null"
                             && _cs.istypeof(dynamics[field].clone) === "function")
                             obj[field] = dynamics[field].clone();
                         else
