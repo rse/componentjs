@@ -46,6 +46,19 @@ _cs.states_add = function (target, enter, leave, color, source) {
     _cs.states.splice(pos, 0, state);
 };
 
+/*  determine all state methods  */
+_cs.state_methods = function () {
+    var i;
+    var stateMethods = {};
+    for (i = 0; i < _cs.states.length; i++) {
+        if (_cs.states[i].enter)
+            stateMethods[_cs.states[i].enter] = _cs.states[i];
+        if (_cs.states[i].leave)
+            stateMethods[_cs.states[i].leave] = _cs.states[i];
+    }
+    return stateMethods;
+};
+
 /*  determine state index via state name  */
 _cs.state_name2idx = function (name) {
     var idx = -1;
