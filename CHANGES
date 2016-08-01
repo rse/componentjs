@@ -10,6 +10,24 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.3.1 and 1.4.0
+    -------------------------------------------------
+
+    o BUGFIX:
+      Fixed height of console and infobox parts in ComponentJS debugger.
+      Removed duplicated CSS styles in ComponentJS debugger.
+      Changed CSS appearance of all ComponentJS debugger buttons.
+      Set overflow only to overflow-y in ComponentJS debugger.
+
+    o IMPROVEMENT:
+      Changed ComponentJS debugger infobox output to sort model values.
+      Added filter to console list in ComponentJS debugger.
+
+    o IMPROVEMENT:
+      Throw an error when a clazz or trait tries to define a static
+      or dynamic field with the name of one of the defined life-cycle
+      enter/leave methods.
+
     Major changes between ComponentJS 1.3.0 and 1.3.1
     -------------------------------------------------
 
