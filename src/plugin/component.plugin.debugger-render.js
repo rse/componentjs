@@ -36,7 +36,7 @@ _cs.dbg_refresh = function () {
     var h1 =      _cs.dbg_grabber_offset - _cs.jq(".dbg .header", _cs.dbg.document).height();
     var h2 = vh - _cs.dbg_grabber_offset - _cs.jq(".dbg .status", _cs.dbg.document).height();
     _cs.jq(".dbg .viewer",  _cs.dbg.document).height(h1);
-    _cs.jq(".dbg .console", _cs.dbg.document).height(h2);
+    _cs.jq(".dbg .console", _cs.dbg.document).height(h2 - _cs.jq(".dbg .filter", _cs.dbg.document).height());
     _cs.jq(".dbg .infobox", _cs.dbg.document).height(h2);
     _cs.jq(".dbg .infobox", _cs.dbg.document).css("top",
         _cs.dbg_grabber_offset + _cs.jq(".dbg .status", _cs.dbg.document).height());
@@ -91,7 +91,7 @@ _cs.dbg_update = function () {
 _cs.dbg_update_once = function () {
     /*  update console information  */
     if (_cs.dbg_state_invalid.console) {
-        _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook);
+        _cs.jq(".dbg .console .text", _cs.dbg.document).html(_cs.dbg_logbook_render());
         _cs.jq(".dbg .console", _cs.dbg.document).scrollTop(0);
         _cs.dbg_state_invalid.console = true;
     }

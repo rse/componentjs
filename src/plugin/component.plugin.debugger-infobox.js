@@ -23,16 +23,17 @@ _cs.dbg_infobox_content = function (comp) {
         return values;
     };
 
+    var generateHTMLTableRow = function (label, value) {
+        return "<tr>" +
+            "<td class=\"label\">" + label + "</td>" +
+            "<td class=\"value\">" + value + "</td>" +
+            "</tr>";
+    };
+
     /*  name and path  */
     name = comp.name().replace(/</, "&lt;").replace(/>/, "&gt;");
-    html += "<tr>" +
-        "<td class=\"label\">Name:</td>" +
-        "<td class=\"value\"><b>" + name + "</b></td>" +
-        "</tr>";
-    html += "<tr>" +
-        "<td class=\"label\">Path:</td>" +
-        "<td class=\"value\"><code>" + comp.path("/") + "</code></td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Name:", "<b>" + name + "</b>");
+    html += generateHTMLTableRow("Path:", "<code>" + comp.path("/") + "</code>");
 
     /*  role markers  */
     var markers = "";
@@ -43,16 +44,11 @@ _cs.dbg_infobox_content = function (comp) {
     markers = markers.replace(/, $/, "");
     if (markers === "")
         markers = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Markers:</td>" +
-        "<td class=\"value\">" + markers + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Markers:", markers);
 
     /*  state and guards  */
-    html += "<tr>" +
-        "<td class=\"label\">State:</td>" +
-        "<td class=\"value\"><code>" + comp.state() + "</code></td>" +
-        "</tr>";
+    html += generateHTMLTableRow("State:", "<code>" + comp.state() + "</code>");
+
     var guards = "";
     for (method in comp.__state_guards)
         if (_cs.isown(comp.__state_guards, method))
@@ -62,10 +58,7 @@ _cs.dbg_infobox_content = function (comp) {
     guards = guards.replace(/, $/, "");
     if (guards === "")
         guards = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Guards:</td>" +
-        "<td class=\"value\">" + guards + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Guards:", guards);
 
     /*  spools  */
     var spools = "";
@@ -77,10 +70,7 @@ _cs.dbg_infobox_content = function (comp) {
     spools = spools.replace(/, $/, "");
     if (spools === "")
         spools = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Spools:</td>" +
-        "<td class=\"value\">" + spools + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Spools:", spools);
 
     /*  model values  */
     var modelNames = [];
@@ -91,10 +81,7 @@ _cs.dbg_infobox_content = function (comp) {
                     for (name in comp.__config[id].data)
                         if (_cs.isown(comp.__config[id].data, name))
                             modelNames.push(name);
-    html += "<tr>" +
-        "<td class=\"label\">Model Values:</td>" +
-        "<td class=\"value\">" + arrayToSortedCodeElements(modelNames) + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Model Values:", arrayToSortedCodeElements(modelNames));
 
     /*  sockets  */
     var socketNames = [];
@@ -104,51 +91,28 @@ _cs.dbg_infobox_content = function (comp) {
                 if (typeof comp.__config[id] === "object")
                     socketNames.push(id
                         .replace(/^ComponentJS:property:ComponentJS:socket:/, ""));
-    html += "<tr>" +
-        "<td class=\"label\">Sockets:</td>" +
-        "<td class=\"value\">" + arrayToSortedCodeElements(socketNames) + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Sockets:", arrayToSortedCodeElements(socketNames));
 
-    /*  event subscriptions  */
+    /*  event subscriptions, service registrations and hooks  */
     var subscriptionNames = [];
-    for (id in comp.__subscription)
-        if (_cs.isown(comp.__subscription, id))
-            if (typeof comp.__subscription[id] === "object")
-                if (typeof comp.__subscription[id].name === "string")
-                    if (!comp.__subscription[id].name.match(/^ComponentJS:/))
-                        subscriptionNames.push(comp.__subscription[id].name);
-    html += "<tr>" +
-        "<td class=\"label\">Event Subscriptions:</td>" +
-        "<td class=\"value\">" + arrayToSortedCodeElements(subscriptionNames) + "</td>" +
-        "</tr>";
-
-    /*  service registrations  */
     var registrationNames = [];
-    for (id in comp.__subscription)
-        if (_cs.isown(comp.__subscription, id))
-            if (typeof comp.__subscription[id] === "object")
-                if (typeof comp.__subscription[id].name === "string")
-                    if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
-                        registrationNames.push(comp.__subscription[id].name
-                            .replace(/^ComponentJS:service:/, ""));
-    html += "<tr>" +
-        "<td class=\"label\">Service Registrations:</td>" +
-        "<td class=\"value\">" + arrayToSortedCodeElements(registrationNames) + "</td>" +
-        "</tr>";
-
-    /*  hooks  */
     var hookNames = [];
     for (id in comp.__subscription)
-        if (_cs.isown(comp.__subscription, id))
-            if (typeof comp.__subscription[id] === "object")
-                if (typeof comp.__subscription[id].name === "string")
-                    if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
-                        hookNames.push(comp.__subscription[id].name
-                            .replace(/^ComponentJS:hook:/, "") );
-    html += "<tr>" +
-        "<td class=\"label\">Hook Points:</td>" +
-        "<td class=\"value\">" + arrayToSortedCodeElements(hookNames) + "</td>" +
-        "</tr>";
+        if (   _cs.isown(comp.__subscription, id)
+            && typeof comp.__subscription[id] === "object"
+            && typeof comp.__subscription[id].name === "string") {
+            if (!comp.__subscription[id].name.match(/^ComponentJS:/))
+                subscriptionNames.push(comp.__subscription[id].name);
+            if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
+                registrationNames.push(comp.__subscription[id].name
+                    .replace(/^ComponentJS:service:/, ""));
+            if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
+                hookNames.push(comp.__subscription[id].name
+                    .replace(/^ComponentJS:hook:/, "") );
+        }
+    html += generateHTMLTableRow("Event Subscriptions:", arrayToSortedCodeElements(subscriptionNames));
+    html += generateHTMLTableRow("Service Registrations:", arrayToSortedCodeElements(registrationNames));
+    html += generateHTMLTableRow("Hook Points:", arrayToSortedCodeElements(hookNames));
 
     /*  finish and return table  */
     html = "<table>" + html + "</table>";

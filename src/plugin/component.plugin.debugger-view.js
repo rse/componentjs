@@ -80,6 +80,12 @@ _cs.dbg_view_mask = function (title) {
                 "color: #f0f0f0;" +
                 "text-align: center;" +
             "}" +
+            ".dbg .filter input {" +
+                "width: 100%;" +
+                "background: #eeeeee;" +
+                "border: none;" +
+                "padding: 2px 2px 3px 52px;" +
+            "}" +
             ".dbg .status .text {" +
                 "position: relative;" +
                 "top: 3px;" +
@@ -209,6 +215,7 @@ _cs.dbg_view_mask = function (title) {
             ".dbg .exporter {" +
                 "right: 20px; " +
                 "font-weight: normal; " +
+                "width: auto;" +
             "}" +
         "</style>" +
         "<div class=\"dbg\">" +
@@ -220,6 +227,7 @@ _cs.dbg_view_mask = function (title) {
             "<div class=\"minus\">-</div>" +
             "<div class=\"exporter\">Export</div>" +
             "<div class=\"status\"><div class=\"text\"></div></div>" +
+            "<div class=\"filter\"><input type=\"text\" placeholder=\"Filter messages - RegExp enabled\"></div>" +
             "<div class=\"console\"><div class=\"text\"></div></div>" +
             "<div class=\"infobox\"></div>" +
         "</div>"

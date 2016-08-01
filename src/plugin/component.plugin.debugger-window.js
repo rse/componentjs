@@ -240,6 +240,26 @@ $cs.debug_window = function () {
                             _cs.dbg_reposition();
                         }
                     });
+
+                    /*  filter handling  */
+                    _cs.dbg_filter_timeout = null;
+                    _cs.jq(".dbg .filter input", _cs.dbg.document).bind("keydown", function (ev) {
+                        ev.stopPropagation();
+                    });
+                    _cs.jq(".dbg .filter input", _cs.dbg.document).bind("keyup", function (ev) {
+                        if (_cs.dbg_filter_timeout) {
+                            GLOBAL.clearTimeout(_cs.dbg_filter_timeout);
+                            _cs.dbg_filter_timeout = null;
+                        }
+                        _cs.dbg_filter_timeout = GLOBAL.setTimeout(function () {
+                            _cs.dbg_filter = ev.target.value;
+                            _cs.dbg_update_once();
+                            if (_cs.dbg_filter_timeout) {
+                                GLOBAL.clearTimeout(_cs.dbg_filter_timeout);
+                                _cs.dbg_filter_timeout = null;
+                            }
+                        }, 1000);
+                    });
                 });
             }), 500);
         }
