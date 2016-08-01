@@ -103,7 +103,29 @@ _cs.clazz_or_trait = function (params, is_clazz) {
      *  STEP 3: EXTEND CLASS WITH OWN PROPERTIES AND METHODS
      */
 
-    if (_cs.isdefined(params.statics))
+    /*  internal utility method for determining whether a given object
+        defines a field that matches a state function */
+    var validateObject = function (identifier, obj) {
+        var legal = true;
+        if (_cs.istypeof(_cs.state_methods) === "function") {
+            var stateMethods = _cs.state_methods();
+            var wrongFields = [];
+            for (var field in obj) {
+                if (   _cs.isown(obj, field)
+                    && stateMethods[field]) {
+                    legal = false;
+                    wrongFields.push("\"" + field + "\"");
+                }
+            }
+            if (!legal)
+                throw _cs.exception("clazz_or_trait", "definition of \"" + identifier +
+                    "\" failed. You can not redefine state transition functions named " +
+                    wrongFields.join(", "));
+        }
+        return legal;
+    };
+
+    if (_cs.isdefined(params.statics) && validateObject("statics", params.statics))
         _cs.extend(clazz, params.statics);
     if (_cs.isdefined(params.protos))
         _cs.mixin(clazz.prototype, params.protos);
@@ -188,7 +210,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
         _cs.annotation(clazz, "setup", params.setup);
 
     /*  remember dynamics for per-object initialization  */
-    if (_cs.isdefined(params.dynamics))
+    if (_cs.isdefined(params.dynamics) && validateObject("dynamics", params.dynamics))
         _cs.annotation(clazz, "dynamics", params.dynamics);
 
     /*

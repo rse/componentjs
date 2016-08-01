@@ -12,16 +12,28 @@ _cs.dbg_infobox_content = function (comp) {
     var name, method, id;
     var html = "";
 
+    var arrayToSortedCodeElements =  function (arr) {
+        arr.sort();
+        var values = "";
+        for (id in arr)
+            values += "<code>" + arr[id] + "</code>, ";
+        values = values.replace(/, $/, "");
+        if (values === "")
+            values = "<span class=\"none\">none</span>";
+        return values;
+    };
+
+    var generateHTMLTableRow = function (label, value) {
+        return "<tr>" +
+            "<td class=\"label\">" + label + "</td>" +
+            "<td class=\"value\">" + value + "</td>" +
+            "</tr>";
+    };
+
     /*  name and path  */
     name = comp.name().replace(/</, "&lt;").replace(/>/, "&gt;");
-    html += "<tr>" +
-        "<td class=\"label\">Name:</td>" +
-        "<td class=\"value\"><b>" + name + "</b></td>" +
-        "</tr>";
-    html += "<tr>" +
-        "<td class=\"label\">Path:</td>" +
-        "<td class=\"value\"><code>" + comp.path("/") + "</code></td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Name:", "<b>" + name + "</b>");
+    html += generateHTMLTableRow("Path:", "<code>" + comp.path("/") + "</code>");
 
     /*  role markers  */
     var markers = "";
@@ -32,16 +44,11 @@ _cs.dbg_infobox_content = function (comp) {
     markers = markers.replace(/, $/, "");
     if (markers === "")
         markers = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Markers:</td>" +
-        "<td class=\"value\">" + markers + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Markers:", markers);
 
     /*  state and guards  */
-    html += "<tr>" +
-        "<td class=\"label\">State:</td>" +
-        "<td class=\"value\"><code>" + comp.state() + "</code></td>" +
-        "</tr>";
+    html += generateHTMLTableRow("State:", "<code>" + comp.state() + "</code>");
+
     var guards = "";
     for (method in comp.__state_guards)
         if (_cs.isown(comp.__state_guards, method))
@@ -51,10 +58,7 @@ _cs.dbg_infobox_content = function (comp) {
     guards = guards.replace(/, $/, "");
     if (guards === "")
         guards = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Guards:</td>" +
-        "<td class=\"value\">" + guards + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Guards:", guards);
 
     /*  spools  */
     var spools = "";
@@ -66,93 +70,49 @@ _cs.dbg_infobox_content = function (comp) {
     spools = spools.replace(/, $/, "");
     if (spools === "")
         spools = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Spools:</td>" +
-        "<td class=\"value\">" + spools + "</td>" +
-        "</tr>";
+    html += generateHTMLTableRow("Spools:", spools);
 
     /*  model values  */
-    var values = "";
+    var modelNames = [];
     for (id in comp.__config)
         if (_cs.isown(comp.__config, id))
             if (id.match(/^ComponentJS:property:ComponentJS:model/))
                 if (typeof comp.__config[id] === "object")
                     for (name in comp.__config[id].data)
                         if (_cs.isown(comp.__config[id].data, name))
-                            values += "<code>" + name + "</code>, ";
-    values = values.replace(/, $/, "");
-    if (values === "")
-        values = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Model Values:</td>" +
-        "<td class=\"value\">" + values + "</td>" +
-        "</tr>";
+                            modelNames.push(name);
+    html += generateHTMLTableRow("Model Values:", arrayToSortedCodeElements(modelNames));
 
     /*  sockets  */
-    var sockets = "";
+    var socketNames = [];
     for (id in comp.__config)
         if (_cs.isown(comp.__config, id))
             if (id.match(/^ComponentJS:property:ComponentJS:socket:/))
                 if (typeof comp.__config[id] === "object")
-                    sockets += "<code>" + id
-                        .replace(/^ComponentJS:property:ComponentJS:socket:/, "") + "</code>, ";
-    sockets = sockets.replace(/, $/, "");
-    if (sockets === "")
-        sockets = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Sockets:</td>" +
-        "<td class=\"value\">" + sockets + "</td>" +
-        "</tr>";
+                    socketNames.push(id
+                        .replace(/^ComponentJS:property:ComponentJS:socket:/, ""));
+    html += generateHTMLTableRow("Sockets:", arrayToSortedCodeElements(socketNames));
 
-    /*  event subscriptions  */
-    var subscriptions = "";
+    /*  event subscriptions, service registrations and hooks  */
+    var subscriptionNames = [];
+    var registrationNames = [];
+    var hookNames = [];
     for (id in comp.__subscription)
-        if (_cs.isown(comp.__subscription, id))
-            if (typeof comp.__subscription[id] === "object")
-                if (typeof comp.__subscription[id].name === "string")
-                    if (!comp.__subscription[id].name.match(/^ComponentJS:/))
-                        subscriptions += "<code>" + comp.__subscription[id].name + "</code>, ";
-    subscriptions = subscriptions.replace(/, $/, "");
-    if (subscriptions === "")
-        subscriptions = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Event Subscriptions:</td>" +
-        "<td class=\"value\">" + subscriptions + "</td>" +
-        "</tr>";
-
-    /*  service registrations  */
-    var registrations = "";
-    for (id in comp.__subscription)
-        if (_cs.isown(comp.__subscription, id))
-            if (typeof comp.__subscription[id] === "object")
-                if (typeof comp.__subscription[id].name === "string")
-                    if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
-                        registrations += "<code>" + comp.__subscription[id].name
-                            .replace(/^ComponentJS:service:/, "") + "</code>, ";
-    registrations = registrations.replace(/, $/, "");
-    if (registrations === "")
-        registrations = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Service Registrations:</td>" +
-        "<td class=\"value\">" + registrations + "</td>" +
-        "</tr>";
-
-    /*  hooks  */
-    var hooks = "";
-    for (id in comp.__subscription)
-        if (_cs.isown(comp.__subscription, id))
-            if (typeof comp.__subscription[id] === "object")
-                if (typeof comp.__subscription[id].name === "string")
-                    if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
-                        hooks += "<code>" + comp.__subscription[id].name
-                            .replace(/^ComponentJS:hook:/, "") + "</code>, ";
-    hooks = hooks.replace(/, $/, "");
-    if (hooks === "")
-        hooks = "<span class=\"none\">none</span>";
-    html += "<tr>" +
-        "<td class=\"label\">Hook Points:</td>" +
-        "<td class=\"value\">" + hooks + "</td>" +
-        "</tr>";
+        if (   _cs.isown(comp.__subscription, id)
+            && typeof comp.__subscription[id] === "object"
+            && typeof comp.__subscription[id].name === "string") {
+            if (!comp.__subscription[id].name.match(/^ComponentJS:/))
+                subscriptionNames.push(comp.__subscription[id].name);
+            if (comp.__subscription[id].name.match(/^ComponentJS:service:/))
+                registrationNames.push(comp.__subscription[id].name
+                    .replace(/^ComponentJS:service:/, ""));
+            if (comp.__subscription[id].name.match(/^ComponentJS:hook:/))
+                hookNames.push(comp.__subscription[id].name
+                    .replace(/^ComponentJS:hook:/, "") );
+        }
+    html += generateHTMLTableRow("Event Subscriptions:", arrayToSortedCodeElements(subscriptionNames));
+    html += generateHTMLTableRow("Service Registrations:", arrayToSortedCodeElements(registrationNames));
+    html += generateHTMLTableRow("Hook Points:", arrayToSortedCodeElements(hookNames));
 
     /*  finish and return table  */
     html = "<table>" + html + "</table>";

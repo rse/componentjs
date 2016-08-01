@@ -133,6 +133,10 @@ describe("ComponentJS Application Structuring: Classes and Traits", function () 
             expect(foo.baz1("baz")).to.be.equal("<Foo arg=baz><Parent2 arg=baz><Parent1 arg=baz/></Parent2></Foo>")
             expect(foo.baz2("baz")).to.be.equal("<Foo arg=baz><Parent1 arg=baz/></Foo>")
         })
+        it("should not create classes with dynamic or static attributes named equal to a state transition enter or leave method", function () {
+            expect(function () { var Bad = cs.clazz({ statics: { create: "create" } }) }).to.throw(Error)
+            expect(function () { var Bad = cs.clazz({ dynamics: { create: "create" } }) }).to.throw(Error)
+        })
     })
 })
 

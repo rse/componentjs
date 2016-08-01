@@ -9,12 +9,15 @@
 
 /*  debugger console log  */
 _cs.dbg_logline = 0;
-_cs.dbg_logbook = "";
+_cs.dbg_logbook = [];
+/*  debugger filter value  */
+_cs.dbg_filter = "";
 
 /*  log message to debugger console  */
 _cs.dbg_log = function (msg) {
     if (_cs.dbg === null)
         return;
+    var org = msg;
     msg = msg
         .replace("&", "&amp;")
         .replace("<", "&lt;")
@@ -32,14 +35,36 @@ _cs.dbg_log = function (msg) {
         "<span class=\"method\">$2</span>" +
         "<span class=\"arrow\">$3</span>"
     );
-    _cs.dbg_logbook =
-        "<table class=\"line\">" +
-            "<tr>" +
-                "<td class=\"num\">" + _cs.dbg_logline + ".</td>" +
-                "<td class=\"msg\">" + msg + "</td>" +
-            "</tr>" +
-        "</table>" + _cs.dbg_logbook;
+    _cs.dbg_logbook.push({ logline: _cs.dbg_logline, msg: msg, originalMsg: org });
     _cs.dbg_state_invalidate("console");
     _cs.dbg_update();
+};
+
+_cs.dbg_logbook_render = function () {
+    var html = "";
+    var match = /^\/(.*)\/(.*)?$/gm.exec(_cs.dbg_filter);
+    var pattern = _cs.dbg_filter;
+    var opts = "";
+    if (match && match.length >= 2) {
+        pattern = match[1];
+    }
+    if (match && match.length === 3) {
+        opts = match[2];
+    }
+    var filterRegExp = new RegExp(pattern, opts);
+
+    for (var id in _cs.dbg_logbook)
+        if (_cs.isown(_cs.dbg_logbook, id)) {
+            var logbook = _cs.dbg_logbook[id];
+            if (filterRegExp.exec(logbook.originalMsg))
+                html =
+                    "<table class=\"line\">" +
+                    "<tr>" +
+                    "<td class=\"num\">" + logbook.logline + ".</td>" +
+                    "<td class=\"msg\">" + logbook.msg + "</td>" +
+                    "</tr>" +
+                    "</table>" + html;
+        }
+    return html;
 };
 
