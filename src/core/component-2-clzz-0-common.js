@@ -104,7 +104,7 @@ _cs.clazz_or_trait = function (params, is_clazz) {
      */
 
     /*  internal utility method for determining whether a given object
-        defines a field that matches a state function */
+        defines a field that matches a state function  */
     var validateObject = function (identifier, obj) {
         var legal = true;
         if (_cs.istypeof(_cs.state_methods) === "function") {
