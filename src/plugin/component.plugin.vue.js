@@ -16,6 +16,7 @@
 
 /* global ComponentJS: false */
 /* global Vue: false */
+/* global Event: false */
 /* eslint no-unused-vars: 0 */
 /* jshint unused: false */
 
@@ -103,8 +104,9 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     var symbol = name.replace(/[^a-zA-Z0-9_$]+/g, "_");
                     if (symbol.match(/^event.+$/)) {
                         /*  ComponentJS event values are implemented as Vue methods  */
-                        params.options.methods[symbol] = function (ev) {
-                            $cs(self).value(name, symbol.match(/^eventRaw.+$/) ? ev : true);
+                        params.options.methods[symbol] = function (value) {
+                            $cs(self).value(name,
+                                (typeof value === "object" && value instanceof Event) ? true : value);
                         };
                     }
                     else {
