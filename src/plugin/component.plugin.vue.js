@@ -167,17 +167,21 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 });
 
                 /*  automatically create ComponentJS sockets for all
-                    Vue-referenced DOM elements which are named sockets  */
-                for (var ref in vm.$refs) {
-                    (function (name, ref) {
-                        if (name.match(/^socket.*/)) {
-                            var id = $cs(self).socket({
-                                name:  name === "socket" ? "default" : name,
-                                ctx:   ref
-                            });
-                            vm.__ComponentJS.sockets.push(id);
-                        }
-                    })(ref, vm.$refs[ref]);
+                    DOM elements which are tagged as sockets  */
+                var elements = vm.$el.querySelectorAll("*[data-socket]");
+                for (var i = 0; i < elements.length; i++) {
+                    var socketName  = elements[i].getAttribute("data-socket");
+                    var socketScope = "";
+                    var m = socketName.match(/^(.*)@(.+)$/);
+                    if (m !== null) {
+                        socketName  = m[1];
+                        socketScope = m[2];
+                    }
+                    var opts = { ctx: elements[i] };
+                    if (socketName  !== "") opts.name  = socketName;
+                    if (socketScope !== "") opts.scope = socketScope;
+                    var id = $cs(self).socket(opts);
+                    vm.__ComponentJS.sockets.push(id);
                 }
 
                 /*  optionally spool Vue instance destruction  */

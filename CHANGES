@@ -17,6 +17,12 @@
       Vue plugin: allow values to be set in event binding
       by using "eventFooBar(value)" instead of just "eventFooBar".
 
+    o INCOMPATIBILITY:
+      Vue plugin: switch from Vue recognized 'ref="socketFoo"' to
+      standard non-Vue 'data-socket="foo"' and use the new freedom
+      by supporting a "[<name>][@<scope>]" syntax for the socket
+      auto-generation mechanism.
+
     Major changes between ComponentJS 1.3.1 and 1.4.0
     -------------------------------------------------
 
