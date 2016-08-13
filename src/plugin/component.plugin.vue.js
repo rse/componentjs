@@ -9,9 +9,60 @@
 
 /*
  *  This is a ComponentJS plugin which integrates the awesome Vue
- *  library for view mask rendering and data binding. It is smart enough
- *  to accept intermixed jQuery objects. This plugin requires Vue, but
- *  jQuery is not directly required.
+ *  library for view mask rendering and data binding. It provides the
+ *  following distinct features:
+ *
+ *  - It provides a new ComponentJS API method vue() which accepts
+ *    a required Vue "options" parameter (also accepted as a first
+ *    positional parameter) and an optional "spool" parameter (also
+ *    accepted as a second positional parameter). The "options"
+ *    parameter is required to have a Vue "template" field with the view
+ *    mask as either a string, a DOM fragment or a jQuery DOM fragment.
+ *    The result is a rendered but unmounted Vue instance which can
+ *    be later plugged into a socket and/or further manipulated (with
+ *    jQuery) through its "$el" field.
+ *
+ *  - It provides a new ComponentJS API method unvue(<vue>) which
+ *    accepts a Vue instance (as previously created by the vue() method)
+ *    and unplugs and destroys it. Usually this is not required as one
+ *    should use the "spool" parameter of vue() to automatically unplug
+ *    and destroy the Vue instance.
+ *
+ *  - For all Vue instances, it generates for all ComponentJS model
+ *    values (from the current component, usually a view component,
+ *    up to the root component) Vue computed getter/setter fields
+ *    (<name>) which perform true bi-directional data-binding. They can
+ *    be used like e.g. v-bind:<attr>="<name>" in the view mask. The
+ *    ComponentJS model values (by convention) named "eventXXX" are
+ *    treated specially: Vue methods of the same name are generated
+ *    for them, which can be used like e.g. v-on:click="eventXXX" (for
+ *    passing an "Event" instance, which is then converted into "true")
+ *    or v-on:click="eventXXX(<arg>)" (for receiving an arbitrary
+ *    single argument) in the view mask. The names of ComponentJS
+ *    model values are converted into valid Vue symbols by replacing
+ *    all [^a-zA-Z0-9_$] characters with "_" characters. Hence it is
+ *    recommended to use camel-case ComponentJS model values like
+ *    "paramFooBar", "stateFooBar", "dataFooBar", and "eventFooBar"
+ *    only.
+ *
+ *  - For all Vue instances, it generates trampoline methods for all
+ *    methods named "utilXXX" in the backing object of the ComponentJS
+ *    (view) component. They can be used like v-if="utilXXX(...)" in the
+ *    view masks for complex checks or calculations if really necessary.
+ *
+ *  - For all Vue instances, it creates ComponentJS sockets for all
+ *    DOM elements in the Vue template which are tagged as sockets. For
+ *    this, all HTML elements with data-socket="[<name>][@<scope>]"
+ *    lead to a ComponentJS socket with <name> and <scope>. The default
+ *    <name> is "default". The default <scope> is no scope at all.
+ *    The "ctx" parameter of ComponentJS socket() is the HTML element
+ *    itself.
+ *
+ *  - It intercepts the ComponentJS socket() method and makes its "plug"
+ *    and "unplug" parameters optional instead of required. The provided
+ *    fallback "plug" and "unplug" functions now accepts Vue (and
+ *    jQuery) instances as returned by the ComponentJS API method vue().
+ *    This plugin requires Vue, but jQuery is not directly required.
  */
 
 /* global ComponentJS: false */
@@ -103,7 +154,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 _cs.foreach(names, function (name) {
                     var symbol = name.replace(/[^a-zA-Z0-9_$]+/g, "_");
                     if (symbol.match(/^event.+$/)) {
-                        /*  ComponentJS event values are implemented as Vue methods  */
+                        /*  ComponentJS event values "eventXXX" are implemented as Vue methods  */
                         params.options.methods[symbol] = function (value) {
                             $cs(self).value(name,
                                 (typeof value === "object" && value instanceof Event) ? true : value);
@@ -133,6 +184,25 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                         };
                     }
                 });
+
+                /*  provide Vue trampoline methods for all ComponentJS
+                    view component backing object utility methods "utilXXX"  */
+                var base = self.obj();
+                if (base !== null) {
+                    var stateMethods = _cs.state_methods();
+                    for (var obj = base; obj !== null; obj = Object.getPrototypeOf(obj)) {
+                        var methods = Object.getOwnPropertyNames(obj);
+                        _cs.foreach(methods, function (method) {
+                            if (   stateMethods[method] === undefined
+                                && typeof obj[method] === "function"
+                                && method.match(/^util.+$/)) {
+                                params.options.methods[method] = function () {
+                                    return base[method].apply(base, arguments);
+                                };
+                            }
+                        });
+                    }
+                }
 
                 /*  hook into Vue instance life-cycle  */
                 params.options.beforeDestroy = function () {
