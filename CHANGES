@@ -10,6 +10,19 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.4.1 and 1.4.2
+    -------------------------------------------------
+
+    o ADDITION:
+      Added to the Vue plugin the functionality of generating Vue
+      trampoline methods for all utility methods named "utilXXX" in the
+      ComponentJS (view) component backing objects. They can be used for
+      complex checks or calculations in the Vue data-binding.
+
+    o ADDITION:
+      Added detailed functionality documentation to the top
+      of the Vue plugin.
+
     Major changes between ComponentJS 1.4.0 and 1.4.1
     -------------------------------------------------
 
