@@ -2,7 +2,7 @@
     "name":        "componentjs",
     "homepage":    "http://componentjs.com/",
     "description": "Powerful run-time Component System for structuring HTML5-based Rich Clients",
-    "version":     "1.4.2",
+    "version":     "1.4.3",
     "license":     "MPL-2.0",
     "author": {
         "name":    "Ralf S. Engelschall",
@@ -34,7 +34,7 @@
         "cleanup":              "grunt cleanup"
     },
     "devDependencies": {
-        "load-grunt-tasks":     "~3.5.0",
+        "load-grunt-tasks":     "~3.5.2",
         "grunt":                "~1.0.1",
         "grunt-cli":            "~1.2.0",
         "grunt-contrib-copy":   "~1.0.0",
@@ -43,7 +43,7 @@
         "grunt-contrib-clean":  "~1.0.0",
         "grunt-expand-include": "~0.9.7",
         "grunt-execute":        "~0.2.2",
-        "grunt-shell":          "~1.3.0",
+        "grunt-shell":          "~1.3.1",
         "grunt-mkdir":          "~1.0.0",
         "grunt-touch":          "~1.0.0",
         "grunt-newer-explicit": "~0.9.4",
@@ -55,7 +55,7 @@
         "grunt-mocha-test":     "~0.12.7",
         "grunt-istanbul":       "~0.7.1",
         "grunt-jsonlint":       "~1.1.0",
-        "mocha":                "~3.0.0",
+        "mocha":                "~3.0.2",
         "chai":                 "~3.5.0",
         "chai-fuzzy":           "~1.6.1",
         "underscore":           "~1.8.3",
@@ -65,6 +65,6 @@
         "sinon-chai":           "~2.8.0",
         "sinon":                "~1.17.5",
         "xregexp":              "~3.1.1",
-        "upd":                  "~1.1.9"
+        "upd":                  "~1.1.10"
     }
 }
