@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.4.2 and 1.4.3
+    -------------------------------------------------
+
+    o IMPROVEMENT:
+      Be more descriptive in debug messages related to the dispatching
+      of events to subscribers..
+
     Major changes between ComponentJS 1.4.1 and 1.4.2
     -------------------------------------------------
 
