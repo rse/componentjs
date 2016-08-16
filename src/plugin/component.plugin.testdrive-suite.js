@@ -61,6 +61,7 @@ $cs.suite = function () {
     ui
         .width(uiw)
         .height(uih)
+        .css("box-sizing", "content-box")
         .css("top", -uih)
         .css("left", (w / 2) - (uiw / 2))
         .css("position", "absolute")
@@ -78,6 +79,7 @@ $cs.suite = function () {
     $("." + name + "-head", ui)
         .width(uiw - 20)
         .height(20)
+        .css("box-sizing", "content-box")
         .css("position", "relative")
         .css("background", "#666666")
         .css("background", "-moz-linear-gradient(top, #666666 0%, #333333 49%, #222222 51%, #000000 100%)")
@@ -137,7 +139,8 @@ $cs.suite = function () {
         .css("background-color", "#f0f0f0");
     $("." + name + "-list-name", ui)
         .css("padding", "2px 10px 2px 10px")
-        .css("font-family", "monospace");
+        .css("font-family", "monospace")
+        .css("white-space", "nowrap");
     $("." + name + "-list-desc", ui)
         .width("100%")
         .css("padding", "2px 10px 2px 10px");

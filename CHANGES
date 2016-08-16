@@ -17,6 +17,13 @@
       Be more descriptive in debug messages related to the dispatching
       of events to subscribers..
 
+    o IMPROVEMENT:
+      Improve rendering of testdrive plugin dialog in SPAs which change
+      CSS "box-sizing" at the top-level (as Bootstrap-based SPAs do) by
+      enforcing "box-sizing: content-box" in the displayed testdrive
+      dialog. Also enforce "white-space: nowrap" on the "Identifier"
+      column.
+
     Major changes between ComponentJS 1.4.1 and 1.4.2
     -------------------------------------------------
 
