@@ -15,7 +15,7 @@
 
     o IMPROVEMENT:
       Be more descriptive in debug messages related to the dispatching
-      of events to subscribers..
+      of events to subscribers.
 
     o IMPROVEMENT:
       Improve rendering of testdrive plugin dialog in SPAs which change
