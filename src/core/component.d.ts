@@ -115,10 +115,26 @@ interface ComponentJS_comp {
         object: any
     ): void;
 
-    property(name: string): any;
-    property(name: string, value: any): any;
+    property(params: {
+        name: string,
+        value?: any,
+        def?: any,
+        scope?: string,
+        bubbling?: boolean,
+        targeting?: boolean
+    }): any;
+    property(
+        name: string,
+        value?: any
+    ): any;
 
-    state_auto_increase(enable: boolean): void;
+    state_auto_increase(
+        enable: boolean
+    ): void;
+    state_auto_decrease(
+        enable: boolean
+    ): void;
+
     socket(params: {
         name?: string;
         scope?: any;
