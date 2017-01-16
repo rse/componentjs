@@ -39,14 +39,14 @@ of its C<testdrive> plugin.
 
   Return a Promise/A+ based promise, internally backed by
   an embedded "Thenable" implementation. The alternative
-  usage with an P<executor> (of type "C<(fulfill: (value?: any) =&gt; Promise, 
+  usage with an P<executor> (of type "C<(fulfill: (value?: any) =&gt; Promise,
   reject: (value?: any) =&gt; Promise) =&gt; void>" in TypeScript definition syntax)
   avoids a temporary variable.
 
   | /*  standard usage  */
   | var promise = new $cs.promise();
   | doSomethingAsync(
-  |     function onSuccess (msg) { promise.fulfill(msg); }, 
+  |     function onSuccess (msg) { promise.fulfill(msg); },
   |     function onError   (err) { promise.reject(err);  }
   | );
   | return promise.proxy;
@@ -54,7 +54,7 @@ of its C<testdrive> plugin.
   | /*  alternative usage (regular)  */
   | return new $cs.promise(function (fulfill, reject) {
   |     doSomethingAsync(
-  |         function onSuccess (msg) { fulfill(msg); }, 
+  |         function onSuccess (msg) { fulfill(msg); },
   |         function onError   (err) { reject(err);  }
   |     );
   | }).proxy;
@@ -65,14 +65,14 @@ of its C<testdrive> plugin.
   | }).proxy;
 
 - ComponentJS.M<usecase>({
-      F<name>: T<String>, 
-      F<desc>: T<String>, 
+      F<name>: T<String>,
+      F<desc>: T<String>,
       [F<conf>: T<Object>,]
       F<func>: T<Function>
   }): T<Void>;
   ComponentJS.M<usecase>(
-      P<name>: T<String>, 
-      P<desc>: T<String>, 
+      P<name>: T<String>,
+      P<desc>: T<String>,
       P<func>: T<Function>
   ): T<Void>
 
@@ -117,7 +117,7 @@ of its C<testdrive> plugin.
   |         conf: { num: 1, realm: "foo", username: "bar", password: "baz!quux" },
   |         func: function (conf) {
   |             var re = new RegExp("login from \".*login" + conf.num +
-  |                 "\" with realm \"" + conf.realm + "\", username \"" + 
+  |                 "\" with realm \"" + conf.realm + "\", username \"" +
   |                 conf.username + "\" and password \"" + conf.password + "\"");
   |             return cs.poll(function (fulfill, reject) {
   |                 return $("div.status").text().match(re);
@@ -134,13 +134,13 @@ of its C<testdrive> plugin.
   | }
 
 - ComponentJS.M<drive>({
-      F<name>: T<String>, 
+      F<name>: T<String>,
       [F<conf>: T<Object>,]
       [F<timeout>: T<Number>]
   }): T<Promise>;
   ComponentJS.M<drive>(
-      P<name>: T<String>, 
-      [P<conf>: T<Object>,] 
+      P<name>: T<String>,
+      [P<conf>: T<Object>,]
       [P<timeout>: T<Number>]
   ): T<Promise>
 
@@ -156,22 +156,22 @@ of its C<testdrive> plugin.
   | });
 
 - ComponentJS.M<ensure>({
-      F<path>: T<String>, 
+      F<path>: T<String>,
       F<state>: T<String>,
       [F<min>: T<Boolean> = C<true>,]
       [F<max>: T<Boolean> = C<false>,]
       [F<sync>: T<Boolean> = C<false>]
   }): T<Promise>;
   ComponentJS.M<ensure>(
-      P<path>: T<String>, 
+      P<path>: T<String>,
       P<state>: T<String>
   ): T<Promise>
 
   Notice: requires ComponentJS plugin C<testdrive> to be loaded!
 
   Ensure that a component under F<path> reaches a particular F<state> which is
-  at least (in case of F<min> = C<true>), and/or at most (in case of F<max> = true) 
-  a particular F<state>, by synchronously (in case of F<sync> = C<true>) or asynchronously 
+  at least (in case of F<min> = C<true>), and/or at most (in case of F<max> = true)
+  a particular F<state>, by synchronously (in case of F<sync> = C<true>) or asynchronously
   (by default), triggering a state change on the component under F<path>.
   The state change is explicitly trigger by M<ensure>() itself.
   The function returns a Promise/A+ promise which is either fulfilled with the component
@@ -183,12 +183,12 @@ of its C<testdrive> plugin.
   | });
 
 - ComponentJS.M<await>({
-      F<path>: T<String>, 
+      F<path>: T<String>,
       F<state>: T<String>,
       [F<direction>: T<String> = C<"enter">]
   }): T<Promise>;
   ComponentJS.M<await>(
-      P<path>: T<String>, 
+      P<path>: T<String>,
       P<state>: T<String>,
       [P<direction>: T<String> = C<"enter">]
   ): T<Promise>
@@ -210,12 +210,12 @@ of its C<testdrive> plugin.
   | });
 
 - ComponentJS.M<poll>({
-      F<check>: T<Function>, 
+      F<check>: T<Function>,
       [F<wait>: T<Function>,]
       [F<max>: T<Number> = C<600>]
   }): T<Promise>;
   ComponentJS.M<poll>(
-      P<check>: T<Function>, 
+      P<check>: T<Function>,
       [P<wait>: T<Function>,]
       [P<max>: T<Number> = C<600>]
   ): T<Promise>
@@ -239,7 +239,7 @@ of its C<testdrive> plugin.
   |     conf: { num: 1, realm: "foo", username: "bar", password: "baz!quux" },
   |     func: function (conf) {
   |         var re = new RegExp("login from \".*login" + conf.num +
-  |             "\" with realm \"" + conf.realm + "\", username \"" + 
+  |             "\" with realm \"" + conf.realm + "\", username \"" +
   |             conf.username + "\" and password \"" + conf.password + "\"");
   |         return cs.poll(function (fulfill, reject) {
   |             return $("div.status").text().match(re);
