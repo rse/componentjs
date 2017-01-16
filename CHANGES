@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.4.3 and 1.4.4
+    -------------------------------------------------
+
+    o IMPROVEMENT:
+      Allow the Vue plugin method vue() method to accept either
+      option.template or option.render to be more flexible.
+
     Major changes between ComponentJS 1.4.2 and 1.4.3
     -------------------------------------------------
 

@@ -104,20 +104,23 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 });
 
                 /*  prepare the HTML mask template  */
-                if (typeof params.options.template === "undefined")
-                    throw _cs.exception("vue", "missing mandatory Vue template");
-                if (isjQuery(params.options.template))
-                    params.options.template = params.options.template.get(0);
-                if (typeof params.options.template === "string") {
-                    for (;;) {
-                        var reduced = params.options.template.replace(/^\s*<!--.*?-->\s*/, "");
-                        if (params.options.template !== reduced)
-                            params.options.template = reduced;
-                        else
-                            break;
+                if (   typeof params.options.template === "undefined"
+                    && typeof params.options.render   === "undefined")
+                    throw _cs.exception("vue", "missing mandatory Vue options \"template\" or \"render\"");
+                if (typeof params.options.template !== "undefined") {
+                    if (isjQuery(params.options.template))
+                        params.options.template = params.options.template.get(0);
+                    if (typeof params.options.template === "string") {
+                        for (;;) {
+                            var reduced = params.options.template.replace(/^\s*<!--.*?-->\s*/, "");
+                            if (params.options.template !== reduced)
+                                params.options.template = reduced;
+                            else
+                                break;
+                        }
+                        params.options.template = params.options.template
+                            .replace(/^\s+/, "").replace(/\s+$/, "");
                     }
-                    params.options.template = params.options.template
-                        .replace(/^\s+/, "").replace(/\s+$/, "");
                 }
 
                 /*  iterate over all models towards the root component and find all model values  */
