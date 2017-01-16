@@ -17,6 +17,9 @@
       Allow the Vue plugin method vue() method to accept either
       option.template or option.render to be more flexible.
 
+    o IMPROVEMENT:
+      Improve TypeScript definition of API.
+
     Major changes between ComponentJS 1.4.2 and 1.4.3
     -------------------------------------------------
 
