@@ -66,6 +66,10 @@ interface ComponentJS_comp {
         func: ComponentJS_event_cb
     ): number;
 
+    unobserve(
+        id: number
+    ): number;
+
     call(params: {
         name: string;
         args: any[];
@@ -94,7 +98,26 @@ interface ComponentJS_comp {
         ...args: any[]
     ): any;
 
-    unspool(name: string): void;
+    spool(params: {
+        name: string;
+        ctx:  any;
+        func: (...args: any[]) => void;
+        args: any[];
+    }): void
+    spool(
+        name: string,
+        ctx:  any,
+        func: (...args: any[]) => void,
+        args: any[]
+    ): void;
+
+    spooled(
+        name: string
+    ): boolean;
+
+    unspool(
+        name: string
+    ): void;
 
     guard(name: string, level: number): void;
 
