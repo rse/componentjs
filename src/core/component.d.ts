@@ -164,11 +164,15 @@ interface ComponentJS_comp {
         ctx: any;
         plug?: any;
         unplug?: any;
-    }): void;
+    }): number;
     socket(
         ctx: any,
         plug?: any,
         unplug?: any
+    ): number;
+
+    unsocket(
+        id: number
     ): void;
 
     subscribe(params: {
