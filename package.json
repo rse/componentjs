@@ -39,7 +39,7 @@
         "grunt-cli":            "~1.2.0",
         "grunt-contrib-copy":   "~1.0.0",
         "grunt-contrib-jshint": "~1.1.0",
-        "grunt-contrib-uglify": "~2.0.0",
+        "grunt-contrib-uglify": "~2.2.0",
         "grunt-contrib-clean":  "~1.0.0",
         "grunt-expand-include": "~0.9.7",
         "grunt-execute":        "~0.2.2",
@@ -65,6 +65,6 @@
         "sinon-chai":           "~2.8.0",
         "sinon":                "~1.17.7",
         "xregexp":              "~3.1.1",
-        "upd":                  "~1.1.18"
+        "upd":                  "~1.1.20"
     }
 }
