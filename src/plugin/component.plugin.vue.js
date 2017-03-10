@@ -241,20 +241,27 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
 
                 /*  automatically create ComponentJS sockets for all
                     DOM elements which are tagged as sockets  */
-                var elements = vm.$el.querySelectorAll("*[data-socket]");
-                for (var i = 0; i < elements.length; i++) {
-                    var socketName  = elements[i].getAttribute("data-socket");
+                var createSocketForElement =  function (element) {
+                    var socketName  = element.getAttribute("data-socket");
                     var socketScope = "";
                     var m = socketName.match(/^(.*)@(.+)$/);
                     if (m !== null) {
                         socketName  = m[1];
                         socketScope = m[2];
                     }
-                    var opts = { ctx: elements[i] };
+                    var opts = { ctx: element };
                     if (socketName  !== "") opts.name  = socketName;
                     if (socketScope !== "") opts.scope = socketScope;
                     var id = $cs(self).socket(opts);
                     vm.__ComponentJS.sockets.push(id);
+                };
+
+                if (vm.$el.hasAttribute("data-socket"))
+                    createSocketForElement(vm.$el);
+
+                var elements = vm.$el.querySelectorAll("*[data-socket]");
+                for (var i = 0; i < elements.length; i++) {
+                    createSocketForElement(elements[i]);
                 }
 
                 /*  optionally spool Vue instance destruction  */
