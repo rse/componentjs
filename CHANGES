@@ -20,6 +20,10 @@
     o IMPROVEMENT:
       Improve TypeScript definition of API.
 
+    o BUGFIX:
+      Allow the automatic socket generation for all "data-socket"
+      attributes in the Vue plugin to also handle root elements.
+
     Major changes between ComponentJS 1.4.2 and 1.4.3
     -------------------------------------------------
 
