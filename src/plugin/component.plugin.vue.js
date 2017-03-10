@@ -241,7 +241,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
 
                 /*  automatically create ComponentJS sockets for all
                     DOM elements which are tagged as sockets  */
-                var createSocketForElement =  function (element) {
+                var createSocketForElement = function (element) {
                     var socketName  = element.getAttribute("data-socket");
                     var socketScope = "";
                     var m = socketName.match(/^(.*)@(.+)$/);
@@ -255,14 +255,11 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     var id = $cs(self).socket(opts);
                     vm.__ComponentJS.sockets.push(id);
                 };
-
                 if (vm.$el.hasAttribute("data-socket"))
                     createSocketForElement(vm.$el);
-
                 var elements = vm.$el.querySelectorAll("*[data-socket]");
-                for (var i = 0; i < elements.length; i++) {
+                for (var i = 0; i < elements.length; i++)
                     createSocketForElement(elements[i]);
-                }
 
                 /*  optionally spool Vue instance destruction  */
                 if (params.spool !== null) {
