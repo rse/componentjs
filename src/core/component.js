@@ -7,7 +7,7 @@
 **  with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
 */
 
-(function (GLOBAL, EXPORTS, DEFINE) {
+(function (GLOBAL, MODULE, DEFINE) {
     /*
     **  GLOBAL LIBRARY NAMESPACING
     */
@@ -80,7 +80,7 @@
 })(
     /* global window:false */
     /* global global:false */
-    /* global exports:false */
+    /* global module:false */
     /* global define:false */
     ( typeof window !== "undefined"
         ? window
@@ -89,8 +89,8 @@
             : ( typeof this !== "undefined"
                 ? this
                 : {} ))),
-    ( typeof exports === "object"
-        ? exports
+    ( typeof module === "object"
+        ? module
         : undefined ),
     ( typeof define === "function"
         ? define

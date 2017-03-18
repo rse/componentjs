@@ -8,21 +8,20 @@
 */
 
 /*  export our global API...  */
-if (   (   typeof EXPORTS === "object"
+if (   (   typeof MODULE === "object"
+        && typeof MODULE.exports !== "undefined"
         && typeof GLOBAL.ComponentJS_export === "undefined")
     || (   typeof GLOBAL.ComponentJS_export !== "undefined"
         && GLOBAL.ComponentJS_export === "CommonJS"        ))
-    /*  ...to scoped CommonJS environment  */
-    EXPORTS.ComponentJS = $cs;
+    /*  ...to CommonJS environment  */
+    MODULE.exports = $cs;
 else if (   (   typeof DEFINE === "function"
              && typeof DEFINE.amd === "object"
              && typeof GLOBAL.ComponentJS_export === "undefined")
          || (   typeof GLOBAL.ComponentJS_export !== "undefined"
              && GLOBAL.ComponentJS_export === "AMD"             ))
-    /*  ...to scoped AMD environment  */
-    DEFINE("ComponentJS", function () {
-        return $cs;
-    });
+    /*  ...to AMD environment  */
+    DEFINE("ComponentJS", function () { return $cs; });
 else {
     /*  ...to regular global environment  */
     $cs.symbol("ComponentJS");

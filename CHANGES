@@ -10,6 +10,17 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.4.4 and 1.5.0
+    -------------------------------------------------
+
+    o INCOMPATIBILITY:
+      Previously, in a CommonJS environment (like Node.js, Webpack,
+      Browserify, etc) ComponentJS exported to the less convenient
+      and conventional "module.exports.ComponentJS". It now exports
+      to just the conventional "module.exports" and this way
+      can be used with just "require('componentjs')" instead of
+      "require('componentjs').ComponentJS".
+
     Major changes between ComponentJS 1.4.3 and 1.4.4
     -------------------------------------------------
 
