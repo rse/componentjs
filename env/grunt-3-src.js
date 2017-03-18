@@ -188,6 +188,7 @@ module.exports = function (grunt) {
                     "--warning_level DEFAULT " +
                     "--compilation_level SIMPLE_OPTIMIZATIONS " +
                     "--language_in ECMASCRIPT5 " +
+                    "--jscomp_off=es5Strict " +
                     "--third_party " +
                     "--js bld/component.js",
                 options: {
