@@ -1,0 +1,99 @@
+##
+##  ComponentJS -- Component System for JavaScript <http://componentjs.com>
+##  Copyright (c) 2009-2017 Ralf S. Engelschall <http://engelschall.com>
+##
+##  This Source Code Form is subject to the terms of the Mozilla Public
+##  License (MPL), version 2.0. If a copy of the MPL was not distributed
+##  with this file, You can obtain one at http://mozilla.org/MPL/2.0/.
+##
+
+Vue Data Binding
+----------------
+
+ComponentJS has optional support for bidirectional data binding
+with the help of the C<vue> plugin and the underlying Vue rendering engine.
+The C<vue> plugin provides the following distinct features:
+
+. It provides a new ComponentJS API method M<vue()> for rendering
+  a view mask into a Vue instance (see below).
+
+. It provides a new ComponentJS API method M<unvue()> which accepts a
+  Vue instance (as previously created by the M<vue()> method) and unplugs
+  and destroys it (see below).
+
+. For all generated Vue instances, it generates for all ComponentJS model
+  values (from the current component, usually a view component,
+  up to the root component) Vue computed getter/setter fields
+  (F<name>) which perform true bi-directional data-binding. They can
+  be used like e.g. C<v-bind:>F<attr>C<=">F<name>C<"> in the view mask. The
+  ComponentJS model values (by convention) named C<eventXXX> are
+  treated specially: Vue methods of the same name are generated
+  for them, which can be used like e.g. C<v-on:click="eventXXX"> (for
+  passing a Vue C<Event> instance, which is then converted into C<true>)
+  or C<v-on:click="eventXXX(>F<arg>C<)"> (for receiving an arbitrary
+  single argument F<arg>) in the view mask. The names of ComponentJS
+  model values are converted into valid Vue symbols by replacing
+  all C<[^a-zA-Z0-9_$]> characters with C<"_"> characters. Hence it
+  is recommended to use camel-case ComponentJS model values like
+  C<paramFooBar>, C<commandFooBar>, C<stateFooBar>, C<dataFooBar>, and
+  C<eventFooBar> only.
+
+. For all generated Vue instances, it generates trampoline methods for all
+  methods named C<utilXXX> in the backing object of the ComponentJS
+  (view) component. They can be used like C<v-if="utilXXX(...)"> in the
+  view masks for complex checks or calculations, if really necessary.
+
+. For all generated Vue instances, it creates ComponentJS sockets for all
+  DOM elements in the Vue template which are tagged as sockets. For
+  this, all HTML elements with C<data-socket=">[F<name>][C<@>F<scope>]C<">
+  lead to a ComponentJS socket with F<name> and F<scope>. The default
+  F<name> is C<default>. The default F<scope> is no scope at all.
+  The C<ctx> parameter of ComponentJS M<socket()> is the DOM element
+  itself.
+
+. It intercepts the ComponentJS M<socket()> method and makes its F<plug>
+  and F<unplug> parameters optional instead of required. The provided
+  fallback F<plug> and F<unplug> functions now accept Vue (and
+  jQuery) instances as returned by the ComponentJS API method M<vue()>.
+  This plugin requires Vue, but jQuery is not directly required.
+
+The extra ComponentJS API methods are:
+
+- ComponentJS.M<vue>({
+      F<options>: T<Object>,
+      [F<spool>: T<String>]
+  }): T<Object>;
+  ComponentJS.M<vue>(
+      P<options>: T<Object>,
+      [P<spool>: T<String>]
+  ): T<Object>
+
+  Notice: requires ComponentJS plugin C<vue> to be loaded!
+
+  Notice: requires external library VueJS to be loaded!
+
+  This method accepts a required Vue F<options> parameter (also accepted
+  as a first positional parameter) and an optional ComponentJS F<spool>
+  parameter (also accepted as a second positional parameter). The
+  F<options> parameter is required to have either a Vue C<template>
+  field (with the view mask as either a string, a DOM fragment or a
+  jQuery DOM fragment) or a Vue C<render> field (with a compiled Vue
+  render function). The result is a rendered but unmounted Vue model instance
+  which can be later plugged into a ComponentJS socket with M<plug()>
+  and/or further manipulated (with jQuery) through its Vue C<$el> field.
+
+- ComponentJS.M<unvue>({
+      F<vm>: T<Object>
+  }): T<Void>;
+  ComponentJS.M<unvue>(
+      P<vm>: T<Object>
+  ): T<Void>
+
+  Notice: requires ComponentJS plugin C<vue> to be loaded!
+
+  Notice: requires external library VueJS to be loaded!
+
+  Unplug and destroy the Vue model instance. Usually this is not called
+  directly, as one should use the F<spool> parameter of M<vue()> to
+  automatically unplug and destroy the Vue model instance.
+

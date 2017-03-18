@@ -21,6 +21,10 @@
       can be used with just "require('componentjs')" instead of
       "require('componentjs').ComponentJS".
 
+    o IMPROVEMENT:
+      Move documentation of Vue plugin from source code to
+      documentation.
+
     Major changes between ComponentJS 1.4.3 and 1.4.4
     -------------------------------------------------
 
