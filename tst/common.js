@@ -40,7 +40,7 @@ var load = function (name) {
 };
 
 /*  load all library parts  */
-global.ComponentJS = load("component").ComponentJS;
+global.ComponentJS = load("component");
 global.cs = global.ComponentJS;
 load("component.plugin.testdrive");
 
