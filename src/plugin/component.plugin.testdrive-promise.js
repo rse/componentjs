@@ -9,6 +9,7 @@
 
 /*  global API function: Promises/A+ compliant promise  */
 $cs.promise = (function () {
+    var define = false;
     var module = { exports: {} };
     /* eslint no-use-before-define: 0 */
     /* eslint space-infix-ops: 0 */
