@@ -25,6 +25,9 @@
       Move documentation of Vue plugin from source code to
       documentation.
 
+    o BUGFIX:
+      Silence Google Closure Compiler again for arguments.callee usage.
+
     Major changes between ComponentJS 1.4.3 and 1.4.4
     -------------------------------------------------
 
