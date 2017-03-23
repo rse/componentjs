@@ -46,7 +46,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 /*  determine parameters  */
                 var self = this;
                 var params = $cs.params("vue", arguments, {
-                    options: { pos: 0, req: {}   },
+                    options: { pos: 0, req: true },
                     spool:   { pos: 1, def: null }
                 });
 
@@ -55,8 +55,11 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     && typeof params.options.render   === "undefined")
                     throw _cs.exception("vue", "missing mandatory Vue options \"template\" or \"render\"");
                 if (typeof params.options.template !== "undefined") {
+                    /*  unwrap jQuery wrapper object  */
                     if (isjQuery(params.options.template))
                         params.options.template = params.options.template.get(0);
+
+                    /*  process string representation  */
                     if (typeof params.options.template === "string") {
                         for (;;) {
                             var reduced = params.options.template.replace(/^\s*<!--.*?-->\s*/, "");
@@ -70,11 +73,12 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     }
                 }
 
-                /*  iterate over all models towards the root component and find all model values  */
+                /*  iterate over all ComponentJS models towards the root component and find all model values  */
                 var values = {};
-                var comp = this;
                 var owner, model;
+                var comp = this;
                 while (comp !== null) {
+                    /*  find next component with a model  */
                     owner = comp.property({ name: "ComponentJS:model", returnowner: true });
                     if (!_cs.isdefined(owner))
                         break;
@@ -97,7 +101,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 if (typeof params.options.methods !== "object")
                     params.options.methods = {};
 
-                /*  the symbol prefix for ComponentJS trigger model values  */
+                /*  the Vue symbol prefix for ComponentJS trigger model values  */
                 var prefix = "ComponentJS_trigger_";
 
                 /*  provide Vue model entries for all ComponentJS model values  */
@@ -111,16 +115,20 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                         };
                     }
                     else {
-                        /*  other ComponentJS values are implemented as Vue computed properties  */
+                        /*  other ComponentJS values are implemented as Vue computed properties
+                            with an associated trigger property for firing the invalidation
+                            of the internal Vue caching mechanism by forcing a re-get operation  */
                         params.options.data[prefix + symbol] = 0;
                         params.options.computed[symbol] = {
                             get: function () {
-                                /*  tell Vue that we are depending on our trigger value
-                                    (so we can later force Vue to call us again instead of
-                                    using the cached value we returned beforehand)  */
+                                /*  tell Vue that we are depending on our trigger value by just accessing
+                                    it once (so we can later force Vue to call us again instead of using
+                                    the cached value we returned beforehand). This operation is observed
+                                    by Vue and leads to the dependency between the computed property and
+                                    the trigger property  */
                                 void (this[prefix + symbol]);
 
-                                /*  get the underlying ComponentJS value  */
+                                /*  get the underlying ComponentJS model value  */
                                 return $cs(self).value(name);
                             },
                             set: function (value) {
@@ -128,7 +136,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                                     is forced to update the cached value of the above getter  */
                                 this[prefix + symbol]++;
 
-                                /*  set the underlying ComponentJS value  */
+                                /*  set the underlying ComponentJS model value  */
                                 $cs(self).value(name, value);
                             }
                         };
@@ -154,7 +162,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     }
                 }
 
-                /*  hook into Vue instance life-cycle  */
+                /*  hook into Vue instance life-cycle todestroy observers and sockets  */
                 params.options.beforeDestroy = function () {
                     _cs.foreach(this.__ComponentJS.observers, function (id) {
                         $cs(self).unobserve(id);
@@ -224,7 +232,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
             unvue: function (vm) {
                 /*  determine parameters  */
                 var params = $cs.params("unvue", arguments, {
-                    vm: { pos: 0, req: null }
+                    vm: { pos: 0, req: true }
                 });
 
                 /*  sanity check parameter  */
@@ -256,7 +264,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                         else if (isVue(el))
                             el = el.$el;
 
-                        /*  append to the DOM tree (the jQuery or plain way)  */
+                        /*  append it to the DOM tree (the jQuery or plain way)  */
                         if (isjQuery(this))
                             this.append(el);
                         else
@@ -267,7 +275,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 /*  provide specialized socket "unplug" functionality  */
                 if (params.unplug === null) {
                     params.unplug = function (el /*, comp */) {
-                        /*  remove from the DOM tree (the jQuery way)  */
+                        /*  remove it from the DOM tree (the jQuery way)  */
                         if (isjQuery(el))
                             el.detach();
                         else {
@@ -275,7 +283,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                             if (isVue(el))
                                 el = el.$el;
 
-                            /*  remove from the DOM tree (the plain way)  */
+                            /*  remove it from the DOM tree (the plain way)  */
                             var parent = el.parentElement;
                             if (parent !== null)
                                 parent.removeChild(el);
