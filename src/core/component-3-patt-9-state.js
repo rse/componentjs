@@ -330,6 +330,18 @@ _cs.state_progression_run = function (comp, arg, _direction) {
     }
 };
 
+/*  clear all existing state requests  */
+_cs.state_request_clear = function (cid) {
+    if (cid && _cs.state_requests[cid])
+        delete _cs.state_requests[cid];
+};
+
+/*  clear all existing guards  */
+_cs.guard_clear = function (comp) {
+    if (comp)
+        comp.__state_guards = {};
+};
+
 /*  generic pattern for state management  */
 $cs.pattern.state = $cs.trait({
     mixin: [
@@ -466,4 +478,5 @@ $cs.pattern.state = $cs.trait({
         }
     }
 });
+
 

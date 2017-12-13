@@ -231,6 +231,12 @@ $cs.destroy = function () {
     /*  detach component from component tree  */
     comp.detach();
 
+    /*  clear all state requests  */
+    _cs.state_request_clear(id);
+
+    /*  clear all existing guards  */
+    _cs.guard_clear(comp);
+
     /*  remove bi-directional relationship between component and object  */
     comp.obj(null);
 
