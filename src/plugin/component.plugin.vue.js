@@ -45,6 +45,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
             vue: function () {
                 /*  determine parameters  */
                 var self = this;
+                var vm;
                 var params = $cs.params("vue", arguments, {
                     options: { pos: 0, req: true },
                     spool:   { pos: 1, def: null }
@@ -87,7 +88,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
 
                     /*  remember all model values  */
                     for (var name in model.data)
-                        values[name] = owner;
+                        values[name] = { owner: owner, observers: false };
                 }
                 var names = Object.keys(values);
                 if (names.length === 0)
@@ -115,6 +116,11 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                         };
                     }
                     else {
+                        var onChange =  function (/* ev, value */) {
+                            /*  just update the Vue trigger value  */
+                            vm[prefix + symbol]++;
+                        };
+
                         /*  other ComponentJS values are implemented as Vue computed properties
                             with an associated trigger property for firing the invalidation
                             of the internal Vue caching mechanism by forcing a re-get operation  */
@@ -128,6 +134,15 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                                     the trigger property  */
                                 void (this[prefix + symbol]);
 
+                                /*  lazy provide observers for the ComponentJS model values  */
+                                if (!values[name].observers) {
+                                    _cs.foreach([ "set", "splice", "delete" ], function (op) {
+                                        var id = $cs(self).observe({ name: name, op: op, func: onChange });
+                                        vm.__ComponentJS.observers.push(id);
+                                    });
+                                    values[name].observers = true;
+                                }
+
                                 /*  get the underlying ComponentJS model value  */
                                 return $cs(self).value(name);
                             },
@@ -135,6 +150,15 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                                 /*  update the Vue trigger value to ensure that Vue
                                     is forced to update the cached value of the above getter  */
                                 this[prefix + symbol]++;
+
+                                /*  lazy provide observers for the ComponentJS model values  */
+                                if (!values[name].observers) {
+                                    _cs.foreach([ "set", "splice", "delete" ], function (op) {
+                                        var id = $cs(self).observe({ name: name, op: op, func: onChange });
+                                        vm.__ComponentJS.observers.push(id);
+                                    });
+                                    values[name].observers = true;
+                                }
 
                                 /*  set the underlying ComponentJS model value  */
                                 $cs(self).value(name, value);
@@ -162,7 +186,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                     }
                 }
 
-                /*  hook into Vue instance life-cycle todestroy observers and sockets  */
+                /*  hook into Vue instance life-cycle to destroy observers and sockets  */
                 params.options.beforeDestroy = function () {
                     _cs.foreach(this.__ComponentJS.observers, function (id) {
                         $cs(self).unobserve(id);
@@ -173,26 +197,13 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 };
 
                 /*  create Vue instance  */
-                var vm = new Vue(params.options);
-
-                /*  render into a still stand-alone DOM fragment  */
-                vm.$mount();
+                vm = new Vue(params.options);
 
                 /*  attach ComponentJS information to Vue instance  */
                 vm.__ComponentJS = { observers: [], sockets: [] };
 
-                /*  provide observers for the ComponentJS model values  */
-                _cs.foreach(names, function (name) {
-                    var symbol = name.replace(/[^a-zA-Z0-9_$]+/g, "_");
-                    var onChange =  function (/* ev, value */) {
-                        /*  just update the Vue trigger value  */
-                        vm[prefix + symbol]++;
-                    };
-                    _cs.foreach([ "set", "splice", "delete" ], function (op) {
-                        var id = $cs(self).observe({ name: name, op: op, func: onChange });
-                        vm.__ComponentJS.observers.push(id);
-                    });
-                });
+                /*  render into a still stand-alone DOM fragment  */
+                vm.$mount();
 
                 /*  automatically create ComponentJS sockets for all
                     DOM elements which are tagged as sockets  */
