@@ -378,6 +378,7 @@ $cs.pattern.state = $cs.trait({
                 || ( params.min === true &&  params.max === true && sNew !== sOld)
                 || (!params.min          && !params.max          && sNew !== sOld)) {
                 var enqueue = true;
+                var cid     = this.id();
                 var request = {
                     comp:     this,
                     state:    params.state
@@ -396,11 +397,14 @@ $cs.pattern.state = $cs.trait({
                     /*  perform new state transition request (synchronously)  */
                     if (_cs.state_progression_single(request))
                         enqueue = false;
+                    /*  delete any old transition request  */
+                    if (_cs.state_requests[cid])
+                        delete _cs.state_requests[cid];
                 }
                 if (enqueue) {
                     /*  enqueue new state transition request and trigger
                         state transition progression (asynchronously)  */
-                    _cs.state_requests[this.id()] = request;
+                    _cs.state_requests[cid] = request;
                     _cs.hook("ComponentJS:state-invalidate", "none", "requests");
                     _cs.state_progression();
                 }

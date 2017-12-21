@@ -8,45 +8,35 @@
 */
 
 describe("ComponentJS Component States", function () {
-    var EnterGuard = {
-        create: function () {
-            cs(this).guard("setup", 1)
+    var guardStateAndReleaseAfter = function (comp, state, timeout) {
+        comp.guard(state, 1)
+        if (timeout) {
+            setTimeout(function () {
+                comp.guard(state, 0)
+            }, timeout)
         }
+    }
+    var EnterGuard = {
+        create: function () { guardStateAndReleaseAfter(cs(this), "setup") }
     }
     var LeaveGuard = {
-        prepare: function () {
-            cs(this).guard("cleanup", 1)
-        }
+        prepare: function () { guardStateAndReleaseAfter(cs(this), "cleanup") }
     }
     var ReleaseGuard = {
-        create: function () {
-            var self = this
-            cs(self).guard("setup", 1)
-            setTimeout(function () {
-                cs(self).guard("setup", 0)
-            }, 100)
-        },
-        prepare: function () {
-            var self = this
-            cs(self).guard("cleanup", 1)
-            setTimeout(function () {
-                cs(self).guard("cleanup", -1)
-            }, 200)
-        }
+        setup: function () { guardStateAndReleaseAfter(cs(this), "prepare", 100) },
+        prepare: function () {guardStateAndReleaseAfter(cs(this), "cleanup", 200) }
     }
     var KillGuard = {
-        create: function () {
-            var comp = cs(this)
-            comp.guard("setup", 1)
-            setTimeout(function () {
-                comp.guard("setup", 0)
-            }, 50)
-        }
+        setup: function () { guardStateAndReleaseAfter(cs(this), "prepare", 50) }
+    }
+    var LowerStateGuard = {
+        setup: function () { guardStateAndReleaseAfter(cs(this), "prepare", 500) }
     }
     before(function() {
         cs.create("/enterguard", EnterGuard);
         cs.create("/leaveguard", LeaveGuard);
         cs.create("/releaseguard", ReleaseGuard);
+        cs.create("/lowerguard", LowerStateGuard);
     })
     describe("guard()", function () {
         it("should guard an enter state", function () {
@@ -92,26 +82,44 @@ describe("ComponentJS Component States", function () {
                 }
             }})
         })
-        it("should not activate state transition when comp got destroyed", function(done) {
+        it("should not activate guarded state transition when comp got destroyed", function (done) {
             var killguard = cs.create("/killguard", KillGuard)
             var callbackReached = false;
             killguard.state({
-                state: "prepared", sync: true, func: function() {
+                state: "prepared", sync: true, func: function () {
                     expect(killguard.state()).to.be.equal("dead")
                     callbackReached = true;
                 }
             })
             killguard.destroy()
             expect(killguard.state()).to.be.equal("dead")
-            setTimeout(function() {
+            setTimeout(function () {
+                expect(callbackReached).to.be.equal(false);
+                done();
+            }, 1000)
+        })
+        it("should not activate guarded state transition when comp lifcycle got lowered", function (done) {
+            var callbackReached = false;
+            // ramp component up into a guarded state
+            cs("//lowerguard").state({
+                state: "prepared", sync: true, func: function () {
+                    callbackReached = true;
+                }
+            })
+            // ramp component down back to created while guard is still active
+            cs("//lowerguard").state({ state: "created", sync: true })
+            expect(cs("//lowerguard").state()).to.be.equal("created")
+            setTimeout(function () {
+                // expect the callback of the enter guard to not occur
                 expect(callbackReached).to.be.equal(false);
                 done();
             }, 1000)
         })
     })
-    after(function() {
+    after(function () {
         cs("//enterguard").destroy()
         cs("//leaveguard").destroy()
         cs("//releaseguard").destroy()
+        cs("//lowerguard").destroy()
     })
 })
