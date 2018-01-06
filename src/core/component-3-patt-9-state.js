@@ -117,8 +117,6 @@ _cs.state_progression_single = function (req) {
     var done = false;
     _cs.state_progression_run(req.comp, req.state);
     if (_cs.states[req.comp.__state].state === req.state) {
-        if (typeof req.callback === "function")
-            req.callback.call(req.comp, req.state);
         done = true;
     }
     return done;
@@ -330,6 +328,18 @@ _cs.state_progression_run = function (comp, arg, _direction) {
     }
 };
 
+/*  clear all existing state requests  */
+_cs.state_request_clear = function (cid) {
+    if (cid && _cs.state_requests[cid])
+        delete _cs.state_requests[cid];
+};
+
+/*  clear all existing guards  */
+_cs.guard_clear = function (comp) {
+    if (comp)
+        comp.__state_guards = {};
+};
+
 /*  generic pattern for state management  */
 $cs.pattern.state = $cs.trait({
     mixin: [
@@ -368,20 +378,33 @@ $cs.pattern.state = $cs.trait({
                 || ( params.min === true &&  params.max === true && sNew !== sOld)
                 || (!params.min          && !params.max          && sNew !== sOld)) {
                 var enqueue = true;
+                var cid     = this.id();
                 var request = {
                     comp:     this,
-                    state:    params.state,
-                    callback: params.func
+                    state:    params.state
                 };
+
+                /*  handle the params.func callback using await  */
+                if (typeof params.func === "function" && _cs.states.length > 1) {
+                    this.await({
+                        state:     params.state,
+                        direction: (sNew > sOld ? "upward" : "downward"),
+                        func:      params.func,
+                        spool:     _cs.states[1].state                    // the first state after "dead"
+                    });
+                }
                 if (params.sync) {
                     /*  perform new state transition request (synchronously)  */
                     if (_cs.state_progression_single(request))
                         enqueue = false;
+                    /*  delete any old transition request  */
+                    if (_cs.state_requests[cid])
+                        delete _cs.state_requests[cid];
                 }
                 if (enqueue) {
                     /*  enqueue new state transition request and trigger
                         state transition progression (asynchronously)  */
-                    _cs.state_requests[this.id()] = request;
+                    _cs.state_requests[cid] = request;
                     _cs.hook("ComponentJS:state-invalidate", "none", "requests");
                     _cs.state_progression();
                 }
@@ -463,7 +486,83 @@ $cs.pattern.state = $cs.trait({
                     (which now might proceed) a chance  */
                 _cs.state_progression();
             }
+        },
+
+        /*  await a state  */
+        await: function() {
+            /*  determine parameters  */
+            var params = $cs.params("register", arguments, {
+                state:     { pos: 0, req: true                                 },
+                func:      { pos: 1, req: true                                 },
+                direction: { pos: 2, def: "upward", valid: /^upward|downward$/ },
+                spool:     {         def: null                                 }
+            });
+
+            /*  sanity check state name  */
+            var valid = false;
+            var i;
+            for (i = 0; i < _cs.states.length; i++) {
+                if (_cs.states[i].state === params.state) {
+                    valid = true;
+                    break;
+                }
+            }
+            if (!valid)
+                throw _cs.exception("await", "no such declared state: \""
+                    + params.state + "\"");
+
+            var comp = this;
+            var id;
+            var func = function () {
+                params.func.call(comp, params.state);
+                /*  unawait this callback so it only runs once  */
+                if (id)
+                    comp.unawait(id);
+            };
+
+            var state = params.state;
+            if (params.direction === "downward") {
+                var stateIdx = _cs.state_name2idx(params.state);
+                if (stateIdx + 1 === _cs.states.length)
+                    throw _cs.exception("await", "can not await last state: \""
+                        + params.state + "\" to occur from direction "
+                        + params.direction + "\"");
+                state = _cs.states[stateIdx + 1].state;
+            }
+
+            /*  subscribe to service event  */
+            id = this.subscribe({
+                name:      "ComponentJS:state:" + state + ":" + (params.direction === "upward" ? "enter" : "leave"),
+                ctx:       this,
+                func:      func,
+                noevent:   true,
+                capturing: false,
+                spreading: false,
+                bubbling:  false
+            });
+
+            /*  optionally spool reverse operation  */
+            if (params.spool !== null) {
+                var info = _cs.spool_spec_parse(this, params.spool);
+                info.comp.spool(info.name, this, "unawait", id);
+            }
+
+            return id;
+        },
+
+        /*  unawait a state  */
+        unawait: function() {
+            /*  determine parameters  */
+            var params = $cs.params("unawait", arguments, {
+                id: { pos: 0, req: true }
+            });
+
+            /*  unsubscribe from service event if it is not yet unsubscribed  */
+            if (this._subscription(params.id))
+                this.unsubscribe(params.id);
+            return;
         }
     }
 });
+
 
