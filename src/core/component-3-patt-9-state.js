@@ -510,15 +510,18 @@ $cs.pattern.state = $cs.trait({
             if (!valid)
                 throw _cs.exception("await", "no such declared state: \"" + params.state + "\"");
 
+            /*  the callback trampoline function  */
             var comp = this;
             var id;
             var func = function () {
                 params.func.call(comp, params.state);
+
                 /*  unawait this callback so it only runs once  */
                 if (id)
                     comp.unawait(id);
             };
 
+            /*  determine target state  */
             var state = params.state;
             if (params.direction === "downward") {
                 var stateIdx = _cs.state_name2idx(params.state);
