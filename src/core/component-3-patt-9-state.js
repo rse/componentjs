@@ -489,7 +489,7 @@ $cs.pattern.state = $cs.trait({
         },
 
         /*  await a state  */
-        await: function() {
+        await: function () {
             /*  determine parameters  */
             var params = $cs.params("await", arguments, {
                 state:     { pos: 0, req: true                                 },
@@ -551,7 +551,7 @@ $cs.pattern.state = $cs.trait({
         },
 
         /*  unawait a state  */
-        unawait: function() {
+        unawait: function () {
             /*  determine parameters  */
             var params = $cs.params("unawait", arguments, {
                 id: { pos: 0, req: true }
