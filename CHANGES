@@ -10,6 +10,31 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.5.0 and 1.6.0
+    -------------------------------------------------
+
+    o BUGFIX:
+      The state and guard handling was broken for corner cases: First,
+      the guards were being active even after a component got destroyed.
+      Second. state transition requests blocked by a guard still
+      executed after a state was requested in synchronous mode. Third,
+      multiple callbacks to be executed once a state was reached (upward
+      or downward) were not supported at all.
+
+    o IMPROVEMENT:
+      Added new await()/unwait() methods to each component that allow
+      one to wait until the component reaches a particular state. The
+      optional callback from state() now uses await() internally, too.
+
+    o IMPROVEMENT:
+      The Vue plugin was causing performance issues if it created
+      ComponentJS observers for each and every model field it finds.
+      It now only creates observers if Vue is actually calling for a
+      bindings to the fields.
+
+    o MAINTENANCE:
+      Updated all dependecies to their latest versions.
+
     Major changes between ComponentJS 1.4.4 and 1.5.0
     -------------------------------------------------
 
