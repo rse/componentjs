@@ -116,9 +116,8 @@ _cs.state_progression = function () {
 _cs.state_progression_single = function (req) {
     var done = false;
     _cs.state_progression_run(req.comp, req.state);
-    if (_cs.states[req.comp.__state].state === req.state) {
+    if (_cs.states[req.comp.__state].state === req.state)
         done = true;
-    }
     return done;
 };
 
@@ -390,13 +389,14 @@ $cs.pattern.state = $cs.trait({
                         state:     params.state,
                         direction: (sNew > sOld ? "upward" : "downward"),
                         func:      params.func,
-                        spool:     _cs.states[1].state                    // the first state after "dead"
+                        spool:     _cs.states[1].state /* the first state after "dead" */
                     });
                 }
                 if (params.sync) {
                     /*  perform new state transition request (synchronously)  */
                     if (_cs.state_progression_single(request))
                         enqueue = false;
+
                     /*  delete any old transition request  */
                     if (_cs.state_requests[cid])
                         delete _cs.state_requests[cid];
@@ -491,7 +491,7 @@ $cs.pattern.state = $cs.trait({
         /*  await a state  */
         await: function() {
             /*  determine parameters  */
-            var params = $cs.params("register", arguments, {
+            var params = $cs.params("await", arguments, {
                 state:     { pos: 0, req: true                                 },
                 func:      { pos: 1, req: true                                 },
                 direction: { pos: 2, def: "upward", valid: /^upward|downward$/ },
