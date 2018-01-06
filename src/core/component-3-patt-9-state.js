@@ -508,8 +508,7 @@ $cs.pattern.state = $cs.trait({
                 }
             }
             if (!valid)
-                throw _cs.exception("await", "no such declared state: \""
-                    + params.state + "\"");
+                throw _cs.exception("await", "no such declared state: \"" + params.state + "\"");
 
             var comp = this;
             var id;
@@ -525,7 +524,7 @@ $cs.pattern.state = $cs.trait({
                 var stateIdx = _cs.state_name2idx(params.state);
                 if (stateIdx + 1 === _cs.states.length)
                     throw _cs.exception("await", "can not await last state: \""
-                        + params.state + "\" to occur from direction "
+                        + params.state + "\" to occur from direction \""
                         + params.direction + "\"");
                 state = _cs.states[stateIdx + 1].state;
             }
