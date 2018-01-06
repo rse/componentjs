@@ -134,3 +134,35 @@ transitions, enter and leave methods are called accordingly.
   |     cs(self).guard("render", -1)
   | });
 
+- O<component>.M<await>({
+      F<state>: T<String>,
+      F<func>: T<Function>,
+      F<direction>: T<String>,
+      F<spool>: T<String>
+  }): T<Number>;
+  O<component>.M<await>(
+      P<state>: T<String>,
+      P<func>: T<Function>
+  ): T<Number>
+
+  Await once that component O<component> reaches F<state> while
+  the Component System goes in "C<upward>" or "C<downward>" F<direction>
+  during the state transition process.
+
+  | cs("/foo/bar/quux").await({
+  |     state:     "visible",
+  |     direction: "upward",
+  |     func:      function () { ... }
+  | })
+
+- O<component>.M<unawait>({ F<id>: T<Number> }): T<Void>;
+  O<component>.M<unawait>(P<id>: T<Number>): T<Void>
+
+  Destroy the state awaiting request identified by F<id>, previously
+  created by a call to M<await>(). This is usually done implicitly
+  through the spooling mechanism or once the M<await>() callback was
+  called. But it can be called manually in case one no longer wants to
+  await the state.
+
+  | cs(this).unawait(id)
+
