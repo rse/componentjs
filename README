@@ -33,7 +33,7 @@
       $ bower install componentjs
 
       # install a particular version
-      $ bower install "componentjs#1.0.0"
+      $ bower install "componentjs#1.6.0"
 
     - or download only the main file from the repository:
 
@@ -41,7 +41,7 @@
       $ curl -O https://raw.github.com/rse/componentjs-build/master/component.js
 
       # install a particular version
-      $ curl -O https://raw.github.com/rse/componentjs-build/1.0.0/component.js
+      $ curl -O https://raw.github.com/rse/componentjs-build/1.6.0/component.js
 
     Building
     ========
