@@ -164,92 +164,6 @@ module.exports = function (grunt) {
         }
     });
 
-    /*  linting (Google Closure Compiler)  */
-    grunt.config.merge({
-        newer: {
-            "src-closurecompiler": {
-                src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
-                dest: "bld/.done-src-closurecompiler",
-                options: { tasks: [ "path-check:src-closurecompiler", "touch:src-closurecompiler-done" ] }
-            }
-        },
-        "path-check": {
-            "src-closurecompiler": {
-                src: [ "closure-compiler" ],
-                options: {
-                    mandatory: false,
-                    tasks: [ "shell:src-closurecompiler" ]
-                }
-            }
-        },
-        shell: {
-            "src-closurecompiler": {
-                command: "closure-compiler " +
-                    "--warning_level DEFAULT " +
-                    "--compilation_level SIMPLE_OPTIMIZATIONS " +
-                    "--language_in ECMASCRIPT5 " +
-                    "--jscomp_off=es5Strict " +
-                    "--third_party " +
-                    "--js bld/component.js",
-                options: {
-                    stdout: false,
-                    stderr: true
-                }
-            }
-        },
-        touch: {
-            "src-closurecompiler-done": {
-                src: [ "bld/.done-src-closurecompiler" ]
-            }
-        },
-        clean: {
-            "src-closurecompiler": [
-                "bld/.done-src-closurecompiler"
-            ]
-        }
-    });
-
-    /*  linting (Google Closure Linter)  */
-    grunt.config.merge({
-        newer: {
-            "src-closurelinter": {
-                src: [ "bld/component.js", "bld/component.*.js", "!bld/component.*.min.js" ],
-                dest: "bld/.done-src-closurelinter",
-                options: { tasks: [ "path-check:src-closurelinter", "touch:src-closurelinter-done" ] }
-            }
-        },
-        "path-check": {
-            "src-closurelinter": {
-                src: [ "gjslint" ],
-                options: {
-                    mandatory: false,
-                    tasks: [ "shell:src-closurelinter" ]
-                }
-            }
-        },
-        shell: {
-            "src-closurelinter": {
-                command: "gjslint " +
-                    "--disable 0001,0110,0120,0131 " +
-                    "bld/component.js",
-                options: {
-                    stdout: false,
-                    stderr: true
-                }
-            }
-        },
-        touch: {
-            "src-closurelinter-done": {
-                src: [ "bld/.done-src-closurelinter" ]
-            }
-        },
-        clean: {
-            "src-closurelinter": [
-                "bld/.done-src-closurelinter"
-            ]
-        }
-    });
-
     /*  minification (UglifyJS)  */
     grunt.config.merge({
         newer: {
@@ -289,8 +203,6 @@ module.exports = function (grunt) {
         "newer:src-plugin-other",
         "newer:src-jshint",
         "newer:src-eslint",
-        "newer:src-closurecompiler",
-        "newer:src-closurelinter",
         "newer:src-min"
     ]);
     grunt.registerTask("src-clean", [
@@ -300,8 +212,6 @@ module.exports = function (grunt) {
         "clean:src-plugin-other",
         "clean:src-jshint",
         "clean:src-eslint",
-        "clean:src-closurecompiler",
-        "clean:src-closurelinter",
         "clean:src-min"
     ]);
 };
