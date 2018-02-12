@@ -29,6 +29,10 @@ describe("ComponentJS Component States", function () {
     var KillGuard = {
         setup: function () { guardStateAndReleaseAfter(cs(this), "prepare", 50) }
     }
+    var KillGuard2 = { id: "Killguard2" }
+    var ChildKillGuard = {
+        setup: function () { guardStateAndReleaseAfter(cs(this), "prepare", 50) }
+    }
     var LowerStateGuard = {
         setup: function () { guardStateAndReleaseAfter(cs(this), "prepare", 500) }
     }
@@ -88,6 +92,24 @@ describe("ComponentJS Component States", function () {
             killguard.state({
                 state: "prepared", sync: true, func: function () {
                     expect(killguard.state()).to.be.equal("dead")
+                    callbackReached = true;
+                }
+            })
+            killguard.destroy()
+            expect(killguard.state()).to.be.equal("dead")
+            setTimeout(function () {
+                expect(callbackReached).to.be.equal(false);
+                done();
+            }, 1000)
+        })
+        it("should not activate a childrens guarded state transition when parent comp got destroyed", function (done) {
+            cs.create("/killguard2/child", KillGuard2, ChildKillGuard)
+            var killguard = cs("//killguard2")
+            var childkillguard = cs("//killguard2/child")
+            var callbackReached = false;
+            childkillguard.state({
+                state: "prepared", sync: true, func: function () {
+                    expect(childkillguard.state()).to.be.equal("dead")
                     callbackReached = true;
                 }
             })
