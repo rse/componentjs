@@ -220,6 +220,11 @@ $cs.destroy = function () {
     var path = comp.path("/");
     var id   = comp.id();
 
+    /*  tear down the whole subtree  */
+    _cs.foreach(comp.children(), function (child) {
+        child.destroy();
+    });
+
     /*  switch component state to "dead"
         (here synchronously as one expects that after a destruction of a
         component, the state is really already "dead", of course)  */
