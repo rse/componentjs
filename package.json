@@ -35,7 +35,7 @@
     },
     "devDependencies": {
         "load-grunt-tasks":     "~3.5.2",
-        "grunt":                "~1.0.1",
+        "grunt":                "~1.0.2",
         "grunt-cli":            "~1.2.0",
         "grunt-contrib-copy":   "~1.0.0",
         "grunt-contrib-jshint": "~1.1.0",
@@ -55,7 +55,7 @@
         "grunt-mocha-test":     "~0.13.3",
         "grunt-istanbul":       "~0.8.0",
         "grunt-jsonlint":       "~1.1.0",
-        "mocha":                "~4.1.0",
+        "mocha":                "~5.0.0",
         "chai":                 "~4.1.2",
         "chai-fuzzy":           "~1.6.1",
         "underscore":           "~1.8.3",
@@ -63,8 +63,8 @@
         "chai-things":          "~0.2.0",
         "chai-interface":       "~2.0.3",
         "sinon-chai":           "~2.14.0",
-        "sinon":                "~4.1.3",
+        "sinon":                "~4.3.0",
         "xregexp":              "~4.0.0",
-        "upd":                  "~1.2.16"
+        "upd":                  "~1.2.17"
     }
 }
