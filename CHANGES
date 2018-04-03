@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.6.0 and 1.6.1
+    -------------------------------------------------
+
+    o BUGFIX:
+      On destroy() correctly tear down the whole component subtree
+      instead of just the target component.
+
     Major changes between ComponentJS 1.5.0 and 1.6.0
     -------------------------------------------------
 
