@@ -23,7 +23,6 @@
     "files": [
     ],
     "scripts": {
-        "upd":                  "upd",
         "grunt":                "grunt",
         "build":                "grunt build",
         "test":                 "grunt build test",
@@ -64,7 +63,6 @@
         "chai-interface":       "~2.0.3",
         "sinon-chai":           "~3.0.0",
         "sinon":                "~4.5.0",
-        "xregexp":              "~4.1.1",
-        "upd":                  "~2.2.10"
+        "xregexp":              "~4.1.1"
     }
 }
