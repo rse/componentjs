@@ -10,6 +10,13 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.6.1 and 1.6.2
+    -------------------------------------------------
+
+    o BUGFIX:
+      Ensure errors are correctly passed-through in the
+      Testdrive plugin's drive() method.
+
     Major changes between ComponentJS 1.6.0 and 1.6.1
     -------------------------------------------------
 
