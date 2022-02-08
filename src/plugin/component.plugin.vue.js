@@ -108,7 +108,7 @@ ComponentJS.plugin("vue", function (_cs, $cs, GLOBAL) {
                 /*  provide Vue model entries for all ComponentJS model values  */
                 _cs.foreach(names, function (name) {
                     var symbol = name.replace(/[^a-zA-Z0-9_$]+/g, "_");
-                    if (symbol.match(/^event.+$/)) {
+                    if (symbol.match(/^event.+$/) || _cs.hook("ComponentJS:vue:modelisevent", "or", symbol)) {
                         /*  ComponentJS event values "eventXXX" are implemented as Vue methods  */
                         params.options.methods[symbol] = function (value) {
                             $cs(self).value(name,
