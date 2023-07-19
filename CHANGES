@@ -10,6 +10,17 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.6.2 and 1.6.3
+    -------------------------------------------------
+
+    o IMPROVEMENT:
+      Allow state life-cycle methods to return a Promise
+      (internally causing guards to be applied automatically)
+
+    o IMPROVEMENT:
+      Add hook "ComponentJS:vue:modelisevent" to allow
+      applications to configure prefix for ComponentJS events.
+
     Major changes between ComponentJS 1.6.1 and 1.6.2
     -------------------------------------------------
 
