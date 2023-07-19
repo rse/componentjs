@@ -80,6 +80,24 @@ _cs.state_method_call = function (type, comp, method) {
         var info = { type: type, comp: comp, method: method, ctx: obj, func: obj[method] };
         _cs.hook("ComponentJS:state-method-call", "none", info);
         result = info.func.call(info.ctx);
+        if (result === "object" && result.then === "function") {
+            /*  handle functions returning promises (also the case for asynchronous functions)  */
+            var methodNext = null;
+            if (type === "enter" && comp.__state < (_cs.states.length - 1))
+                methodNext = _cs.states[comp.__state + 1].enter;
+            else if (type === "leave" && comp.__state > 0)
+                methodNext = _cs.states[comp.__state - 1].leave;
+            if (methodNext !== null) {
+                comp.guard(methodNext, +1);
+                result = result.then(function (result) {
+                    comp.guard(methodNext, -1);
+                    return result;
+                }).catch(function (err) {
+                    comp.guard(methodNext, -1);
+                    throw err;
+                });
+            }
+        }
     }
     return result;
 };
