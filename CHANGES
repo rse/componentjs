@@ -10,6 +10,12 @@
     have a look at the version control history under
     https://github.com/rse/componentjs/commits/master
 
+    Major changes between ComponentJS 1.6.3 and 1.6.4
+    -------------------------------------------------
+
+    o BUGFIX:
+      Fixed NPM publishing procedure.
+
     Major changes between ComponentJS 1.6.2 and 1.6.3
     -------------------------------------------------
 
